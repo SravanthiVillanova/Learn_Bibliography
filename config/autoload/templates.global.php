@@ -23,7 +23,7 @@ return [
             //html templates
             //for login
             'app::default' => 'templates/app/default_latest.phtml',
-            'app::login' => 'templates/app/login-page.phtml',
+            //'app::login' => 'templates/app/login-page.phtml',
             //work
             'app::work::new_work' => 'templates/app/work/new.phtml',
             'app::work::manage_work' => 'templates/app/work/manage.phtml',
@@ -100,6 +100,7 @@ return [
         ],
         'factories' => [
             Zend\View\Helper\ViewModel::class => App\View\Helper\ViewModelFactory::class,
+			Zend\Form\ConfigProvider::class => App\FormHelpersMiddlewareFactory::class,
         ],
         // zend-servicemanager-style configuration for adding view helpers:
         // - 'aliases'

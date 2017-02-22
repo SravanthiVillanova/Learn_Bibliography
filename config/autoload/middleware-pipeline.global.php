@@ -11,6 +11,7 @@ return [
             Helper\ServerUrlMiddleware::class => Helper\ServerUrlMiddlewareFactory::class,
             Helper\UrlHelperMiddleware::class => Helper\UrlHelperMiddlewareFactory::class,
             'App\SlimFlashMiddleware' => App\SlimFlashMiddlewareFactory::class,
+			App\FormHelpersMiddleware::class => App\FormHelpersMiddlewareFactory::class
         ],
     ],
     // This can be used to seed pre- and/or post-routing middleware
@@ -53,19 +54,19 @@ return [
 
         'routing' => [
             'middleware' => [
-			    //new
-				Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
-                Zend\Expressive\Helper\UrlHelperMiddleware::class,
-                Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
+			    //new-0n 2/22/2017
+				//Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                //Zend\Expressive\Helper\UrlHelperMiddleware::class,
+                //Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
 				
-                /* ApplicationFactory::ROUTING_MIDDLEWARE,
+                ApplicationFactory::ROUTING_MIDDLEWARE,
                 Helper\UrlHelperMiddleware::class,
                 // Add more middleware here that needs to introspect the routing
                 // results; this might include:
                 // - route-based authentication
                 // - route-based validation
                 // - etc.
-                ApplicationFactory::DISPATCH_MIDDLEWARE, */
+                ApplicationFactory::DISPATCH_MIDDLEWARE,
             ],
             'priority' => 1,
         ],

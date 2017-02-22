@@ -9,7 +9,7 @@ return [
         ],
         'factories' => [	
             App\Action\HomePageAction::class => App\Action\HomePageFactory::class,
-            App\Action\LoginPageAction::class => App\Action\LoginPageFactory::class,
+            //App\Action\LoginPageAction::class => App\Action\LoginPageFactory::class,
             App\Action\DefaultPageAction::class => App\Action\DefaultPageFactory::class,
             
 			App\Action\Work\NewWorkAction::class => App\Action\Work\NewWorkFactory::class,
@@ -100,6 +100,7 @@ return [
            'name' => 'new_work',
 		    'path' => '/Work/new',
             'middleware' => [
+				\App\Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
                 App\Action\Work\NewWorkAction::class,
             ],

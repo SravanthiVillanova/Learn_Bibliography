@@ -11,4 +11,9 @@ return [
             'template_error' => 'error::error',
         ],
     ],
+	'app' => [
+      'authentication' => [
+          'default_redirect_to' => '/',
+      ]
+    ]
 ];
