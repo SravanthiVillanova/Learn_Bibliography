@@ -118,4 +118,21 @@ class User extends \Zend\Db\TableGateway\TableGateway
             );
         }
     }
+	
+	public function checkUserAuthentication($username, $pwd)
+	{
+		var_dump($username);
+		var_dump($pwd);
+		/*$rowset = $this->select(array('username' => $username, 'password' => md5($pwd));
+        $row = $rowset->current();
+        return($row);*/
+		$callback = function ($select) use($username, $pwd) {
+            $select->columns(['*']);
+			$select->where->equalTo('username', $username);
+            $select->where->equalTo('password', md5($pwd));
+        };
+        
+        return $this->select($callback)->toArray();
+		
+	}
 }

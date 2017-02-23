@@ -13,6 +13,7 @@ use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Form;
+use Zend\Db\Adapter\Adapter;
 
 /**
  * Class LoginPageAction
@@ -68,13 +69,14 @@ class LoginPageAction
         Template\TemplateRendererInterface $template,
         UserAuthenticationInterface $userAuthenticationService,
         AuthUserInterface $authenticationEntity,
-        $defaultRedirectUri
+        $defaultRedirectUri, Adapter $adapter
     ) {
         $this->router = $router;
         $this->template = $template;
         $this->authEntity = $authenticationEntity;
         $this->userAuthenticationService = $userAuthenticationService;
         $this->defaultRedirectUri = $defaultRedirectUri;
+		$this->adapter  = $adapter;
     }
 
     /**
@@ -88,25 +90,44 @@ class LoginPageAction
         ResponseInterface $response,
         callable $next = null
     ) {
+		var_dump("entered invoke");
         $session = new \Zend\Session\Container('Bibliography');
 
-        if ($request->getMethod() === 'POST') {
-            $user = false; // TODO -- get user
+        if ($request->getMethod() == 'POST') {
+			echo "entered get method post";
+            //$user = false; // TODO -- get user
+			$post = [];
             try {
+				var_dump("entered try");
+				$post = $request->getParsedBody();
+				var_dump($post);
+				//$login_status = "";
+				if(!empty($post['action'])){
+					var_dump("entered action not empty");
+					if($post['action'] == 'login') {
+						var_dump("entered action is login");
+						$table = new \App\Db\Table\User($this->adapter);
+						$user = $table->checkUserAuthentication($post['user_name'], $post['user_pwd']);
+						var_dump($user);
+						die();
+					//$login_status = "logged in";
+					}
+				}
                 $session->id = $this->userAuthenticationService->authenticateUser(
-                    $user->getUsername(),
-                    $user->getPassword()
+                    $post['user_name'],
+                    $post['user_pwd']
                 );
                 return new RedirectResponse(
                     $this->getRedirectUri($request),
                     RFC7231::FOUND
                 );
             } catch (UserAuthenticationException $e) {
-                return $this->renderLoginFormResponse();
+				var_dump("entered catch");
+                return $this->renderLoginFormResponse($request);
             }
         }
 
-        return $this->renderLoginFormResponse();
+        return $this->renderLoginFormResponse($request);
     }
 
 
@@ -117,9 +138,25 @@ class LoginPageAction
      *
      * @return HtmlResponse
      */
-    private function renderLoginFormResponse()
+    private function renderLoginFormResponse($request)
     {
-        return new HtmlResponse($this->template->render(self::PAGE_TEMPLATE, []));
+			//var_dump("entered renderResponse-else");
+		return new HtmlResponse($this->template->render(self::PAGE_TEMPLATE, ['request' => $request,
+                    'adapter' => $this->adapter,]));
+
+		/*return new HtmlResponse(
+            $this->template->render(
+                'layout/default',
+                [
+                    //'rows' => $paginator,
+                    //'previous' => $previous,
+                    //'next' => $next,
+                   // 'countp' => $countPages,
+				   'request' => $request,
+                    'adapter' => $this->adapter,
+                ]
+            )
+        );*/
     }
 
     /**
@@ -134,10 +171,12 @@ class LoginPageAction
      */
     private function getRedirectUri(ServerRequestInterface $request)
     {
+		var_dump("entered getRedirectUri"); //die();
         if (array_key_exists('redirect_to', $request->getQueryParams())) {
+			var_dump("entered getRedirectUri-If"); //die();
             return $request->getQueryParams()['redirect_to'];
         }
-
+		//return $request->getQueryParams()['redirect_to'];
         return $this->defaultRedirectUri;
     }
 }

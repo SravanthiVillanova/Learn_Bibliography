@@ -61,12 +61,13 @@ return [
 				
                 ApplicationFactory::ROUTING_MIDDLEWARE,
                 Helper\UrlHelperMiddleware::class,
+				ApplicationFactory::DISPATCH_MIDDLEWARE,
                 // Add more middleware here that needs to introspect the routing
                 // results; this might include:
                 // - route-based authentication
                 // - route-based validation
                 // - etc.
-                ApplicationFactory::DISPATCH_MIDDLEWARE,
+                
             ],
             'priority' => 1,
         ],

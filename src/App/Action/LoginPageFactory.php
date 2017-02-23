@@ -9,6 +9,7 @@ use Interop\Config\RequiresConfigId;
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
+use Zend\Db\Adapter\Adapter;
 
 class LoginPageFactory implements RequiresConfigId
 {
@@ -26,6 +27,7 @@ class LoginPageFactory implements RequiresConfigId
             ? $container->get(TemplateRendererInterface::class)
             : null;
         $userRepository = $container->get(UserAuthenticationInterface::class);
+		$adapter = $container->get(Adapter::class);
         $userEntity = new LoginUser();
 
         $authenticationOptions = $this->options($container->get('config'), 'authentication');
@@ -35,7 +37,7 @@ class LoginPageFactory implements RequiresConfigId
             $template,
             $userRepository,
             $userEntity,
-            $authenticationOptions['default_redirect_to']
+            $authenticationOptions['default_redirect_to'], $adapter
         );
     }
 }
