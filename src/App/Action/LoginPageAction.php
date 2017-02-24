@@ -68,12 +68,12 @@ class LoginPageAction
         Router\RouterInterface $router,
         Template\TemplateRendererInterface $template,
         UserAuthenticationInterface $userAuthenticationService,
-        AuthUserInterface $authenticationEntity,
+        //AuthUserInterface $authenticationEntity,
         $defaultRedirectUri, Adapter $adapter
     ) {
         $this->router = $router;
         $this->template = $template;
-        $this->authEntity = $authenticationEntity;
+        //$this->authEntity = $authenticationEntity;
         $this->userAuthenticationService = $userAuthenticationService;
         $this->defaultRedirectUri = $defaultRedirectUri;
 		$this->adapter  = $adapter;
@@ -90,41 +90,35 @@ class LoginPageAction
         ResponseInterface $response,
         callable $next = null
     ) {
-		var_dump("entered invoke");
         $session = new \Zend\Session\Container('Bibliography');
 
         if ($request->getMethod() == 'POST') {
-			echo "entered get method post";
             //$user = false; // TODO -- get user
 			$post = [];
-            try {
-				var_dump("entered try");
+            //try {
 				$post = $request->getParsedBody();
-				var_dump($post);
-				//$login_status = "";
 				if(!empty($post['action'])){
-					var_dump("entered action not empty");
 					if($post['action'] == 'login') {
-						var_dump("entered action is login");
 						$table = new \App\Db\Table\User($this->adapter);
-						$user = $table->checkUserAuthentication($post['user_name'], $post['user_pwd']);
-						var_dump($user);
-						die();
-					//$login_status = "logged in";
+						$user = $table->checkUserAuthentication($post['user_name'], $post['user_pwd']);				
 					}
 				}
-                $session->id = $this->userAuthenticationService->authenticateUser(
-                    $post['user_name'],
-                    $post['user_pwd']
-                );
+				if(count($user) == 1) {
+                /*$session->id = $this->userAuthenticationService->authenticateUser(
+                    $user[0]['username'],
+                    $user[0]['password']
+                );*/
+				$session->id = $user[0]['id'];
+				//var_dump($session->id); die();
+				}
                 return new RedirectResponse(
                     $this->getRedirectUri($request),
                     RFC7231::FOUND
                 );
-            } catch (UserAuthenticationException $e) {
+            /*} catch (UserAuthenticationException $e) {
 				var_dump("entered catch");
                 return $this->renderLoginFormResponse($request);
-            }
+            }*/
         }
 
         return $this->renderLoginFormResponse($request);
@@ -171,9 +165,7 @@ class LoginPageAction
      */
     private function getRedirectUri(ServerRequestInterface $request)
     {
-		var_dump("entered getRedirectUri"); //die();
         if (array_key_exists('redirect_to', $request->getQueryParams())) {
-			var_dump("entered getRedirectUri-If"); //die();
             return $request->getQueryParams()['redirect_to'];
         }
 		//return $request->getQueryParams()['redirect_to'];

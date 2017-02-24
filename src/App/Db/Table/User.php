@@ -132,7 +132,13 @@ class User extends \Zend\Db\TableGateway\TableGateway
             $select->where->equalTo('password', md5($pwd));
         };
         
-        return $this->select($callback)->toArray();
-		
+        $row = $this->select($callback)->toArray();
+		/*if(count($row) == 1) {
+			$row['status'] = 'authenticated';
+		}
+		else {
+			$row['status'] = 'not authenticated';
+		}*/
+		return $row;
 	}
 }

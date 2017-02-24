@@ -1,7 +1,7 @@
 <?php
 namespace App\Action;
 
-use App\Entity\LoginUser;
+//use App\Entity\LoginUser;
 use App\Repository\UserAuthenticationInterface;
 use Interop\Config\ConfigurationTrait;
 use Interop\Config\RequiresConfig;
@@ -28,7 +28,7 @@ class LoginPageFactory implements RequiresConfigId
             : null;
         $userRepository = $container->get(UserAuthenticationInterface::class);
 		$adapter = $container->get(Adapter::class);
-        $userEntity = new LoginUser();
+        //$userEntity = new LoginUser();
 
         $authenticationOptions = $this->options($container->get('config'), 'authentication');
 
@@ -36,7 +36,7 @@ class LoginPageFactory implements RequiresConfigId
             $router,
             $template,
             $userRepository,
-            $userEntity,
+            //$userEntity,
             $authenticationOptions['default_redirect_to'], $adapter
         );
     }
