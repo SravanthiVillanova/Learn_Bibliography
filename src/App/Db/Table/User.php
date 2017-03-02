@@ -37,6 +37,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
+use Zend\Session\Container;
 
 /**
  * Table Definition for record
@@ -50,14 +51,20 @@ use Zend\Db\Sql\Expression;
  */
 class User extends \Zend\Db\TableGateway\TableGateway
 {
-    /**
+    private $ses;
+	
+	/**
      * Constructor
      */
     public function __construct($adapter)
     {
+		
         parent::__construct('user', $adapter);
-    }
+		
+		//var_dump($ses);
     
+		$this->ses = new \Zend\Session\Container('Bibliography');
+	}
     /**
      * Update an existing entry in the record table or create a new one
      *
@@ -121,8 +128,7 @@ class User extends \Zend\Db\TableGateway\TableGateway
 	
 	public function checkUserAuthentication($username, $pwd)
 	{
-		var_dump($username);
-		var_dump($pwd);
+
 		/*$rowset = $this->select(array('username' => $username, 'password' => md5($pwd));
         $row = $rowset->current();
         return($row);*/
@@ -140,5 +146,11 @@ class User extends \Zend\Db\TableGateway\TableGateway
 			$row['status'] = 'not authenticated';
 		}*/
 		return $row;
+	}
+	
+	Public function isAdmin() 
+	{
+		echo "user is";
+		var_dump($this->ses->id);
 	}
 }

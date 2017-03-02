@@ -27,6 +27,11 @@ class AuthenticationMiddleware
 	 */
 	private $basePath;
 
+	/**
+	 * @var \Zend\Session\Container
+	 */
+	private $session;
+
     /**
      * AuthenticationMiddleware constructor
      *
@@ -36,11 +41,12 @@ class AuthenticationMiddleware
     public function __construct(
         Router\RouterInterface $router,
         Template\TemplateRendererInterface $template,
-		$basePath
+		$basePath, $session
     ) {
         $this->router = $router;
         $this->template = $template;
 		$this->basePath = rtrim($basePath, '/');
+		$this->session = $session;
     }
 
     /**
@@ -56,9 +62,7 @@ class AuthenticationMiddleware
         ResponseInterface $response,
         callable $next
     ) {
-        $session = new \Zend\Session\Container('Bibliography');
-
-        if (!isset($session->id)) {
+        if (!isset($this->session->id)) {
             return new RedirectResponse(
                 sprintf($this->basePath . '/login?redirect_to=%s', $this->getCurrentRequest($request)),
                 RFC7231::FOUND

@@ -32,6 +32,7 @@ return [
 					
 		//new-adapter
 			Zend\Db\Adapter\Adapter::class => Zend\Db\Adapter\AdapterServiceFactory::class,
+			Zend\Session\Container::class => App\Factory\ZendSessionFactory::class,
 		
         ],
 		

@@ -100,6 +100,7 @@ return [
         ],
         'factories' => [
             Zend\View\Helper\ViewModel::class => App\View\Helper\ViewModelFactory::class,
+			'hasPermission' => App\View\Helper\HasPermissionFactory::class,
 			Zend\Form\ConfigProvider::class => App\FormHelpersMiddlewareFactory::class,
         ],
         // zend-servicemanager-style configuration for adding view helpers:

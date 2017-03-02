@@ -15,6 +15,7 @@ class AuthenticationMiddlewareFactory
             : null;
 
 		$basePath = $container->get(\Blast\BaseUrl\BasePathHelper::class)->__invoke();
-        return new AuthenticationMiddleware($router, $template, $basePath);
+		$session = $container->get(\Zend\Session\Container::class);
+        return new AuthenticationMiddleware($router, $template, $basePath, $session);
     }
 }

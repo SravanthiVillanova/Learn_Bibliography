@@ -56,6 +56,11 @@ class LoginPageAction
      */
     private $defaultRedirectUri;
 
+	/**
+	 * @var \Zend\Session\Container
+	 */
+	private $session;
+
     /**
      * LoginPageAction constructor.
      * @param Router\RouterInterface $router
@@ -69,7 +74,7 @@ class LoginPageAction
         Template\TemplateRendererInterface $template,
         UserAuthenticationInterface $userAuthenticationService,
         //AuthUserInterface $authenticationEntity,
-        $defaultRedirectUri, Adapter $adapter
+        $defaultRedirectUri, Adapter $adapter, $session
     ) {
         $this->router = $router;
         $this->template = $template;
@@ -77,6 +82,7 @@ class LoginPageAction
         $this->userAuthenticationService = $userAuthenticationService;
         $this->defaultRedirectUri = $defaultRedirectUri;
 		$this->adapter  = $adapter;
+		$this->session = $session;
     }
 
     /**
@@ -90,35 +96,39 @@ class LoginPageAction
         ResponseInterface $response,
         callable $next = null
     ) {
-        $session = new \Zend\Session\Container('Bibliography');
-
         if ($request->getMethod() == 'POST') {
             //$user = false; // TODO -- get user
 			$post = [];
-            //try {
 				$post = $request->getParsedBody();
 				if(!empty($post['action'])){
 					if($post['action'] == 'login') {
 						$table = new \App\Db\Table\User($this->adapter);
-						$user = $table->checkUserAuthentication($post['user_name'], $post['user_pwd']);				
+						$user = $table->checkUserAuthentication($post['user_name'], $post['user_pwd']);	
+						//$user1 = array_values($user);
+						$user1 = array_reduce($user, 'array_merge', array());
 					}
 				}
-				if(count($user) == 1) {
-                /*$session->id = $this->userAuthenticationService->authenticateUser(
-                    $user[0]['username'],
-                    $user[0]['password']
-                );*/
-				$session->id = $user[0]['id'];
-				//var_dump($session->id); die();
+				if(!(is_null($user1['id']))) {
+					$this->session->id = $user1['id'];
+					if(isset($user1['level'])) {
+						if ($user1['level'] == 1) 
+							$this->session->role = "Administrator";
+						else
+							$this->session->role = "Super User";
+					}
+					else
+						$this->session->role = "User";
+					//var_dump('before', $this->session->id, 'after'); die();
+					return new RedirectResponse(
+						$this->getRedirectUri($request),
+						RFC7231::FOUND
+					);
+					
 				}
                 return new RedirectResponse(
                     $this->getRedirectUri($request),
                     RFC7231::FOUND
-                );
-            /*} catch (UserAuthenticationException $e) {
-				var_dump("entered catch");
-                return $this->renderLoginFormResponse($request);
-            }*/
+                );			
         }
 
         return $this->renderLoginFormResponse($request);
@@ -165,8 +175,8 @@ class LoginPageAction
      */
     private function getRedirectUri(ServerRequestInterface $request)
     {
-        if (array_key_exists('redirect_to', $request->getQueryParams())) {
-            return $request->getQueryParams()['redirect_to'];
+        if (array_key_exists('redirect_to', $request->getQueryParams())) {			
+           return $request->getQueryParams()['redirect_to'];
         }
 		//return $request->getQueryParams()['redirect_to'];
         return $this->defaultRedirectUri;

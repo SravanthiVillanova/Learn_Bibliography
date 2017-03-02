@@ -37,7 +37,8 @@ class LoginPageFactory implements RequiresConfigId
             $template,
             $userRepository,
             //$userEntity,
-            $authenticationOptions['default_redirect_to'], $adapter
+            $authenticationOptions['default_redirect_to'], $adapter,
+			$container->get(\Zend\Session\Container::class)
         );
     }
 }

@@ -1,7 +1,13 @@
 <?php $this->headTitle('New Work'); ?>
 <?php //$this->layout()->instructions = "Never use double quotes in the title, instead use single quotes when needed."; ?>
 <?php
-	var_dump($this->ses_id);
+/*use Zend\Session\Container;
+$session = new \Zend\Session\Container('Bibliography');
+	var_dump($session->id);
+	var_dump($session->role);*/
+	echo $this->hasPermission('role');
+	//$table = new \App\Db\Table\User($this->adapter);
+	//$table->isAdmin();
 ?>
 <div class="col-md-7">
     <form id="personal-data" class="form-horizontal" method="POST" action="#">
