@@ -50,17 +50,17 @@ use Zend\Session\Container;
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  * @link     https://vufind.org Main Site
  */
-class User extends \Zend\Db\TableGateway\TableGateway
+class Module_Access extends \Zend\Db\TableGateway\TableGateway
 {
     /**
 	 * @var \Zend\Session\Container
 	 */
 	private $session;
 	
-	public function _invoke(ContainerInterface $container) {
+	/*public function _invoke(ContainerInterface $container) {
 		
 		$this->session = $container->get(\Zend\Session\Container::class);
-	}
+	}*/
 	
 	/**
      * Constructor
@@ -68,11 +68,11 @@ class User extends \Zend\Db\TableGateway\TableGateway
     public function __construct($adapter)
     {
 		
-        parent::__construct('user', $adapter);
+        parent::__construct('module_access', $adapter);
 		
 		//var_dump($ses);
 		//ContainerInterface $container;
-		//$this->session = new \Zend\Session\Container('Bibliography');
+		$this->session = new \Zend\Session\Container('Bibliography');
 		
 	}
     /**
@@ -85,6 +85,18 @@ class User extends \Zend\Db\TableGateway\TableGateway
      * @return Updated or newly added record
      */
      
+	 public function getModules($role)
+	 {
+		if($role == 'role_a') {
+			$callback = function ($select) use($role) {
+            $select->columns(['module']);
+			$select->where->equalTo('role_a', 1);
+			};
+			$row = $this->select($callback)->toArray();
+			return $row;
+		}
+		
+	 }
      public function insertRecords($newuser_name, $new_username, $new_user_pwd, $access_level)
      {
          $this->insert(

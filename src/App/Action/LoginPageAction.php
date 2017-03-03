@@ -112,13 +112,20 @@ class LoginPageAction
 					$this->session->id = $user1['id'];
 					if(isset($user1['level'])) {
 						if ($user1['level'] == 1) 
-							$this->session->role = "Administrator";
+							$this->session->role = "role_a";
 						else
-							$this->session->role = "Super User";
+							$this->session->role = "role_su";
 					}
 					else
-						$this->session->role = "User";
+						$this->session->role = "role_u";
 					//var_dump('before', $this->session->id, 'after'); die();
+					$table = new \App\Db\Table\Module_Access($this->adapter);
+					$modules = $table->getModules($this->session->role);
+					foreach($modules as $row) :
+						$mods[] = $row['module'];
+					endforeach;
+					$this->session->modules_access = $mods;
+					//echo "<pre>"; print_r($this->session->modules_access); echo "</pre>"; die();
 					return new RedirectResponse(
 						$this->getRedirectUri($request),
 						RFC7231::FOUND
