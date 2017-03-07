@@ -8,3 +8,10 @@
        
     </div>
 </div>
+<div class="col-md-9">
+<?php
+	$parent = NULL;
+	$table = new \App\Db\Table\Folder($this->adapter);
+    $table->exportClassification($parent);
+?>
+</div>

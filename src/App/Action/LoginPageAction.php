@@ -118,13 +118,15 @@ class LoginPageAction
 					}
 					else
 						$this->session->role = "role_u";
+					echo 'assigned role is ' . $this->session->role;
 					//var_dump('before', $this->session->id, 'after'); die();
 					$table = new \App\Db\Table\Module_Access($this->adapter);
-					$modules = $table->getModules($this->session->role);
+					$modules = $table->getModules($this->session->role);//die();
 					foreach($modules as $row) :
 						$mods[] = $row['module'];
 					endforeach;
 					$this->session->modules_access = $mods;
+					//var_dump($this->session->modules_access);//die();
 					//echo "<pre>"; print_r($this->session->modules_access); echo "</pre>"; die();
 					return new RedirectResponse(
 						$this->getRedirectUri($request),

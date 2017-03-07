@@ -19,7 +19,10 @@ class HasPermission extends \Zend\View\Helper\AbstractHelper
 		//test_cnt(ContainerInterface $container);
 		//$table = new \App\Db\Table\User($this->adapter);
 		//$user = $table->isAdmin();
-		return 'hello, ' . $this->session->id . 'has access to' . implode($this->session->modules_access);
+		//var_dump($this->session->modules_access);
+		//return 'hello, ' . $this->session->id . 'has access to';
+		 //. implode($this->session->modules_access)
+		 return $this->session->modules_access;
     }
 	
 	//public function test_cnt(ContainerInterface $container)

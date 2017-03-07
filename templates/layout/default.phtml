@@ -33,6 +33,7 @@
                     $row = $table->findRecordByUser($user);
                     $role = $row['role']; */
                     //echo "came to layout"
+					//var_dump($this->session->modules_access);die();
         
 ?>
 	<?php if (!$this->layout()->hideNavigation): ?>
@@ -48,37 +49,45 @@
           <!--<a class="navbar-brand" href="#">Administration</a>-->
         </div>
         <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right pull-left">
+			<ul class="nav navbar-nav navbar-right pull-left">
+			<?php 
+				$modules = $this->hasPermission();
+				if (in_array("Work", $modules)) { 
+			?>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Work<b class="caret"></b></a>			  
-              <ul class="dropdown-menu">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Work<b class="caret"></b></a>			  
+				<ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('new_work') ?>">New</a></li>
                 <li><a href="<?php echo $this->url('search_work') ?>">Search</a></li>
 				<li><a href="<?php echo $this->url('manage_work') ?>">Manage</a></li>
 				<li><a href="<?php echo $this->url('manage_work') ?><?= '?action=review' ?>">Review</a></li>
 				<li><a href="<?php echo $this->url('manage_work') ?><?= '?action=classify' ?>">Classify</a></li>
 				</ul>
-				</li>
-				<li class="divider-vertical"></li>
-				 <li class="dropdown">           
+			</li>
+			<?php } ?>
+				<!--<li class="divider-vertical"></li>-->
+			<?php if (in_array("Work Type", $modules)) { ?>
+			<li class="dropdown">           
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Work Type<b class="caret"></b></a>
-				 <ul class="dropdown-menu">
+				<ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('new_worktype') ?><?='?action=new'?>">New</a></li>
                 <li><a href="<?php echo $this->url('manage_worktype') ?>">Manage</a></li>
 				<li><a href="<?php echo $this->url('attributes_worktype') ?>">Attributes</a></li>
-              </ul>
+				</ul>
             </li>       
-
-              <li class="dropdown">           
+			<?php } ?>
+			<?php if (in_array("Classification", $modules)) { ?>
+            <li class="dropdown">           
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Classification<b class="caret"></b></a>
 				 <ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('new_classification') ?>">New</a></li>
                 <li><a href="<?php echo $this->url('manage_classification') ?>">Manage</a></li>
-				<li><a href="<?php echo $this->url('merge_classification') ?>">Merge</a></li>
-				<li><a href="<?php echo $this->url('manage_classification') ?><?='?action=export_classification'?>">Export List</a></li>
+				<li><a href="<?php echo $this->url('merge_classification') ?>">Merge</a></li>				
+				<li><a href="<?php echo $this->url('exportlist_classification') ?><?='?action=export_classification'?>">Export List</a></li>
               </ul>
             </li>  			
-            
+            <?php } ?>
+			<?php if (in_array("Agent", $modules)) { ?>
 			<li class="dropdown">           
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Agent<b class="caret"></b></a>
 				 <ul class="dropdown-menu">
@@ -88,7 +97,8 @@
 				<li><a href="<?php echo $this->url('merge_agent') ?>">Merge</a></li>
               </ul>
             </li>  
-			
+			<?php } ?>
+			<?php if (in_array("Agent Type", $modules)) { ?>
 			<li class="dropdown">           
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Agent Type<b class="caret"></b></a>
 				 <ul class="dropdown-menu">
@@ -96,7 +106,8 @@
 				<li><a href="<?php echo $this->url('manage_agenttype') ?>">Manage</a></li>
               </ul>
             </li> 
-			
+			<?php } ?>
+			<?php if (in_array("Publisher", $modules)) { ?>
 			<li class="dropdown">           
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Publisher<b class="caret"></b></a>
 				 <ul class="dropdown-menu">
@@ -106,7 +117,8 @@
 				<li><a href="<?php echo $this->url('merge_publisher') ?>">Merge</a></li>
               </ul>
             </li> 
-			
+			<?php } ?>
+			<?php if (in_array("Language", $modules)) { ?>
 			<li class="dropdown">           
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Language<b class="caret"></b></a>
 				 <ul class="dropdown-menu">
@@ -114,7 +126,8 @@
 				<li><a href="<?php echo $this->url('manage_language') ?>">Manage</a></li>
               </ul>
             </li> 
-			
+			<?php } ?>
+			<?php if (in_array("Users", $modules)) { ?>
 			<li class="dropdown">           
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Users<b class="caret"></b></a>
 				 <ul class="dropdown-menu">
@@ -123,14 +136,15 @@
 				<li><a href="<?php echo $this->url('access_users') ?>">Access</a></li>
               </ul>
             </li> 
-			
+			<?php } ?>
+			<?php if (in_array("Preferences", $modules)) { ?>
 			<li class="dropdown">           
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Preferences<b class="caret"></b></a>
 				 <ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('changepassword_preferences') ?><?='?action=change_pwd'?>">Change Password</a></li>
               </ul>
             </li> 
-			
+			<?php } ?>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

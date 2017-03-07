@@ -87,14 +87,18 @@ class Module_Access extends \Zend\Db\TableGateway\TableGateway
      
 	 public function getModules($role)
 	 {
-		if($role == 'role_a') {
-			$callback = function ($select) use($role) {
+		
+		$v_role = $role;
+		//echo 'role is' . $v_role;
+		//if($role == 'role_a') {
+			$callback = function ($select) use($v_role) {
             $select->columns(['module']);
-			$select->where->equalTo('role_a', 1);
+			$select->where->equalTo($v_role, 1);
 			};
 			$row = $this->select($callback)->toArray();
+			//var_dump($row);
 			return $row;
-		}
+		//}
 		
 	 }
      public function insertRecords($newuser_name, $new_username, $new_user_pwd, $access_level)

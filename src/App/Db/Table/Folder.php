@@ -74,4 +74,46 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         $paginatorAdapter = new DbSelect($select, $this->adapter);
         return new Paginator($paginatorAdapter);
     }
+	
+	public function exportClassification($parent)
+	{
+		//$fl = new Folder($this->adapter);
+        //$subselect = $wtwa->getWorkAttributeQuery($id);
+		$callback = function ($select) {
+            $select->columns(['*']);
+			$select->where('parent_id IS NULL');
+			};
+			$row = $this->select($callback)->toArray();
+			foreach($row as $t):
+			//echo "<pre>"; print_r($t); echo "</pre>";
+			$id = $t['id'];
+				//$rc = $fl->getDepth($t['id']);
+				$callback = function ($select) use ($id){
+					$select->columns(['*']);
+					$select->where->equalTo('parent_id', $id);
+				};
+				$rc = $this->select($callback)->toArray();
+				//var_dump($rc);												
+				/*while(count($rc) > 0) {
+					
+				}*/
+			endforeach;
+			/*echo "rows are ";
+			echo "<pre>"; print_r($row); echo "</pre>";*/
+	}
+	
+	public function getDepth($id)
+	{
+		$depth = 0;
+		$current_parent_id = $id;
+		while(!is_null($current_parent_id)) {
+			$callback = function ($select) use ($current_parent_id){
+				$select->columns(['*']);
+				$select->where->equalTo('parent_id', $current_parent_id);
+			};
+			$rc = $this->select($callback)->toArray();
+			$current_parent_id = $rc['id'];
+			$depth += 1;
+		}
+	}
 }

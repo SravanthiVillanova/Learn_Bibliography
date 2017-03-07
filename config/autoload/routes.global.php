@@ -91,7 +91,7 @@ return [
             'name' => 'home',
             'path' => '/',
             'middleware' => [
-				//\App\Middleware\AuthenticationMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 BodyParamsMiddleware::class,
                 App\Action\HomePageAction::class,
             ],
@@ -112,7 +112,7 @@ return [
            'name' => 'new_work',
 		    'path' => '/Work/new',
             'middleware' => [
-				\App\Middleware\AuthenticationMiddleware::class,
+				//\App\Middleware\AuthenticationMiddleware::class,
                 //BodyParamsMiddleware::class,
                 App\Action\Work\NewWorkAction::class,
             ],
