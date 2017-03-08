@@ -50,12 +50,13 @@ use Zend\Db\Sql\Expression;
  */
 class Folder extends \Zend\Db\TableGateway\TableGateway
 {
-    /**
+	//Private $file;
+   /**
      * Constructor
      */
     public function __construct($adapter)
     {
-        parent::__construct('folder', $adapter);
+        parent::__construct('folder', $adapter);				
     }
     
     /**
@@ -77,43 +78,47 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 	
 	public function exportClassification($parent)
 	{
-		//$fl = new Folder($this->adapter);
-        //$subselect = $wtwa->getWorkAttributeQuery($id);
+		$fl = new Folder($this->adapter);
 		$callback = function ($select) {
             $select->columns(['*']);
 			$select->where('parent_id IS NULL');
-			};
-			$row = $this->select($callback)->toArray();
-			foreach($row as $t):
-			//echo "<pre>"; print_r($t); echo "</pre>";
-			$id = $t['id'];
-				//$rc = $fl->getDepth($t['id']);
-				$callback = function ($select) use ($id){
-					$select->columns(['*']);
-					$select->where->equalTo('parent_id', $id);
-				};
-				$rc = $this->select($callback)->toArray();
-				//var_dump($rc);												
-				/*while(count($rc) > 0) {
-					
-				}*/
-			endforeach;
-			/*echo "rows are ";
-			echo "<pre>"; print_r($row); echo "</pre>";*/
+		};
+		$row = $this->select($callback)->toArray();
+		$escaper = new \Zend\Escaper\Escaper('utf-8');
+		header("Content-Type: text/csv");
+		header("Content-Disposition: attachment; filename=test_export.csv");
+		$file = fopen('php://output','w') or die("Unable to open file!");
+		//add BOM to fix UTF-8 in Excel
+		fputs($file, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
+		foreach($row as $t):
+			$content = $t['id'] . ' ' . $escaper->escapeHtml($t['text_fr']) . ' ';
+			fputcsv($file, array($content));
+			$fl->getDepth($t['id'], $file, $content);				
+		endforeach;
+		fflush($file);
+		fclose($file);
+		exit;
 	}
 	
-	public function getDepth($id)
+	public function getDepth($id, $file, $content)
 	{
-		$depth = 0;
+		$fl = new Folder($this->adapter);
+		$escaper = new \Zend\Escaper\Escaper('utf-8');
+		$con = $content;
 		$current_parent_id = $id;
-		while(!is_null($current_parent_id)) {
-			$callback = function ($select) use ($current_parent_id){
-				$select->columns(['*']);
-				$select->where->equalTo('parent_id', $current_parent_id);
-			};
-			$rc = $this->select($callback)->toArray();
-			$current_parent_id = $rc['id'];
-			$depth += 1;
+		$callback = function ($select) use ($current_parent_id){
+			$select->columns(['*']);
+			$select->where->equalTo('parent_id', $current_parent_id);
+		};
+		$rc = $this->select($callback)->toArray(); 
+		if(count($rc) != 0) {				
+			for($i = 0;$i<count($rc);$i++) {
+				$con1 = ' ' . $escaper->escapeHtml($rc[$i]['text_fr']) . ' '; 
+				//$con .= $con1;			
+				fputcsv($file, array($con . $con1)); 
+				$current_parent_id = $rc[$i]['id'];	
+				$fl->getDepth($current_parent_id, $file, $con . $con1); 
+			}	
 		}
-	}
+	}	
 }
