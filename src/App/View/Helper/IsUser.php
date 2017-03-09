@@ -2,7 +2,7 @@
 namespace App\View\Helper;
 use Interop\Container\ContainerInterface;
 
-class HasPermission extends \Zend\View\Helper\AbstractHelper
+class IsUser extends \Zend\View\Helper\AbstractHelper
 {
 	private $session;
 	
@@ -22,13 +22,19 @@ class HasPermission extends \Zend\View\Helper\AbstractHelper
 		//var_dump($this->session->modules_access);
 		//return 'hello, ' . $this->session->id . 'has access to';
 		 //. implode($this->session->modules_access)
-		 return $this->session->modules_access;
+		return $this;
+		 //return $this->session->modules_access;
     }
 	
-	//public function test_cnt(ContainerInterface $container)
-	//{
-		//$container = new \Interop\Container\ContainerInterface::interface;
-		//$table = new \App\Db\Table\User((new \Interop\Container\ContainerInterface $container)->get(Adapter::class));
-		//$user = $table->isAdmin();
-	//}
+	public function hasPermission()
+	{
+		return $this->session->modules_access;
+	}
+	
+	public function isLogged()
+	{
+		if($this->session->id != NULL)
+			return true;
+		return false;
+	}
 }

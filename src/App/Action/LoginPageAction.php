@@ -118,7 +118,7 @@ class LoginPageAction
 					}
 					else
 						$this->session->role = "role_u";
-					echo 'assigned role is ' . $this->session->role;
+					//echo 'assigned role is ' . $this->session->role;
 					//var_dump('before', $this->session->id, 'after'); die();
 					$table = new \App\Db\Table\Module_Access($this->adapter);
 					$modules = $table->getModules($this->session->role);//die();
@@ -139,7 +139,21 @@ class LoginPageAction
                     RFC7231::FOUND
                 );			
         }
-
+		if(array_key_exists('logout', $request->getQueryParams())) {
+			if($request->getQueryParams()['logout'] == 'y'){
+				/*foreach ($this->session as $key => $val) {
+					unset($this->session->$key);
+				}*/
+				//$this->session->getManager()->destroy();
+				//session_destroy($this->session);
+				$sessionManager = $this->session->get(new \Zend\Session\SessionManager::class);
+				$sessionManager->destroy();
+				return new RedirectResponse(
+                    $this->getRedirectUri($request),
+                    RFC7231::FOUND
+                );
+			}
+		}
         return $this->renderLoginFormResponse($request);
     }
 
@@ -186,6 +200,12 @@ class LoginPageAction
     {
         if (array_key_exists('redirect_to', $request->getQueryParams())) {			
            return $request->getQueryParams()['redirect_to'];
+        }
+		if (array_key_exists('logout', $request->getQueryParams())) {
+			$reqParams = $request->getServerParams();
+			//$baseUrl = $uri->getScheme() . '://' . $uri->getHost() . '/' . $uri->getPath();
+			$toUrl = 'http' . '://' . $reqParams["HTTP_HOST"] . '/' . $reqParams["REDIRECT_URL"];
+		   return $toUrl;
         }
 		//return $request->getQueryParams()['redirect_to'];
         return $this->defaultRedirectUri;

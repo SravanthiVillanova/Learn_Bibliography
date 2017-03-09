@@ -23,7 +23,11 @@
      <!--<div class="breadcrumb">
           <li><a href="#">Home /</a></li>
      </div>-->
-  
+  <?php if (!$this->layout()->hideNavigation):
+  if ($this->isUser()->isLogged()): ?>
+  <a href="<?=$this->url('login')?><?='?logout=y'?>" style="float:right;color:white;">Logout</a>
+  <?php endif;
+  endif; ?>
 </div>
 
 <!-- Fixed navbar -->
@@ -51,7 +55,7 @@
         <div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right pull-left">
 			<?php 
-				$modules = $this->hasPermission();
+				$modules = $this->isUser()->hasPermission();
 				if (in_array("Work", $modules)) { 
 			?>
             <li class="dropdown">
@@ -146,6 +150,7 @@
             </li> 
 			<?php } ?>
           </ul>
+		  
         </div><!--/.nav-collapse -->
       </div>
     </div>

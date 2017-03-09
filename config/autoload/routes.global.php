@@ -101,7 +101,7 @@ return [
         [
             'name' => 'default',
             'path' => '/default_latest',
-            'middleware' => [
+            'middleware' => [				
                 //BodyParamsMiddleware::class,
                 App\Action\DefaultPageAction::class,
             ],
@@ -112,7 +112,7 @@ return [
            'name' => 'new_work',
 		    'path' => '/Work/new',
             'middleware' => [
-				//\App\Middleware\AuthenticationMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 //BodyParamsMiddleware::class,
                 App\Action\Work\NewWorkAction::class,
             ],
