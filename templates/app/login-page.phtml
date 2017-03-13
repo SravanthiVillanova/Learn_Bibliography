@@ -6,9 +6,8 @@
                 {   			
                     $params = $this->request->getqueryParams();
                     $redirect_url = $params['redirect_to'];
-                } 
-        
-        
+                }
+				
  ?>
 <div class="col-md-4">
     <form class="form-horizontal" method="post" action="<?=$this->url('login')?><?='?action=login' . '&redirect_to=' . $redirect_url?>">
@@ -26,13 +25,6 @@
                 <input type="password" class="form-control" name="user_pwd" />
             </div>
         </div>
-       <!-- <div class="form-group">
-            <label for="role">Select role (select one):</label>
-                <select class="form-control" id="role" name="role">
-                <option>Administrator</option>
-                <option>User</option>
-                </select>
-        </div>-->
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-10">
                 <button type="submit" class="btn btn-default" name="submitt" value="Save">Login</button>
