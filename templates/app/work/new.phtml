@@ -15,23 +15,23 @@ $session = new \Zend\Session\Container('Bibliography');
 <div class="tabbable">
   <ul class="nav nav-tabs">
     <li class="active">
-      <a href="#1" data-toggle="tab">General</a>
+      <a href="#General" data-toggle="tab">General</a>
     </li>
     <li>
-      <a href="#2" data-toggle="tab">Classification</a>
+      <a href="#Classification" data-toggle="tab">Classification</a>
     </li>  
 	<li>
-      <a href="#3" data-toggle="tab">Publisher</a>
+      <a href="#Publisher" data-toggle="tab">Publisher</a>
     </li>
 	<li>
-      <a href="#4" data-toggle="tab">Agents</a>
+      <a href="#Agents" data-toggle="tab">Agents</a>
     </li>
 	<li>
-      <a href="#5" data-toggle="tab">Citation</a>
+      <a href="#Citation" data-toggle="tab">Citation</a>
     </li>
   </ul>
   <div class="tab-content">
-    <div class="tab-pane active in" id="General">      
+    <div class="tab-pane active" id="General">      
 		<div class="form-group">
 			<label class="col-xs-2 control-label">Title: </label>
 			<div class="col-xs-10">
@@ -91,8 +91,22 @@ $session = new \Zend\Session\Container('Bibliography');
 		</div>		 
     </div>
     <div class="tab-pane" id="Classification">
-      <!-- form controls to be continued here -->
-      <p>Howdy, I'm in Section 2.</p>
+      <div class="form-group">
+			<label class="col-xs-2 control-label">Subject Tree: </label>
+			<div class="col-xs-10">
+				<select class="form-control" name="subject_tree">
+				<option value=""></option>
+				<?php
+					//fetch worktypes
+					$table = new \App\Db\Table\Folder($this->adapter);
+					$paginator = $table->findParent();
+					foreach($paginator as $row) :
+				?>
+				<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
+				<?php endforeach; ?>
+				</select>
+			</div>
+		</div>		
     </div>            
   </div>
 </div>

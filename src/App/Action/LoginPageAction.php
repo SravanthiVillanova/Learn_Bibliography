@@ -144,12 +144,14 @@ class LoginPageAction
 				/*foreach ($this->session as $key => $val) {
 					unset($this->session->$key);
 				}*/
+				$toUrl = $this->getRedirectUri($request);
 				//$this->session->getManager()->destroy();
 				//session_destroy($this->session);
-				$sessionManager = $this->session->get(new \Zend\Session\SessionManager::class);
+				$sessionManager = $this->session->getManager();
+				//$sessionManager = $this->session->get(new \Zend\Session\SessionManager::class);
 				$sessionManager->destroy();
 				return new RedirectResponse(
-                    $this->getRedirectUri($request),
+                    $toUrl,
                     RFC7231::FOUND
                 );
 			}
@@ -198,15 +200,16 @@ class LoginPageAction
      */
     private function getRedirectUri(ServerRequestInterface $request)
     {
-        if (array_key_exists('redirect_to', $request->getQueryParams())) {			
-           return $request->getQueryParams()['redirect_to'];
-        }
-		if (array_key_exists('logout', $request->getQueryParams())) {
+        if (array_key_exists('logout', $request->getQueryParams())) {
 			$reqParams = $request->getServerParams();
 			//$baseUrl = $uri->getScheme() . '://' . $uri->getHost() . '/' . $uri->getPath();
 			$toUrl = 'http' . '://' . $reqParams["HTTP_HOST"] . '/' . $reqParams["REDIRECT_URL"];
-		   return $toUrl;
+			//var_dump($toUrl . '?redirect_to=/bibliography_new/public/'); //die();
+		   return $toUrl . '?redirect_to=/bibliography_new/public/';
         }
+		if (array_key_exists('redirect_to', $request->getQueryParams())) {			
+           return $request->getQueryParams()['redirect_to'];
+        }		
 		//return $request->getQueryParams()['redirect_to'];
         return $this->defaultRedirectUri;
     }

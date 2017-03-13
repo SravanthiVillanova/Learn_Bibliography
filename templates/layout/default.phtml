@@ -24,22 +24,14 @@
           <li><a href="#">Home /</a></li>
      </div>-->
   <?php if (!$this->layout()->hideNavigation):
-  if ($this->isUser()->isLogged()): ?>
+			if ($this->isUser()->isLogged()): 				
+  ?>
   <a href="<?=$this->url('login')?><?='?logout=y'?>" style="float:right;color:white;">Logout</a>
   <?php endif;
   endif; ?>
 </div>
 
 <!-- Fixed navbar -->
-<?php
-                    //fetch role based on user
-                   /* $table = new \App\Db\Table\UserTest($adapter);
-                    $row = $table->findRecordByUser($user);
-                    $role = $row['role']; */
-                    //echo "came to layout"
-					//var_dump($this->session->modules_access);die();
-        
-?>
 	<?php if (!$this->layout()->hideNavigation): ?>
     <div class="navbar navbar-default" role="navigation">
       <div class="container">
@@ -50,7 +42,6 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <!--<a class="navbar-brand" href="#">Administration</a>-->
         </div>
         <div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right pull-left">

@@ -123,6 +123,7 @@ return [
             'name' => 'search_work',
 		    'path' => '/Work/search',
             'middleware' => [
+				\App\Middleware\AuthenticationMiddleware::class,
                 //BodyParamsMiddleware::class,
                 App\Action\Work\SearchWorkAction::class,
             ],
@@ -134,6 +135,7 @@ return [
 		    'path' => '/Work/manage',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Work\ManageWorkAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -144,6 +146,7 @@ return [
 		    'path' => '/Work/review',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Work\ReviewWorkAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -154,6 +157,7 @@ return [
 		    'path' => '/Work/classify',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Work\ClassifyWorkAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -164,6 +168,7 @@ return [
 		    'path' => '/WorkType/new',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\NewWorkTypeAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -174,6 +179,7 @@ return [
 		    'path' => '/WorkType/manage',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\ManageWorkTypeAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -184,6 +190,7 @@ return [
 		    'path' => '/WorkType/edit',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\EditWorkTypeAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -194,6 +201,7 @@ return [
 		    'path' => '/WorkType/delete',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\DeleteWorkTypeAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -204,6 +212,7 @@ return [
 		    'path' => '/WorkType/manage_attribute',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\ManageWorkTypeAttributeAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -214,6 +223,7 @@ return [
 		    'path' => '/WorkType/attributes',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\AttributesWorkTypeAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -224,6 +234,7 @@ return [
 		    'path' => '/WorkType/new_attribute',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\NewAttributeAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -234,6 +245,7 @@ return [
 		    'path' => '/WorkType/edit_attribute',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\EditAttributeAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -244,6 +256,7 @@ return [
 		    'path' => '/WorkType/delete_attribute',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\DeleteAttributeAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -254,6 +267,7 @@ return [
 		    'path' => '/WorkType/manage_attribute_options',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\AttributeManageOptionsAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -264,6 +278,7 @@ return [
 		    'path' => '/WorkType/new_option',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\NewOptionAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -274,6 +289,7 @@ return [
 		    'path' => '/WorkType/edit_option',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\EditOptionAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -284,6 +300,7 @@ return [
 		    'path' => '/WorkType/delete_option',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\DeleteOptionAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -294,6 +311,7 @@ return [
 		    'path' => '/WorkType/merge_duplicate_option',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\WorkType\MergeDuplicateOptionAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -304,6 +322,7 @@ return [
 		    'path' => '/Classification/new',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Classification\NewClassificationAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -314,6 +333,7 @@ return [
 		    'path' => '/Classification/manage',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Classification\ManageClassificationAction::class,
             ],
             'allowed_methods' => ['GET', 'POST'],
@@ -324,6 +344,7 @@ return [
 		    'path' => '/Classification/merge',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Classification\MergeClassificationAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -334,6 +355,7 @@ return [
 		    'path' => '/Classification/export',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Classification\ExportListClassificationAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -344,6 +366,7 @@ return [
 		    'path' => '/Agent/new',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Agent\NewAgentAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -354,6 +377,7 @@ return [
 		    'path' => '/Agent/find',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Agent\FindAgentAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -364,6 +388,7 @@ return [
 		    'path' => '/Agent/manage',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Agent\ManageAgentAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -374,6 +399,7 @@ return [
 		    'path' => '/Agent/edit',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Agent\EditAgentAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -384,6 +410,7 @@ return [
 		    'path' => '/Agent/delete',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Agent\DeleteAgentAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -394,6 +421,7 @@ return [
 		    'path' => '/Agent/merge',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Agent\MergeAgentAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -404,6 +432,7 @@ return [
 		    'path' => '/AgentType/new',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\AgentType\NewAgentTypeAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -414,6 +443,7 @@ return [
 		    'path' => '/AgentType/manage',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\AgentType\ManageAgentTypeAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -424,6 +454,7 @@ return [
 		    'path' => '/AgentType/edit',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\AgentType\EditAgentTypeAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -434,6 +465,7 @@ return [
 		    'path' => '/AgentType/delete',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\AgentType\DeleteAgentTypeAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -444,6 +476,7 @@ return [
 		    'path' => '/Publisher/newpublisher',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Publisher\NewPublisherAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -454,6 +487,7 @@ return [
 		    'path' => '/Publisher/findpublisher',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Publisher\FindPublisherAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -464,6 +498,7 @@ return [
 		    'path' => '/Publisher/managepublisher[/page/{page}]',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Publisher\ManagePublisherAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -474,6 +509,7 @@ return [
 		    'path' => '/Publisher/new_location',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Publisher\AddPublisherLocationAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -484,6 +520,7 @@ return [
 		    'path' => '/Publisher/delete_merge_location',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Publisher\DeleteMergePublisherLocationAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -494,6 +531,7 @@ return [
 		    'path' => '/Publisher/manage_location',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Publisher\ManagePublisherLocationAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -504,6 +542,7 @@ return [
 		    'path' => '/Publisher/edit_publisher',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Publisher\EditPublisherAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -514,6 +553,7 @@ return [
 		    'path' => '/Publisher/delete_publisher',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Publisher\DeletePublisherAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -524,6 +564,7 @@ return [
 		    'path' => '/Publisher/merge',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Publisher\MergePublisherAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -534,6 +575,7 @@ return [
 		    'path' => '/Language/new',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Language\NewLanguageAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -544,6 +586,7 @@ return [
 		    'path' => '/Language/manage[/page/{page}]',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Language\ManageLanguageAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -554,6 +597,7 @@ return [
 		    'path' => '/Language/edit',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Language\EditLanguageAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -564,6 +608,7 @@ return [
 		    'path' => '/Language/delete',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Language\DeleteLanguageAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
@@ -574,6 +619,7 @@ return [
 		    'path' => '/Users/new',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Users\NewUserAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -584,6 +630,7 @@ return [
 		    'path' => '/Users/manage',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Users\ManageUsersAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -594,6 +641,7 @@ return [
 		    'path' => '/Users/edit',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Users\EditUserAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -604,6 +652,7 @@ return [
 		    'path' => '/Users/delete',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Users\DeleteUserAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -614,6 +663,7 @@ return [
 		    'path' => '/Users/access',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Users\AccessUsersAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
@@ -624,6 +674,7 @@ return [
 		    'path' => '/Preferences/changepassword',
             'middleware' => [
                 //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Preferences\ChangePasswordPreferencesAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
