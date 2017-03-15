@@ -89,4 +89,11 @@ class AgentType extends \Zend\Db\TableGateway\TableGateway
         $row = $rowset->current();
         return($row);
     }
+	
+	public function fetchAgentTypes()
+    {
+        $select = $this->sql->select();
+        $paginatorAdapter = new DbSelect($select, $this->adapter);
+        return new Paginator($paginatorAdapter);
+    }
 }

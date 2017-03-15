@@ -9,6 +9,27 @@ $session = new \Zend\Session\Container('Bibliography');
 	//$table = new \App\Db\Table\User($this->adapter);
 	//$table->isAdmin();
 ?>
+<!--<script type="text/javascript" src="jquery-1.4.1.min.js"></script>
+<script type="text/javascript">-->
+<script src="//getbootstrap.com/2.3.2/assets/js/bootstrap-modal.js"></script>
+<script>
+/*$("subject_tree").change(function()
+ {
+  var id=$(this).val();
+  alert(id);
+ }
+);*/
+
+$(document).ready(function () {
+
+     // Attach Button click event listener 
+    $("#pubLookupBtn").click(function(){
+
+         // show Modal
+         $('#pubLookup').modal('show');
+    });
+});
+</script>
 <div class="col-md-7">
     <form id="personal-data" class="form-horizontal" method="POST" action="#">
 
@@ -91,10 +112,10 @@ $session = new \Zend\Session\Container('Bibliography');
 		</div>		 
     </div>
     <div class="tab-pane" id="Classification">
-      <div class="form-group">
+		<div class="form-group">
 			<label class="col-xs-2 control-label">Subject Tree: </label>
-			<div class="col-xs-10">
-				<select class="form-control" name="subject_tree[]">
+			<div class="col-xs-5">
+				<select class="form-control" name="subject_tree" class="subject_tree">
 				<option value=""></option>
 				<?php
 					//fetch worktypes
@@ -107,7 +128,110 @@ $session = new \Zend\Session\Container('Bibliography');
 				</select>
 			</div>
 		</div>		
-    </div>            
+    </div>  
+	<div class="tab-pane" id="Publisher">
+		<div class="form-group">
+		<table class="table table-striped table-condensed" style="font-size:10pt;">
+        <thead>
+          <th>Lookup</th>
+          <th>Year From</th>
+          <th>Year To</th>
+          <th>Publisher</th>
+          <th>Location</th>
+          <th>Remove</th>
+		</thead>
+		<tbody>
+		<tr>
+			<td><button class="btn btn-default" id="pubLookupBtn" data-toggle="modal" data-target="#pubLookup">Lookup</button></td>
+			<td><input type="text" class="form-control" name="pub_yrFrom" id="pubyrFrom" /></td>
+			<td><input type="text" class="form-control" name="pub_yrTo" id="pubyrTo" /></td>
+			<td><input type="text" class="form-control" name="pub_name" id="pubName" /></td>
+			<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>
+			<td><button type="submit" class="btn btn-default" name="pub_remove" value="Remove">Remove</button></td>
+		</tr>
+		</tbody>
+		</table>
+		<button type="submit" class="btn btn-default" name="pub_add" value="Add">Add</button> 
+		</div>
+		<!-- Publisher Lookup -->
+		<div class="modal fade" id="pubLookup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+		</div>
+		</div>
+	</div>
+	<div class="tab-pane" id="Agents">
+		<div class="form-group">
+		<table class="table table-striped table-condensed" style="font-size:10pt;">
+        <thead>
+          <th>Lookup</th>
+          <th>Agent Type</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Alternate Name</th>
+		  <th>Organization Name</th>
+          <th>Remove</th>
+		</thead>
+		<tbody>
+		<tr>
+			<td><button class="btn btn-default" id="agentLookupBtn" data-toggle="modal" data-target="#agentLookup">Lookup</button></td>
+			<td>
+				<select class="form-control" name="agent_type" class="agent_type">
+				<option value=""></option>
+				<?php
+					//fetch worktypes
+					//$table = new \App\Db\Table\AgentType($this->adapter);
+					//$paginator = $table->fetchAgentTypes();
+					//var_dump($paginator->getTotalItemCount());
+					//foreach($paginator as $row) :
+				?>
+				<!--<option value=""><?php //echo $row['type']; ?></option>-->						
+				<?php //endforeach; ?>
+				</select>
+			</td>
+			<td><input type="text" class="form-control" name="agent_FirstName" id="agent_FirstName" /></td>
+			<td><input type="text" class="form-control" name="agent_LastName" id="agent_LastName" /></td>
+			<td><input type="text" class="form-control" name="agent_AlternateName" id="agent_AlternateName" /></td>
+			<td><input type="text" class="form-control" name="agent_OrganizationName" id="agentOrganizationName" /></td>
+			<td><button type="submit" class="btn btn-default" name="agent_remove" value="Remove">Remove</button></td>
+		</tr>
+		</tbody>
+		</table>
+		<button type="submit" class="btn btn-default" name="agent_add" value="Add">Add</button> 
+		</div>
+		<!-- Publisher Lookup -->
+		<div class="modal fade" id="agentLookup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+		</div>
+		</div>
+	</div>
+	<div class="tab-pane" id="Citation">
+	</div>
   </div>
 </div>
 <div class="form-group">
