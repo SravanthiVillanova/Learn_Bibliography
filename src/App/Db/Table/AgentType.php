@@ -30,6 +30,13 @@
  */
 namespace App\Db\Table;
 
+use Zend\Db\Sql\Select;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Paginator\Adapter\DbSelect;
+use Zend\Db\Adapter\Adapter;
+use Zend\Paginator\Paginator;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Expression;
 /**
  * Table Definition for record
  *
@@ -94,6 +101,7 @@ class AgentType extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         $paginatorAdapter = new DbSelect($select, $this->adapter);
-        return new Paginator($paginatorAdapter);
+		$rows = new Paginator($paginatorAdapter);
+        return $rows;
     }
 }

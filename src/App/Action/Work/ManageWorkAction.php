@@ -73,6 +73,10 @@ class ManageWorkAction
 				return $paginator;
 			}
 		}
+		if(isset($post['get_parent']))
+		{
+			echo "selected is " . $post['get_parent'];
+		}
         //Cancel edit\delete
         if ($post['submit_cancel'] == "Cancel") {
             $table = new \App\Db\Table\Work($this->adapter);
@@ -84,7 +88,8 @@ class ManageWorkAction
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {        
+    {  
+		var_dump("helloo"); die();
         $query = $request->getqueryParams();
 		if($query['action'] == 'review') {
 			$table = new \App\Db\Table\Work($this->adapter);
