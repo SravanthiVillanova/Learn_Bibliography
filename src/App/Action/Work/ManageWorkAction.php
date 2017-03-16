@@ -73,10 +73,13 @@ class ManageWorkAction
 				return $paginator;
 			}
 		}
-		if(isset($post['get_parent']))
+		/*if(isset($post['get_parent']))
 		{
-			echo "selected is " . $post['get_parent'];
-		}
+			var_dump("selected is " . $post['get_parent']);
+			$table = new \App\Db\Table\Folder($this->adapter);
+			$rows = $table->getChild($post['get_parent']);
+			return $rows;
+		}*/
         //Cancel edit\delete
         if ($post['submit_cancel'] == "Cancel") {
             $table = new \App\Db\Table\Work($this->adapter);
@@ -89,7 +92,35 @@ class ManageWorkAction
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {  
-		var_dump("helloo"); die();
+		//var_dump("helloo");// die();
+		$post = [];
+        if ($request->getMethod() == "POST") {
+            $post = $request->getParsedBody();
+        }
+        
+		if(isset($post['get_parent']))
+		{
+			//var_dump("selected is " . $post['get_parent']);
+			$table = new \App\Db\Table\Folder($this->adapter);
+			$rows = $table->getChild($post['get_parent']);
+			//$rc = json_encode($rows);
+			//exit;
+			
+			return new HtmlResponse(
+            $this->template->render(
+                'app::work::get_work_details',
+                [					
+                    'rows' => $rows,
+					'request' => $request, 
+					'adapter' => $this->adapter,
+                ]
+            )
+			);
+			//var_dump($rows);
+			//print_r(json_encode($rows));
+			//return $rows;
+			
+		}
         $query = $request->getqueryParams();
 		if($query['action'] == 'review') {
 			$table = new \App\Db\Table\Work($this->adapter);
@@ -104,11 +135,8 @@ class ManageWorkAction
 			$table = new \App\Db\Table\Work($this->adapter);
 			$characs = $table->findInitialLetter();
 		}
-        $post = [];
-        if ($request->getMethod() == "POST") {
-            $post = $request->getParsedBody();
-        }
         
+		
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(20);		
         $allItems = $paginator->getTotalItemCount();

@@ -17,15 +17,24 @@ $(document).ready(function () {
 	{
 		var id=$(this).val();
 		if(id != "") {
+			var s1 = $('<select class="child_tree"/>');
 			$.ajax({
 				type: 'post',
 				url: 'http://localhost<?=$this->url('manage_work')?>',
 				data: {
 					get_parent: id
 				},
-             success: function(output) {
-                //alert(output);
-                $('#'+list_target_id).html(output);
+				//dataType: "json", 
+             success: function(data) {
+				if(data){
+					for(i=0;i<data.length;i++){
+						alert(data[i]);
+					}
+				}else{
+					alert("error");
+				}
+				//$('<option />', {value: val, text: data1[val]}).appendTo(s1);
+                //$('#'+list_target_id).html(output);
             },
 			error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.status + " "+ thrownError);

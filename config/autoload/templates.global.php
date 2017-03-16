@@ -26,6 +26,7 @@ return [
             //'app::login' => 'templates/app/login-page.phtml',
             //work
             'app::work::new_work' => 'templates/app/work/new.phtml',
+			'app::work::get_work_details' => 'templates/app/work/get_work_details.phtml',
             'app::work::manage_work' => 'templates/app/work/manage.phtml',
             'app::work::search_work' => 'templates/app/work/search.phtml',
             'app::work::review_work' => 'templates/app/work/review.phtml',
