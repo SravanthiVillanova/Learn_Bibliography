@@ -149,4 +149,14 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
         };
         return $this->select($callback)->toArray();
     }
+	
+	public function getPublisherLocations($pub_id)
+	{
+		$callback = function ($select) use ($pub_id) {
+			$select->where->equalTo('publisher_id', $pub_id);
+		};
+		$rows = $this->select($callback)->toArray();
+		//var_dump($rows);
+		return $rows;
+	}
 }

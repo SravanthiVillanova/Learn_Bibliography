@@ -133,4 +133,13 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
         $paginatorAdapter = new DbSelect($select, $this->adapter);
         return new Paginator($paginatorAdapter);
     }
+	
+	public function getLikeRecords($name)
+	{
+		 $callback = function ($select) use ($name) {
+            $select->where->like('name', '%'. $name . '%');           
+        };
+        $rows = $this->select($callback)->toArray();
+        return $rows;
+	}
 }

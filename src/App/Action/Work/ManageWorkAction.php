@@ -92,7 +92,6 @@ class ManageWorkAction
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {  
-		//var_dump("helloo");// die();
 		$post = [];
         if ($request->getMethod() == "POST") {
             $post = $request->getParsedBody();
@@ -100,12 +99,8 @@ class ManageWorkAction
         
 		if(isset($post['get_parent']))
 		{
-			//var_dump("selected is " . $post['get_parent']);
 			$table = new \App\Db\Table\Folder($this->adapter);
-			$rows = $table->getChild($post['get_parent']);
-			//$rc = json_encode($rows);
-			//exit;
-			
+			$rows = $table->getChild($post['get_parent']);			
 			return new HtmlResponse(
             $this->template->render(
                 'app::work::get_work_details',
@@ -115,12 +110,16 @@ class ManageWorkAction
 					'adapter' => $this->adapter,
                 ]
             )
-			);
-			//var_dump($rows);
-			//print_r(json_encode($rows));
-			//return $rows;
-			
+			);			
 		}
+		
+		if(isset($post['action']))
+		{
+			if($post['action'] == 'work_new') {
+			var_dump($post); //die();
+			}
+		}
+		
         $query = $request->getqueryParams();
 		if($query['action'] == 'review') {
 			$table = new \App\Db\Table\Work($this->adapter);

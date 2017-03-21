@@ -18,6 +18,7 @@ return [
 			App\Action\SimpleRenderAction::class => App\Action\Work\ReviewWorkFactory::class,
 			App\Action\SimpleRenderAction::class => App\Action\Work\ClassifyWorkFactory::class,*/
 			App\Action\Work\NewWorkAction::class => App\Action\Work\NewWorkFactory::class,
+			App\Action\Work\GetWorkDetailsAction::class => App\Action\Work\GetWorkDetailsFactory::class,
 			App\Action\Work\SearchWorkAction::class => App\Action\Work\SearchWorkFactory::class,
 			App\Action\Work\ManageWorkAction::class => App\Action\Work\ManageWorkFactory::class,
 			App\Action\Work\ReviewWorkAction::class => App\Action\Work\ReviewWorkFactory::class,
@@ -115,6 +116,17 @@ return [
 				\App\Middleware\AuthenticationMiddleware::class,
                 //BodyParamsMiddleware::class,
                 App\Action\Work\NewWorkAction::class,
+            ],
+            'allowed_methods' => ['GET','POST'],
+        ],
+		
+		[
+           'name' => 'get_work_details',
+		    'path' => '/Work/get_work_details',
+            'middleware' => [
+				\App\Middleware\AuthenticationMiddleware::class,
+                //BodyParamsMiddleware::class,
+                App\Action\Work\GetWorkDetailsAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
         ],
