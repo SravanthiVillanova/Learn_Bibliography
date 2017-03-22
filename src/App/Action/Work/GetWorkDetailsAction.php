@@ -46,6 +46,7 @@ class GetWorkDetailsAction
 		}
 		if(isset($_POST['publisher_Id']))
 		{
+			//$ddata = array();
 			//die($_POST['publisher_Id']);
 			$pub_id = $_POST['publisher_Id'];
 			$table = new \App\Db\Table\PublisherLocation($this->adapter);
@@ -54,9 +55,12 @@ class GetWorkDetailsAction
 				$rows[$i]['value'] = $row['location'];
 				$rows[$i]['label'] = $row['location'];
 				$rows[$i]['id'] = $row['id'];
+				//$ddata[] = $rows;
 			}
+			
+			$output = array("publoc" => $rows,);
 			//var_dump($rows); die();
-			echo json_encode($rows);
+			echo json_encode($output);
 		}
 	}
 }

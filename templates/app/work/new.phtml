@@ -1,80 +1,28 @@
 <?php $this->headTitle('New Work'); ?>
-<?php //$this->layout()->instructions = "Never use double quotes in the title, instead use single quotes when needed."; ?>
-<?php
-/*use Zend\Session\Container;
-$session = new \Zend\Session\Container('Bibliography');
-	var_dump($session->id);
-	var_dump($session->role);*/
-	//echo $this->hasPermission();
-	//$table = new \App\Db\Table\User($this->adapter);
-	//$table->isAdmin();
-?>  
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script>
-$(document).ready(function () {
-	$(".subject_tree").change(function()
-	{
-		var id=$(this).val();
-		if(id != "") {
-			var s1 = $('<select class="child_tree"/>');
-			$.ajax({
-				type: 'post',
-				url: 'http://localhost<?=$this->url('manage_work')?>',
-				data: {
-					get_parent: id
-				},
-				//dataType: "json", 
-             success: function(data) {
-				if(data){
-					for(i=0;i<data.length;i++){
-						alert(data[i]);
-					}
-				}else{
-					alert("error");
-				}
-				//$('<option />', {value: val, text: data1[val]}).appendTo(s1);
-                //$('#'+list_target_id).html(output);
-            },
-			error: function (xhr, ajaxOptions, thrownError) {
-            alert(xhr.status + " "+ thrownError);
-			}});
-		
-			/*var data1 = {'City': 'New Delhi','City2': 'WDC','City3': 'Adilade','City4': 'Colombo'}; 
-			var s1 = $('<select />');
-			for(var val in data1)
-			{
-				$('<option />', {value: val, text: data1[val]}).appendTo(s1);
-			} 
-			s1.appendTo('#class_grp');*/
-		}	  
-	}
-	);
+function bindPublisherAutocomplete(context) {
+							
 	//publisher enable/disable fields
-	$("#pubLocation").prop("disabled", "disabled");
+	$("#pubLocation", context).prop("disabled", "disabled");
 	
 	//Publisher autocomplete
 	$(function() {
-		$( "#pubName" ).autocomplete({
+		$( "#pubName", context).autocomplete({
 			source: 'http://localhost<?=$this->url('get_work_details')?>',
 			autoFocus:true,
 			select: function(event, ui){
-                $('#pubName').val(ui.item.label);
-                $('#pubId').val(ui.item.id);
-				$("#pubLocation").prop("disabled", false);
-				//get_locations();
+                $('#pubName', context).val(ui.item.label);
+                $('#pubId', context).val(ui.item.id);
+				$("#pubLocation", context).prop("disabled", false);
                 return false;
             }
 		});
 	});	
-	 $('#pubName').on('autocompleteselect', function (e, ui) {
-        //$('#tagsname').html('You selected: ' + ui.item.value);
-		//alert(ui.item.label);
+	$('#pubName', context).on('autocompleteselect', function (e, ui) {
 		var publisher_Id = ui.item.id;
-		var s1 = $('<select class="pub_locations"/>');
-		//alert(publisher_Id);
-		//var s1 = $('<select class="pubLocation"/>');
 		$.ajax({
         method: 'post',
         url: 'http://localhost<?=$this->url('get_work_details')?>',
@@ -85,16 +33,38 @@ $(document).ready(function () {
         cache: false,
         success: function(data)
         {
-			//alert('heloo');return false;
-			//$("#pubLocation").html(data); 
-
-				//$('<option />', {value: label, text: data[label]}).appendTo(s1);
-				alert(data[label]);
-			
-		}
+			$("#pubLocation", context).html('');
+			$.each(data.publoc, function (key, val) {
+                $("#pubLocation", context).append('<option id="' + val.id + '">' + val.label + '</option>');
+            })
+		},
+		error: function () { 
+            $("#pubLocation", context).html('<option id="-1">none available</option>');
+        }
         });
+    });	
+}
+$(document).ready(function () {
+	bindPublisherAutocomplete(document);
+	//add publisher rows
+	$("#pub_add").click(function(){
+		var pub_row = $('<tr><input type="hidden" name="pub_id" id="pubId" value="">'+
+							'<td><input type="text" class="form-control" name="pub_name" id="pubName" placeholder="none" /></td>'+
+							'<td><input type="text" class="form-control" name="pub_yrFrom" id="pubyrFrom"/></td>'+
+							'<td><input type="text" class="form-control" name="pub_yrTo" id="pubyrTo" /></td>'+
+							'<!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->'+
+							'<td><select class="form-control pub_locations" name="pub_location" id="pubLocation"><option value=""></option></select></td>'+
+							'<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>'+
+							'</tr>');				
+							
+        $("#pub_table").append(pub_row);
+		bindPublisherAutocomplete(pub_row);
+		return false;
     });
-	
+	//remove publisher rows
+	$("#pub_table").on('click','#pub_remove',function(){
+        $(this).parent().parent().remove();
+    });
 });
 </script>
 <div class="col-md-7">
@@ -198,7 +168,7 @@ $(document).ready(function () {
     </div>  
 	<div class="tab-pane" id="Publisher">
 		<div class="form-group">
-		<table class="table table-striped table-condensed" style="font-size:10pt;">
+		<table class="table table-striped table-condensed" style="font-size:10pt;" id="pub_table">
         <thead>
 			<th>Publisher</th>
 			<th>Year From</th>
@@ -218,11 +188,11 @@ $(document).ready(function () {
 				<option value=""></option>				
 				</select>
 			</td>
-			<td><button type="submit" class="btn btn-default" name="pub_remove" value="Remove">Remove</button></td>
+			<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>
 		</tr>
 		</tbody>
 		</table>
-		<button type="submit" class="btn btn-default" name="pub_add" value="Add">Add</button> 
+		<button type="submit" class="btn btn-default" name="pub_add" id="pub_add" value="Add">Add</button> 
 		</div>
 	</div>
 	<div class="tab-pane" id="Agents">
