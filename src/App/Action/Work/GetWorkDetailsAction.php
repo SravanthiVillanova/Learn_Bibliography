@@ -30,19 +30,45 @@ class GetWorkDetailsAction
 	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     { 	
 	
-		if(isset($_GET['term']))
+		if(isset($_GET['autofor']))
 		{
-			$search_term = $_GET['term'];
-			$table = new \App\Db\Table\Publisher($this->adapter);
-			$rows = $table->getLikeRecords($search_term);
-			foreach ($rows as $i => $row) {
-				$rows[$i]['value'] = $row['name'];
-				$rows[$i]['label'] = $row['name'];
-				$rows[$i]['id'] = $row['id'];
+			$autofor = $_GET['autofor'];
+			if($autofor == 'publisher')
+			{
+				if(isset($_GET['term']))
+				{
+					$search_term = $_GET['term'];
+					$table = new \App\Db\Table\Publisher($this->adapter);
+					$rows = $table->getLikeRecords($search_term);
+					foreach ($rows as $i => $row) {
+						$rows[$i]['value'] = $row['name'];
+						$rows[$i]['label'] = $row['name'];
+						$rows[$i]['id'] = $row['id'];
+					}
+					echo json_encode($rows);
+					exit;
+					//return new JsonResponse ($this->template->render('app::work::new_work', ['rows' => $rows]));
+				}
 			}
-			echo json_encode($rows);
-			exit;
-			//return new JsonResponse ($this->template->render('app::work::new_work', ['rows' => $rows]));
+			if($autofor == 'agent')
+			{
+				if(isset($_GET['term']))
+				{
+					$search_term = $_GET['term'];
+					$table = new \App\Db\Table\Agent($this->adapter);
+					$rows = $table->getLikeRecords($search_term);
+					foreach ($rows as $i => $row) {						
+						$rows[$i]['id'] = $row['id'];
+						$rows[$i]['label'] = $row['fname'];
+						$rows[$i]['lname'] = $row['lname'];
+						$rows[$i]['alternate_name'] = $row['alternate_name'];
+						$rows[$i]['organization_name'] = $row['organization_name'];
+					}
+					echo json_encode($rows);
+					exit;
+					//return new JsonResponse ($this->template->render('app::work::new_work', ['rows' => $rows]));
+				}
+			}
 		}
 		if(isset($_POST['publisher_Id']))
 		{

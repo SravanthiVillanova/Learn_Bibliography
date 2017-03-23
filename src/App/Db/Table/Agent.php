@@ -176,4 +176,13 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         $paginatorAdapter = new DbSelect($select, $this->adapter);
         return new Paginator($paginatorAdapter);
     }
+	
+	public function getLikeRecords($fname)
+	{
+		 $callback = function ($select) use ($fname) {
+            $select->where->like('fname', '%'. $fname . '%');           
+        };
+        $rows = $this->select($callback)->toArray();
+        return $rows;
+	}
 }
