@@ -102,7 +102,7 @@ class WorkType extends \Zend\Db\TableGateway\TableGateway
 	public function fetchAllWorkTypes()
 	{
 		$select = $this->sql->select();
-		$paginatorAdapter = new DbSelect($select, $this->adapter);
+		$paginatorAdapter = new DbSelect($select, $this->adapter);		
         return new Paginator($paginatorAdapter);
 	}
 }

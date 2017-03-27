@@ -1,4 +1,11 @@
 <?php $this->headTitle('New Work'); ?>
+<?php
+		//fetch worktypes
+		$table = new \App\Db\Table\WorkType($this->adapter);
+		$paginator = $table->fetchAllWorkTypes();
+		$itemsCount = $paginator->getTotalItemCount();
+		$paginator->setItemCountPerPage($itemsCount);									
+?>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -44,6 +51,7 @@ function bindPublisherAutocomplete(context) {
         });
     });	
 }
+//Agent Autocomplete
 function bindAgentAutocomplete(context) 
 {						
 	//agent enable/disable fields
@@ -82,6 +90,64 @@ function bindAgentAutocomplete(context)
 		}		
     });	
 }
+//WorkType Autocomplete
+function bindWorkTypeAttributes(context)
+{
+	var worktype_Id = $('#work_type').val();
+	$.ajax({
+        method: 'post',
+        url: 'http://localhost<?=$this->url('get_work_details')?>',
+		data: {
+			worktype_Id: worktype_Id
+		},
+		dataType: "json", 
+        cache: false,
+        success: function(data)
+        {
+			//var count = 1;
+			//alert('heloo');
+			$.each(data.worktype_attribute, function (key, val) {
+				//alert(val.id + ' ' + val.field + ' ' + val.type);
+                //$("#pubLocation", context).append('<option id="' + val.id + '">' + val.label + '</option>');
+				$("<div class='form-group'>").appendTo("#Citation");
+				$("<label class='col-xs-2 control-label'>" + val.field + ": </label>").appendTo("#Citation");
+				$("<div class='col-xs-10'>").appendTo("#Citation");
+				// append input control at end of form
+				if(val.type == 'Text')
+				{
+					$("<input type='text' value='' />")
+						.attr("id", val.field)
+						.attr("name", val.field)
+						.appendTo("#Citation");
+
+				}
+				if(val.type == 'Textarea')
+				{
+					$("<textarea class='form-control'></textarea>")
+						.attr("id", val.field)
+						.attr("name", val.field)
+						.appendTo("#Citation");
+				}
+				if(val.type == 'Select')
+				{
+					$("<select class='form-control'></textarea>")
+						.attr("id", val.field)
+						.attr("name", val.field)
+						.appendTo("#Citation");
+						$("<option value=''></option>").appendTo("#Citation");
+				}	
+				$("</div>").appendTo("#Citation");
+				$("</div>").appendTo("#Citation");
+				//count = count + 1;
+            })
+		},
+		error: function (data) { 
+            //$("#pubLocation", context).html('<option id="-1">none available</option>');
+			alert('error');
+        }
+    });
+	return false;
+}
 $(document).ready(function () {
 	//Publisher
 	bindPublisherAutocomplete(document);
@@ -111,9 +177,6 @@ $(document).ready(function () {
 						'<select class="form-control agent_type" name="agent_type" id="agent_type">'+
 						'<option value=""></option>'+
 						<?php
-						//fetch agenttypes
-						$table = new \App\Db\Table\AgentType($this->adapter);
-						$paginator = $table->fetchAgentTypes();
 						foreach($paginator as $row) :
 						?>
 						'<option value="<?=$row['id']?>"><?php echo $row['type']; ?></option>'+						
@@ -135,6 +198,11 @@ $(document).ready(function () {
 	$("#agent_table").on('click','#agent_remove',function(){
         $(this).parent().parent().remove();
     });
+	//get attributes for selected worktypes
+	$('#work_type',document).on('change', function() {
+		//var worktype_Id = ui.item.id;
+		bindWorkTypeAttributes(document)
+	});
 });
 </script>
 <div class="col-md-7">
@@ -187,12 +255,9 @@ $(document).ready(function () {
 		<div class="form-group">
 			<label class="col-xs-2 control-label">Type: </label>
 			<div class="col-xs-10">
-				<select class="form-control" name="parent_id">
+				<select class="form-control" name="work_type" id="work_type">
 				<option value="">Choose Work Type</option>					
 				<?php
-					//fetch worktypes
-					$table = new \App\Db\Table\WorkType($this->adapter);
-					$paginator = $table->fetchAllWorkTypes();
 					foreach($paginator as $row) :
 				?>
 				<option value="<?=$row['id']?>"><?php echo $row['type']; ?></option>							

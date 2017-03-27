@@ -87,6 +87,22 @@ class GetWorkDetailsAction
 			$output = array("publoc" => $rows,);
 			//var_dump($rows); die();
 			echo json_encode($output);
+			exit;
+		}
+		if(isset($_POST['worktype_Id']))
+		{
+			$wkt_id = $_POST['worktype_Id'];
+			$table = new \App\Db\Table\WorkAttribute($this->adapter);
+			$paginator = $table->getAttributesForWorkType($wkt_id);
+			$itemsCount = $paginator->getTotalItemCount();
+			$paginator->setItemCountPerPage($itemsCount);	
+			$rows = [];
+			foreach ($paginator as $row) :
+				$rows[] = $row;
+			endforeach;		
+			$output = array("worktype_attribute" => $rows,);
+			echo json_encode($output);
+			exit;
 		}
 	}
 }

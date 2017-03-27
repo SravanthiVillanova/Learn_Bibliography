@@ -119,4 +119,15 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     {
         $this->delete(['id' => $id]);
     }
+	
+	public function getAttributesForWorkType($id)
+    {
+        $subselect = $this->sql->select();
+        $subselect->join('worktype_workattribute', 'workattribute.id = worktype_workattribute.workattribute_id', array(), 'inner');
+        $subselect->where(['worktype_id' => $id]);
+        $subselect->order('rank');
+        
+        $paginatorAdapter = new DbSelect($subselect, $this->adapter);
+		return new Paginator($paginatorAdapter);
+    }   
 }
