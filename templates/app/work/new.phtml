@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script>
 function bindPublisherAutocomplete(context) {
 							
@@ -109,37 +110,63 @@ function bindWorkTypeAttributes(context)
 			$.each(data.worktype_attribute, function (key, val) {
 				//alert(val.id + ' ' + val.field + ' ' + val.type);
                 //$("#pubLocation", context).append('<option id="' + val.id + '">' + val.label + '</option>');
-				$("<div class='form-group'>").appendTo("#Citation");
-				$("<label class='col-xs-2 control-label'>" + val.field + ": </label>").appendTo("#Citation");
-				$("<div class='col-xs-10'>").appendTo("#Citation");
+				$("<div>").attr("class","form-group").appendTo("#Citation");
+				$("<label>").attr("class","col-xs-2 control-label").text(val.field).appendTo("#Citation");
+				$("</label>").appendTo("#Citation");
+				$("<div>").appendTo("#Citation");
 				// append input control at end of form
+				if(val.type == 'Textarea')
+				{
+					$("<textarea>")
+						.attr("class","form-control autoc")
+						.attr("id", val.field)
+						.attr("name", val.field)
+						.appendTo("#Citation");
+					$("</textarea>").appendTo("#Citation");
+				}
 				if(val.type == 'Text')
 				{
-					$("<input type='text' value='' />")
+					$("<input />")
+						.attr("type","text")
+						.attr("class","form-control autoc")
 						.attr("id", val.field)
 						.attr("name", val.field)
 						.appendTo("#Citation");
 
-				}
-				if(val.type == 'Textarea')
-				{
-					$("<textarea class='form-control'></textarea>")
-						.attr("id", val.field)
-						.attr("name", val.field)
-						.appendTo("#Citation");
-				}
+				}				
 				if(val.type == 'Select')
 				{
-					$("<select class='form-control'></textarea>")
+					$("<input />")
+						.attr("type","text")
+						.attr("class","form-control autoc")
+						.attr("placeholder","Type to get suggestion")
 						.attr("id", val.field)
 						.attr("name", val.field)
 						.appendTo("#Citation");
-						$("<option value=''></option>").appendTo("#Citation");
+						//$("<option value=''></option>").appendTo("#Citation");
+					//$("</select>").appendTo("#Citation");
+					$("<button data-toggle='modal' data-target='#pubLookup'/>")
+						.attr("class","btn btn-default optionLookupBtn")
+						.attr("id","optionLookupBtn")
+						.attr("data-toggle","modal")
+						.attr("data-target","optionsLookup")
+						.attr("value","Lookup")
+						.text("Lookup")
+						.appendTo("#Citation");					
 				}	
 				$("</div>").appendTo("#Citation");
 				$("</div>").appendTo("#Citation");
 				//count = count + 1;
-            })
+            })			
+			$(".optionLookupBtn").on('click', function(e){
+				//alert("hello");
+				// show Modal
+				$("#optionsLookup").modal('show');
+				$('#optionsLookup').on('shown.bs.modal', function () {
+					$('#lookupOption').focus()
+				});
+				return false;
+			});
 		},
 		error: function (data) { 
             //$("#pubLocation", context).html('<option id="-1">none available</option>');
@@ -201,8 +228,11 @@ $(document).ready(function () {
 	//get attributes for selected worktypes
 	$('#work_type',document).on('change', function() {
 		//var worktype_Id = ui.item.id;
-		bindWorkTypeAttributes(document)
+		bindWorkTypeAttributes(document);
+		
 	});
+	// Attach Button click event listener 
+    
 });
 </script>
 <div class="col-md-7">
@@ -387,6 +417,29 @@ $(document).ready(function () {
 		</div>
 	</div>
 	<div class="tab-pane" id="Citation">
+		<!-- Work Type Attribute Options Lookup -->
+		<div class="modal fade" id="optionsLookup" role="dialog">
+		<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">Lookup</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+				<label class="col-xs-2 control-label">Title: </label>
+				<div class="col-xs-10">
+					<input type="text" class="form-control" name="lookup_Option" id="lookupOption" />
+				</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="option_search">Search</button>
+			</div>
+		</div>
+		</div>
+		</div>
 	</div>
   </div>
 </div>

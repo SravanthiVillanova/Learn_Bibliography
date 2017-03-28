@@ -69,6 +69,24 @@ class GetWorkDetailsAction
 					//return new JsonResponse ($this->template->render('app::work::new_work', ['rows' => $rows]));
 				}
 			}
+			if($autofor == 'optionlookup')
+			{
+				if(isset($_GET['term']))
+				{
+					var_dump($_GET['term']);
+					/*$search_term = $_GET['term'];
+					$table = new \App\Db\Table\Publisher($this->adapter);
+					$rows = $table->getLikeRecords($search_term);
+					foreach ($rows as $i => $row) {
+						$rows[$i]['value'] = $row['name'];
+						$rows[$i]['label'] = $row['name'];
+						$rows[$i]['id'] = $row['id'];
+					}
+					echo json_encode($rows);
+					exit;*/
+					//return new JsonResponse ($this->template->render('app::work::new_work', ['rows' => $rows]));
+				}
+			}
 		}
 		if(isset($_POST['publisher_Id']))
 		{
