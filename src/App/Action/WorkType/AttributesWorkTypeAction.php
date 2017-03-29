@@ -36,9 +36,9 @@ class AttributesWorkTypeAction
             //add new attribute
             if ($post['action'] == "new") {
                 if ($post['submitt'] == "Save") {
-                    echo '<pre>';
+                    /*echo '<pre>';
                     print_r($post);
-                    echo '</pre>';
+                    echo '</pre>';*/
                     $table = new \App\Db\Table\WorkAttribute($this->adapter);
                     $table->addAttribute($post['new_attribute'], $post['field_type']);
                 }

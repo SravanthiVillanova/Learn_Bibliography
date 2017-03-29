@@ -122,5 +122,23 @@ class GetWorkDetailsAction
 			echo json_encode($output);
 			exit;
 		}
+		if(isset($_POST['option']))
+		{
+			$opt_title = $_POST['option'];
+			$wkat_id =  preg_replace("/^\w+:/", "", $_POST['attribute_Id']);
+			//$wkat_id = $_POST['attribute_Id'];
+			$table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
+			$rows = $table->getAttributeOptions($opt_title,$wkat_id);
+			/*foreach ($rows as $i => $row) {						
+						$rows[$i]['id'] = $row['id'];
+						$rows[$i]['label'] = $row['fname'];
+						$rows[$i]['lname'] = $row['lname'];
+						$rows[$i]['alternate_name'] = $row['alternate_name'];
+						$rows[$i]['organization_name'] = $row['organization_name'];
+					}*/
+			$output = array("attribute_options" => $rows,);
+			echo json_encode($output);
+			exit;
+		}
 	}
 }

@@ -151,4 +151,14 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         //echo "<pre>"; print_r($rows); echo "</pre>";
         return $rows;
     }
+	
+	public function getAttributeOptions($opt_title,$wkat_id)
+	{
+		$callback = function ($select) use ($opt_title,$wkat_id) {
+            $select->where->like('title', $opt_title . '%');
+            $select->where->equalTo('workattribute_id', $wkat_id);
+        };
+        $rows = $this->select($callback)->toArray();
+        return $rows;
+	}
 }

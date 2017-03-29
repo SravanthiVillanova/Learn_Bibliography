@@ -110,7 +110,7 @@ function bindWorkTypeAttributes(context)
 			$.each(data.worktype_attribute, function (key, val) {
 				//alert(val.id + ' ' + val.field + ' ' + val.type);
                 //$("#pubLocation", context).append('<option id="' + val.id + '">' + val.label + '</option>');
-				$("<div>").attr("class","form-group").appendTo("#Citation");
+				$("<div>").attr("class","form-group optiondiv").attr("id","optiondiv").appendTo("#Citation");
 				$("<label>").attr("class","col-xs-2 control-label").text(val.field).appendTo("#Citation");
 				$("</label>").appendTo("#Citation");
 				$("<div>").appendTo("#Citation");
@@ -136,15 +136,13 @@ function bindWorkTypeAttributes(context)
 				}				
 				if(val.type == 'Select')
 				{
+					var container = $('<div/>');
 					$("<input />")
 						.attr("type","text")
-						.attr("class","form-control autoc")
-						.attr("placeholder","Type to get suggestion")
-						.attr("id", val.field)
+						.attr("class","form-control autoc Attributeoption")
+						.attr("id", val.field + ':' +val.id)
 						.attr("name", val.field)
-						.appendTo("#Citation");
-						//$("<option value=''></option>").appendTo("#Citation");
-					//$("</select>").appendTo("#Citation");
+						.appendTo(container);
 					$("<button data-toggle='modal' data-target='#pubLookup'/>")
 						.attr("class","btn btn-default optionLookupBtn")
 						.attr("id","optionLookupBtn")
@@ -152,7 +150,8 @@ function bindWorkTypeAttributes(context)
 						.attr("data-target","optionsLookup")
 						.attr("value","Lookup")
 						.text("Lookup")
-						.appendTo("#Citation");					
+						.appendTo(container);	
+					container.appendTo('#Citation');
 				}	
 				$("</div>").appendTo("#Citation");
 				$("</div>").appendTo("#Citation");
@@ -161,9 +160,48 @@ function bindWorkTypeAttributes(context)
 			$(".optionLookupBtn").on('click', function(e){
 				//alert("hello");
 				// show Modal
+				var lookupBtn = this;
 				$("#optionsLookup").modal('show');
 				$('#optionsLookup').on('shown.bs.modal', function () {
 					$('#lookupOption').focus()
+					$('.option_search').on('click', function(e) {
+						var attribute_Id = $(lookupBtn).prev().attr('id');
+						var option = $('#lookupOption').val();
+						$.ajax({
+							method: 'post',
+							url: 'http://localhost<?=$this->url('get_work_details')?>',
+							data: {
+								option: option,
+								attribute_Id: attribute_Id
+							},
+							dataType: "json", 
+							cache: false,
+							success: function(data)
+							{
+								$(".option_results",context).html('');
+								$(".option_results",context).append('<p>Search Results</p>');
+								$.each(data.attribute_options, function (key, val) {
+									$(".option_results",context).append('<p><a href="'+ val.title +'" class="link_options">' + val.title + '</a></p>');
+									//alert(val.title);
+								})
+								//$("#pubLocation", context).html('');
+								//$.each(data.publoc, function (key, val) {
+								//$("#pubLocation", context).append('<option id="' + val.id + '">' + val.label + '</option>');
+								//})
+							},
+							error: function () { 
+								//$("#pubLocation", context).html('<option id="-1">none available</option>');
+							}
+						});	
+						$(context).on("click", ".link_options", function(e) {
+							//alert("log something");
+							var linkval = $(this).attr('href');
+							$(".Attributeoption").val() = linkval;
+							console.log($(".Attributeoption").val());
+							//console.log(linkval);
+							return false;
+						});
+					});
 				});
 				return false;
 			});
@@ -432,10 +470,16 @@ $(document).ready(function () {
 					<input type="text" class="form-control" name="lookup_Option" id="lookupOption" />
 				</div>
 				</div>
+				<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+				<button type="button" class="btn btn-primary option_search" id="option_search">Search</button>
+				</div>
+				</div>
+				<div class="option_results">
+				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" id="option_search">Search</button>
 			</div>
 		</div>
 		</div>
