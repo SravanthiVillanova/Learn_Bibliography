@@ -105,8 +105,6 @@ function bindWorkTypeAttributes(context)
         cache: false,
         success: function(data)
         {
-			//var count = 1;
-			//alert('heloo');
 			$.each(data.worktype_attribute, function (key, val) {
 				//alert(val.id + ' ' + val.field + ' ' + val.type);
                 //$("#pubLocation", context).append('<option id="' + val.id + '">' + val.label + '</option>');
@@ -158,13 +156,15 @@ function bindWorkTypeAttributes(context)
 				//count = count + 1;
             })			
 			$(".optionLookupBtn").on('click', function(e){
-				//alert("hello");
 				// show Modal
 				var lookupBtn = this;
+				var attr_option_lookup = $(lookupBtn).prev();
 				$("#optionsLookup").modal('show');
 				$('#optionsLookup').on('shown.bs.modal', function () {
 					$('#lookupOption').focus()
 					$('.option_search').on('click', function(e) {
+						
+						//console.log(attr_option_lookup);
 						var attribute_Id = $(lookupBtn).prev().attr('id');
 						var option = $('#lookupOption').val();
 						$.ajax({
@@ -182,23 +182,18 @@ function bindWorkTypeAttributes(context)
 								$(".option_results",context).append('<p>Search Results</p>');
 								$.each(data.attribute_options, function (key, val) {
 									$(".option_results",context).append('<p><a href="'+ val.title +'" class="link_options">' + val.title + '</a></p>');
-									//alert(val.title);
 								})
-								//$("#pubLocation", context).html('');
-								//$.each(data.publoc, function (key, val) {
-								//$("#pubLocation", context).append('<option id="' + val.id + '">' + val.label + '</option>');
-								//})
 							},
 							error: function () { 
-								//$("#pubLocation", context).html('<option id="-1">none available</option>');
+								$(".option_results",context).append('<p>None available</p>');
 							}
 						});	
 						$(context).on("click", ".link_options", function(e) {
-							//alert("log something");
 							var linkval = $(this).attr('href');
-							$(".Attributeoption").val() = linkval;
-							console.log($(".Attributeoption").val());
-							//console.log(linkval);
+							attr_option_lookup.val(linkval);
+							$('#lookupOption').val('');
+							$(".option_results",context).html('');
+							$('.option_lookup_close').trigger('click');							
 							return false;
 						});
 					});
@@ -207,8 +202,8 @@ function bindWorkTypeAttributes(context)
 			});
 		},
 		error: function (data) { 
-            //$("#pubLocation", context).html('<option id="-1">none available</option>');
-			alert('error');
+            $("#Citation", context).html('<p>No Options</p>');
+			//alert('error');
         }
     });
 	return false;
@@ -479,7 +474,7 @@ $(document).ready(function () {
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-default option_lookup_close" data-dismiss="modal">Close</button>
 			</div>
 		</div>
 		</div>
