@@ -94,6 +94,8 @@ function bindAgentAutocomplete(context)
 //WorkType Autocomplete
 function bindWorkTypeAttributes(context)
 {
+	$('#Citation *').not('.ig').remove();
+	//$(".content_box a").not(".button")
 	var worktype_Id = $('#work_type').val();
 	$.ajax({
         method: 'post',
@@ -106,27 +108,25 @@ function bindWorkTypeAttributes(context)
         success: function(data)
         {
 			$.each(data.worktype_attribute, function (key, val) {
-				//alert(val.id + ' ' + val.field + ' ' + val.type);
-                //$("#pubLocation", context).append('<option id="' + val.id + '">' + val.label + '</option>');
-				$("<div>").attr("class","form-group optiondiv").attr("id","optiondiv").appendTo("#Citation");
-				$("<label>").attr("class","col-xs-2 control-label").text(val.field).appendTo("#Citation");
-				$("</label>").appendTo("#Citation");
-				$("<div>").appendTo("#Citation");
+				$("<div />").attr("class","form-group optiondiv").attr("id","optiondiv").appendTo("#Citation");
+				$("<label />").attr("class","col-xs-2 control-label").text(val.field).appendTo("#Citation");
+				//$("</label>").appendTo("#divforoptions");
+				$("<div />").attr("id","optionfieldsdiv").appendTo("#Citation");
 				// append input control at end of form
 				if(val.type == 'Textarea')
 				{
-					$("<textarea>")
-						.attr("class","form-control autoc")
+					$("<textarea />")
+						.attr("class","form-control")
 						.attr("id", val.field)
 						.attr("name", val.field)
 						.appendTo("#Citation");
-					$("</textarea>").appendTo("#Citation");
+					//$("</textarea>").appendTo("#divforoptions");
 				}
 				if(val.type == 'Text')
 				{
 					$("<input />")
 						.attr("type","text")
-						.attr("class","form-control autoc")
+						.attr("class","form-control")
 						.attr("id", val.field)
 						.attr("name", val.field)
 						.appendTo("#Citation");
@@ -137,7 +137,7 @@ function bindWorkTypeAttributes(context)
 					var container = $('<div/>');
 					$("<input />")
 						.attr("type","text")
-						.attr("class","form-control autoc Attributeoption")
+						.attr("class","form-control Attributeoption")
 						.attr("id", val.field + ':' +val.id)
 						.attr("name", val.field)
 						.appendTo(container);
@@ -151,19 +151,15 @@ function bindWorkTypeAttributes(context)
 						.appendTo(container);	
 					container.appendTo('#Citation');
 				}	
-				$("</div>").appendTo("#Citation");
-				$("</div>").appendTo("#Citation");
-				//count = count + 1;
             })			
 			$(".optionLookupBtn").on('click', function(e){
 				// show Modal
 				var lookupBtn = this;
-				var attr_option_lookup = $(lookupBtn).prev();
+				attr_option_lookup = $(lookupBtn).prev();
 				$("#optionsLookup").modal('show');
 				$('#optionsLookup').on('shown.bs.modal', function () {
 					$('#lookupOption').focus()
-					$('.option_search').on('click', function(e) {
-						
+					$('.option_search').on('click', function(e) {					
 						//console.log(attr_option_lookup);
 						var attribute_Id = $(lookupBtn).prev().attr('id');
 						var option = $('#lookupOption').val();
@@ -192,8 +188,8 @@ function bindWorkTypeAttributes(context)
 							var linkval = $(this).attr('href');
 							attr_option_lookup.val(linkval);
 							$('#lookupOption').val('');
-							$(".option_results",context).html('');
-							$('.option_lookup_close').trigger('click');							
+							$(".option_results",context).html('');	
+							$('.option_lookup_close').trigger('click');												
 							return false;
 						});
 					});
@@ -259,12 +255,14 @@ $(document).ready(function () {
         $(this).parent().parent().remove();
     });
 	//get attributes for selected worktypes
-	$('#work_type',document).on('change', function() {
-		//var worktype_Id = ui.item.id;
-		bindWorkTypeAttributes(document);
+	$('#work_type',document).on('change', function() {	
+		bindWorkTypeAttributes(document);		
+	});
+	//classification
+	$('#subject_tree',document).on('change', function(){
+		folder_Id = $('#subject_tree',document).val();
 		
 	});
-	// Attach Button click event listener 
     
 });
 </script>
@@ -338,7 +336,7 @@ $(document).ready(function () {
 			<label class="col-xs-2 control-label">Status: </label>
 			<div class="col-xs-10">
 				<div class="radio">
-					<label class="radio"><input type="radio" id="selectworkstatus" name="select_workstatus" value="00">In Progress</label>
+					<label class="radio"><input checked type="radio" id="selectworkstatus" name="select_workstatus" value="00">In Progress</label>
 					<label class="radio"><input type="radio" id="selectworkstatus" name="select_workstatus" value="0">Pending Review</label>
 					<label class="radio"><input type="radio" id="selectworkstatus" name="select_workstatus" value="2">Unseen Source Doc</label>
 					<label class="radio"><input type="radio" id="selectworkstatus" name="select_workstatus" value="1">Complete</label>
@@ -350,7 +348,7 @@ $(document).ready(function () {
 		<div class="form-group" id="class_grp">
 			<label class="col-xs-2 control-label">Subject Tree: </label>
 			<div class="col-xs-5">
-				<select class="form-control subject_tree" name="subject_tree">
+				<select class="form-control subject_tree" name="subject_tree" id="subject_tree">
 				<option value=""></option>
 				<?php
 					//fetch worktypes
@@ -450,31 +448,33 @@ $(document).ready(function () {
 		</div>
 	</div>
 	<div class="tab-pane" id="Citation">
+		<!--<div class="form-group" id="divforoptions">
+		</div>-->
 		<!-- Work Type Attribute Options Lookup -->
-		<div class="modal fade" id="optionsLookup" role="dialog">
-		<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title" id="myModalLabel">Lookup</h4>
+		<div class="modal fade ig" id="optionsLookup" role="dialog">
+		<div class="modal-dialog ig">
+		<div class="modal-content ig">
+			<div class="modal-header ig">
+				<button type="button" class="close ig" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title ig" id="myModalLabel">Lookup</h4>
 			</div>
-			<div class="modal-body">
-				<div class="form-group">
-				<label class="col-xs-2 control-label">Title: </label>
-				<div class="col-xs-10">
-					<input type="text" class="form-control" name="lookup_Option" id="lookupOption" />
+			<div class="modal-body ig">
+				<div class="form-group ig">
+				<label class="col-xs-2 control-label ig">Title: </label>
+				<div class="col-xs-10 ig">
+					<input type="text" class="form-control ig" name="lookup_Option" id="lookupOption" />
 				</div>
 				</div>
-				<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
-				<button type="button" class="btn btn-primary option_search" id="option_search">Search</button>
+				<div class="form-group ig">
+				<div class="col-sm-offset-2 col-sm-10 ig">
+				<button type="button" class="btn btn-primary option_search ig" id="option_search">Search</button>
 				</div>
 				</div>
-				<div class="option_results">
+				<div class="option_results ig">
 				</div>
 			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default option_lookup_close" data-dismiss="modal">Close</button>
+			<div class="modal-footer ignore ig">
+				<button type="button" class="btn btn-default option_lookup_close ig" data-dismiss="modal">Close</button>
 			</div>
 		</div>
 		</div>
