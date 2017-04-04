@@ -116,7 +116,8 @@ class ManageWorkAction
 		if(isset($post['action']))
 		{
 			if($post['action'] == 'work_new') {
-			var_dump($post); //die();
+			//var_dump($post); //die();
+			echo "<pre>";print_r($post);echo "</pre>"; die();
 			}
 		}
 		

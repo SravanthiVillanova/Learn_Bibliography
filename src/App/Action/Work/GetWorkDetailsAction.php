@@ -90,8 +90,6 @@ class GetWorkDetailsAction
 		}
 		if(isset($_POST['publisher_Id']))
 		{
-			//$ddata = array();
-			//die($_POST['publisher_Id']);
 			$pub_id = $_POST['publisher_Id'];
 			$table = new \App\Db\Table\PublisherLocation($this->adapter);
 			$rows = $table->getPublisherLocations($pub_id);
@@ -99,11 +97,9 @@ class GetWorkDetailsAction
 				$rows[$i]['value'] = $row['location'];
 				$rows[$i]['label'] = $row['location'];
 				$rows[$i]['id'] = $row['id'];
-				//$ddata[] = $rows;
 			}
 			
 			$output = array("publoc" => $rows,);
-			//var_dump($rows); die();
 			echo json_encode($output);
 			exit;
 		}
@@ -137,6 +133,15 @@ class GetWorkDetailsAction
 						$rows[$i]['organization_name'] = $row['organization_name'];
 					}*/
 			$output = array("attribute_options" => $rows,);
+			echo json_encode($output);
+			exit;
+		}
+		if(isset($_POST['folder_Id']))
+		{
+			$fl_id = $_POST['folder_Id'];
+			$table = new \App\Db\Table\Folder($this->adapter);
+			$rows = $table->getChild($fl_id);
+			$output = array("folder_children" => $rows,);
 			echo json_encode($output);
 			exit;
 		}

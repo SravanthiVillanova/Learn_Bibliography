@@ -4,7 +4,13 @@
 		$table = new \App\Db\Table\WorkType($this->adapter);
 		$paginator = $table->fetchAllWorkTypes();
 		$itemsCount = $paginator->getTotalItemCount();
-		$paginator->setItemCountPerPage($itemsCount);									
+		$paginator->setItemCountPerPage($itemsCount);	
+
+		//fetch agent types
+		$table = new \App\Db\Table\AgentType($this->adapter);
+		$paginator_agtype = $table->fetchAgentTypes();
+		$itemsCount = $paginator->getTotalItemCount();
+		$paginator_agtype->setItemCountPerPage($itemsCount);	
 ?>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
@@ -204,17 +210,56 @@ function bindWorkTypeAttributes(context)
     });
 	return false;
 }
-$(document).ready(function () {
+_select = '';
+//$('<select class="form-control folder_child" name="folder_child"/>');
+function bindClassificationFolder(context)
+{
+	folder_Id = $(_select,context).val();
+	alert('from func ' + folder_Id);
+	$.ajax({
+		method: 'post',
+		url: 'http://localhost<?=$this->url('get_work_details')?>',
+		data: {
+			folder_Id: folder_Id
+		},
+		dataType: "json", 
+		cache: false,
+		success: function(data)
+		{
+			//alert('func, length is ' + data.folder_children.length);
+			if(data.folder_children.length > 0)
+			{
+				_select = $('<select class="form-control folder_child" name="folder_child"/>');
+				to_append = '';
+				$.each(data.folder_children, function (key, val) {
+					to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+				});
+				_select.append($('<option />'));
+				_select.append(to_append);
+				_select.appendTo('#Classification');
+				_select.on('change',function(){
+					bindClassificationFolder(document);
+				});
+			}
+		},
+		error: function (data) { 
+			$("#Classification", context).html('<p>No Options</p>');
+						//alert('error');
+		}
+	});
+	return false;
+}
+$(document).ready(function () {	
 	//Publisher
 	bindPublisherAutocomplete(document);
 	//add publisher rows
 	$("#pub_add").click(function(){
-		var pub_row = $('<tr><input type="hidden" name="pub_id" id="pubId" value="">'+
-							'<td><input type="text" class="form-control" name="pub_name" id="pubName" placeholder="none" /></td>'+
-							'<td><input type="text" class="form-control" name="pub_yrFrom" id="pubyrFrom"/></td>'+
-							'<td><input type="text" class="form-control" name="pub_yrTo" id="pubyrTo" /></td>'+
+		var pub_row = $('<tr><input type="hidden" name="pub_id[]" id="pubId" value="">'+
+							'<td><input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" /></td>'+
+							'<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"/></td>'+
+							'<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" /></td>'+
 							'<!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->'+
-							'<td><select class="form-control pub_locations" name="pub_location" id="pubLocation"><option value=""></option></select></td>'+
+							'<td><select class="form-control pub_locations" name="pub_location[]" id="pubLocation"><option value=""></option></select></td>'+
 							'<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>'+
 							'</tr>');				
 							
@@ -229,20 +274,20 @@ $(document).ready(function () {
 	//agent
 	bindAgentAutocomplete(document);
 	$("#agent_add").click(function(){
-		var agent_row = $('<tr><td><input type="hidden" name="agent_id" id="agentId[]" value="">'+
-						'<select class="form-control agent_type" name="agent_type" id="agent_type">'+
+		var agent_row = $('<tr><td><input type="hidden" name="agent_id[]" id="agentId" value="">'+
+						'<select class="form-control agent_type" name="agent_type[]" id="agent_type">'+
 						'<option value=""></option>'+
 						<?php
-						foreach($paginator as $row) :
+						foreach($paginator_agtype as $row) :
 						?>
 						'<option value="<?=$row['id']?>"><?php echo $row['type']; ?></option>'+						
 						<?php endforeach; ?>
 						'</select>'+
 						'</td>'+
-						'<td><input type="text" class="form-control" name="agent_FirstName" id="agent_FirstName" /></td>'+
-						'<td><input type="text" class="form-control" name="agent_LastName" id="agent_LastName" /></td>'+
-						'<td><input type="text" class="form-control" name="agent_AlternateName" id="agent_AlternateName" /></td>'+
-						'<td><input type="text" class="form-control" name="agent_OrganizationName" id="agent_OrganizationName" /></td>'+
+						'<td><input type="text" class="form-control" name="agent_FirstName[]" id="agent_FirstName" /></td>'+
+						'<td><input type="text" class="form-control" name="agent_LastName[]" id="agent_LastName" /></td>'+
+						'<td><input type="text" class="form-control" name="agent_AlternateName[]" id="agent_AlternateName" /></td>'+
+						'<td><input type="text" class="form-control" name="agent_OrganizationName[]" id="agent_OrganizationName" /></td>'+
 						'<td><button type="submit" class="btn btn-default" name="agent_remove" id="agent_remove" value="Remove">Remove</button></td>'+
 						'</tr>');				
 							
@@ -260,15 +305,42 @@ $(document).ready(function () {
 	});
 	//classification
 	$('#subject_tree',document).on('change', function(){
+		//bindClassificationFolder(document);
 		folder_Id = $('#subject_tree',document).val();
-		
+		$.ajax({
+        method: 'post',
+        url: 'http://localhost<?=$this->url('get_work_details')?>',
+		data: {
+			folder_Id: folder_Id
+		},
+		dataType: "json", 
+        cache: false,
+        success: function(data)
+        {
+			_select = $('<select class="form-control folder_child" name="folder_child"/>');
+			to_append = '';
+			$.each(data.folder_children, function (key, val) {
+				to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+			});
+			_select.append($('<option />'));
+			_select.append(to_append);
+			_select.appendTo('#Classification');
+			_select.on('change',function(){
+				bindClassificationFolder(document);
+			});
+		},
+		error: function (data) { 
+            $("#Classification", context).html('<p>No Options</p>');
+			//alert('error');
+        }
+		});
+	//return false;
 	});
-    
 });
 </script>
 <div class="col-md-7">
-    <form id="personal-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
-	<input type="hidden" name="action" value="work_new">
+<form id="personal-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
+<input type="hidden" name="action" value="work_new">
 <div class="tabbable">
   <ul class="nav nav-tabs">
     <li class="active">
@@ -374,13 +446,13 @@ $(document).ready(function () {
 		</thead>
 		<tbody>
 		<tr>
-			<input type="hidden" name="pub_id" id="pubId[]" value="">
-			<td><input type="text" class="form-control" name="pub_name" id="pubName" placeholder="none" /></td>
-			<td><input type="text" class="form-control" name="pub_yrFrom" id="pubyrFrom"/></td>
-			<td><input type="text" class="form-control" name="pub_yrTo" id="pubyrTo" /></td>
+			<input type="hidden" name="pub_id[]" id="pubId" value="">
+			<td><input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" /></td>
+			<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"/></td>
+			<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" /></td>
 			<!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->
 			<td>
-				<select class="form-control pub_locations" name="pub_location" id="pubLocation">
+				<select class="form-control pub_locations" name="pub_location[]" id="pubLocation">
 				<option value=""></option>				
 				</select>
 			</td>
@@ -405,23 +477,23 @@ $(document).ready(function () {
 		<tbody>
 		<tr>
 			<td>
-				<input type="hidden" name="agent_id" id="agentId[]" value="">
-				<select class="form-control agent_type" name="agent_type" id="agent_type">
+				<input type="hidden" name="agent_id[]" id="agentId" value="">
+				<select class="form-control agent_type" name="agent_type[]" id="agent_type">
 				<option value=""></option>
 				<?php
 					//fetch agenttypes
-					$table = new \App\Db\Table\AgentType($this->adapter);
-					$paginator = $table->fetchAgentTypes();
-					foreach($paginator as $row) :
+					//$table = new \App\Db\Table\AgentType($this->adapter);
+					//$paginator = $table->fetchAgentTypes();
+					foreach($paginator_agtype as $row) :
 				?>
 				<option value="<?=$row['id']?>"><?php echo $row['type']; ?></option>						
 				<?php endforeach; ?>
 				</select>
 			</td>
-			<td><input type="text" class="form-control" name="agent_FirstName" id="agent_FirstName" /></td>
-			<td><input type="text" class="form-control" name="agent_LastName" id="agent_LastName" /></td>
-			<td><input type="text" class="form-control" name="agent_AlternateName" id="agent_AlternateName" /></td>
-			<td><input type="text" class="form-control" name="agent_OrganizationName" id="agent_OrganizationName" /></td>
+			<td><input type="text" class="form-control" name="agent_FirstName[]" id="agent_FirstName" /></td>
+			<td><input type="text" class="form-control" name="agent_LastName[]" id="agent_LastName" /></td>
+			<td><input type="text" class="form-control" name="agent_AlternateName[]" id="agent_AlternateName" /></td>
+			<td><input type="text" class="form-control" name="agent_OrganizationName[]" id="agent_OrganizationName" /></td>
 			<td><button type="submit" class="btn btn-default" name="agent_remove" id="agent_remove" value="Remove">Remove</button></td>
 		</tr>
 		</tbody>
