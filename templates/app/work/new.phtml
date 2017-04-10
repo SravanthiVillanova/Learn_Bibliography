@@ -11,6 +11,8 @@
 		$paginator_agtype = $table->fetchAgentTypes();
 		$itemsCount = $paginator->getTotalItemCount();
 		$paginator_agtype->setItemCountPerPage($itemsCount);	
+		
+		
 ?>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
@@ -50,6 +52,7 @@ function bindPublisherAutocomplete(context) {
 			$("#pubLocation", context).html('');
 			$.each(data.publoc, function (key, val) {
                 $("#pubLocation", context).append('<option id="' + val.id + '">' + val.label + '</option>');
+				$("#publoc_id", context).val(publisher_Id + ":" + val.id);
             })
 		},
 		error: function () { 
@@ -254,11 +257,12 @@ $(document).ready(function () {
 	bindPublisherAutocomplete(document);
 	//add publisher rows
 	$("#pub_add").click(function(){
-		var pub_row = $('<tr><input type="hidden" name="pub_id[]" id="pubId" value="">'+
+		var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="">'+
 							'<td><input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" /></td>'+
 							'<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"/></td>'+
 							'<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" /></td>'+
 							'<!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->'+
+							'<input type="hidden" name="publoc_id[]" id="publoc_id" value="">'+
 							'<td><select class="form-control pub_locations" name="pub_location[]" id="pubLocation"><option value=""></option></select></td>'+
 							'<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>'+
 							'</tr>');				
@@ -341,6 +345,11 @@ $(document).ready(function () {
 <div class="col-md-7">
 <form id="personal-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
 <input type="hidden" name="action" value="work_new">
+<?php 
+	//get user
+	$user = $this->isUser()->getUser();
+?>
+<input type="hidden" name="user" id="user" value="<?=$user?>">
 <div class="tabbable">
   <ul class="nav nav-tabs">
     <li class="active">
@@ -361,10 +370,10 @@ $(document).ready(function () {
   </ul>
   <div class="tab-content">
     <div class="tab-pane active" id="General">      
-		<div class="form-group">
+		<div class="form-group required">
 			<label class="col-xs-2 control-label">Title: </label>
 			<div class="col-xs-10">
-				<input type="text" class="form-control" name="new_worktitle" id="newworktitle" />
+				<input type="text" class="form-control" name="new_worktitle" id="newworktitle" required="true"/>
 			</div>
 		</div>
 		<div class="form-group">
@@ -382,7 +391,7 @@ $(document).ready(function () {
 		<div class="form-group">
 			<label class="col-xs-2 control-label">Description: </label>
 			<div class="col-xs-10">
-				<textarea class="form-control" placeholder="Message"></textarea>
+				<textarea class="form-control" placeholder="Message" name="description" id="description"></textarea>
 			</div>
 		</div>
 		<div class="form-group">
@@ -436,7 +445,7 @@ $(document).ready(function () {
     </div>  
 	<div class="tab-pane" id="Publisher">
 		<div class="form-group">
-		<table class="table table-striped table-condensed" style="font-size:10pt;" id="pub_table">
+		<table class="table table-striped table-condensed" name="pub_table" style="font-size:10pt;" id="pub_table">
         <thead>
 			<th>Publisher</th>
 			<th>Year From</th>
@@ -445,7 +454,7 @@ $(document).ready(function () {
 			<th>Remove</th>
 		</thead>
 		<tbody>
-		<tr>
+		<tr name="pub_row[]">
 			<input type="hidden" name="pub_id[]" id="pubId" value="">
 			<td><input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" /></td>
 			<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"/></td>

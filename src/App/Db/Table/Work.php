@@ -201,4 +201,27 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         $paginatorAdapter = new DbSelect($select, $this->adapter);
         return new Paginator($paginatorAdapter);
     }
+	
+	public function insertRecords($type_id,$title,$subtitle,$paralleltitle,$description,$create_date,$create_user_id,$status,$pub_yrFrom)
+	{
+		$this->insert(
+            [
+			'work_id' => NULL,
+            'type_id' => $type_id,
+			'title' => $title,
+			'subtitle' => $subtitle,
+			'paralleltitle' => $paralleltitle,
+			'description' => $description,
+			'create_date' => $create_date,
+			'create_user_id' => $create_user_id,
+			'modify_date' => '0000-00-00 00:00:00',
+			'modify_user_id' => NULL,
+			'status' => $status,
+			'publish_year' => $pub_yrFrom,
+			'publish_month' => NULL,
+            ]
+        );
+		$id = $this->getLastInsertValue();
+		return $id;
+	}
 }

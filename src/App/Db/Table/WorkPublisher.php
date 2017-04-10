@@ -112,4 +112,22 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         //var_dump($rows);
         //echo "done";
     }
+	
+	public function insertRecords($wk_id,$pub_id,$pub_yr,$pub_yrEnd)
+	{
+		for($i=0;$i<count($pub_id);$i++
+		{
+			$this->insert(
+				[
+				'work_id' => $wk_id,
+				'publisher_id' =>$pub_id[i],
+				'location_id' => NULL,
+				'publish_month' => 0,
+				'publish_year' => $pub_yr[i],
+				'publish_month_end' => NULL,
+				'publish_year_end' => $pub_yrEnd[i],
+				]
+			);
+		}
+	}
 }

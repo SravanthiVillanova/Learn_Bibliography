@@ -105,4 +105,14 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
         endforeach;
         return $workIds;
     } 
+	
+	public function insertRecords($wk_id,$folder_id)
+	{
+		$this->insert(
+			[
+			'work_id' => $wk_id,
+			'folder_id' => $folder_id,
+			]
+		);
+	}
 }

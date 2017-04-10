@@ -37,4 +37,11 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
 			return true;
 		return false;
 	}
+	
+	public function getUser()
+	{
+		if($this->session->id != NULL)
+			return $this->session->id;
+		return null;
+	}
 }

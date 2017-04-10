@@ -73,6 +73,28 @@ class ManageWorkAction
 				return $paginator;
 			}
 		}
+		if (!empty($post['action'])) {
+            //add a new work type
+            if ($post['action'] == "work_new") {
+                if ($post['submit_save'] == "Save") {
+					/*if($post['user'] != null)
+					{
+						echo $post['user'];die();
+					}*/
+					//echo "<pre>";print_r($post);echo "</pre>"; die();
+					//insert General(work)
+					$table = new \App\Db\Table\Work($this->adapter);
+					$wk_id = $table->insertRecords($post['work_type'],$post['new_worktitle'],$post['new_worksubtitle'],$post['new_workparalleltitle'],
+										  $post['description'],date('Y-m-d H:i:s'),$post['user'],$post['select_workstatus'],$post['pub_yrFrom']);
+					//insert classification(work_folder)
+					$table = new \App\Db\Table\Work_Folder($this->adapter);
+					$table->insertRecords($wk_id,$post['folder_child']);
+					//insert Publisher(work_publisher)
+					$table = new \App\Db\Table\WorkPublisher($this->adapter);
+					$table->insertRecords($wk_id,$post['pub_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
+				}
+			}
+		}
 		/*if(isset($post['get_parent']))
 		{
 			var_dump("selected is " . $post['get_parent']);
@@ -113,13 +135,13 @@ class ManageWorkAction
 			);			
 		}
 		
-		if(isset($post['action']))
+		/*if(isset($post['action']))
 		{
 			if($post['action'] == 'work_new') {
 			//var_dump($post); //die();
 			echo "<pre>";print_r($post);echo "</pre>"; die();
 			}
-		}
+		}*/
 		
         $query = $request->getqueryParams();
 		if($query['action'] == 'review') {
