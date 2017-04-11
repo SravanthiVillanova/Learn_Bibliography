@@ -39,6 +39,8 @@ function bindPublisherAutocomplete(context) {
 	});	
 	$('#pubName', context).on('autocompleteselect', function (e, ui) {
 		var publisher_Id = ui.item.id;
+		i=0;
+		//arr = [];
 		$.ajax({
         method: 'post',
         url: 'http://localhost<?=$this->url('get_work_details')?>',
@@ -52,8 +54,12 @@ function bindPublisherAutocomplete(context) {
 			$("#pubLocation", context).html('');
 			$.each(data.publoc, function (key, val) {
                 $("#pubLocation", context).append('<option id="' + val.id + '">' + val.label + '</option>');
-				$("#publoc_id", context).val(publisher_Id + ":" + val.id);
+				$("#publoc_id", context).eq(i).val(val.id);
+				//arr.push(val.id);
+				i++;
             })
+			//console.log(arr);
+			//$("#publoc_id", context) = arr;
 		},
 		error: function () { 
             $("#pubLocation", context).html('<option id="-1">none available</option>');
@@ -116,7 +122,7 @@ function bindWorkTypeAttributes(context)
         cache: false,
         success: function(data)
         {
-			$.each(data.worktype_attribute, function (key, val) {
+			$.each(data.worktype_attribute, function (key, val) {				
 				$("<div />").attr("class","form-group optiondiv").attr("id","optiondiv").appendTo("#Citation");
 				$("<label />").attr("class","col-xs-2 control-label").text(val.field).appendTo("#Citation");
 				//$("</label>").appendTo("#divforoptions");
@@ -127,7 +133,7 @@ function bindWorkTypeAttributes(context)
 					$("<textarea />")
 						.attr("class","form-control")
 						.attr("id", val.field)
-						.attr("name", val.field)
+						.attr("name", val.field + ':' +val.id)
 						.appendTo("#Citation");
 					//$("</textarea>").appendTo("#divforoptions");
 				}
@@ -137,9 +143,8 @@ function bindWorkTypeAttributes(context)
 						.attr("type","text")
 						.attr("class","form-control")
 						.attr("id", val.field)
-						.attr("name", val.field)
+						.attr("name", val.field + ':' + val.id)
 						.appendTo("#Citation");
-
 				}				
 				if(val.type == 'Select')
 				{
@@ -148,7 +153,7 @@ function bindWorkTypeAttributes(context)
 						.attr("type","text")
 						.attr("class","form-control Attributeoption")
 						.attr("id", val.field + ':' +val.id)
-						.attr("name", val.field)
+						.attr("name", val.field + ':' +val.id)
 						.appendTo(container);
 					$("<button data-toggle='modal' data-target='#pubLookup'/>")
 						.attr("class","btn btn-default optionLookupBtn")
@@ -397,7 +402,7 @@ $(document).ready(function () {
 		<div class="form-group">
 			<label class="col-xs-2 control-label">Type: </label>
 			<div class="col-xs-10">
-				<select class="form-control" name="work_type" id="work_type">
+				<select class="form-control" name="work_type" id="work_type" required="true">
 				<option value="">Choose Work Type</option>					
 				<?php
 					foreach($paginator as $row) :
@@ -460,6 +465,7 @@ $(document).ready(function () {
 			<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"/></td>
 			<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" /></td>
 			<!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->
+			<input type="hidden" name="publoc_id[]" id="publoc_id" value="">
 			<td>
 				<select class="form-control pub_locations" name="pub_location[]" id="pubLocation">
 				<option value=""></option>				

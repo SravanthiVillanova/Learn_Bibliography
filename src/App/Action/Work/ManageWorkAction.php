@@ -81,23 +81,49 @@ class ManageWorkAction
 					{
 						echo $post['user'];die();
 					}*/
-					//echo "<pre>";print_r($post);echo "</pre>"; die();
+					echo "<pre>";print_r($post);echo "</pre>"; 
+					foreach ($post as $key => $value) {
+						if(preg_match("/^\w+\:\d+$/", $key))
+						{
+							echo 'matched key is ' . $key;
+						}
+						
+					}
+					//echo "pub count is " . count($post['pub_id']);
+					//echo "agent count is " . count($post['agent_id']);
+					die();
 					//insert General(work)
-					$table = new \App\Db\Table\Work($this->adapter);
+					/*$table = new \App\Db\Table\Work($this->adapter);
 					$wk_id = $table->insertRecords($post['work_type'],$post['new_worktitle'],$post['new_worksubtitle'],$post['new_workparalleltitle'],
 										  $post['description'],date('Y-m-d H:i:s'),$post['user'],$post['select_workstatus'],$post['pub_yrFrom']);
 					//insert classification(work_folder)
-					$table = new \App\Db\Table\Work_Folder($this->adapter);
-					$table->insertRecords($wk_id,$post['folder_child']);
+					if(isset($post['folder_child']))
+					{
+						$table = new \App\Db\Table\Work_Folder($this->adapter);
+						$table->insertRecords($wk_id,$post['folder_child']);
+					}
 					//insert Publisher(work_publisher)
-					$table = new \App\Db\Table\WorkPublisher($this->adapter);
-					$table->insertRecords($wk_id,$post['pub_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
+					if($post['pub_id'][0] != NULL)
+					{
+						//echo "pub count is " . count($post['pub_id']); die();
+						$table = new \App\Db\Table\WorkPublisher($this->adapter);
+						$table->insertRecords($wk_id,$post['pub_id'],$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
+					}
+					//insert Agent(work_agent)
+					if(count($post['agent_id']) > 0)
+					{
+						echo "agent count is " . count($post['agent_id']);
+						$table = new \App\Db\Table\WorkAgent($this->adapter);
+						$table->insertRecords($wk_id,$post['agent_id'],$post['agent_type']);
+					}
+					//map work to citation(work_workattribute)*/
+					
+					
 				}
 			}
 		}
 		/*if(isset($post['get_parent']))
 		{
-			var_dump("selected is " . $post['get_parent']);
 			$table = new \App\Db\Table\Folder($this->adapter);
 			$rows = $table->getChild($post['get_parent']);
 			return $rows;
@@ -138,19 +164,20 @@ class ManageWorkAction
 		/*if(isset($post['action']))
 		{
 			if($post['action'] == 'work_new') {
-			//var_dump($post); //die();
-			echo "<pre>";print_r($post);echo "</pre>"; die();
 			}
 		}*/
 		
         $query = $request->getqueryParams();
-		if($query['action'] == 'review') {
-			$table = new \App\Db\Table\Work($this->adapter);
-			$characs = $table->findInitialLetterReview();
-		} 
-		else if ($query['action'] == 'classify') {
-			$table = new \App\Db\Table\Work($this->adapter);
-			$characs = $table->findInitialLetterClassify();
+		if(isset($query['action']))
+		{
+			if($query['action'] == 'review') {
+				$table = new \App\Db\Table\Work($this->adapter);
+				$characs = $table->findInitialLetterReview();
+			} 
+			else if ($query['action'] == 'classify') {
+				$table = new \App\Db\Table\Work($this->adapter);
+				$characs = $table->findInitialLetterClassify();
+			}
 		}
 		else 
 		{
@@ -206,7 +233,7 @@ class ManageWorkAction
         }
 
        if ($query['action'] == "review") {
-		   echo "entered if";
+		   //echo "entered if";
             return new HtmlResponse(
             $this->template->render(
                 'app::work::review_work',
@@ -224,7 +251,7 @@ class ManageWorkAction
 			);
         } 
 		else if ($query['action'] == "classify") {
-			echo "entered else if";
+			//echo "entered else if";
 			return new HtmlResponse(
             $this->template->render(
                 'app::work::classify_work',
@@ -242,7 +269,7 @@ class ManageWorkAction
 			);
 		}
 		else { 
-		echo "entered else";
+		//echo "entered else";
             return new HtmlResponse(
             $this->template->render(
                 'app::work::manage_work',

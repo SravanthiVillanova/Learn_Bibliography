@@ -81,4 +81,18 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
         $paginatorAdapter = new DbSelect($select, $this->adapter);
         return new Paginator($paginatorAdapter);
     }
+	
+	public function insertRecords($wk_id,$ag_id,$agt_id)
+	{
+		for($i=0;$i<count($ag_id);$i++)
+		{
+			$this->insert(
+				[
+				'work_id' => $wk_id,
+				'agent_id' =>$ag_id[$i],
+				'agenttype_id' => $agt_id[$i],
+				]
+			);
+		}
+	}
 }
