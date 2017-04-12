@@ -175,8 +175,10 @@ function bindWorkTypeAttributes(context)
 					$('#lookupOption').focus()
 					$('.option_search').on('click', function(e) {					
 						//console.log(attr_option_lookup);
-						var attribute_Id = $(lookupBtn).prev().attr('id');
+						//var attribute_Id = $(lookupBtn).prev().attr('id');
+						var attribute_Id = attr_option_lookup.attr('id');
 						var option = $('#lookupOption').val();
+						console.log(attribute_Id);
 						$.ajax({
 							method: 'post',
 							url: 'http://localhost<?=$this->url('get_work_details')?>',

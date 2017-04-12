@@ -161,4 +161,25 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         $rows = $this->select($callback)->toArray();
         return $rows;
 	}
+	
+	public function getOptionIds($wkat_id,$opt_title)
+	{
+		$rows = [];
+		for($i=0;$i<count($wkat_id);$i++)
+		{
+			$wkatid = $wkat_id[$i];
+			$opttitle = $opt_title[$i];
+			$callback = function ($select) use ($wkatid,$opttitle) {
+				$select->where->equalTo('workattribute_id', $wkatid);
+				$select->where->equalTo('title', $opttitle);
+			};	
+			
+			$rows = $rows + $this->select($callback)->toArray() + $rows;
+			echo "count is " . $i;
+			echo "<pre>";print_r($rows);echo "</pre>";
+		}
+		//echo "<pre>";print_r($rows);echo "</pre>";
+		//$rows = $this->select($callback)->toArray();
+        //return $rows;
+	}
 }

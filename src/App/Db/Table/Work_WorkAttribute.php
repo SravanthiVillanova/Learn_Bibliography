@@ -108,4 +108,19 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
             );
         }
     }
+	
+	public function insertRecords($wk_id,$wkat_opt)
+	{
+		for($i=0;$i<count($wkat_opt);$i++)
+		{
+			print_r($wkat_opt[$i]);
+			/*$this->insert(
+				[
+				'work_id' => $wk_id,
+				'workattribute_id' => $wkat_opt[$i]['workattribute_id'],
+				'value' => $wkat_opt[$i]['id'],
+				]
+			);*/
+		}
+	}
 }

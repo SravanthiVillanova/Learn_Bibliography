@@ -81,17 +81,10 @@ class ManageWorkAction
 					{
 						echo $post['user'];die();
 					}*/
-					echo "<pre>";print_r($post);echo "</pre>"; 
-					foreach ($post as $key => $value) {
-						if(preg_match("/^\w+\:\d+$/", $key))
-						{
-							echo 'matched key is ' . $key;
-						}
-						
-					}
+					//echo "<pre>";print_r($post);echo "</pre>"; 										
 					//echo "pub count is " . count($post['pub_id']);
 					//echo "agent count is " . count($post['agent_id']);
-					die();
+					//die();
 					//insert General(work)
 					/*$table = new \App\Db\Table\Work($this->adapter);
 					$wk_id = $table->insertRecords($post['work_type'],$post['new_worktitle'],$post['new_worksubtitle'],$post['new_workparalleltitle'],
@@ -110,15 +103,40 @@ class ManageWorkAction
 						$table->insertRecords($wk_id,$post['pub_id'],$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
 					}
 					//insert Agent(work_agent)
-					if(count($post['agent_id']) > 0)
+					if($post['agent_id'][0] != NULL)
 					{
 						echo "agent count is " . count($post['agent_id']);
 						$table = new \App\Db\Table\WorkAgent($this->adapter);
 						$table->insertRecords($wk_id,$post['agent_id'],$post['agent_type']);
+					}*/
+					//map work to citation(work_workattribute)
+					$opt_id = [];
+					$opt_val = [];
+					foreach ($post as $key => $value) {
+						if((preg_match("/^\w+\:\d+$/", $key)) && ($value != NULL))
+						{
+							//echo 'matched key is ' . $key . "<br />";
+							$opt_id[] = preg_replace("/^\w+\:/", "", $key) . "<br />";
+							$opt_val[] = $value;
+						}
+						
 					}
-					//map work to citation(work_workattribute)*/
-					
-					
+					echo "<pre>";print_r($opt_id);echo "</pre>"; 
+					echo "<pre>";print_r($opt_val);echo "</pre>"; 
+					if(count($opt_id) > 0)
+					{
+						$table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
+						$table->getOptionIds($opt_id,$opt_val);
+
+						//$list = array();new \RecursiveIteratorIterator(
+						//$it = new \RecursiveArrayIterator($rows);
+						//$list = iterator_to_array($it,true);
+						//echo "<pre>";print_r($rows);echo "</pre>"; 
+						
+						//$table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
+						//$table->insertRecords($wk_id,$rows);
+					}
+					die();
 				}
 			}
 		}
