@@ -133,7 +133,7 @@ function bindWorkTypeAttributes(context)
 					$("<textarea />")
 						.attr("class","form-control")
 						.attr("id", val.field)
-						.attr("name", val.field + ':' +val.id)
+						.attr("name", 'wkatid,' + val.id)
 						.appendTo("#Citation");
 					//$("</textarea>").appendTo("#divforoptions");
 				}
@@ -143,7 +143,7 @@ function bindWorkTypeAttributes(context)
 						.attr("type","text")
 						.attr("class","form-control")
 						.attr("id", val.field)
-						.attr("name", val.field + ':' + val.id)
+						.attr("name", 'wkatid,' + val.id)
 						.appendTo("#Citation");
 				}				
 				if(val.type == 'Select')
@@ -152,8 +152,8 @@ function bindWorkTypeAttributes(context)
 					$("<input />")
 						.attr("type","text")
 						.attr("class","form-control Attributeoption")
-						.attr("id", val.field + ':' +val.id)
-						.attr("name", val.field + ':' +val.id)
+						.attr("id", val.field + ':' + val.id)
+						.attr("name", 'wkatid,' + val.id)
 						.appendTo(container);
 					$("<button data-toggle='modal' data-target='#pubLookup'/>")
 						.attr("class","btn btn-default optionLookupBtn")
@@ -178,7 +178,7 @@ function bindWorkTypeAttributes(context)
 						//var attribute_Id = $(lookupBtn).prev().attr('id');
 						var attribute_Id = attr_option_lookup.attr('id');
 						var option = $('#lookupOption').val();
-						console.log(attribute_Id);
+						//console.log(attribute_Id);
 						$.ajax({
 							method: 'post',
 							url: 'http://localhost<?=$this->url('get_work_details')?>',
@@ -193,19 +193,22 @@ function bindWorkTypeAttributes(context)
 								$(".option_results",context).html('');
 								$(".option_results",context).append('<p>Search Results</p>');
 								$.each(data.attribute_options, function (key, val) {
-									$(".option_results",context).append('<p><a href="'+ val.title +'" class="link_options">' + val.title + '</a></p>');
+									$(".option_results",context).append('<p><a name="'+val.id+'" href="'+ val.title +'" class="link_options">' + val.title + '</a></p>');
 								})
 							},
 							error: function () { 
 								$(".option_results",context).append('<p>None available</p>');
 							}
 						});	
+						$(context).off('click', '.link_options');
 						$(context).on("click", ".link_options", function(e) {
 							var linkval = $(this).attr('href');
 							attr_option_lookup.val(linkval);
+							attr_option_lookup.attr('name', attr_option_lookup.attr('name') + 'optid,' + $(this).attr('name'));
+							console.log(attr_option_lookup.attr('name'));
 							$('#lookupOption').val('');
 							$(".option_results",context).html('');	
-							$('.option_lookup_close').trigger('click');												
+							$('.option_lookup_close').trigger('click');																
 							return false;
 						});
 					});
@@ -225,7 +228,8 @@ _select = '';
 function bindClassificationFolder(context)
 {
 	folder_Id = $(_select,context).val();
-	alert('from func ' + folder_Id);
+	//alert('from func ' + folder_Id);
+	console.log(_select.val());
 	$.ajax({
 		method: 'post',
 		url: 'http://localhost<?=$this->url('get_work_details')?>',
@@ -254,9 +258,9 @@ function bindClassificationFolder(context)
 		},
 		error: function (data) { 
 			$("#Classification", context).html('<p>No Options</p>');
-						//alert('error');
 		}
 	});
+	
 	return false;
 }
 $(document).ready(function () {	
@@ -342,10 +346,16 @@ $(document).ready(function () {
 		},
 		error: function (data) { 
             $("#Classification", context).html('<p>No Options</p>');
-			//alert('error');
-        }
+        }		
 		});
 	//return false;
+	});
+	$('#submit_save').on('click', function(){
+		if(_select.val() == '')
+		{
+			_select.val(folder_Id);
+		}
+		return true;
 	});
 });
 </script>
@@ -573,7 +583,7 @@ $(document).ready(function () {
 </div>
 <div class="form-group">
 	<div class="col-sm-offset-2 col-sm-10">
-		<button type="submit" class="btn btn-default" name="submit_save" value="Save">Save</button> 
+		<button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Save</button> 
         <button type="submit" class="btn btn-default" name="submit_cancel" value="Cancel">Cancel</button>
 	</div>
   </div>

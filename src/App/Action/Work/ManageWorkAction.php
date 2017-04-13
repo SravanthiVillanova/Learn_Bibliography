@@ -77,23 +77,26 @@ class ManageWorkAction
             //add a new work type
             if ($post['action'] == "work_new") {
                 if ($post['submit_save'] == "Save") {
-					/*if($post['user'] != null)
-					{
-						echo $post['user'];die();
-					}*/
-					//echo "<pre>";print_r($post);echo "</pre>"; 										
+					//echo "<pre>";print_r($post);echo "</pre>"; 	
 					//echo "pub count is " . count($post['pub_id']);
 					//echo "agent count is " . count($post['agent_id']);
 					//die();
 					//insert General(work)
-					/*$table = new \App\Db\Table\Work($this->adapter);
+					$table = new \App\Db\Table\Work($this->adapter);
 					$wk_id = $table->insertRecords($post['work_type'],$post['new_worktitle'],$post['new_worksubtitle'],$post['new_workparalleltitle'],
 										  $post['description'],date('Y-m-d H:i:s'),$post['user'],$post['select_workstatus'],$post['pub_yrFrom']);
 					//insert classification(work_folder)
 					if(isset($post['folder_child']))
 					{
+						echo "folder child not set n " . $post['folder_child']; 
 						$table = new \App\Db\Table\Work_Folder($this->adapter);
 						$table->insertRecords($wk_id,$post['folder_child']);
+					}
+					if($post['subject_tree'] != '')
+					{
+						echo "subj tree not set n " . $post['subject_tree'];
+						$table = new \App\Db\Table\Work_Folder($this->adapter);
+						$table->insertRecords($wk_id,$post['subject_tree']);
 					}
 					//insert Publisher(work_publisher)
 					if($post['pub_id'][0] != NULL)
@@ -105,38 +108,32 @@ class ManageWorkAction
 					//insert Agent(work_agent)
 					if($post['agent_id'][0] != NULL)
 					{
-						echo "agent count is " . count($post['agent_id']);
+						//echo "agent count is " . count($post['agent_id']);
 						$table = new \App\Db\Table\WorkAgent($this->adapter);
 						$table->insertRecords($wk_id,$post['agent_id'],$post['agent_type']);
-					}*/
+					}
 					//map work to citation(work_workattribute)
-					$opt_id = [];
-					$opt_val = [];
-					foreach ($post as $key => $value) {
-						if((preg_match("/^\w+\:\d+$/", $key)) && ($value != NULL))
-						{
-							//echo 'matched key is ' . $key . "<br />";
-							$opt_id[] = preg_replace("/^\w+\:/", "", $key) . "<br />";
-							$opt_val[] = $value;
-						}
-						
-					}
-					echo "<pre>";print_r($opt_id);echo "</pre>"; 
-					echo "<pre>";print_r($opt_val);echo "</pre>"; 
-					if(count($opt_id) > 0)
+					$wkat_id = [];
+					foreach ($post as $key => $value) 
 					{
-						$table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
-						$table->getOptionIds($opt_id,$opt_val);
-
-						//$list = array();new \RecursiveIteratorIterator(
-						//$it = new \RecursiveArrayIterator($rows);
-						//$list = iterator_to_array($it,true);
-						//echo "<pre>";print_r($rows);echo "</pre>"; 
-						
-						//$table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
-						//$table->insertRecords($wk_id,$rows);
+						if((preg_match("/^[a-z]+\,\d+[a-z]+\,\d+$/", $key)) && ($value != NULL))
+						{
+							$keys = preg_split("/[a-z]+\,/", $key);
+							$wkat_id[] = $keys[1];
+							$wkopt_id[] = $keys[2];
+						}
+						if((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != NULL))
+						{
+							$wkat_id[] = preg_replace("/^[a-z]+\,/", "", $key) . "<br />";
+							$wkopt_id[] = $value;
+						}
 					}
-					die();
+					if(count($wkat_id) > 0)
+					{
+						$table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
+						$table->insertRecords($wk_id,$wkat_id,$wkopt_id);
+					}
+					//ie();
 				}
 			}
 		}
