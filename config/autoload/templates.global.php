@@ -28,6 +28,8 @@ return [
             'app::work::new_work' => 'templates/app/work/new.phtml',
 			'app::work::get_work_details' => 'templates/app/work/get_work_details.phtml',
             'app::work::manage_work' => 'templates/app/work/manage.phtml',
+			'app::work::edit_work' => 'templates/app/work/edit.phtml',
+			'app::work::delete_work' => 'templates/app/work/delete.phtml',
             'app::work::search_work' => 'templates/app/work/search.phtml',
             'app::work::review_work' => 'templates/app/work/review.phtml',
             'app::work::classify_work' => 'templates/app/work/classify.phtml',

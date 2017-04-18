@@ -56,7 +56,8 @@
 					$table = new \App\Db\Table\User($adapter);
 					$cuser = $table->findRecordById($row['create_user_id']);
 					$c_user = $cuser['username'];
-					echo $c_user . " " . date("M d, y", strtotime($row['create_date']));?>
+					echo $c_user . " " . date("M d, y", strtotime($row['create_date']));
+			?>
 		</td>
 		<td>
 			<?php	
@@ -64,13 +65,14 @@
 					$table = new \App\Db\Table\User($adapter);
 					$muser = $table->findRecordById($row['modify_user_id']);
 					$m_user = $muser['username'];
-					echo $m_user . " " . date("M d, y", strtotime($row['modify_date']));?>
+					echo $m_user . " " . date("M d, y", strtotime($row['modify_date']));
+			?>
 		</td>
-		<td>
-			<a href="#">Edit</a>        
+		<td>			             
+            <a href="<?=$this->url('edit_work')?><?='?id='. $row['id']. '&action=edit'?>">Edit</a>        
             |
-            <a href="#">Delete</a>
-		</td>			
+            <a href="<?=$this->url('delete_work')?><?='?id='. $row['id']. '&action=delete'?>">Delete</a>   			
+        </td>
 		</tr>
 		<?php endforeach; ?>
 		</tbody>

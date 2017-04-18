@@ -1,0 +1,147 @@
+<?php $this->headTitle('Edit Work'); ?>
+<?php                                       
+        $id;
+       if ($request->getqueryParams('id') !== null) 
+        {   
+            $params = $request->getqueryParams();
+            $action = $params['action'];
+            $id = $params['id'];
+			//fetch name based on id
+			$table = new \App\Db\Table\Work($adapter);
+			$row = $table->findRecordById($id);
+			$type_id = $row['type_id'];	
+			$status = $row['status'];
+					
+			//fetch worktype based on id
+			$table = new \App\Db\Table\WorkType($adapter);
+			$wk_types = $table->findRecordById($type_id);
+			$wk_type = $wk_types['type'];	
+			//echo "<pre>";print_r($wk_types);echo "</pre>"; 
+					
+			//fetch worktypes
+			$table = new \App\Db\Table\WorkType($this->adapter);
+			$paginator = $table->fetchAllWorkTypes();
+			$itemsCount = $paginator->getTotalItemCount();
+			$paginator->setItemCountPerPage($itemsCount);
+			//echo "<pre>";print_r($row);echo "</pre>";
+        } 
+?>
+<div class="col-md-7">
+<form id="personal-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
+<input type="hidden" name="action" value="work_new">
+<?php 
+	//get user
+	$user = $this->isUser()->getUser();
+?>
+<input type="hidden" name="user" id="user" value="<?=$user?>">
+<div class="tabbable">
+	<ul class="nav nav-tabs">
+		<li class="active">
+			<a href="#General" data-toggle="tab">General</a>
+		</li>
+		<li>
+			<a href="#Classification" data-toggle="tab">Classification</a>
+		</li>  
+		<li>
+			<a href="#Publisher" data-toggle="tab">Publisher</a>
+		</li>
+		<li>
+			<a href="#Agents" data-toggle="tab">Agents</a>
+		</li>
+		<li>
+			<a href="#Citation" data-toggle="tab">Citation</a>
+		</li>
+	</ul>
+	<div class="tab-content">
+    <div class="tab-pane active" id="General">      
+		<div class="form-group required">
+			<label class="col-xs-2 control-label">Title: </label>
+			<div class="col-xs-10">
+				<input type="text" class="form-control" name="edit_worktitle" id="editworktitle" required="true" value="<?=$row['title']?>"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Sub Title: </label>
+			<div class="col-xs-10">
+				<input type="text" class="form-control" name="edit_worksubtitle" id="editworksubtitle" value="<?=$row['subtitle']?>"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Parallel Title: </label>
+			<div class="col-xs-10">
+				<input type="text" class="form-control" name="edit_workparalleltitle" id="editworkparalleltitle" value="<?=$row['paralleltitle']?>"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Description: </label>
+			<div class="col-xs-10">
+				<textarea class="form-control" placeholder="Message" name="description" id="description" value="<?=$row['description']?>"></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Type: </label>
+			<div class="col-xs-10">
+				<select class="form-control" name="edit_work_type" id="edit_work_type" required="true">
+				<option value="<?=$row['type_id']?>"><?php echo $wk_type; ?></option>					
+				<?php
+					//fetch worktype based on type id
+					$table = new \App\Db\Table\Work($adapter);
+                    $row = $table->findRecordById($id);
+					foreach($paginator as $row) :
+						if($row['type'] != $wk_type)
+						{
+				?>
+				<option value="<?=$row['id']?>"><?php echo $row['type']; ?></option>							
+				<?php 
+						}
+						endforeach; 
+				?>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Parent Work: </label>
+			<div class="col-xs-10">
+				<button type="submit" class="btn btn-default" name="lookup_parent" value="parent_lookup">Lookup</button>
+			</div>
+		</div>		
+		<div class="form-group">
+			<label class="col-xs-2 control-label">Status: </label>
+			<div class="col-xs-10">
+				<div class="radio">
+					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="00" <?php echo (!isset($status))?'checked':'' ?>>In Progress</label>
+					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="0" <?php echo ($status == 0)?'checked':'' ?>>Pending Review</label>
+					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="2" <?php echo ($status == 2)?'checked':'' ?>>Unseen Source Doc</label>
+					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="1" <?php echo ($status == 1)?'checked':'' ?>>Complete</label>
+				</div>
+			</div>
+		</div>		 
+    </div>
+	<div class="tab-pane" id="Classification">
+		<div class="form-group" id="class_grp">
+			<label class="col-xs-2 control-label">Subject Tree: </label>
+			<div class="col-xs-5">
+				<select class="form-control subject_tree" name="edit_subject_tree" id="edit_subject_tree">
+				<option value=""></option>
+				<?php
+					//fetch worktypes
+					$table = new \App\Db\Table\Folder($this->adapter);
+					$paginator = $table->findParent();
+					foreach($paginator as $row) :
+				?>
+				<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
+				<?php endforeach; ?>
+				</select>
+			</div>
+		</div>		
+    </div>  
+    </div>
+</div>
+<div class="form-group">
+	<div class="col-sm-offset-2 col-sm-10">
+		<button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Save</button> 
+        <button type="submit" class="btn btn-default" name="submit_cancel" value="Cancel">Cancel</button>
+	</div>
+  </div>
+</form>
+</div>

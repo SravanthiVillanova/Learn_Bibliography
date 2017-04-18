@@ -88,13 +88,13 @@ class ManageWorkAction
 					//insert classification(work_folder)
 					if(isset($post['folder_child']))
 					{
-						echo "folder child not set n " . $post['folder_child']; 
+						//echo "folder child not set n " . $post['folder_child']; 
 						$table = new \App\Db\Table\Work_Folder($this->adapter);
 						$table->insertRecords($wk_id,$post['folder_child']);
 					}
 					if($post['subject_tree'] != '')
 					{
-						echo "subj tree not set n " . $post['subject_tree'];
+						//echo "subj tree not set n " . $post['subject_tree'];
 						$table = new \App\Db\Table\Work_Folder($this->adapter);
 						$table->insertRecords($wk_id,$post['subject_tree']);
 					}

@@ -21,6 +21,8 @@ return [
 			App\Action\Work\GetWorkDetailsAction::class => App\Action\Work\GetWorkDetailsFactory::class,
 			App\Action\Work\SearchWorkAction::class => App\Action\Work\SearchWorkFactory::class,
 			App\Action\Work\ManageWorkAction::class => App\Action\Work\ManageWorkFactory::class,
+			App\Action\Work\EditWorkAction::class => App\Action\Work\EditWorkFactory::class,  
+			App\Action\Work\DeleteWorkAction::class => App\Action\Work\DeleteWorkFactory::class, 
 			App\Action\Work\ReviewWorkAction::class => App\Action\Work\ReviewWorkFactory::class,
 			App\Action\Work\ClassifyWorkAction::class => App\Action\Work\ClassifyWorkFactory::class,
             
@@ -150,6 +152,28 @@ return [
 				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Work\ManageWorkAction::class,
             ],
+            'allowed_methods' => ['GET','POST'],
+        ],
+		
+		[
+            'name' => 'edit_work',
+		    'path' => '/Work/edit',
+            'middleware' => [
+                //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
+                App\Action\Work\EditWorkAction::class,
+            ],                
+            'allowed_methods' => ['GET','POST'],
+        ],   
+		
+		[
+            'name' => 'delete_work',
+		    'path' => '/Work/delete',
+            'middleware' => [
+                //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
+                App\Action\Work\DeleteWorkAction::class,
+            ],                
             'allowed_methods' => ['GET','POST'],
         ],
 		

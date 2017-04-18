@@ -202,6 +202,13 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         return new Paginator($paginatorAdapter);
     }
 	
+	public function findRecordById($id)
+    {
+        $rowset = $this->select(array('id' => $id));
+        $row = $rowset->current();
+        return($row);
+    }
+	
 	public function insertRecords($type_id,$title,$subtitle,$paralleltitle,$description,$create_date,$create_user_id,$status,$pub_yrFrom)
 	{
 		$this->insert(
