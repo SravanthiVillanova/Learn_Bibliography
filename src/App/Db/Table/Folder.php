@@ -132,4 +132,11 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 		//var_dump("count is " . count($rows));
 		return $rows;
 	}
+	
+	public function getParent($child)
+	{
+		$rowset = $this->select(array('id' => $child));
+        $row = $rowset->current();
+        return($row);
+	}
 }

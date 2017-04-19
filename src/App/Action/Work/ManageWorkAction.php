@@ -77,7 +77,7 @@ class ManageWorkAction
             //add a new work type
             if ($post['action'] == "work_new") {
                 if ($post['submit_save'] == "Save") {
-					//echo "<pre>";print_r($post);echo "</pre>"; 	
+					echo "<pre>";print_r($post);echo "</pre>"; 	
 					//echo "pub count is " . count($post['pub_id']);
 					//echo "agent count is " . count($post['agent_id']);
 					//die();
@@ -88,27 +88,23 @@ class ManageWorkAction
 					//insert classification(work_folder)
 					if(isset($post['folder_child']))
 					{
-						//echo "folder child not set n " . $post['folder_child']; 
 						$table = new \App\Db\Table\Work_Folder($this->adapter);
 						$table->insertRecords($wk_id,$post['folder_child']);
 					}
-					if($post['subject_tree'] != '')
+					else if($post['subject_tree'] != '')
 					{
-						//echo "subj tree not set n " . $post['subject_tree'];
 						$table = new \App\Db\Table\Work_Folder($this->adapter);
 						$table->insertRecords($wk_id,$post['subject_tree']);
 					}
 					//insert Publisher(work_publisher)
 					if($post['pub_id'][0] != NULL)
 					{
-						//echo "pub count is " . count($post['pub_id']); die();
 						$table = new \App\Db\Table\WorkPublisher($this->adapter);
 						$table->insertRecords($wk_id,$post['pub_id'],$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
 					}
 					//insert Agent(work_agent)
 					if($post['agent_id'][0] != NULL)
 					{
-						//echo "agent count is " . count($post['agent_id']);
 						$table = new \App\Db\Table\WorkAgent($this->adapter);
 						$table->insertRecords($wk_id,$post['agent_id'],$post['agent_type']);
 					}
@@ -133,7 +129,6 @@ class ManageWorkAction
 						$table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
 						$table->insertRecords($wk_id,$wkat_id,$wkopt_id);
 					}
-					//ie();
 				}
 			}
 		}

@@ -136,4 +136,21 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
 			);
 		}
 	}
+	
+	public function findRecordByWorkId($wk_id)
+    {	
+		$select = $this->sql->select();
+        $select->join('publisher', 'work_publisher.publisher_id = publisher.id', array('name'), 'inner');
+		$select->join('publisher_location', 'work_publisher.location_id = publisher_location.id', array('location'), 'inner');
+        $select->where(['work_id' => $wk_id]);
+
+        $paginatorAdapter = new Paginator(new DbSelect($select, $this->adapter));
+        $cnt = $paginatorAdapter->getTotalItemCount();
+		
+		foreach($paginatorAdapter as $row) : 
+			$rows[] = $row;
+		endforeach;
+		
+        return $rows;
+    }
 }

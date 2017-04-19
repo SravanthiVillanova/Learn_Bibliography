@@ -1,4 +1,8 @@
 <?php $this->headTitle('Edit Work'); ?>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
 <?php                                       
         $id;
        if ($request->getqueryParams('id') !== null) 
@@ -11,20 +15,89 @@
 			$row = $table->findRecordById($id);
 			$type_id = $row['type_id'];	
 			$status = $row['status'];
+			
+			if($status != 1)
+			{
+				//fetch worktype based on id
+				$table = new \App\Db\Table\WorkType($adapter);
+				$wk_types = $table->findRecordById($type_id);
+				$wk_type = $wk_types['type'];	
 					
-			//fetch worktype based on id
-			$table = new \App\Db\Table\WorkType($adapter);
-			$wk_types = $table->findRecordById($type_id);
-			$wk_type = $wk_types['type'];	
-			//echo "<pre>";print_r($wk_types);echo "</pre>"; 
+				//fetch worktypes
+				$table = new \App\Db\Table\WorkType($this->adapter);
+				$paginator = $table->fetchAllWorkTypes();
+				$itemsCount = $paginator->getTotalItemCount();
+				$paginator->setItemCountPerPage($itemsCount);
+			
+				//fetch publishers attached to work
+				$table = new \App\Db\Table\WorkPublisher($this->adapter);
+				$pub_rows = $table->findRecordByWorkId($id);
+				if(count($pub_rows) > 0)
+				{
+					//echo "<pre>";print_r($pub_rows);echo "</pre>";//die();
+					foreach($pub_rows as $row):
+						//echo "<br/>" . $row['name']; */
+					//die();?>
+					<script>
+						$(document).ready(function () {
+							/*var pub_name = "<?php echo $pub_rows[0]['name']; ?>";
+							$('#pubName').val(pub_name);*/
+							var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="<?=$row['publisher_id'];?>">'+
+							'<td><input type="text" class="form-control" name="pub_name[]" id="pubName" value="<?=$row['name'];?>"/></td>'+
+							'<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom" value="<?=$row['publish_year'];?>"/></td>'+
+							'<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" value="<?=$row['publish_year_end'];?>"/></td>'+
+							'<!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->'+
+							'<input type="hidden" name="publoc_id[]" id="publoc_id" value="">'+
+							'<td><select class="form-control pub_locations" name="pub_location[]" id="pubLocation"><option value="<?=$row['location'];?>"></option></select></td>'+
+							'<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>'+
+							'</tr>');	
+							$("#pub_table").append(pub_row);
+							return false;
+					});
+					</script>
+				<?php endforeach;
+				}
+			
+				//fetch agents attached to work
+				$table = new \App\Db\Table\WorkAgent($this->adapter);
+				$ag_rows = $table->findRecordByWorkId($id);
+				if(count($ag_rows) > 0)
+				{
+					//echo "<pre>";print_r($ag_rows);echo "</pre>";
 					
-			//fetch worktypes
-			$table = new \App\Db\Table\WorkType($this->adapter);
-			$paginator = $table->fetchAllWorkTypes();
-			$itemsCount = $paginator->getTotalItemCount();
-			$paginator->setItemCountPerPage($itemsCount);
-			//echo "<pre>";print_r($row);echo "</pre>";
-        } 
+				}
+				//die();		
+				//fetch folders
+				$table = new \App\Db\Table\Work_Folder($this->adapter);
+				$rows = $table->findRecordByWorkId($id);
+			
+				if(isset($rows['folder_id'])) //fid = 11110
+				{
+					//echo 'entered if '; 
+					$table = new \App\Db\Table\Folder($this->adapter);
+					$row = $table->getParent($rows['folder_id']); //id = 11110 pid=11084
+					while(isset($row['parent_id'])) //1-pid = 11084, 2-pid=11057, 3-pid=10434
+					{
+						//echo 'entered while ';					
+						$table = new \App\Db\Table\Folder($this->adapter);
+						$row = $table->getParent($row['parent_id']);//1-id=11084 pid=11057 , 2-id=11057 pid=10434, 3-id=10434,pid=null
+						if($row['parent_id'] == NULL)//1-no,2-no,3-no
+						{
+							break;
+						}
+						$parent = $row['parent_id'];//1-p=11057 , 2-p=10434, 3-p=null
+						//echo 'p is ' . $row['parent_id'];//11057 , 10434, null
+					}
+					echo $parent;
+					die();
+				}
+			}
+        }
+?>
+
+<?php
+	if($status != 1)
+	{
 ?>
 <div class="col-md-7">
 <form id="personal-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
@@ -135,6 +208,36 @@
 			</div>
 		</div>		
     </div>  
+	<div class="tab-pane" id="Publisher">
+		<div class="form-group">
+		<table class="table table-striped table-condensed" name="pub_table" style="font-size:10pt;" id="pub_table">
+        <thead>
+			<th>Publisher</th>
+			<th>Year From</th>
+			<th>Year To</th>          
+			<th>Location</th>
+			<th>Remove</th>
+		</thead>
+		<tbody>
+		<tr name="pub_row[]">
+			<input type="hidden" name="pub_id[]" id="pubId" value="">
+			<td><input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" /></td>
+			<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"/></td>
+			<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" /></td>
+			<!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->
+			<input type="hidden" name="publoc_id[]" id="publoc_id" value="">
+			<td>
+				<select class="form-control pub_locations" name="pub_location[]" id="pubLocation">
+				<option value=""></option>				
+				</select>
+			</td>
+			<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>
+		</tr>
+		</tbody>
+		</table>
+		<button type="submit" class="btn btn-default" name="pub_add" id="pub_add" value="Add">Add</button> 
+		</div>
+	</div>
     </div>
 </div>
 <div class="form-group">
@@ -145,3 +248,10 @@
   </div>
 </form>
 </div>
+<?php
+	}
+	else
+	{
+		echo "Completed works cannot be edited.";
+	}
+?>

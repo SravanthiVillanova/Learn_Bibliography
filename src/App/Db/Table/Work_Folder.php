@@ -115,4 +115,11 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
 			]
 		);
 	}
+	
+	public function findRecordByWorkId($id)
+    {
+        $rowset = $this->select(array('work_id' => $id));
+        $row = $rowset->current();
+        return($row);
+    }
 }

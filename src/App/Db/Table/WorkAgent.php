@@ -95,4 +95,21 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
 			);
 		}
 	}
+	
+	public function findRecordByWorkId($wk_id)
+    {	
+		$select = $this->sql->select();
+        $select->join('agenttype', 'work_agent.agenttype_id = agenttype.id', array('type'), 'inner');
+		$select->join('agent', 'work_agent.agent_id = agent.id', array('fname','lname','alternate_name','organization_name'), 'inner');
+        $select->where(['work_id' => $wk_id]);
+
+        $paginatorAdapter = new Paginator(new DbSelect($select, $this->adapter));
+        $cnt = $paginatorAdapter->getTotalItemCount();
+		
+		foreach($paginatorAdapter as $row) : 
+			$rows[] = $row;
+		endforeach;
+		
+        return $rows;
+    }
 }
