@@ -135,6 +135,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 	
 	public function getParent($child)
 	{
+		echo 'id is ' . $child;
 		$rowset = $this->select(array('id' => $child));
         $row = $rowset->current();
         return($row);
