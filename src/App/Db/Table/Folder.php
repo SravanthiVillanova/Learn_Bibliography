@@ -135,9 +135,26 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 	
 	public function getParent($child)
 	{
-		echo 'id is ' . $child;
 		$rowset = $this->select(array('id' => $child));
         $row = $rowset->current();
         return($row);
+	}
+	
+	public function getHierarchyRecords($id)
+	{
+		echo 'id is ' . $id;
+		$rowset = $this->select(array('id' => $id));
+        $row = $rowset->current();
+		
+		/*$parent = $row['parent_id'];
+		echo 'parent id is ' . $parent;*/
+		
+		/*$callback = function ($select) use ($parent){
+			$select->columns(['*']);
+			$select->where->equalTo('parent_id', $parent);
+		};
+		$rows = $this->select($callback)->toArray(); 
+		echo "<pre>";print_r($rows);echo "</pre>";*/
+		//return $row;
 	}
 }

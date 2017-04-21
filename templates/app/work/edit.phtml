@@ -142,42 +142,71 @@
 									'<td><input type="text" class="form-control" name="agent_AlternateName[]" id="agent_AlternateName" value="<?=$ag_rows[$i]['alternate_name'];?>"/></td>'+
 									'<td><input type="text" class="form-control" name="agent_OrganizationName[]" id="agent_OrganizationName" value="<?=$ag_rows[$i]['organization_name'];?>"/></td>'+
 									'<td><button type="submit" class="btn btn-default" name="agent_remove" id="agent_remove" value="Remove">Remove</button></td>'+
-									'</tr>');				
-							
+									'</tr>');											
 								$("#agent_table").append(agent_row);
 						});
 						</script>
-						<?php		}			
+						<?php		
+						}			
 				}
 				//die();		
 				//fetch folders
 				$arr_fl = [];
 				$table = new \App\Db\Table\Work_Folder($this->adapter);
-				$wkfl_row = $table->findRecordByWorkId($id);
-			
-				if(isset($wkfl_row['folder_id'])) //fid = 11110
+				$wkfl_row = $table->findRecordByWorkId($id);			
+				if(isset($wkfl_row['folder_id'])) 
 				{
 					$arr_fl[] = $wkfl_row['folder_id'];
-					//echo 'entered if '; 
 					$table = new \App\Db\Table\Folder($this->adapter);
-					$fl_row = $table->getParent($wkfl_row['folder_id']); //id = 11110 pid=11084
-					echo "<pre>";print_r($fl_row);echo "</pre>";
-					while(isset($fl_row['parent_id'])) //1-pid = 11084, 2-pid=11057, 3-pid=10434
+					$fl_row = $table->getParent($wkfl_row['folder_id']); 
+					while(isset($fl_row['parent_id'])) 
 					{
-						$arr_fl[] = $fl_row['parent_id'];
-						//echo 'entered while ';					
+						$arr_fl[] = $fl_row['parent_id'];				
 						$table = new \App\Db\Table\Folder($this->adapter);
-						$fl_row = $table->getParent($fl_row['parent_id']);//1-id=11084 pid=11057 , 2-id=11057 pid=10434, 3-id=10434,pid=null
-						if($fl_row['parent_id'] == NULL)//1-no,2-no,3-no
+						$fl_row = $table->getParent($fl_row['parent_id']);
+						if($fl_row['parent_id'] == NULL)
 						{
 							break;
 						}
-						$arr_fl[] = $fl_row['parent_id'];
-						$parent = $fl_row['parent_id'];//1-p=11057 , 2-p=10434, 3-p=null
-						//echo 'p is ' . $fl_row['parent_id'];//11057 , 10434, null
 					}
-					echo "<pre>";print_r($arr_fl);echo "</pre>";	
-					die();
+					//echo "<pre>";print_r($arr_fl);echo "</pre>";
+					$hierarchy_level = 	count($arr_fl);	
+					//echo 'count is ' . $hierarchy_level;
+					if($hierarchy_level > 1)
+					{	
+					?>
+						<script>
+						$(document).ready(function () {	
+							$("#subject_tree").val("<?=$arr_fl[$hierarchy_level-1];?>");	
+							console.log("<?=$hierarchy_level-2 ?>", "<?=$arr_fl[$hierarchy_level-2];?>");
+								<?php
+								for($i=($hierarchy_level-2);$i>=0;$i++) {
+								echo "id from edit " . $arr_fl[$i]; 
+								//get all records at each hierarchy level
+								//$table = new \App\Db\Table\Folder($this->adapter);
+								//$table->getHierarchyRecords($arr_fl[$i]);
+								//echo "<pre>";print_r($hl_rows);echo "</pre>";
+								?>	
+								//console.log('classific 2');
+								//_select = $('<select class="form-control folder_child" name="folder_child" id="folder_child"/>');
+								//_select.appendTo('#Classification');
+								//$("#Classification").append(_select);
+							<?php
+								//foreach($hl_rows as $row) :
+							?>								
+									//$("#folder_child").append('<option value="<?=$row['id'];?>"><?php echo $row['text_fr']; ?></option>');
+							<?php
+								//endforeach;
+							?>						
+								//$("#folder_child").val("<?=$arr_fl[$i];?>");														
+							<?php
+							}
+							?>
+						});
+						</script>
+					<?php
+					}
+					//die();
 				}
 			}
         }
@@ -416,7 +445,7 @@ $(document).ready(function () {
 		<div class="form-group" id="class_grp">
 			<label class="col-xs-2 control-label">Subject Tree: </label>
 			<div class="col-xs-5">
-				<select class="form-control subject_tree" name="edit_subject_tree" id="edit_subject_tree">
+				<select class="form-control subject_tree" name="subject_tree" id="subject_tree">
 				<option value=""></option>
 				<?php
 					//fetch first level
