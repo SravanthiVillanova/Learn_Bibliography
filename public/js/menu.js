@@ -50,6 +50,7 @@ function hideAll()
     }
 }
 
+$(document).ready(function menuReady() {
 $('.items a').on('click', function() {
   var $this = $(this),
       $bc = $('<div class="item"></div>');
@@ -61,4 +62,5 @@ $('.items a').on('click', function() {
     $('.breadcrumb').html( $bc.prepend('<a href="#home">Home</a>') );
     return false;
 }) 
+});
   
