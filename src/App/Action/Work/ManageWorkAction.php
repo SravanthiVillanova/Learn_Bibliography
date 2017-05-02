@@ -131,6 +131,18 @@ class ManageWorkAction
 					}
 				}
 			}
+			if ($post['action'] == "delete") {
+				if ($post['submitt'] == "Delete") {
+                    if (!is_null($post['id'])) {
+                        /*$table = new \App\Db\Table\Work($this->adapter);
+                        $table->updateWorkTypeId($post['id']);
+                        $table = new \App\Db\Table\WorkType_WorkAttribute($this->adapter);
+                        $table->deleteRecordByWorkType($post['id']);
+                        $table = new \App\Db\Table\WorkType($this->adapter);
+                        $table->deleteRecord($post['id']);*/
+                    }
+                }
+			}
 		}
 		/*if(isset($post['get_parent']))
 		{
