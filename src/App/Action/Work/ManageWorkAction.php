@@ -133,13 +133,17 @@ class ManageWorkAction
 			}
 			if ($post['action'] == "delete") {
 				if ($post['submitt'] == "Delete") {
-                    if (!is_null($post['id'])) {
-                        /*$table = new \App\Db\Table\Work($this->adapter);
-                        $table->updateWorkTypeId($post['id']);
-                        $table = new \App\Db\Table\WorkType_WorkAttribute($this->adapter);
-                        $table->deleteRecordByWorkType($post['id']);
-                        $table = new \App\Db\Table\WorkType($this->adapter);
-                        $table->deleteRecord($post['id']);*/
+                    if (!is_null($post['work_id'])) {
+                        $table = new \App\Db\Table\WorkAgent($this->adapter);
+                        $table->deleteRecordByWorkId($post['work_id']);
+                        $table = new \App\Db\Table\Work_Folder($this->adapter);
+                        $table->deleteRecordByWorkId($post['work_id']);
+                        $table = new \App\Db\Table\WorkPublisher($this->adapter);
+                        $table->deleteRecordByWorkId($post['work_id']);
+						$table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
+						$table->deleteRecordByWorkId($post['work_id']);
+						$table = new \App\Db\Table\Work($this->adapter);
+						$table->deleteRecordByWorkId($post['work_id']);
                     }
                 }
 			}

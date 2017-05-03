@@ -122,4 +122,9 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
         $row = $rowset->current();
         return($row);
     }
+	
+	public function deleteRecordByWorkId($id)
+    {
+        $this->delete(['work_id' => $id]);
+    }
 }

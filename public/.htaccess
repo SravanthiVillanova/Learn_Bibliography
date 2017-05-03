@@ -17,3 +17,4 @@ RewriteRule ^(.*) - [E=BASE:%1]
 RewriteRule ^(.*)$ %{ENV:BASE}index.php [NC,L]
 
 #php_value error_reporting 0
+php_value error_reporting 32759

@@ -196,7 +196,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
 	public function findRecords($title)
     {
 		$select = $this->sql->select();
-        $select->where->like('title', $title.'%');
+        $select->where->like('new Zend\Db\Sql\Predicate\Expression(upper(title))', new Zend\Db\Sql\Predicate\Expression(upper($title.'%')));
         //->where(['name' => $name]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
         return new Paginator($paginatorAdapter);
@@ -231,4 +231,9 @@ class Work extends \Zend\Db\TableGateway\TableGateway
 		$id = $this->getLastInsertValue();
 		return $id;
 	}
+	
+	public function deleteRecordByWorkId($id)
+    {
+        $this->delete(['id' => $id]);
+    }
 }

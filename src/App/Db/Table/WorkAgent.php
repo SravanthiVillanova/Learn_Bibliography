@@ -86,6 +86,8 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
 	{
 		for($i=0;$i<count($ag_id);$i++)
 		{
+			if($ag_id[$i] != NULL && $agt_id[$i] != NULL)
+			{
 			$this->insert(
 				[
 				'work_id' => $wk_id,
@@ -93,11 +95,13 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
 				'agenttype_id' => $agt_id[$i],
 				]
 			);
+			}
 		}
 	}
 	
 	public function findRecordByWorkId($wk_id)
     {	
+		$rows = [];
 		$select = $this->sql->select();
         $select->join('agenttype', 'work_agent.agenttype_id = agenttype.id', array('type'), 'inner');
 		$select->join('agent', 'work_agent.agent_id = agent.id', array('fname','lname','alternate_name','organization_name'), 'inner');
@@ -111,5 +115,10 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
 		endforeach;
 		
         return $rows;
+    }
+	
+	public function deleteRecordByWorkId($id)
+    {
+        $this->delete(['work_id' => $id]);
     }
 }

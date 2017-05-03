@@ -124,4 +124,9 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 			);
 		}
 	}
+	
+	public function deleteRecordByWorkId($id)
+    {
+        $this->delete(['work_id' => $id]);
+    }
 }

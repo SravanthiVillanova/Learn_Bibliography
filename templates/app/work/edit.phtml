@@ -14,7 +14,7 @@
 			$wk_row = $table->findRecordById($id);
 			$type_id = $wk_row['type_id'];	
 			$status = $wk_row['status'];
-						
+			echo 'work with id ' . $id . 'has status ' . $status;			
 			if($status != 1)
 			{
 				//fetch worktype based on id
@@ -40,6 +40,7 @@
 				if(count($pub_rows) > 0)
 				{ 
 					//echo "<pre>";print_r($pub_rows);echo "</pre>";	die();
+					echo "count of pub rows not zero";
 				?>
 					<script>
 						$(document).ready(function () {
@@ -104,6 +105,7 @@
 				if(count($ag_rows) > 0)
 				{
 					//echo "<pre>";print_r($ag_rows);echo "</pre>";	die();
+					echo "count of ag rows not zero";
 				?>
 					<script>
 						$(document).ready(function () {
@@ -156,6 +158,7 @@
 				$wkfl_row = $table->findRecordByWorkId($id);			
 				if(isset($wkfl_row['folder_id'])) 
 				{
+					echo "fl id set";
 					$arr_fl[] = $wkfl_row['folder_id'];
 					$table = new \App\Db\Table\Folder($this->adapter);
 					$fl_row = $table->getParent($wkfl_row['folder_id']); 
@@ -174,36 +177,9 @@
 					//echo 'count is ' . $hierarchy_level;
 					if($hierarchy_level > 1)
 					{	
+						echo "hl greater than";
 					?>
-						<script>
-						$(document).ready(function () {	
-							$("#subject_tree").val("<?=$arr_fl[$hierarchy_level-1];?>");	
-							console.log("<?=$hierarchy_level-2 ?>", "<?=$arr_fl[$hierarchy_level-2];?>");
-								<?php
-								for($i=($hierarchy_level-2);$i>=0;$i++) {
-								echo "id from edit " . $arr_fl[$i]; 
-								//get all records at each hierarchy level
-								//$table = new \App\Db\Table\Folder($this->adapter);
-								//$table->getHierarchyRecords($arr_fl[$i]);
-								//echo "<pre>";print_r($hl_rows);echo "</pre>";
-								?>	
-								//console.log('classific 2');
-								//_select = $('<select class="form-control folder_child" name="folder_child" id="folder_child"/>');
-								//_select.appendTo('#Classification');
-								//$("#Classification").append(_select);
-							<?php
-								//foreach($hl_rows as $row) :
-							?>								
-									//$("#folder_child").append('<option value="<?=$row['id'];?>"><?php echo $row['text_fr']; ?></option>');
-							<?php
-								//endforeach;
-							?>						
-								//$("#folder_child").val("<?=$arr_fl[$i];?>");														
-							<?php
-							}
-							?>
-						});
-						</script>
+						
 					<?php
 					}
 					//die();
@@ -300,6 +276,8 @@ function bindAgentAutocomplete(context)
     });	
 }
 $(document).ready(function () {	
+	//Publisher
+	bindPublisherAutocomplete(document);
 	//add publisher rows
 	$("#pub_add").click(function(){
 		var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="">'+
@@ -321,6 +299,7 @@ $(document).ready(function () {
         $(this).parent().parent().remove();
     });
 	//agent
+	bindAgentAutocomplete(document);
 	$("#agent_add").click(function(){
 		var agent_row = $('<tr><td><input type="hidden" name="agent_id[]" id="agentId" value="">'+
 						'<select class="form-control agent_type" name="agent_type[]" id="agent_type">'+
@@ -350,8 +329,10 @@ $(document).ready(function () {
 });
 </script>
 <?php
+	echo "here stat is " . $status;
 	if($status != 1)
 	{
+		echo "yes stat";
 ?>
 <div class="col-md-7">
 <form id="personal-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
