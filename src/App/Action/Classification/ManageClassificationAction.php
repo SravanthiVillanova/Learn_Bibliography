@@ -8,6 +8,8 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use Zend\Db\Adapter\Adapter;
+use Zend\Paginator\Paginator;
+use Zend\Paginator\Adapter\DbSelect;
 
 class ManageClassificationAction
 {
@@ -39,6 +41,13 @@ class ManageClassificationAction
                     $table->insertRecords($post['new_worktype']);
                 }*/
             }
+			//manage classification hierarchy
+			if($query['action'] == "get_children") {
+				$table = new \App\Db\Table\Folder($this->adapter);
+				$rows = $table->getChild($query['id']);
+				$paginator = new Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($rows));
+				return $paginator;
+			}
         }
         // default: blank for listing in manage
         $table = new \App\Db\Table\Folder($this->adapter);
@@ -75,6 +84,13 @@ class ManageClassificationAction
             $next = $currentPage + 1;
             $previous = $currentPage - 1;
         }
+		//gel folder name for bread crumb
+		if($query['action'] == "get_children") {
+			$table= new \App\Db\Table\Folder($this->adapter);
+			//$previous_folder = $table->getParent($query['id']);
+			$ts = $table->getTrail(3);
+			echo "<pre>"; print_r($ts); echo "</pre>"; die();
+		}
         return new HtmlResponse(
             $this->template->render(
                 'app::classification::manage_classification',
@@ -83,6 +99,7 @@ class ManageClassificationAction
                     'previous' => $previous,
                     'next' => $next,
                     'countp' => $countPages,
+					'previous_folder' => $previous_folder,
                 ]
             )
         );

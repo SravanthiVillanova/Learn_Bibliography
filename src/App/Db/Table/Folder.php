@@ -157,4 +157,48 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 		echo "<pre>";print_r($rows);echo "</pre>";*/
 		//return $row;
 	}
+	
+	public function getTrail($id)
+	{
+		$fl = new Folder($this->adapter);
+		$escaper = new \Zend\Escaper\Escaper('utf-8');
+		/*$current_parent_id = $id;
+		$callback = function ($select) use ($current_parent_id){
+			$select->columns(['*']);
+			$select->where->equalTo('parent_id', $current_parent_id);
+		};
+		$rc = $this->select($callback)->toArray();
+		if(count($rc) != 0) {				
+			for($i = 0;$i<count($rc);$i++) {
+				$con1 = ' ' . $escaper->escapeHtml($rc[$i]['text_fr']) . ' '; 
+				//$con .= $con1;	
+				$tr[] = $rc[$i]['id'];
+				$current_parent_id = $rc[$i]['id'];	
+				$fl->getTrail($current_parent_id); 
+			}	
+		}
+		return $tr;*/
+		$ts = array(); $r = '';
+		$callback = function ($select) use ($id){
+			$select->columns(['*']);
+			$select->where->equalTo('id', $id);
+		};
+		$rc = $this->select($callback)->toArray();
+		//echo $rc[0]['text_fr'];
+		$r = $rc[0]['text_fr'] . " : ";
+		//array_push($ts,$rc[0]['text_fr']);
+		
+		if($rc[0]['parent_id'] != NULL)
+		{
+			//echo $rc[0]['text_fr'];
+			//array_push($ts,$rc[0]['text_fr']);
+			$cid = $rc[0]['parent_id'];
+			$fl->getTrail($cid);
+		}
+		//$r = ":".$r;
+		echo $r;
+		$str = $r;
+		//explode(":",$r);
+		return explode(" : ","Biographie : Milieu : Afrique du Nord :");
+	}	
 }

@@ -196,7 +196,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
 	public function findRecords($title)
     {
 		$select = $this->sql->select();
-        $select->where->like('new Zend\Db\Sql\Predicate\Expression(upper(title))', new Zend\Db\Sql\Predicate\Expression(upper($title.'%')));
+		$select->where->expression('LOWER(title) LIKE ?', strtolower($title).'%');
         //->where(['name' => $name]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
         return new Paginator($paginatorAdapter);
