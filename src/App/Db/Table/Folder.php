@@ -158,47 +158,55 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 		//return $row;
 	}
 	
-	public function getTrail($id)
+	public function getTrail($id, $r)
 	{
+		echo 'id is: ' . $id . ' and r is: ' . $r;
 		$fl = new Folder($this->adapter);
 		$escaper = new \Zend\Escaper\Escaper('utf-8');
-		/*$current_parent_id = $id;
-		$callback = function ($select) use ($current_parent_id){
-			$select->columns(['*']);
-			$select->where->equalTo('parent_id', $current_parent_id);
-		};
-		$rc = $this->select($callback)->toArray();
-		if(count($rc) != 0) {				
-			for($i = 0;$i<count($rc);$i++) {
-				$con1 = ' ' . $escaper->escapeHtml($rc[$i]['text_fr']) . ' '; 
-				//$con .= $con1;	
-				$tr[] = $rc[$i]['id'];
-				$current_parent_id = $rc[$i]['id'];	
-				$fl->getTrail($current_parent_id); 
-			}	
-		}
-		return $tr;*/
-		$ts = array(); $r = '';
+		$ts = array();
 		$callback = function ($select) use ($id){
 			$select->columns(['*']);
 			$select->where->equalTo('id', $id);
 		};
 		$rc = $this->select($callback)->toArray();
-		//echo $rc[0]['text_fr'];
-		$r = $rc[0]['text_fr'] . " : ";
-		//array_push($ts,$rc[0]['text_fr']);
-		
+		//echo '<pre>'; print_r($rc); echo '</pre>';
+		//$ts = $fl->getParent($rc[0]['parent_id']);
+		$r = $r . ":" . $rc[0]['text_fr'];
+
 		if($rc[0]['parent_id'] != NULL)
 		{
-			//echo $rc[0]['text_fr'];
-			//array_push($ts,$rc[0]['text_fr']);
 			$cid = $rc[0]['parent_id'];
-			$fl->getTrail($cid);
+			$fl->getTrail($cid,$r);
 		}
-		//$r = ":".$r;
-		echo $r;
-		$str = $r;
-		//explode(":",$r);
-		return explode(" : ","Biographie : Milieu : Afrique du Nord :");
+		//echo 'r is ' . $r;
+		//$str = $r;
+		//echo 'str is ' . $r;
+		return $r;
 	}	
+	
+	public function test($id,$r)
+	{
+		$str = "";
+		$str = $r;
+		$fl = new Folder($this->adapter);
+		$callback = function ($select) use ($id) {
+            $select->columns(['text_fr']);
+            $select->join(
+                ['b' => 'folder'], 'folder.id = b.parent_id',
+				['parent_id']
+            );
+			$select->where->equalTo('b.id', $id);			
+        };
+		$rc = $this->select($callback)->toArray();
+		if(count($rc) == 0)
+		{
+			return $str . ':' . 'Top';						
+		} 
+		else
+		{
+			$r = $r . ":" . $rc[0]['text_fr']; //top:Millieu
+			$r = $fl->test($rc[0]['parent_id'],$r); //test( 1,top:Millieu:Biographie)
+			return $r;
+		}
+	}
 }

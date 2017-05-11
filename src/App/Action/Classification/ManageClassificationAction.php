@@ -87,9 +87,17 @@ class ManageClassificationAction
 		//gel folder name for bread crumb
 		if($query['action'] == "get_children") {
 			$table= new \App\Db\Table\Folder($this->adapter);
-			//$previous_folder = $table->getParent($query['id']);
-			$ts = $table->getTrail(3);
-			echo "<pre>"; print_r($ts); echo "</pre>"; die();
+			$r = $table->test($query['id'],"");
+			$r = $query['fl'] . $r;
+			/*$prefix = ':';
+			if (substr($r, 0, strlen($prefix)) == $prefix) {
+				$r = substr($r, strlen($prefix));
+			}*/ 
+			//echo $r;
+			$ts = explode(":",$r);
+			$ts = array_reverse($ts);
+			//echo "<pre>"; print_r($ts); echo "</pre>"; 
+			//die();
 		}
         return new HtmlResponse(
             $this->template->render(
@@ -100,6 +108,7 @@ class ManageClassificationAction
                     'next' => $next,
                     'countp' => $countPages,
 					'previous_folder' => $previous_folder,
+					'trail' => $ts,
                 ]
             )
         );
