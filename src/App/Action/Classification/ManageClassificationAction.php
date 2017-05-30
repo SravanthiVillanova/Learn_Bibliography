@@ -18,8 +18,7 @@ class ManageClassificationAction
     private $template;
     
     private $adapter;
-    
-    
+       
     //private $dbh;
     //private $qstmt;
 
@@ -33,14 +32,6 @@ class ManageClassificationAction
     protected function getPaginator($query, $post)
     {
         if (!empty($query['action'])) {
-            //export classification
-            if ($query['action'] == "export_classification") {
-                echo "export folder";
-                /*if ($post['submitt'] == "Save") {
-                    $table = new \App\Db\Table\WorkType($this->adapter);
-                    $table->insertRecords($post['new_worktype']);
-                }*/
-            }
 			//manage classification hierarchy
 			if($query['action'] == "get_children") {
 				$table = new \App\Db\Table\Folder($this->adapter);
@@ -49,6 +40,29 @@ class ManageClassificationAction
 				return $paginator;
 			}
         }
+		if (!empty($post['action'])) {
+			//add folder
+			if ($post['action'] == "new") {
+                if ($post['submit'] == "Save") {
+					//echo "<pre>";print_r($post);echo "</pre>"; die();
+                    $table = new \App\Db\Table\Folder($this->adapter);
+                    $table->insertRecords($post['parent_id'], $post['new_classif_engtitle'], $post['new_classif_frenchtitle'],
+                                $post['new_classif_germantitle'], $post['new_classif_dutchtitle'], $post['new_classif_spanishtitle'], 
+								$post['new_classif_italiantitle'], $post['new_classif_sortorder']);
+                }
+            }
+			//edit folder
+            if ($post['action'] == "edit") {
+                if ($post['submit'] == "Save") {
+                    if (!is_null($post['id'])) {
+						//echo "<pre>";print_r($post);echo "</pre>"; die();
+                        $table = new \App\Db\Table\Folder($this->adapter);
+                        $table->updateRecord($post['id'], $post['edit_texten'], $post['edit_textfr'],
+                                            $post['edit_textde'], $post['edit_textnl'], $post['edit_textes'], $post['edit_textit'], $post['edit_sortorder']);
+                    }
+                }
+            }
+		}
         // default: blank for listing in manage
         $table = new \App\Db\Table\Folder($this->adapter);
         $paginator = $table->findParent();
@@ -87,7 +101,7 @@ class ManageClassificationAction
 		//gel folder name for bread crumb
 		if($query['action'] == "get_children") {
 			$table= new \App\Db\Table\Folder($this->adapter);
-			$r = $table->test($query['id'],"");
+			$r = $table->getTrail($query['id'],"");
 			$r = $query['fl'] . $r;
 			/*$prefix = ':';
 			if (substr($r, 0, strlen($prefix)) == $prefix) {

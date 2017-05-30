@@ -45,6 +45,8 @@ return [
 			App\Action\Classification\ManageClassificationAction::class => App\Action\Classification\ManageClassificationFactory::class,
 			App\Action\Classification\MergeClassificationAction::class => App\Action\Classification\MergeClassificationFactory::class,
 			App\Action\Classification\ExportListClassificationAction::class => App\Action\Classification\ExportListClassificationFactory::class,
+			App\Action\Classification\EditClassificationAction::class => App\Action\Classification\EditClassificationFactory::class,
+            App\Action\Classification\DeleteClassificationAction::class => App\Action\Classification\DeleteClassificationFactory::class,
             
 			/*App\Action\SimpleRenderAction::class => App\Action\Agent\NewAgentFactory::class,
 			App\Action\SimpleRenderAction::class => App\Action\Agent\FindAgentFactory::class,			
@@ -394,6 +396,28 @@ return [
 				\App\Middleware\AuthenticationMiddleware::class,
                 App\Action\Classification\ExportListClassificationAction::class,
             ],
+            'allowed_methods' => ['GET','POST'],
+        ],
+		
+		[
+            'name' => 'edit_classification',
+		    'path' => '/Classification/edit',
+            'middleware' => [
+                //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
+                App\Action\Classification\EditClassificationAction::class,
+            ],                
+            'allowed_methods' => ['GET','POST'],
+        ],
+        
+		[
+            'name' => 'delete_classification',
+		    'path' => '/Classification/delete',
+            'middleware' => [
+                //BodyParamsMiddleware::class,
+				\App\Middleware\AuthenticationMiddleware::class,
+                App\Action\Classification\DeleteClassificationAction::class,
+            ],                
             'allowed_methods' => ['GET','POST'],
         ],
 		

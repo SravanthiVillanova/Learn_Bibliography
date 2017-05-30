@@ -1,5 +1,12 @@
 <?php $this->headTitle('New Classification'); ?>
 <?php //$this->layout()->instructions = ""; ?>
+<?php                                       
+        if ($request->getqueryParams('action') !== null) 
+        {   
+            $params = $request->getqueryParams();
+            $action = $params['action'];
+        }                
+ ?>
 <div class="col-md-4">
 <form class="form-horizontal" method="post" action="<?=$this->url('manage_classification')?>">
 <input type="hidden" name="action" value="<?=$action?>">
@@ -60,8 +67,8 @@
   </div>
   <div class="form-group">
 	<div class="col-sm-offset-4 col-sm-10">
-		<button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button> 
-        <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
+		<button type="submit" class="btn btn-default" name="submit" value="Save">Save</button> 
+        <button type="submit" class="btn btn-default" name="submit" value="Cancel">Cancel</button>
 	</div>
   </div>
 </form>

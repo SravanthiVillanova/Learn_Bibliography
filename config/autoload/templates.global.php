@@ -53,6 +53,8 @@ return [
             'app::classification::manage_classification' => 'templates/app/classification/manage.phtml',
             'app::classification::merge_classification' => 'templates/app/classification/merge.phtml',
             'app::classification::exportlist_classification' => 'templates/app/classification/exportlist.phtml',
+			'app::classification::edit_classification' => 'templates/app/classification/edit.phtml',
+            'app::classification::delete_classification' => 'templates/app/classification/delete.phtml',
             //agent
             'app::agent::new_agent' => 'templates/app/agent/new.phtml',
             'app::agent::find_agent' => 'templates/app/agent/find.phtml',

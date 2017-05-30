@@ -158,7 +158,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 		//return $row;
 	}
 	
-	public function getTrail($id, $r)
+	public function getTrail_old($id, $r)
 	{
 		echo 'id is: ' . $id . ' and r is: ' . $r;
 		$fl = new Folder($this->adapter);
@@ -184,7 +184,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 		return $r;
 	}	
 	
-	public function test($id,$r)
+	public function getTrail($id,$r)
 	{
 		$str = "";
 		$str = $r;
@@ -205,8 +205,47 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 		else
 		{
 			$r = $r . ":" . $rc[0]['text_fr']; //top:Millieu
-			$r = $fl->test($rc[0]['parent_id'],$r); //test( 1,top:Millieu:Biographie)
+			$r = $fl->getTrail($rc[0]['parent_id'],$r); //getTrail( 1,top:Millieu:Biographie)
 			return $r;
 		}
 	}
+	
+	public function findRecordById($id)
+    {
+        $rowset = $this->select(array('id' => $id));
+        $row = $rowset->current();
+        return($row);
+    }
+	
+	public function insertRecords($parent_id, $text_en, $text_fr, $text_de, $text_nl, $text_es, $text_it, $sort_order)
+    {
+        $this->insert(
+            [
+				'parent_id' => $parent_id,
+				'text_en' => $text_en,
+                'text_fr' => $text_fr,
+                'text_de' => $text_de,
+                'text_nl' => $text_nl,
+				'text_es' => $text_es,
+				'text_it' => $text_it,
+				'sort_order' => $sort_order,
+            ]
+        );
+    }
+	
+	public function updateRecord($id, $text_en, $text_fr, $text_de, $text_nl, $text_es, $text_it, $sort_order)
+    {
+        $this->update(
+            [
+                'text_en' => $text_en,
+                'text_fr' => $text_fr,
+                'text_de' => $text_de,
+                'text_nl' => $text_nl,
+				'text_es' => $text_es,
+				'text_it' => $text_it,
+				'sort_order' => $sort_order,
+            ],
+            ['id' => $id]
+        );
+    }
 }
