@@ -7,8 +7,11 @@
 	{
 		for($i=0;$i<=count($this->trail)-2;$i++)
 		{
+			if preg_match
 		?>
-			<a href="#"><?php echo $this->trail[$i]; ?></a>
+			<a href="<?=$this->url('manage_classification')?><?='?fl='. $this->trail[$i]. '&action=get_siblings'?>">
+			<?php echo $this->trail[$i]; ?>
+			</a>
 			<?php echo ' > ';
 		}
 		echo $this->trail[$i];
@@ -32,9 +35,7 @@
         <td>                   
             <a href="<?=$this->url('edit_classification')?><?='?id='. $row['id']. '&action=edit'?>">Edit</a>        
 			|
-			<a href="#">Move</a>
-			|
-            <a href="#">Delete</a>
+			<a href="<?=$this->url('move_classification')?><?='?id='. $row['id']. '&action=move'?>">Move</a>
 			|
 			<a href="#">Manage References</a>
         </td>

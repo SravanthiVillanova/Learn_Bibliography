@@ -39,6 +39,13 @@ class ManageClassificationAction
 				$paginator = new Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($rows));
 				return $paginator;
 			}
+			//view link click
+			if($query['action'] == "get_siblings") {
+				$table = new \App\Db\Table\Folder($this->adapter);
+				$rows = $table->getChild($query['id']);
+				$paginator = new Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($rows));
+				return $paginator;
+			}
         }
 		if (!empty($post['action'])) {
 			//add folder
@@ -109,6 +116,7 @@ class ManageClassificationAction
 			}*/ 
 			//echo $r;
 			$ts = explode(":",$r);
+			var_dump($ts);
 			$ts = array_reverse($ts);
 			//echo "<pre>"; print_r($ts); echo "</pre>"; 
 			//die();

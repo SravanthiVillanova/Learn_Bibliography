@@ -190,7 +190,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 		$str = $r;
 		$fl = new Folder($this->adapter);
 		$callback = function ($select) use ($id) {
-            $select->columns(['text_fr']);
+            $select->columns(['*']);
             $select->join(
                 ['b' => 'folder'], 'folder.id = b.parent_id',
 				['parent_id']
@@ -204,7 +204,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 		} 
 		else
 		{
-			$r = $r . ":" . $rc[0]['text_fr']; //top:Millieu
+			$r = $r . ":" . $rc[0]['text_fr'] . "*" . $rc[0]['id']; //top:Millieu
 			$r = $fl->getTrail($rc[0]['parent_id'],$r); //getTrail( 1,top:Millieu:Biographie)
 			return $r;
 		}

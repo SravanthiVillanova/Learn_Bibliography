@@ -46,7 +46,7 @@ return [
 			App\Action\Classification\MergeClassificationAction::class => App\Action\Classification\MergeClassificationFactory::class,
 			App\Action\Classification\ExportListClassificationAction::class => App\Action\Classification\ExportListClassificationFactory::class,
 			App\Action\Classification\EditClassificationAction::class => App\Action\Classification\EditClassificationFactory::class,
-            App\Action\Classification\DeleteClassificationAction::class => App\Action\Classification\DeleteClassificationFactory::class,
+            App\Action\Classification\MoveClassificationAction::class => App\Action\Classification\MoveClassificationFactory::class,
             
 			/*App\Action\SimpleRenderAction::class => App\Action\Agent\NewAgentFactory::class,
 			App\Action\SimpleRenderAction::class => App\Action\Agent\FindAgentFactory::class,			
@@ -411,12 +411,12 @@ return [
         ],
         
 		[
-            'name' => 'delete_classification',
-		    'path' => '/Classification/delete',
+            'name' => 'move_classification',
+		    'path' => '/Classification/move',
             'middleware' => [
                 //BodyParamsMiddleware::class,
 				\App\Middleware\AuthenticationMiddleware::class,
-                App\Action\Classification\DeleteClassificationAction::class,
+                App\Action\Classification\MoveClassificationAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
         ],
