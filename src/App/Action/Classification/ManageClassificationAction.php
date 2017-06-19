@@ -42,9 +42,9 @@ class ManageClassificationAction
 			//view link click
 			if($query['action'] == "get_siblings") {
 				$table = new \App\Db\Table\Folder($this->adapter);
-				$rows = $table->getChild($query['id']);
-				$paginator = new Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($rows));
-				return $paginator;
+				$rows = $table->findParent();
+				//$paginator = new Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($rows));
+				return $rows;
 			}
         }
 		if (!empty($post['action'])) {
@@ -69,6 +69,15 @@ class ManageClassificationAction
                     }
                 }
             }
+			//move folder
+			if ($post['action'] == "move")
+			{
+				echo "<pre>";print_r($post);echo "</pre>";
+				if($post['subject_tree_mv'] == $post['id'])
+				{
+					
+				}
+			}
 		}
         // default: blank for listing in manage
         $table = new \App\Db\Table\Folder($this->adapter);
@@ -85,7 +94,7 @@ class ManageClassificationAction
             $post = $request->getParsedBody();
         }
         $paginator = $this->getPaginator($query, $post);
-        $paginator->setDefaultItemCountPerPage(7);
+        $paginator->setDefaultItemCountPerPage(15);
         $allItems = $paginator->getTotalItemCount();
         $countPages = $paginator->count();
         

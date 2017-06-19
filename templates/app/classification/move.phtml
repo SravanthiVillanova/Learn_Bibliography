@@ -1,0 +1,153 @@
+<?php $this->headTitle('Move Classification'); ?>
+<?php //$this->layout()->instructions = ""; ?>
+<?php                                       
+    $id;
+    if ($request->getqueryParams('id') !== null) 
+    {   
+        $params = $request->getqueryParams();
+        $action = $params['action'];
+        $id = $params['id'];
+		echo "action is" . $action;
+    }
+?>
+<script>
+$(document).ready(function() {
+	$("#submit_save").click( function() {
+		alert("helloo");
+		var $select = $('select[name="subject_tree_mv[]"]');
+		var tmp = $select.length;
+		/*for(i=0;i<tmp;i++)
+		{
+			alert($select.eq(1).val());
+		}*/
+		alert($select.eq(1).val());
+		var fl_moved_id = $select.eq(1).val();
+		alert("moved to " + fl_mv_id);
+    });
+});
+</script>
+<div class="col-md-7">
+<form id="move-folder-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_classification')?>">
+<input type="hidden" name="action" value="<?=$action?>">
+<input type="hidden" name="id" id="mv_fl_id" value="<?=$id?>">	
+<?php
+$arr_fl = [];			
+if(isset($id)) 
+{
+	//echo "fl id set";
+	$arr_fl[] = $id;
+	$table = new \App\Db\Table\Folder($this->adapter);
+	$fl_row = $table->getParent($id); 
+	while(isset($fl_row['parent_id'])) 
+	{
+		$arr_fl[] = $fl_row['parent_id'];				
+		$table = new \App\Db\Table\Folder($this->adapter);
+		$fl_row = $table->getParent($fl_row['parent_id']);
+		if($fl_row['parent_id'] == NULL)
+		{
+			break;
+		}
+	}
+	//print_r($arr_fl);
+	$cnt = count($arr_fl);
+	echo "count is $cnt" . "</br>";
+	for($i = $cnt-1; $i >= 0; $i--)
+	{		
+		//echo "i is $i";
+		if($arr_fl[$i] == $id)
+		{
+			echo "folder is " . $arr_fl[$i] . "</br>";
+			echo "parent is " . $arr_fl[$i+1] . "</br>";
+		?>
+			<div class="form-group" id="class_grp">
+			<label class="col-xs-2 control-label">Subject Tree: </label>
+			<div class="col-xs-5">
+				<select class="form-control" name="subject_tree_mv[]" id="subject_tree_mv[]">
+				<option value=""></option>
+				<?php
+				$table = new \App\Db\Table\Folder($this->adapter);
+				$fl_siblings = $table->getChild($arr_fl[$i+1]);
+				//echo "<pre>";print_r($fl_siblings);echo "</pre>";
+					foreach($fl_siblings as $row) :
+				?>
+				<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>	
+					<?php 
+					endforeach; ?>
+				</select>
+			</div>
+			</div>	
+		<?php
+		}
+		else if($i != ($cnt-1))
+		{
+			echo "folder is " . $arr_fl[$i] . "</br>";
+			echo "parent is " . $arr_fl[$i+1] . "</br>";
+			$table = new \App\Db\Table\Folder($this->adapter);
+			$fl = $table->findRecordById($arr_fl[$i]);
+		?>
+			<div class="form-group" id="class_grp">
+			<label class="col-xs-2 control-label">Subject Tree: </label>
+			<div class="col-xs-5">
+				<select class="form-control" name="subject_tree_mv[]" id="subject_tree_mv[]">
+				<option value="<?=$arr_fl[$i]?>"><?php echo $fl['text_fr']; ?></option>
+				<?php
+				$table = new \App\Db\Table\Folder($this->adapter);
+				$fl_siblings = $table->getChild($arr_fl[$i+1]);
+				//echo "<pre>";print_r($fl_siblings);echo "</pre>";
+					foreach($fl_siblings as $row) :
+					if($row['id'] != $arr_fl[$i])
+					{
+				?>
+				<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
+				<?php
+					}
+					endforeach; ?>
+				</select>
+			</div>
+		</div>		
+		<?php
+		}
+		else
+		{
+			echo "folder is " . $arr_fl[$i] . "</br>";
+			echo "parent is null" . "</br>";
+			$table = new \App\Db\Table\Folder($this->adapter);
+			$fl_siblings = $table->getFoldersWithNullParent();
+			//echo "<pre>";print_r($fl_siblings);echo "</pre>";
+			$table = new \App\Db\Table\Folder($this->adapter);
+			$fl = $table->findRecordById($arr_fl[$i]);
+		?>
+			<div class="form-group" id="class_grp">
+			<label class="col-xs-2 control-label">Subject Tree: </label>
+			<div class="col-xs-5">
+				<select class="form-control" name="subject_tree_mv[]" id="subject_tree_mv[]">
+				<option value="<?=$arr_fl[$i]?>"><?php echo $fl['text_fr']; ?></option>
+				<?php
+				$table = new \App\Db\Table\Folder($this->adapter);
+				$fl_siblings = $table->getChild($arr_fl[$i+1]);
+				//echo "<pre>";print_r($fl_siblings);echo "</pre>";
+					foreach($fl_siblings as $row) :
+					if($row['id'] != $arr_fl[$i])
+					{
+				?>
+				<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
+				<?php 
+					}
+					endforeach; ?>
+				</select>
+			</div>
+			</div>	
+		<?php
+		}
+	}
+}
+?>
+<div class="form-group">
+	<div class="col-sm-offset-2 col-sm-10">
+		<button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Save</button> 
+        <button type="submit" class="btn btn-default" name="submit_cancel" value="Cancel">Cancel</button>
+		<p class="moveError" style="display:none;color:red;margin-bottom:20px;">Cannot move a classification into itself.</p>
+	</div>
+</div>
+</form>
+</div>

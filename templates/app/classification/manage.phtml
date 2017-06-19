@@ -7,16 +7,28 @@
 	{
 		for($i=0;$i<=count($this->trail)-2;$i++)
 		{
-			if preg_match
-		?>
-			<a href="<?=$this->url('manage_classification')?><?='?fl='. $this->trail[$i]. '&action=get_siblings'?>">
-			<?php echo $this->trail[$i]; ?>
+			if(preg_match('/(?<name>\w+)\*(?<digit>\d+)/',$this->trail[$i],$matches))
+			{
+				$fl_name = $matches['name'];
+				$fl_id = $matches['digit'];			
+	?>
+			<a href="<?=$this->url('manage_classification')?><?='?id='. $fl_id. '&fl=' . $fl_name. '&action=get_children'?>">
+			<?php echo $fl_name; ?>
 			</a>
 			<?php echo ' > ';
+			}
+			if(preg_match('/Top/',$this->trail[$i],$matches))
+			{
+			?>
+			<a href="<?=$this->url('manage_classification')?><?='?action=get_siblings'?>">
+			<?php echo "Top"; ?>
+			</a>
+			<?php echo ' > ';
+			}
 		}
 		echo $this->trail[$i];
 	}	
-?>
+			?>
 	</a>
 	</p>
 	<table class="table table-striped table-condensed" style="font-size:10pt;">

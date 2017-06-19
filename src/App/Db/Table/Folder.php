@@ -140,6 +140,16 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         return($row);
 	}
 	
+	public function getFoldersWithNullParent()
+	{
+		$callback = function ($select) {
+			$select->columns(['*']);
+			$select->where('parent_id IS NULL');
+		};
+		$rows = $this->select($callback)->toArray(); 
+        return($rows);
+	}
+	
 	public function getHierarchyRecords($id)
 	{
 		echo 'id is ' . $id;
@@ -157,32 +167,6 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 		echo "<pre>";print_r($rows);echo "</pre>";*/
 		//return $row;
 	}
-	
-	public function getTrail_old($id, $r)
-	{
-		echo 'id is: ' . $id . ' and r is: ' . $r;
-		$fl = new Folder($this->adapter);
-		$escaper = new \Zend\Escaper\Escaper('utf-8');
-		$ts = array();
-		$callback = function ($select) use ($id){
-			$select->columns(['*']);
-			$select->where->equalTo('id', $id);
-		};
-		$rc = $this->select($callback)->toArray();
-		//echo '<pre>'; print_r($rc); echo '</pre>';
-		//$ts = $fl->getParent($rc[0]['parent_id']);
-		$r = $r . ":" . $rc[0]['text_fr'];
-
-		if($rc[0]['parent_id'] != NULL)
-		{
-			$cid = $rc[0]['parent_id'];
-			$fl->getTrail($cid,$r);
-		}
-		//echo 'r is ' . $r;
-		//$str = $r;
-		//echo 'str is ' . $r;
-		return $r;
-	}	
 	
 	public function getTrail($id,$r)
 	{
