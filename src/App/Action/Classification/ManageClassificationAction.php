@@ -65,7 +65,8 @@ class ManageClassificationAction
 						//echo "<pre>";print_r($post);echo "</pre>"; die();
                         $table = new \App\Db\Table\Folder($this->adapter);
                         $table->updateRecord($post['id'], $post['edit_texten'], $post['edit_textfr'],
-                                            $post['edit_textde'], $post['edit_textnl'], $post['edit_textes'], $post['edit_textit'], $post['edit_sortorder']);
+                                            $post['edit_textde'], $post['edit_textnl'], $post['edit_textes'], 
+											$post['edit_textit'], $post['edit_sortorder']);
                     }
                 }
             }
@@ -73,10 +74,29 @@ class ManageClassificationAction
 			if ($post['action'] == "move")
 			{
 				echo "<pre>";print_r($post);echo "</pre>";
-				if($post['subject_tree_mv'] == $post['id'])
+				/*$table = new \App\Db\Table\Folder($this->adapter);
+				$table->moveFolder($post['id'],$post['fl_to_mv']);*/
+				if($post['fl_to_mv'] == "" && $post['fl_parent'] == "")
 				{
-					
+					echo "case root";//die();
+					/*$table = new \App\Db\Table\Folder($this->adapter);
+				    $table->moveFolder($post['id'],$post['fl_parent_root']);*/
 				}
+				else if($post['fl_to_mv'] == "" && $post['fl_parent'] != "")
+				{
+					echo "case parent";//die();
+					/*$table = new \App\Db\Table\Folder($this->adapter);
+				    $table->moveFolder($post['id'],$post['fl_parent']);*/
+				}
+				else
+				{
+					echo "case last level"; //die();
+					/*$table = new \App\Db\Table\Folder($this->adapter);
+				    $table->moveFolder($post['id'],$post['fl_to_mv']);*/
+				}
+				var_dump($post['fl_to_mv']);
+				var_dump($post['fl_parent']);
+				var_dump($post['fl_parent_root']); die();
 			}
 		}
         // default: blank for listing in manage
@@ -125,7 +145,7 @@ class ManageClassificationAction
 			}*/ 
 			//echo $r;
 			$ts = explode(":",$r);
-			var_dump($ts);
+			//var_dump($ts);
 			$ts = array_reverse($ts);
 			//echo "<pre>"; print_r($ts); echo "</pre>"; 
 			//die();

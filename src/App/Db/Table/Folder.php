@@ -232,4 +232,14 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
             ['id' => $id]
         );
     }
+	
+	public function moveFolder($id, $parent_id)
+	{
+		$this->update(
+            [
+                'parent_id' => $parent_id,
+            ],
+            ['id' => $id]
+        );
+	}
 }

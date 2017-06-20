@@ -7,34 +7,161 @@
         $params = $request->getqueryParams();
         $action = $params['action'];
         $id = $params['id'];
-		echo "action is" . $action;
     }
 ?>
 <script>
+_select = '';
+//$('<select class="form-control folder_child" name="folder_child"/>');
+function bindClassificationFolder(context)
+{
+	/*$('label[name="fl_parent"]').remove();
+	$('div[name="fl_parent_select"]').remove();
+	$('select[name="fl_parent"]').remove();
+		
+	$('label[name="fl_to_mv"]').remove();
+	$('div[name="fl_to_mv_select"]').remove();
+	$('select[name="fl_to_mv"]').remove();*/
+		
+	//folder_Id = $('select[name="fl_parent"]').val();
+	//alert('from func ' + folder_Id);
+	folder_Id = $(_select,context).val();
+	$.ajax({
+        method: 'post',
+        url: 'http://localhost<?=$this->url('get_work_details')?>',
+		data: {
+			folder_Id: folder_Id
+		},
+		dataType: "json", 
+        cache: false,
+        success: function(data)
+        {	
+			if(data.folder_children.length > 0)
+			{
+				//$("<div />").attr("class","form-group").attr("name","fl_to_mv_grp").attr("id","fl_to_mv_grp").appendTo("#form_mv_classification");
+				$("#form_mv_classification").append('<div class="form-group" name="fl_to_mv_grp" id="fl_to_mv_grp">');
+				//$("<label />").attr("class","col-xs-2 control-label").attr("name","fl_parent").attr("id","fl_parent").appendTo("");
+				$("#fl_parent_grp").append('<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>');
+				$("#fl_parent_grp").append('<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select">');
+				_select = $('<select class="form-control" name="fl_parent" id="fl_parent">');
+				to_append = '';
+				$.each(data.folder_children, function (key, val) {
+					to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+				});
+				_select.append($('<option />'));
+				_select.append(to_append);
+				_select.appendTo('#fl_parent_select');
+				$("#fl_parent_select").append('</select>');
+				$("#fl_parent_grp").append('</div>');
+				$("#form_mv_classification").append('</div>');
+				_select.on('change',function(){
+					bindClassificationFolder(document);
+				});
+			}
+		},
+		error: function (data) { 
+            //$("#Classification", context).html('<p>No Options</p>');
+        }
+		});			
+		return false;
+}
 $(document).ready(function() {
 	$("#submit_save").click( function() {
-		alert("helloo");
-		var $select = $('select[name="subject_tree_mv[]"]');
-		var tmp = $select.length;
-		/*for(i=0;i<tmp;i++)
+		var fl_id = $("#mv_fl_id").val();
+		var $select = $('select[name="fl_to_mv"]');
+		fl_moved_id = $select.val();
+		if(fl_id === fl_moved_id)
 		{
-			alert($select.eq(1).val());
-		}*/
-		alert($select.eq(1).val());
-		var fl_moved_id = $select.eq(1).val();
-		alert("moved to " + fl_mv_id);
+			$('.moveError').show();
+			$select.focus();
+			return false;
+		}
     });
+	
+	//select empty in parent
+	$('select[name="fl_parent"]').on('change', function(){ 
+		if($(this).val() == "none"){
+			$('label[name="fl_parent"]').remove();
+			$('div[name="fl_parent_select"]').remove();
+			$('select[name="fl_parent"]').remove();
+		
+			$('label[name="fl_to_mv"]').remove();
+			$('div[name="fl_to_mv_select"]').remove();
+			$('select[name="fl_to_mv"]').remove();
+			
+			$('select[name="fl_parent_root"]').val("none");
+			return false;
+		}
+	});
+
+	//select root
+	$('select[name="fl_parent_root"]').on('change', function(){
+		$('.moveError').remove();
+		$('label[name="fl_parent"]').remove();
+		$('div[name="fl_parent_select"]').remove();
+		$('select[name="fl_parent"]').remove();
+		
+		$('label[name="fl_to_mv"]').remove();
+		$('div[name="fl_to_mv_select"]').remove();
+		$('select[name="fl_to_mv"]').remove();
+		
+		folder_Id = $('select[name="fl_parent_root"]').val();
+		$.ajax({
+        method: 'post',
+        url: 'http://localhost<?=$this->url('get_work_details')?>',
+		data: {
+			folder_Id: folder_Id
+		},
+		dataType: "json", 
+        cache: false,
+        success: function(data)
+        {			
+			$("#fl_parent_grp").append('<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>');
+			$("#fl_parent_grp").append('<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select">');
+			_select = $('<select class="form-control" name="fl_parent" id="fl_parent">');
+			to_append = '';
+			$.each(data.folder_children, function (key, val) {
+				to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+			});
+			_select.append($('<option />'));
+			_select.append(to_append);
+			_select.appendTo('#fl_parent_select');
+			$("#fl_parent_select").append('</select>');
+			$("#fl_parent_grp").append('</div>');
+			_select.on('change',function(){
+				bindClassificationFolder(document);
+			});			
+		},
+		error: function (data) { 
+            //$("#Classification", context).html('<p>No Options</p>');
+        }
+		});			
+		return false;
+	});
+	//check if parent null
+	$('#submit_save').on('click', function(){
+		alert("value of fl_parent is " + $('select[name="fl_parent"]').val());
+		var lg = $('select[name="fl_parent"]').length;
+			alert(lg);
+		if($('select[name="fl_parent"]').val() == "")
+		{
+			alert("empty");
+			var lg = $('select[name="fl_parent"]').length;
+			console.log(lg);
+			$('select[name="fl_parent"]').val(folder_Id);
+		}
+		return true;
+	});
 });
 </script>
-<div class="col-md-7">
-<form id="move-folder-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_classification')?>">
+<div class="col-md-7" name="mv_classification" id="mv_classification">
+<form id="move-folder-data" class="form-horizontal" name="form_mv_classification" id="form_mv_classification" 
+      method="POST" action="<?=$this->url('manage_classification')?>">
 <input type="hidden" name="action" value="<?=$action?>">
 <input type="hidden" name="id" id="mv_fl_id" value="<?=$id?>">	
 <?php
 $arr_fl = [];			
 if(isset($id)) 
 {
-	//echo "fl id set";
 	$arr_fl[] = $id;
 	$table = new \App\Db\Table\Folder($this->adapter);
 	$fl_row = $table->getParent($id); 
@@ -48,26 +175,20 @@ if(isset($id))
 			break;
 		}
 	}
-	//print_r($arr_fl);
 	$cnt = count($arr_fl);
-	echo "count is $cnt" . "</br>";
 	for($i = $cnt-1; $i >= 0; $i--)
 	{		
-		//echo "i is $i";
 		if($arr_fl[$i] == $id)
 		{
-			echo "folder is " . $arr_fl[$i] . "</br>";
-			echo "parent is " . $arr_fl[$i+1] . "</br>";
 		?>
-			<div class="form-group" id="class_grp">
-			<label class="col-xs-2 control-label">Subject Tree: </label>
-			<div class="col-xs-5">
-				<select class="form-control" name="subject_tree_mv[]" id="subject_tree_mv[]">
-				<option value=""></option>
+			<div class="form-group" name="fl_to_mv_grp" id="fl_to_mv_grp">
+			<label class="col-xs-2 control-label" name="fl_to_mv" id="fl_to_mv">Subject Tree: </label>
+			<div class="col-xs-5" name="fl_to_mv_select" id="fl_to_mv_select">
+				<select class="form-control" name="fl_to_mv" id="fl_to_mv">
+				<option value="none"></option>
 				<?php
 				$table = new \App\Db\Table\Folder($this->adapter);
 				$fl_siblings = $table->getChild($arr_fl[$i+1]);
-				//echo "<pre>";print_r($fl_siblings);echo "</pre>";
 					foreach($fl_siblings as $row) :
 				?>
 				<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>	
@@ -80,20 +201,18 @@ if(isset($id))
 		}
 		else if($i != ($cnt-1))
 		{
-			echo "folder is " . $arr_fl[$i] . "</br>";
-			echo "parent is " . $arr_fl[$i+1] . "</br>";
 			$table = new \App\Db\Table\Folder($this->adapter);
 			$fl = $table->findRecordById($arr_fl[$i]);
 		?>
-			<div class="form-group" id="class_grp">
-			<label class="col-xs-2 control-label">Subject Tree: </label>
-			<div class="col-xs-5">
-				<select class="form-control" name="subject_tree_mv[]" id="subject_tree_mv[]">
-				<option value="<?=$arr_fl[$i]?>"><?php echo $fl['text_fr']; ?></option>
+			<div class="form-group" name="fl_parent_grp" id="fl_parent_grp">
+			<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>
+			<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select">
+				<select class="form-control" name="fl_parent" id="fl_parent">
+				<option value="none"></option>
+				<option value="<?=$arr_fl[$i]?>" selected><?php echo $fl['text_fr']; ?></option>
 				<?php
 				$table = new \App\Db\Table\Folder($this->adapter);
 				$fl_siblings = $table->getChild($arr_fl[$i+1]);
-				//echo "<pre>";print_r($fl_siblings);echo "</pre>";
 					foreach($fl_siblings as $row) :
 					if($row['id'] != $arr_fl[$i])
 					{
@@ -109,23 +228,19 @@ if(isset($id))
 		}
 		else
 		{
-			echo "folder is " . $arr_fl[$i] . "</br>";
-			echo "parent is null" . "</br>";
-			$table = new \App\Db\Table\Folder($this->adapter);
-			$fl_siblings = $table->getFoldersWithNullParent();
-			//echo "<pre>";print_r($fl_siblings);echo "</pre>";
 			$table = new \App\Db\Table\Folder($this->adapter);
 			$fl = $table->findRecordById($arr_fl[$i]);
 		?>
-			<div class="form-group" id="class_grp">
-			<label class="col-xs-2 control-label">Subject Tree: </label>
-			<div class="col-xs-5">
-				<select class="form-control" name="subject_tree_mv[]" id="subject_tree_mv[]">
-				<option value="<?=$arr_fl[$i]?>"><?php echo $fl['text_fr']; ?></option>
+			<div class="form-group" name="fl_parent_root_grp" id="fl_parent_root_grp">
+			<label class="col-xs-2 control-label" name="fl_parent_root" id="fl_parent_root">Subject Tree: </label>
+			<div class="col-xs-5" name="fl_parent_root_select" id="fl_parent_root_select">
+				<select class="form-control" name="fl_parent_root" id="fl_parent_root">
+				<option value="none"></option>
+				<option value="<?=$arr_fl[$i]?>" selected><?php echo $fl['text_fr']; ?></option>
 				<?php
 				$table = new \App\Db\Table\Folder($this->adapter);
-				$fl_siblings = $table->getChild($arr_fl[$i+1]);
-				//echo "<pre>";print_r($fl_siblings);echo "</pre>";
+				//$fl_siblings = $table->getChild($arr_fl[$i+1]);
+				$fl_siblings = $table->getFoldersWithNullParent();
 					foreach($fl_siblings as $row) :
 					if($row['id'] != $arr_fl[$i])
 					{

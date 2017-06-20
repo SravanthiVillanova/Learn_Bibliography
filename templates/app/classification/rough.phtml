@@ -18,9 +18,12 @@ id p_id en fr de nl es it no sort_ord
 
 move:
 -----
-1. select same - display message
-2. select other than id in last dropdown, make selected fl id as parent_id for id record
-3. in any other dropdown select smthng else - display hierarchy accordingly
+1. select same - display message --done
+2. select other than id in last dropdown, make selected fl id as parent_id for id record  --done
+3. if fl_to_mv is not selected set fl_parent
+4. if fl_to_mv and fl_parent not selected, set fl_parent_root
+5. in any other dropdown select smthng else - display hierarchy accordingly 
+6. add the case where after changing select and finally selecting same folder to move, display error 'cannot move into folder itself'
 
 for($i = $cnt-1; $i >= 0; $i--)
 	{

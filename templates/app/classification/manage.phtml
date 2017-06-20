@@ -7,7 +7,8 @@
 	{
 		for($i=0;$i<=count($this->trail)-2;$i++)
 		{
-			if(preg_match('/(?<name>\w+)\*(?<digit>\d+)/',$this->trail[$i],$matches))
+			//if(preg_match('/(?<name>\w+)\*(?<digit>\d+)/',$this->trail[$i],$matches))-'/(?<name>[\pL_]+\s*)\*(?<digit>\d+)/'
+			if(preg_match('/(?<name>[\s\S]+)\*(?<digit>\d+)/',$this->trail[$i],$matches))
 			{
 				$fl_name = $matches['name'];
 				$fl_id = $matches['digit'];			
