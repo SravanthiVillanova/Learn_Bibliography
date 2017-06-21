@@ -80,6 +80,7 @@ $(document).ready(function() {
 	//select empty in parent
 	$('select[name="fl_parent"]').on('change', function(){ 
 		if($(this).val() == "none"){
+			$('.moveError').remove();
 			$('label[name="fl_parent"]').remove();
 			$('div[name="fl_parent_select"]').remove();
 			$('select[name="fl_parent"]').remove();
@@ -89,6 +90,72 @@ $(document).ready(function() {
 			$('select[name="fl_to_mv"]').remove();
 			
 			$('select[name="fl_parent_root"]').val("none");
+			return false;
+		}
+		else
+		{
+			$('.moveError').remove();
+			fl_changed = $(this).val();
+			var no_of_fl_parent = $('select[name="fl_parent"]').length;
+			for(var i = 0;i < no_of_fl_parent; i++)
+			{
+				if($('select[name="fl_parent"]').eq(i).val() === fl_changed)
+				{
+					change_idx = i;
+					folder_Id = $('select[name="fl_parent"]').eq(i).val();
+					break;
+				}
+			}
+			for(i = change_idx + 1; i < no_of_fl_parent; i++)
+			{
+				$('label[name="fl_parent"]').eq(i).remove();
+				$('div[name="fl_parent_select"]').eq(i).remove();
+				$('select[name="fl_parent"]').eq(i).remove();
+			}
+			
+			$('label[name="fl_to_mv"]').remove();
+			$('div[name="fl_to_mv_select"]').remove();
+			$('select[name="fl_to_mv"]').remove();
+			
+			no_of_fl_parent = $('select[name="fl_parent"]').length;
+			alert(no_of_fl_parent);
+			alert("folder ID is " + folder_Id);
+			//no_of_fl_parent = 1
+			$.ajax({
+				method: 'post',
+				url: 'http://localhost<?=$this->url('get_work_details')?>',
+				data: {
+					folder_Id: folder_Id
+				},
+				dataType: "json", 
+				cache: false,
+				success: function(data)
+				{	
+				$('div[name="fl_parent_grp"]').eq(no_of_fl_parent-1).css('background','#8ec252');
+		
+					$('div[name="fl_parent_grp"]').eq(no_of_fl_parent-1).after('<div class="form-group" name="fl_parent_grp" id="fl_parent_grp" />');
+					$('div[name="fl_parent_grp"]').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>');
+					$('div[name="fl_parent_grp"]').eq(no_of_fl_parent).append('<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select" />');
+					
+					_select = $('<select class="form-control" name="fl_parent" id="fl_parent">');
+					to_append = '';
+					$.each(data.folder_children, function (key, val) {
+						to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+					});
+					_select.append($('<option />'));
+					_select.append(to_append);
+					$('div[name="fl_parent_select"]').eq(no_of_fl_parent).append(_select);
+					$('div[name="fl_parent_select"]').eq(no_of_fl_parent).append('</select>');
+					
+					/*_select.on('change',function(){
+						bindClassificationFolder(document);
+					});	*/		
+				},
+				error: function (data) { 
+					//$("#Classification", context).html('<p>No Options</p>');
+				}
+			});	
+			
 			return false;
 		}
 	});
@@ -139,14 +206,10 @@ $(document).ready(function() {
 	});
 	//check if parent null
 	$('#submit_save').on('click', function(){
-		alert("value of fl_parent is " + $('select[name="fl_parent"]').val());
+		/*alert("value of fl_parent is " + $('select[name="fl_parent"]').val());*/
 		var lg = $('select[name="fl_parent"]').length;
-			alert(lg);
-		if($('select[name="fl_parent"]').val() == "")
+		if($('select[name="fl_parent"]').eq(lg-1).val() == "")
 		{
-			alert("empty");
-			var lg = $('select[name="fl_parent"]').length;
-			console.log(lg);
 			$('select[name="fl_parent"]').val(folder_Id);
 		}
 		return true;
