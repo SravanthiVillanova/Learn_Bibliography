@@ -11,59 +11,75 @@
 ?>
 <script>
 _select = '';
-//$('<select class="form-control folder_child" name="folder_child"/>');
 function bindClassificationFolder(context)
 {
-	/*$('label[name="fl_parent"]').remove();
-	$('div[name="fl_parent_select"]').remove();
-	$('select[name="fl_parent"]').remove();
+	//fl_changed = $(this).val();
+	fl_changed = $(_select,context).val();
+	//alert("changed is " + fl_changed);
+	var no_of_fl_parent = $('.select_fl').length;
+	for(var i = 0;i < no_of_fl_parent; i++)
+	{
+		if($('.select_fl').eq(i).val() === fl_changed)
+		{
+			change_idx = i;
+			folder_Id = $('.select_fl').eq(i).val();
+			break;
+		}
+	}
+	for(i = change_idx + 1; i < no_of_fl_parent; i++)
+	{
+		$('.label_fl').eq(i).remove();
+		$('.inner_div_fl').eq(i).remove();
+		$('.select_fl').eq(i).remove();
 		
-	$('label[name="fl_to_mv"]').remove();
-	$('div[name="fl_to_mv_select"]').remove();
-	$('select[name="fl_to_mv"]').remove();*/
-		
-	//folder_Id = $('select[name="fl_parent"]').val();
-	//alert('from func ' + folder_Id);
-	folder_Id = $(_select,context).val();
+		/*$('label[name="label_fl"]').eq(i).remove();
+		$('div[name="inner_div_fl"]').eq(i).remove();
+		$('select[name="select_fl"]').eq(i).remove();*/
+	}
+			
+	no_of_fl_parent = $('.select_fl').length;
+
 	$.ajax({
-        method: 'post',
-        url: 'http://localhost<?=$this->url('get_work_details')?>',
+		method: 'post',
+		url: 'http://localhost<?=$this->url('get_work_details')?>',
 		data: {
 			folder_Id: folder_Id
 		},
-		dataType: "json", 
-        cache: false,
-        success: function(data)
-        {	
-			if(data.folder_children.length > 0)
-			{
-				//$("<div />").attr("class","form-group").attr("name","fl_to_mv_grp").attr("id","fl_to_mv_grp").appendTo("#form_mv_classification");
-				$("#form_mv_classification").append('<div class="form-group" name="fl_to_mv_grp" id="fl_to_mv_grp">');
-				//$("<label />").attr("class","col-xs-2 control-label").attr("name","fl_parent").attr("id","fl_parent").appendTo("");
-				$("#fl_parent_grp").append('<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>');
-				$("#fl_parent_grp").append('<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select">');
-				_select = $('<select class="form-control" name="fl_parent" id="fl_parent">');
-				to_append = '';
-				$.each(data.folder_children, function (key, val) {
-					to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
-				});
-				_select.append($('<option />'));
-				_select.append(to_append);
-				_select.appendTo('#fl_parent_select');
-				$("#fl_parent_select").append('</select>');
-				$("#fl_parent_grp").append('</div>');
-				$("#form_mv_classification").append('</div>');
-				_select.on('change',function(){
-					bindClassificationFolder(document);
-				});
+			dataType: "json", 
+			cache: false,
+			success: function(data)
+			{	
+				$('.outer_div_fl').eq(no_of_fl_parent-1).css('background','#8ec252');
+					
+				if(data.folder_children.length > 0)
+				{
+					$('.outer_div_fl').eq(no_of_fl_parent-1).after('<div class="form-group outer_div_fl" name="outer_div_fl" />');
+					$('.outer_div_fl').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>');
+					$('.outer_div_fl').eq(no_of_fl_parent).append('<div class="col-xs-5 inner_div_fl" name="inner_div_fl" />');
+					
+					_select = $('<select class="form-control select_fl" name="select_fl[]">');
+					to_append = '';
+					$.each(data.folder_children, function (key, val) {
+						to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+					});
+					_select.append($('<option />'));
+					_select.append(to_append);
+					$('.inner_div_fl').eq(no_of_fl_parent).append(_select);
+					$('.inner_div_fl').eq(no_of_fl_parent).append('</select>');
+					
+					_select.on('change',function(){
+						//alert("call function");
+						bindClassificationFolder(document);
+					});	
+				}
+			},
+			error: function (data) { 
+				//$("#Classification", context).html('<p>No Options</p>');
 			}
-		},
-		error: function (data) { 
-            //$("#Classification", context).html('<p>No Options</p>');
-        }
 		});			
 		return false;
 }
+
 $(document).ready(function() {
 	$("#submit_save").click( function() {
 		var fl_id = $("#mv_fl_id").val();
@@ -71,56 +87,32 @@ $(document).ready(function() {
 		fl_moved_id = $select.val();
 		if(fl_id === fl_moved_id)
 		{
+			alert("wrong");
 			$('.moveError').show();
 			$select.focus();
 			return false;
 		}
     });
 	
-	//select empty in parent
-	$('select[name="fl_parent"]').on('change', function(){ 
-		if($(this).val() == "none"){
-			$('.moveError').remove();
-			$('label[name="fl_parent"]').remove();
-			$('div[name="fl_parent_select"]').remove();
-			$('select[name="fl_parent"]').remove();
-		
-			$('label[name="fl_to_mv"]').remove();
-			$('div[name="fl_to_mv_select"]').remove();
-			$('select[name="fl_to_mv"]').remove();
-			
-			$('select[name="fl_parent_root"]').val("none");
-			return false;
-		}
-		else
+	$(".select_fl").on('change', function() {
+		fl_changed = $(this).val();
+		var no_of_fl_parent = $('.select_fl').length;
+
+		for(var i = 0;i < no_of_fl_parent; i++)
 		{
-			$('.moveError').remove();
-			fl_changed = $(this).val();
-			var no_of_fl_parent = $('select[name="fl_parent"]').length;
-			for(var i = 0;i < no_of_fl_parent; i++)
+			if($('.select_fl').eq(i).val() === fl_changed)
 			{
-				if($('select[name="fl_parent"]').eq(i).val() === fl_changed)
-				{
-					change_idx = i;
-					folder_Id = $('select[name="fl_parent"]').eq(i).val();
-					break;
-				}
+				change_idx = i;
+				folder_Id = $('.select_fl').eq(i).val();
+				break;
 			}
-			for(i = change_idx + 1; i < no_of_fl_parent; i++)
-			{
-				$('label[name="fl_parent"]').eq(i).remove();
-				$('div[name="fl_parent_select"]').eq(i).remove();
-				$('select[name="fl_parent"]').eq(i).remove();
-			}
+		}
+
+		$('.outer_div_fl').eq(change_idx).nextAll('.outer_div_fl').remove();
+
 			
-			$('label[name="fl_to_mv"]').remove();
-			$('div[name="fl_to_mv_select"]').remove();
-			$('select[name="fl_to_mv"]').remove();
-			
-			no_of_fl_parent = $('select[name="fl_parent"]').length;
-			alert(no_of_fl_parent);
-			alert("folder ID is " + folder_Id);
-			//no_of_fl_parent = 1
+			no_of_fl_parent = $('.select_fl').length;
+
 			$.ajax({
 				method: 'post',
 				url: 'http://localhost<?=$this->url('get_work_details')?>',
@@ -131,88 +123,32 @@ $(document).ready(function() {
 				cache: false,
 				success: function(data)
 				{	
-				$('div[name="fl_parent_grp"]').eq(no_of_fl_parent-1).css('background','#8ec252');
+					$('.outer_div_fl').eq(no_of_fl_parent-1).css('background','#8ec252');
 		
-					$('div[name="fl_parent_grp"]').eq(no_of_fl_parent-1).after('<div class="form-group" name="fl_parent_grp" id="fl_parent_grp" />');
-					$('div[name="fl_parent_grp"]').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>');
-					$('div[name="fl_parent_grp"]').eq(no_of_fl_parent).append('<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select" />');
+					$('.outer_div_fl').eq(no_of_fl_parent-1).after('<div class="form-group outer_div_fl" name="outer_div_fl" />');
+					$('.outer_div_fl').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>');
+					$('.outer_div_fl').eq(no_of_fl_parent).append('<div class="col-xs-5 inner_div_fl" name="inner_div_fl" />');
 					
-					_select = $('<select class="form-control" name="fl_parent" id="fl_parent">');
+					_select = $('<select class="form-control select_fl" name="select_fl[]">');
 					to_append = '';
 					$.each(data.folder_children, function (key, val) {
 						to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
 					});
 					_select.append($('<option />'));
 					_select.append(to_append);
-					$('div[name="fl_parent_select"]').eq(no_of_fl_parent).append(_select);
-					$('div[name="fl_parent_select"]').eq(no_of_fl_parent).append('</select>');
+					$('.inner_div_fl').eq(no_of_fl_parent).append(_select);
+					$('.inner_div_fl').eq(no_of_fl_parent).append('</select>');
 					
-					/*_select.on('change',function(){
+					_select.on('change',function(){
 						bindClassificationFolder(document);
-					});	*/		
+					});			
 				},
 				error: function (data) { 
 					//$("#Classification", context).html('<p>No Options</p>');
 				}
 			});	
-			
-			return false;
-		}
-	});
-
-	//select root
-	$('select[name="fl_parent_root"]').on('change', function(){
-		$('.moveError').remove();
-		$('label[name="fl_parent"]').remove();
-		$('div[name="fl_parent_select"]').remove();
-		$('select[name="fl_parent"]').remove();
 		
-		$('label[name="fl_to_mv"]').remove();
-		$('div[name="fl_to_mv_select"]').remove();
-		$('select[name="fl_to_mv"]').remove();
-		
-		folder_Id = $('select[name="fl_parent_root"]').val();
-		$.ajax({
-        method: 'post',
-        url: 'http://localhost<?=$this->url('get_work_details')?>',
-		data: {
-			folder_Id: folder_Id
-		},
-		dataType: "json", 
-        cache: false,
-        success: function(data)
-        {			
-			$("#fl_parent_grp").append('<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>');
-			$("#fl_parent_grp").append('<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select">');
-			_select = $('<select class="form-control" name="fl_parent" id="fl_parent">');
-			to_append = '';
-			$.each(data.folder_children, function (key, val) {
-				to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
-			});
-			_select.append($('<option />'));
-			_select.append(to_append);
-			_select.appendTo('#fl_parent_select');
-			$("#fl_parent_select").append('</select>');
-			$("#fl_parent_grp").append('</div>');
-			_select.on('change',function(){
-				bindClassificationFolder(document);
-			});			
-		},
-		error: function (data) { 
-            //$("#Classification", context).html('<p>No Options</p>');
-        }
-		});			
 		return false;
-	});
-	//check if parent null
-	$('#submit_save').on('click', function(){
-		/*alert("value of fl_parent is " + $('select[name="fl_parent"]').val());*/
-		var lg = $('select[name="fl_parent"]').length;
-		if($('select[name="fl_parent"]').eq(lg-1).val() == "")
-		{
-			$('select[name="fl_parent"]').val(folder_Id);
-		}
-		return true;
 	});
 });
 </script>
@@ -239,15 +175,16 @@ if(isset($id))
 		}
 	}
 	$cnt = count($arr_fl);
+	echo "<pre>";print_r($arr_fl);echo "</pre>"; //die();
 	for($i = $cnt-1; $i >= 0; $i--)
 	{		
 		if($arr_fl[$i] == $id)
 		{
 		?>
-			<div class="form-group" name="fl_to_mv_grp" id="fl_to_mv_grp">
-			<label class="col-xs-2 control-label" name="fl_to_mv" id="fl_to_mv">Subject Tree: </label>
-			<div class="col-xs-5" name="fl_to_mv_select" id="fl_to_mv_select">
-				<select class="form-control" name="fl_to_mv" id="fl_to_mv">
+			<div class="form-group outer_div_fl" name="outer_div_fl">
+			<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
+			<div class="col-xs-5 inner_div_fl" name="inner_div_fl">
+				<select class="form-control select_fl" name="select_fl[]">
 				<option value="none"></option>
 				<?php
 				$table = new \App\Db\Table\Folder($this->adapter);
@@ -267,10 +204,10 @@ if(isset($id))
 			$table = new \App\Db\Table\Folder($this->adapter);
 			$fl = $table->findRecordById($arr_fl[$i]);
 		?>
-			<div class="form-group" name="fl_parent_grp" id="fl_parent_grp">
-			<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>
-			<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select">
-				<select class="form-control" name="fl_parent" id="fl_parent">
+			<div class="form-group outer_div_fl" name="outer_div_fl">
+			<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
+			<div class="col-xs-5 inner_div_fl" name="inner_div_fl">
+				<select class="form-control select_fl" name="select_fl[]">
 				<option value="none"></option>
 				<option value="<?=$arr_fl[$i]?>" selected><?php echo $fl['text_fr']; ?></option>
 				<?php
@@ -294,10 +231,10 @@ if(isset($id))
 			$table = new \App\Db\Table\Folder($this->adapter);
 			$fl = $table->findRecordById($arr_fl[$i]);
 		?>
-			<div class="form-group" name="fl_parent_root_grp" id="fl_parent_root_grp">
-			<label class="col-xs-2 control-label" name="fl_parent_root" id="fl_parent_root">Subject Tree: </label>
-			<div class="col-xs-5" name="fl_parent_root_select" id="fl_parent_root_select">
-				<select class="form-control" name="fl_parent_root" id="fl_parent_root">
+			<div class="form-group outer_div_fl" name="outer_div_fl">
+			<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
+			<div class="col-xs-5 inner_div_fl" name="inner_div_fl">
+				<select class="form-control select_fl" name="select_fl[]">
 				<option value="none"></option>
 				<option value="<?=$arr_fl[$i]?>" selected><?php echo $fl['text_fr']; ?></option>
 				<?php

@@ -1,0 +1,414 @@
+<?php $this->headTitle('Move Classification'); ?>
+<?php //$this->layout()->instructions = ""; ?>
+<?php                                       
+    $id;
+    if ($request->getqueryParams('id') !== null) 
+    {   
+        $params = $request->getqueryParams();
+        $action = $params['action'];
+        $id = $params['id'];
+    }
+?>
+<script>
+_select = '';
+//$('<select class="form-control folder_child" name="folder_child"/>');
+function bindClassificationFolder(context)
+{
+	folder_Id = $(_select,context).val();
+	$.ajax({
+        method: 'post',
+        url: 'http://localhost<?=$this->url('get_work_details')?>',
+		data: {
+			folder_Id: folder_Id
+		},
+		dataType: "json", 
+        cache: false,
+        success: function(data)
+        {	
+			if(data.folder_children.length > 0)
+			{
+				//$("<div />").attr("class","form-group").attr("name","fl_to_mv_grp").attr("id","fl_to_mv_grp").appendTo("#form_mv_classification");
+				$("#form_mv_classification").append('<div class="form-group" name="fl_to_mv_grp" id="fl_to_mv_grp">');
+				//$("<label />").attr("class","col-xs-2 control-label").attr("name","fl_parent").attr("id","fl_parent").appendTo("");
+				$("#fl_parent_grp").append('<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>');
+				$("#fl_parent_grp").append('<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select">');
+				_select = $('<select class="form-control" name="fl_parent" id="fl_parent">');
+				to_append = '';
+				$.each(data.folder_children, function (key, val) {
+					to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+				});
+				_select.append($('<option />'));
+				_select.append(to_append);
+				_select.appendTo('#fl_parent_select');
+				$("#fl_parent_select").append('</select>');
+				$("#fl_parent_grp").append('</div>');
+				$("#form_mv_classification").append('</div>');
+				_select.on('change',function(){
+					bindClassificationFolder(document);
+				});
+			}
+		},
+		error: function (data) { 
+            //$("#Classification", context).html('<p>No Options</p>');
+        }
+		});			
+		return false;
+}
+
+function bindParentClassificationFolder()
+{
+	if($(this).val() == "none"){
+			$('.moveError').remove();
+			$('label[name="fl_parent"]').remove();
+			$('div[name="fl_parent_select"]').remove();
+			$('select[name="fl_parent"]').remove();
+		
+			$('label[name="fl_to_mv"]').remove();
+			$('div[name="fl_to_mv_select"]').remove();
+			$('select[name="fl_to_mv"]').remove();
+			
+			$('select[name="fl_parent_root"]').val("none");
+			return false;
+		}
+		else
+		{
+			$('.moveError').remove();
+			fl_changed = $(this).val();
+			var no_of_fl_parent = $('select[name="fl_parent"]').length;
+			for(var i = 0;i < no_of_fl_parent; i++)
+			{
+				if($('select[name="fl_parent"]').eq(i).val() === fl_changed)
+				{
+					change_idx = i;
+					folder_Id = $('select[name="fl_parent"]').eq(i).val();
+					break;
+				}
+			}
+			for(i = change_idx + 1; i < no_of_fl_parent; i++)
+			{
+				$('label[name="fl_parent"]').eq(i).remove();
+				$('div[name="fl_parent_select"]').eq(i).remove();
+				$('select[name="fl_parent"]').eq(i).remove();
+			}
+			
+			$('label[name="fl_to_mv"]').remove();
+			$('div[name="fl_to_mv_select"]').remove();
+			$('select[name="fl_to_mv"]').remove();
+			
+			no_of_fl_parent = $('select[name="fl_parent"]').length;
+			alert(no_of_fl_parent);
+			alert("folder ID is " + folder_Id);
+			//no_of_fl_parent = 1
+			$.ajax({
+				method: 'post',
+				url: 'http://localhost<?=$this->url('get_work_details')?>',
+				data: {
+					folder_Id: folder_Id
+				},
+				dataType: "json", 
+				cache: false,
+				success: function(data)
+				{	
+				$('div[name="fl_parent_grp"]').eq(no_of_fl_parent-1).css('background','#8ec252');
+		
+					$('div[name="fl_parent_grp"]').eq(no_of_fl_parent-1).after('<div class="form-group" name="fl_parent_grp" id="fl_parent_grp" />');
+					$('div[name="fl_parent_grp"]').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>');
+					$('div[name="fl_parent_grp"]').eq(no_of_fl_parent).append('<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select" />');
+					
+					_select = $('<select class="form-control" name="fl_parent" id="fl_parent">');
+					to_append = '';
+					$.each(data.folder_children, function (key, val) {
+						to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+					});
+					_select.append($('<option />'));
+					_select.append(to_append);
+					$('div[name="fl_parent_select"]').eq(no_of_fl_parent).append(_select);
+					$('div[name="fl_parent_select"]').eq(no_of_fl_parent).append('</select>');
+					
+					_select.on('change',function(){
+						bindParentClassificationFolder();
+					});			
+				},
+				error: function (data) { 
+					//$("#Classification", context).html('<p>No Options</p>');
+				}
+			});	
+			
+			return false;
+		}
+}
+
+$(document).ready(function() {
+	$("#submit_save").click( function() {
+		var fl_id = $("#mv_fl_id").val();
+		var $select = $('select[name="fl_to_mv"]');
+		fl_moved_id = $select.val();
+		if(fl_id === fl_moved_id)
+		{
+			alert("wrong");
+			$('.moveError').show();
+			$select.focus();
+			return false;
+		}
+    });
+	
+	//select last level
+	$('select[name="fl_to_mv"]').on('change', function() {
+		$('select[name="fl_to_mv"]').
+		
+	});
+	
+	//select parent
+	$('select[name="fl_parent"]').on('change', function(){ 
+		//select empty in parent
+		if($(this).val() == "none"){
+			$('.moveError').remove();
+			$('label[name="fl_parent"]').remove();
+			$('div[name="fl_parent_select"]').remove();
+			$('select[name="fl_parent"]').remove();
+		
+			$('label[name="fl_to_mv"]').remove();
+			$('div[name="fl_to_mv_select"]').remove();
+			$('select[name="fl_to_mv"]').remove();
+			
+			$('select[name="fl_parent_root"]').val("none");
+			return false;
+		}
+		else
+		{
+			$('.moveError').remove();
+			fl_changed = $(this).val();
+			var no_of_fl_parent = $('select[name="fl_parent"]').length;
+			for(var i = 0;i < no_of_fl_parent; i++)
+			{
+				if($('select[name="fl_parent"]').eq(i).val() === fl_changed)
+				{
+					change_idx = i;
+					folder_Id = $('select[name="fl_parent"]').eq(i).val();
+					break;
+				}
+			}
+			for(i = change_idx + 1; i < no_of_fl_parent; i++)
+			{
+				$('label[name="fl_parent"]').eq(i).remove();
+				$('div[name="fl_parent_select"]').eq(i).remove();
+				$('select[name="fl_parent"]').eq(i).remove();
+			}
+			
+			$('label[name="fl_to_mv"]').remove();
+			$('div[name="fl_to_mv_select"]').remove();
+			$('select[name="fl_to_mv"]').remove();
+			
+			no_of_fl_parent = $('select[name="fl_parent"]').length;
+			alert(no_of_fl_parent);
+			alert("folder ID is " + folder_Id);
+			//no_of_fl_parent = 1
+			$.ajax({
+				method: 'post',
+				url: 'http://localhost<?=$this->url('get_work_details')?>',
+				data: {
+					folder_Id: folder_Id
+				},
+				dataType: "json", 
+				cache: false,
+				success: function(data)
+				{	
+				$('div[name="fl_parent_grp"]').eq(no_of_fl_parent-1).css('background','#8ec252');
+		
+					$('div[name="fl_parent_grp"]').eq(no_of_fl_parent-1).after('<div class="form-group" name="fl_parent_grp" id="fl_parent_grp" />');
+					$('div[name="fl_parent_grp"]').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>');
+					$('div[name="fl_parent_grp"]').eq(no_of_fl_parent).append('<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select" />');
+					
+					_select = $('<select class="form-control" name="fl_parent" id="fl_parent">');
+					to_append = '';
+					$.each(data.folder_children, function (key, val) {
+						to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+					});
+					_select.append($('<option />'));
+					_select.append(to_append);
+					$('div[name="fl_parent_select"]').eq(no_of_fl_parent).append(_select);
+					$('div[name="fl_parent_select"]').eq(no_of_fl_parent).append('</select>');
+					
+					_select.on('change',function(){
+						bindParentClassificationFolder();
+					});			
+				},
+				error: function (data) { 
+					//$("#Classification", context).html('<p>No Options</p>');
+				}
+			});	
+			
+			return false;
+		}
+	});
+
+	//select root
+	$('select[name="fl_parent_root"]').on('change', function(){
+		$('.moveError').remove();
+		$('label[name="fl_parent"]').remove();
+		$('div[name="fl_parent_select"]').remove();
+		$('select[name="fl_parent"]').remove();
+		
+		$('label[name="fl_to_mv"]').remove();
+		$('div[name="fl_to_mv_select"]').remove();
+		$('select[name="fl_to_mv"]').remove();
+		
+		folder_Id = $('select[name="fl_parent_root"]').val();
+		$.ajax({
+        method: 'post',
+        url: 'http://localhost<?=$this->url('get_work_details')?>',
+		data: {
+			folder_Id: folder_Id
+		},
+		dataType: "json", 
+        cache: false,
+        success: function(data)
+        {			
+			$("#fl_parent_grp").append('<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>');
+			$("#fl_parent_grp").append('<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select">');
+			_select = $('<select class="form-control" name="fl_parent" id="fl_parent">');
+			to_append = '';
+			$.each(data.folder_children, function (key, val) {
+				to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+			});
+			_select.append($('<option />'));
+			_select.append(to_append);
+			_select.appendTo('#fl_parent_select');
+			$("#fl_parent_select").append('</select>');
+			$("#fl_parent_grp").append('</div>');
+			_select.on('change',function(){
+				bindClassificationFolder(document);
+			});			
+		},
+		error: function (data) { 
+            //$("#Classification", context).html('<p>No Options</p>');
+        }
+		});			
+		return false;
+	});
+	//check if parent null
+	$('#submit_save').on('click', function(){
+		/*alert("value of fl_parent is " + $('select[name="fl_parent"]').val());*/
+		var lg = $('select[name="fl_parent"]').length;
+		if($('select[name="fl_parent"]').eq(lg-1).val() == "")
+		{
+			$('select[name="fl_parent"]').val(folder_Id);
+		}
+		return true;
+	});
+});
+</script>
+<div class="col-md-7" name="mv_classification" id="mv_classification">
+<form id="move-folder-data" class="form-horizontal" name="form_mv_classification" id="form_mv_classification" 
+      method="POST" action="<?=$this->url('manage_classification')?>">
+<input type="hidden" name="action" value="<?=$action?>">
+<input type="hidden" name="id" id="mv_fl_id" value="<?=$id?>">	
+<?php
+$arr_fl = [];			
+if(isset($id)) 
+{
+	$arr_fl[] = $id;
+	$table = new \App\Db\Table\Folder($this->adapter);
+	$fl_row = $table->getParent($id); 
+	while(isset($fl_row['parent_id'])) 
+	{
+		$arr_fl[] = $fl_row['parent_id'];				
+		$table = new \App\Db\Table\Folder($this->adapter);
+		$fl_row = $table->getParent($fl_row['parent_id']);
+		if($fl_row['parent_id'] == NULL)
+		{
+			break;
+		}
+	}
+	$cnt = count($arr_fl);
+	echo "<pre>";print_r($arr_fl);echo "</pre>"; die();
+	for($i = $cnt-1; $i >= 0; $i--)
+	{		
+		if($arr_fl[$i] == $id)
+		{
+		?>
+			<div class="form-group" name="fl_to_mv_grp" id="fl_to_mv_grp">
+			<label class="col-xs-2 control-label" name="fl_to_mv" id="fl_to_mv">Subject Tree: </label>
+			<div class="col-xs-5" name="fl_to_mv_select" id="fl_to_mv_select">
+				<select class="form-control" name="fl_to_mv" id="fl_to_mv">
+				<option value="none"></option>
+				<?php
+				$table = new \App\Db\Table\Folder($this->adapter);
+				$fl_siblings = $table->getChild($arr_fl[$i+1]);
+					foreach($fl_siblings as $row) :
+				?>
+				<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>	
+					<?php 
+					endforeach; ?>
+				</select>
+			</div>
+			</div>	
+		<?php
+		}
+		else if($i != ($cnt-1))
+		{
+			$table = new \App\Db\Table\Folder($this->adapter);
+			$fl = $table->findRecordById($arr_fl[$i]);
+		?>
+			<div class="form-group" name="fl_parent_grp" id="fl_parent_grp">
+			<label class="col-xs-2 control-label" name="fl_parent" id="fl_parent">Subject Tree: </label>
+			<div class="col-xs-5" name="fl_parent_select" id="fl_parent_select">
+				<select class="form-control" name="fl_parent" id="fl_parent">
+				<option value="none"></option>
+				<option value="<?=$arr_fl[$i]?>" selected><?php echo $fl['text_fr']; ?></option>
+				<?php
+				$table = new \App\Db\Table\Folder($this->adapter);
+				$fl_siblings = $table->getChild($arr_fl[$i+1]);
+					foreach($fl_siblings as $row) :
+					if($row['id'] != $arr_fl[$i])
+					{
+				?>
+				<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
+				<?php
+					}
+					endforeach; ?>
+				</select>
+			</div>
+		</div>		
+		<?php
+		}
+		else
+		{
+			$table = new \App\Db\Table\Folder($this->adapter);
+			$fl = $table->findRecordById($arr_fl[$i]);
+		?>
+			<div class="form-group" name="fl_parent_root_grp" id="fl_parent_root_grp">
+			<label class="col-xs-2 control-label" name="fl_parent_root" id="fl_parent_root">Subject Tree: </label>
+			<div class="col-xs-5" name="fl_parent_root_select" id="fl_parent_root_select">
+				<select class="form-control" name="fl_parent_root" id="fl_parent_root">
+				<option value="none"></option>
+				<option value="<?=$arr_fl[$i]?>" selected><?php echo $fl['text_fr']; ?></option>
+				<?php
+				$table = new \App\Db\Table\Folder($this->adapter);
+				//$fl_siblings = $table->getChild($arr_fl[$i+1]);
+				$fl_siblings = $table->getFoldersWithNullParent();
+					foreach($fl_siblings as $row) :
+					if($row['id'] != $arr_fl[$i])
+					{
+				?>
+				<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
+				<?php 
+					}
+					endforeach; ?>
+				</select>
+			</div>
+			</div>	
+		<?php
+		}
+	}
+}
+?>
+<div class="form-group">
+	<div class="col-sm-offset-2 col-sm-10">
+		<button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Save</button> 
+        <button type="submit" class="btn btn-default" name="submit_cancel" value="Cancel">Cancel</button>
+		<p class="moveError" style="display:none;color:red;margin-bottom:20px;">Cannot move a classification into itself.</p>
+	</div>
+</div>
+</form>
+</div>

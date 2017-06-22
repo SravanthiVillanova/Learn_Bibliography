@@ -73,7 +73,7 @@ class ManageClassificationAction
 			//move folder
 			if ($post['action'] == "move")
 			{
-				echo "<pre>";print_r($post);echo "</pre>";
+				echo "<pre>";print_r($post);echo "</pre>";die();
 				/*$table = new \App\Db\Table\Folder($this->adapter);
 				$table->moveFolder($post['id'],$post['fl_to_mv']);*/
 				if($post['fl_to_mv'] == "" && $post['fl_parent'] == "")
