@@ -3,7 +3,47 @@
 <div class="col-md-4">
 <form class="form-horizontal" method="post" action="<?=$this->url('manage_classification')?>">
 <input type="hidden" name="action" value="<?=$action?>">
-	<div class="form-group">  
+	
+  <div class="form-group">
+	<div class="col-sm-offset-4 col-sm-10">
+		<button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button> 
+        <button type="reset" class="btn btn-default" name="submitt" value="Cancel">Clear</button>
+	</div>
+  </div>
+</form>
+</div>
+
+<div class="form-group">
+		<table class="table table-striped table-condensed" name="pub_table" style="font-size:10pt;" id="pub_table">
+        <thead>
+			<th>Publisher</th>
+			<th>Year From</th>
+			<th>Year To</th>          
+			<th>Location</th>
+			<th>Remove</th>
+		</thead>
+		<tbody>
+		<tr name="pub_row[]">
+			<input type="hidden" name="pub_id[]" id="pubId" value="">
+			<td><input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" /></td>
+			<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"/></td>
+			<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" /></td>
+			<!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->
+			<input type="hidden" name="publoc_id[]" id="publoc_id" value="">
+			<td>
+				<select class="form-control pub_locations" name="pub_location[]" id="pubLocation">
+				<option value=""></option>				
+				</select>
+			</td>
+			<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>
+		</tr>
+		</tbody>
+		</table>
+		<button type="submit" class="btn btn-default" name="pub_add" id="pub_add" value="Add">Add</button> 
+		</div>
+		
+		
+	<!--	<div class="form-group">  
 		<label class="col-xs-4 control-label">Source: </label>
 		<div class="col-xs-7">
 			<select class="form-control" name="source_id">
@@ -29,12 +69,4 @@
 				<option value="19675"> </option>
 			</select>
 		</div>
-	</div>
-  <div class="form-group">
-	<div class="col-sm-offset-4 col-sm-10">
-		<button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button> 
-        <button type="reset" class="btn btn-default" name="submitt" value="Cancel">Clear</button>
-	</div>
-  </div>
-</form>
-</div>
+	</div> -->

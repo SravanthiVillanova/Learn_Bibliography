@@ -73,30 +73,21 @@ class ManageClassificationAction
 			//move folder
 			if ($post['action'] == "move")
 			{
-				echo "<pre>";print_r($post);echo "</pre>";die();
-				/*$table = new \App\Db\Table\Folder($this->adapter);
-				$table->moveFolder($post['id'],$post['fl_to_mv']);*/
-				if($post['fl_to_mv'] == "" && $post['fl_parent'] == "")
+				echo "<pre>";print_r($post);echo "</pre>";
+				//var_dump($post['select_fl']);
+				$lg = count($post['select_fl']);
+				if($post['select_fl'][$lg-1] == "" || $post['select_fl'][$lg-1] == 'none')
 				{
-					echo "case root";//die();
-					/*$table = new \App\Db\Table\Folder($this->adapter);
-				    $table->moveFolder($post['id'],$post['fl_parent_root']);*/
-				}
-				else if($post['fl_to_mv'] == "" && $post['fl_parent'] != "")
-				{
-					echo "case parent";//die();
-					/*$table = new \App\Db\Table\Folder($this->adapter);
-				    $table->moveFolder($post['id'],$post['fl_parent']);*/
+					$fl_to_move = $post['select_fl'][$lg-2];
 				}
 				else
 				{
-					echo "case last level"; //die();
-					/*$table = new \App\Db\Table\Folder($this->adapter);
-				    $table->moveFolder($post['id'],$post['fl_to_mv']);*/
+					$fl_to_move = $post['select_fl'][$lg-1];
 				}
-				var_dump($post['fl_to_mv']);
-				var_dump($post['fl_parent']);
-				var_dump($post['fl_parent_root']); die();
+				echo "id to move to is " . $fl_to_move;
+				/*$table = new \App\Db\Table\Folder($this->adapter);
+				$table->moveFolder($post['id'],$post['fl_to_mv']);*/
+				die();
 			}
 		}
         // default: blank for listing in manage

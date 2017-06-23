@@ -13,9 +13,7 @@
 _select = '';
 function bindClassificationFolder(context)
 {
-	//fl_changed = $(this).val();
 	fl_changed = $(_select,context).val();
-	//alert("changed is " + fl_changed);
 	var no_of_fl_parent = $('.select_fl').length;
 	for(var i = 0;i < no_of_fl_parent; i++)
 	{
@@ -26,16 +24,14 @@ function bindClassificationFolder(context)
 			break;
 		}
 	}
-	for(i = change_idx + 1; i < no_of_fl_parent; i++)
+	/*for(i = change_idx + 1; i < no_of_fl_parent; i++)
 	{
 		$('.label_fl').eq(i).remove();
 		$('.inner_div_fl').eq(i).remove();
 		$('.select_fl').eq(i).remove();
-		
-		/*$('label[name="label_fl"]').eq(i).remove();
-		$('div[name="inner_div_fl"]').eq(i).remove();
-		$('select[name="select_fl"]').eq(i).remove();*/
-	}
+	}*/
+	
+	$('.outer_div_fl').eq(change_idx).nextAll('.outer_div_fl').remove();
 			
 	no_of_fl_parent = $('.select_fl').length;
 
@@ -45,46 +41,50 @@ function bindClassificationFolder(context)
 		data: {
 			folder_Id: folder_Id
 		},
-			dataType: "json", 
-			cache: false,
-			success: function(data)
-			{	
-				$('.outer_div_fl').eq(no_of_fl_parent-1).css('background','#8ec252');
+		dataType: "json", 
+		cache: false,
+		success: function(data)
+		{	
+			$('.outer_div_fl').eq(no_of_fl_parent-1).css('background','#8ec252');
 					
-				if(data.folder_children.length > 0)
-				{
-					$('.outer_div_fl').eq(no_of_fl_parent-1).after('<div class="form-group outer_div_fl" name="outer_div_fl" />');
-					$('.outer_div_fl').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>');
-					$('.outer_div_fl').eq(no_of_fl_parent).append('<div class="col-xs-5 inner_div_fl" name="inner_div_fl" />');
+			if(data.folder_children.length > 0)
+			{
+				$('.outer_div_fl').eq(no_of_fl_parent-1).after('<div class="form-group outer_div_fl" name="outer_div_fl" />');
+				$('.outer_div_fl').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>');
+				$('.outer_div_fl').eq(no_of_fl_parent).append('<div class="col-xs-5 inner_div_fl" name="inner_div_fl" />');
 					
-					_select = $('<select class="form-control select_fl" name="select_fl[]">');
-					to_append = '';
-					$.each(data.folder_children, function (key, val) {
-						to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
-					});
-					_select.append($('<option />'));
-					_select.append(to_append);
-					$('.inner_div_fl').eq(no_of_fl_parent).append(_select);
-					$('.inner_div_fl').eq(no_of_fl_parent).append('</select>');
+				_select = $('<select class="form-control select_fl" name="select_fl[]">');
+				to_append = $('<option value="'+'"none"'+'></option>');
+				$.each(data.folder_children, function (key, val) {
+					to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+				});
+				_select.append($('<option />'));
+				_select.append(to_append);
+				$('.inner_div_fl').eq(no_of_fl_parent).append(_select);
+				$('.inner_div_fl').eq(no_of_fl_parent).append('</select>');
 					
-					_select.on('change',function(){
-						//alert("call function");
-						bindClassificationFolder(document);
-					});	
-				}
-			},
-			error: function (data) { 
-				//$("#Classification", context).html('<p>No Options</p>');
+				_select.on('change',function(){
+					bindClassificationFolder(document);
+				});	
 			}
-		});			
-		return false;
+		},
+		error: function (data) { 
+			//$("#Classification", context).html('<p>No Options</p>');
+		}
+	});			
+	return false;
 }
 
 $(document).ready(function() {
 	$("#submit_save").click( function() {
 		var fl_id = $("#mv_fl_id").val();
-		var $select = $('select[name="fl_to_mv"]');
+		var $select = $('.select_fl').eq(($('.select_fl').length)-1);
 		fl_moved_id = $select.val();
+		if(fl_moved_id === 'none' || fl_moved_id === '')
+		{
+			$select = $('.select_fl').eq(($('.select_fl').length)-2);			
+			fl_moved_id = $select.val();
+		}
 		if(fl_id === fl_moved_id)
 		{
 			alert("wrong");
@@ -95,21 +95,27 @@ $(document).ready(function() {
     });
 	
 	$(".select_fl").on('change', function() {
-		fl_changed = $(this).val();
-		var no_of_fl_parent = $('.select_fl').length;
-
-		for(var i = 0;i < no_of_fl_parent; i++)
-		{
-			if($('.select_fl').eq(i).val() === fl_changed)
-			{
-				change_idx = i;
-				folder_Id = $('.select_fl').eq(i).val();
-				break;
-			}
+		if($(this).val() == "none"){
+			$('.outer_div_fl').eq(0).nextAll('.outer_div_fl').remove();
+			$('.select_fl').eq(0).val('none');
+			return false;
 		}
+		else
+		{
+			fl_changed = $(this).val();
+			var no_of_fl_parent = $('.select_fl').length;
 
-		$('.outer_div_fl').eq(change_idx).nextAll('.outer_div_fl').remove();
+			for(var i = 0;i < no_of_fl_parent; i++)
+			{
+				if($('.select_fl').eq(i).val() === fl_changed)
+				{
+					change_idx = i;
+					folder_Id = $('.select_fl').eq(i).val();
+					break;
+				}
+			}
 
+			$('.outer_div_fl').eq(change_idx).nextAll('.outer_div_fl').remove();
 			
 			no_of_fl_parent = $('.select_fl').length;
 
@@ -130,7 +136,7 @@ $(document).ready(function() {
 					$('.outer_div_fl').eq(no_of_fl_parent).append('<div class="col-xs-5 inner_div_fl" name="inner_div_fl" />');
 					
 					_select = $('<select class="form-control select_fl" name="select_fl[]">');
-					to_append = '';
+					to_append = $('<option value="none"></option>');
 					$.each(data.folder_children, function (key, val) {
 						to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
 					});
@@ -148,7 +154,8 @@ $(document).ready(function() {
 				}
 			});	
 		
-		return false;
+			return false;
+		}
 	});
 });
 </script>
