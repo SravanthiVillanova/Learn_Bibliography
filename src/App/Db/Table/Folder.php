@@ -201,6 +201,29 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         return($row);
     }
 	
+	public function getParentChain($id)
+	{
+		$fl = new Folder($this->adapter);
+		$row = $fl->getParent($id);
+		
+		var_dump($row); //die();
+		
+		$encounteredIds = array($row['id']);
+		$current = $row['parent_id'];
+		
+		while($current != null && !in_array($current, $encounteredIds))
+		{
+			echo "entered while <br />"; //die();
+			/*$rowset = $this->select(array('id' => $current));       
+			$row = $rowset->current();*/
+			$row = $fl->getParent($current);
+
+			$encounteredIds[] = $row['id'];
+			$current = $row['parent_id'];
+		}
+		return $encounteredIds;
+	}
+	
 	public function insertRecords($parent_id, $text_en, $text_fr, $text_de, $text_nl, $text_es, $text_it, $sort_order)
     {
         $this->insert(

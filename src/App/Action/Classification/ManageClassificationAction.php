@@ -73,8 +73,6 @@ class ManageClassificationAction
 			//move folder
 			if ($post['action'] == "move")
 			{
-				echo "<pre>";print_r($post);echo "</pre>";
-				//var_dump($post['select_fl']);
 				$lg = count($post['select_fl']);
 				if($post['select_fl'][$lg-1] == "" || $post['select_fl'][$lg-1] == 'none')
 				{
@@ -84,10 +82,45 @@ class ManageClassificationAction
 				{
 					$fl_to_move = $post['select_fl'][$lg-1];
 				}
-				echo "id to move to is " . $fl_to_move;
-				/*$table = new \App\Db\Table\Folder($this->adapter);
-				$table->moveFolder($post['id'],$post['fl_to_mv']);*/
+
+				$table = new \App\Db\Table\Folder($this->adapter);
+				$table->moveFolder($post['id'],$fl_to_move);
+			}
+			//merge folder
+			if ($post['action'] == "merge_classification")
+			{
+				echo "<pre>";print_r($post);echo "</pre>";
+				
+				echo "source count is " . count($post['select_source_fl']) . "<br />";
+				$src_cnt = count($post['select_source_fl']);
+				echo "dest count is " . count($post['select_dest_fl']) . "<br />";
+				$dst_cnt = count($post['select_dest_fl']);
+				
+				if($post['select_source_fl'][$src_cnt-1] == "")
+				{
+					$source_id = $post['select_source_fl'][$src_cnt-2];
+				}
+				else
+				{
+					$source_id = $post['select_source_fl'][$src_cnt-1];
+				}
+				echo "source id is " . $source_id . "<br />";
+				
+				if($post['select_dest_fl'][$dst_cnt-1] == "")
+				{
+					$dest_id = $post['select_dest_fl'][$dst_cnt-2];
+				}
+				else
+				{
+					$dest_id = $post['select_dest_fl'][$dst_cnt-1];
+				}
+				echo "dest id is " . $dest_id . "<br />";
+				$table= new \App\Db\Table\Folder($this->adapter);
+				$src_row = $table->getParentChain($source_id);
+				var_dump($src_row);
 				die();
+				
+				
 			}
 		}
         // default: blank for listing in manage
@@ -130,16 +163,9 @@ class ManageClassificationAction
 			$table= new \App\Db\Table\Folder($this->adapter);
 			$r = $table->getTrail($query['id'],"");
 			$r = $query['fl'] . $r;
-			/*$prefix = ':';
-			if (substr($r, 0, strlen($prefix)) == $prefix) {
-				$r = substr($r, strlen($prefix));
-			}*/ 
-			//echo $r;
+
 			$ts = explode(":",$r);
-			//var_dump($ts);
 			$ts = array_reverse($ts);
-			//echo "<pre>"; print_r($ts); echo "</pre>"; 
-			//die();
 		}
         return new HtmlResponse(
             $this->template->render(

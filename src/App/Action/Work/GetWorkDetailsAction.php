@@ -145,5 +145,17 @@ class GetWorkDetailsAction
 			echo json_encode($output);
 			exit;
 		}
+		if(isset($_POST['src_id']))
+		{
+			$src_id = $_POST['src_id'];
+			$table = new \App\Db\Table\Folder($this->adapter);
+			$src_row = $table->getParent($src_id);
+			/*$table= new \App\Db\Table\Folder($this->adapter);
+			$src_row = $table->getParentChain($src_id);
+			var_dump($src_row);*/
+			$output = array("fl_row" => $src_row,);
+			echo json_encode($output);
+			exit;
+		}
 	}
 }
