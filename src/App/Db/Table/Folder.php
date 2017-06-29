@@ -206,21 +206,19 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 		$fl = new Folder($this->adapter);
 		$row = $fl->getParent($id);
 		
-		var_dump($row); //die();
-		
 		$encounteredIds = array($row['id']);
 		$current = $row['parent_id'];
 		
 		while($current != null && !in_array($current, $encounteredIds))
 		{
-			echo "entered while <br />"; //die();
-			/*$rowset = $this->select(array('id' => $current));       
-			$row = $rowset->current();*/
 			$row = $fl->getParent($current);
 
 			$encounteredIds[] = $row['id'];
 			$current = $row['parent_id'];
 		}
+		
+		$encounteredIds = array_reverse($encounteredIds);
+		
 		return $encounteredIds;
 	}
 	
@@ -264,5 +262,20 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
             ],
             ['id' => $id]
         );
+	}
+	
+	public function mergeFolder($sid, $did)
+	{
+		$this->update(
+			[
+				'parent_id' => $did,
+			],
+			['parent_id' => $sid]
+		);
+	}
+	
+	public function mergeDelete($sid)
+	{
+		$this->delete(['id' => $sid]);
 	}
 }

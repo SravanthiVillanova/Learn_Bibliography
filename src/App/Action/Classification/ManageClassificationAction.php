@@ -89,11 +89,7 @@ class ManageClassificationAction
 			//merge folder
 			if ($post['action'] == "merge_classification")
 			{
-				echo "<pre>";print_r($post);echo "</pre>";
-				
-				echo "source count is " . count($post['select_source_fl']) . "<br />";
 				$src_cnt = count($post['select_source_fl']);
-				echo "dest count is " . count($post['select_dest_fl']) . "<br />";
 				$dst_cnt = count($post['select_dest_fl']);
 				
 				if($post['select_source_fl'][$src_cnt-1] == "")
@@ -104,7 +100,6 @@ class ManageClassificationAction
 				{
 					$source_id = $post['select_source_fl'][$src_cnt-1];
 				}
-				echo "source id is " . $source_id . "<br />";
 				
 				if($post['select_dest_fl'][$dst_cnt-1] == "")
 				{
@@ -114,13 +109,29 @@ class ManageClassificationAction
 				{
 					$dest_id = $post['select_dest_fl'][$dst_cnt-1];
 				}
-				echo "dest id is " . $dest_id . "<br />";
-				$table= new \App\Db\Table\Folder($this->adapter);
-				$src_row = $table->getParentChain($source_id);
-				var_dump($src_row);
-				die();
+				// Move children
+				$table = new \App\Db\Table\Folder($this->adapter);
+				$table->mergeFolder($source_id, $dest_id);
 				
+				//first delete potential duplicates to avoid key violation
+				$table = new \App\Db\Table\Work_Folder($this->adapter);
+				$table->mergeWkFlDelete($source_id,$dest_id);
 				
+				// Move works
+				$table = new \App\Db\Table\Work_Folder($this->adapter);
+				$table->mergeWkFlUpdate($source_id,$dest_id);
+				
+				// Track merge history -- update any previous history, then add the current merge:
+				$table = new \App\Db\Table\Folder_Merge_History($this->adapter);
+				$table->mergeFlMgHistUpdate($source_id,$dest_id);
+				
+				// Track merge history -- update any previous history, then add the current merge:
+				$table = new \App\Db\Table\Folder_Merge_History($this->adapter);				
+				$table->insertRecord($source_id,$dest_id);
+				
+				// Purge
+				$table = new \App\Db\Table\Folder($this->adapter);
+				$table->mergeDelete($source_id);			
 			}
 		}
         // default: blank for listing in manage

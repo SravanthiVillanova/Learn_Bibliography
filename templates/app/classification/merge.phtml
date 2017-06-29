@@ -289,53 +289,55 @@ $(document).ready(function() {
 		
 		$.ajax({
 			method: 'post',
-			url: 'http://localhost<?=$this->url('get_work_details')?>',
+			url: 'http://localhost<?=$this->url("get_work_details")?>',
 			data: {
-				src_id: src_id
+				fl_id: src_id
 			},
 			dataType: "json", 
 			cache: false,
 			success: function(data)
 			{	
+				var valid_pass = true;
 				$.each(data.fl_row, function (key, val) {
-					//$("#src_parent_id").val("" + data.source_fl_row.parent_id);
-					//if(dst_id === data.fl_row
-				}
-				$.ajax({
-					method: 'post',
-					url: 'http://localhost<?=$this->url('get_work_details')?>',
-				data: {
-					src_id: dst_id
-				},
-				dataType: "json", 
-				cache: false,
-				success: function(data)
-				{	
-					$("#dst_parent_id").val("" + data.fl_row.parent_id);
-					//alert("dpid is " + $("#dst_parent_id").val());
-					if(src_id === $("#dst_parent_id").val())
-					{
-						alert("wrong2");
-						$('.mergeError2').show();	
-						return false;
-					}
-					if(dst_id === $("#src_parent_id").val())
+					if(("" + val) === dst_id)
 					{
 						alert("wrong3");
 						$('.mergeError3').show();	
-						return false;
+						valid_pass = false;
+					}		
+				});
+				$.ajax({
+					method: 'post',
+					url: 'http://localhost<?=$this->url('get_work_details')?>',
+					data: {
+						fl_id: dst_id
+					},
+					dataType: "json", 
+					cache: false,
+					success: function(data)
+					{	
+						//valid_pass = true;
+						$.each(data.fl_row, function (key, val) {
+							if(("" + val) === src_id)
+							{
+								alert("wrong2");
+								$('.mergeError2').show();	
+								valid_pass = false;
+							}	
+						});
+						if(valid_pass)
+						{
+							$("#merge_fl_form").submit();
+						}
+					},
+					error: function (data) { 
 					}
-					$("#merge_fl_form").submit();
-				},
-				error: function (data) { 
-				}
-			});				
+				});		
 			},
 			error: function (data) { 
 			}
 		});		
 		return false;
-
     });
 	//click clear
 	$("#submit_clear").on('click', function() {
@@ -343,10 +345,10 @@ $(document).ready(function() {
 		$('.select_source_fl').eq(0).val('');
 		$('.dest_fl_col').eq(0).nextAll('.dest_fl_col').remove();
 		$('.select_dest_fl').eq(0).val('');
-		$('.mergeError1').remove();
-		$('.mergeError2').remove();
-		$('.mergeError3').remove();
-		$('.mergeError4').remove();
+		$('.mergeError1').hide();
+		$('.mergeError2').hide();
+		$('.mergeError3').hide();
+		$('.mergeError4').hide();
 		return false;
 	});
 });
@@ -354,8 +356,8 @@ $(document).ready(function() {
 <div class="col-lg-12">
 <form class="form-horizontal merge_fl_form" method="post" action="<?=$this->url('manage_classification')?>" name="merge_fl_form" id="merge_fl_form">
 <input type="hidden" name="action" value="<?=$action?>">
-<input type="hidden" class="src_parent_id" name="src_parent_id" id="src_parent_id" value="">
-<input type="hidden" class="dst_parent_id" name="dst_parent_id" id="dst_parent_id" value="from ajax call">
+<!--<input type="hidden" class="src_parent_id" name="src_parent_id" id="src_parent_id" value="">
+<input type="hidden" class="dst_parent_id" name="dst_parent_id" id="dst_parent_id" value="from ajax call">-->
 <div class="form-group">
 		<table name="source_fl_table" id="source_fl_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">        
 		<tbody>

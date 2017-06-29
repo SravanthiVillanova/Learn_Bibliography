@@ -86,7 +86,7 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
         //print_r($fieldRows);
         return $workIds;*/
 		
-		 $callback = function ($select) {
+		$callback = function ($select) {
             $select->columns(
                     [
                         'work_id' => new Expression(
@@ -127,4 +127,41 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
     {
         $this->delete(['work_id' => $id]);
     }
+	
+	public function findRecordByFolderId($sid)
+    {
+        echo "source id is $sid";
+		$callback = function ($select) use($sid) {
+			$select->columns(['work_id']);
+			$select->where->equalTo('folder_id', $sid);
+		};
+		$rows = $this->select($callback)->toArray(); 
+        return($rows);
+    }
+	
+	public function mergeWkFlDelete($sid,$did)
+	{
+		$wkfl = new Work_Folder($this->adapter);
+		$rows = array_map(function ($n) { return $n['work_id']; }, $wkfl->findRecordByFolderId($sid));
+
+		if(count($rows) >= 1)
+		{
+			$callback = function ($select) use ($did, $rows) {
+                $select->where->in('work_id', $rows);
+                $select->where->equalTo('folder_id', $did);
+            };
+
+			$this->delete($callback); 
+		}
+	}
+	
+	public function mergeWkFlUpdate($sid, $did)
+	{
+		$this->update(
+            [
+                'folder_id' => $did
+            ],
+            ['folder_id' => $sid]
+        );
+	}
 }
