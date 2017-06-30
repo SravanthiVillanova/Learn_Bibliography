@@ -148,11 +148,24 @@ class GetWorkDetailsAction
 		if(isset($_POST['fl_id']))
 		{
 			$fl_id = $_POST['fl_id'];
-			$table= new \App\Db\Table\Folder($this->adapter);
+			$table = new \App\Db\Table\Folder($this->adapter);
 			$src_row = $table->getParentChain($fl_id);
 			$output = array("fl_row" => $src_row,);
 			echo json_encode($output);
 			exit;
+		}
+		if(isset($_POST['ag_name']))
+		{
+			$name = $_POST['ag_name'];
+			$table = new \App\Db\Table\Agent($this->adapter);
+			$ag_row = $table->getLastNameLikeRecords($name);
+			$output = array("ag_row" => $ag_row,);
+			echo json_encode($output);
+			exit;
+		}
+		if(isset($_POST['ag_id']))
+		{
+			
 		}
 	}
 }

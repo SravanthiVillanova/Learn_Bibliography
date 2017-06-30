@@ -121,4 +121,14 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
     {
         $this->delete(['work_id' => $id]);
     }
+	
+	public function findRecordByAgentId($ag_id)
+	{
+		$callback = function ($select) use($ag_id) {
+			$select->columns(['*']);
+			$select->where->equalTo('agent_id', $ag_id);
+		};
+		$rows = $this->select($callback)->toArray(); 
+        return($rows);
+	}
 }

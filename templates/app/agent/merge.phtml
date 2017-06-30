@@ -1,11 +1,111 @@
 <?php $this->headTitle('Merge Agent'); ?>
 <?php //$this->layout()->instructions = ""; ?>
-<!--<div class="row">
-    <div class="col-md-4">
-        <h2>
-                Merge Agent Coming Soon
-        </h2>
-       
-    </div>
-</div>-->
-<p> Merge Agent Coming Soon </p>
+<?php                                       
+    if ($request->getqueryParams('action') !== null) 
+    {   
+        $params = $request->getqueryParams();
+        $action = $params['action'];
+    }       
+ ?>
+<script>
+$(document).ready(function() {
+	$("#src_ag_find_bt").on('click', function() {
+		var find_srcag = $('#find_src_agent').val();
+		alert('source find is ' + find_srcag);
+		$.ajax({
+			method: 'post',
+			url: 'http://localhost<?=$this->url("get_work_details")?>',
+			data: {
+				ag_name: find_srcag
+			},
+			dataType: "json", 
+			cache: false,
+			success: function(data)
+			{	
+				$('#src_find_outer_div').after('<div class="form-group" id="src_select_div">');
+				var src_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;"><tr><th>Select</th><th>First Name</th><th>Last Name</th><th>Works</th></tr>';
+				/*$('#src_select_div').append('<table id="src_result_table" />');
+				$('#src_result_table').append('<tr class="src_result_rows" />');
+				$('.src_result_rows').append('<th>Select</th><th>First Name</th><th>Last Name</th><th>Works</th>');*/
+				$.each(data.ag_row, function (key, val) {
+					$.ajax({
+						method: 'post',
+						url: 'http://localhost<?=$this->url("get_work_details")?>',
+						data: {
+							ag_id: val.id
+						},
+						dataType: "json", 
+						cache: false,
+						success: function(data)
+						{	
+						},
+						error: function (data) { 
+						}
+					});		
+					src_result_table +=  '<tr><td></td><td>' + val.fname + '</td><td>' + val.lname + '</td></tr>';
+					
+					alert(val.lname);	
+				});			
+				src_result_table += '</table>';
+				$('#src_select_div').append(src_result_table);
+			},
+			error: function (data) { 
+			}
+		});		
+		return false;
+	});
+});
+</script>
+<div class="col-lg-12">
+<form class="form-horizontal" name="merge_ag_form" id="merge_ag_form" method="post" action="<?=$this->url('manage_agent')?>">
+<input type="hidden" name="action" value="<?=$action?>">
+<div class="form-group">
+	<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">        
+	<tbody>
+	<tr>			
+		<td style="border-spacing: 10px;">				
+		<b>Source Agent</b><br>
+		<div class="form-group" id="src_find_outer_div">
+            <label class="col-xs-4 control-label">Find: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="find_src_agent" id="find_src_agent" placeholder="enter last name"/>
+            </div>	
+			<div class="col-xs-7">
+				<button type="submit" class="btn btn-default" name="src_ag_find_bt" id="src_ag_find_bt" value="Save">Find</button>
+			</div>
+        </div>
+		<!--<div class="form-group">
+			<div class="col-sm-offset-4 col-sm-10">		
+				<button type="submit" class="btn btn-default" name="src_ag_find_bt" id="src_ag_find_bt" value="Save">Find</button>
+			</div>
+		</div>-->
+		</td>	
+		<td style="border-spacing: 10px;">
+		<b>Destination Agent</b><br>
+		<div class="form-group">
+            <label class="col-xs-4 control-label">Find: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="find_dest_agent" id="find_dest_agent" placeholder="enter last name"/>
+            </div>
+			<div class="col-xs-7">
+				<button type="submit" class="btn btn-default" name="dest_ag_find_bt" id="dest_ag_find_bt" value="Save">Find</button>
+			</div>
+        </div>
+		<!--<div class="form-group">
+			<div class="col-sm-offset-4 col-sm-10">		
+				<button type="submit" class="btn btn-default" name="dest_ag_find_bt" id="dest_ag_find_bt" value="Save">Find</button>
+			</div>-->
+		</div>
+		</td>			
+	</tr>
+	</tbody>
+	</table>		
+</div>	
+<div class="form-group">
+	<div class="col-sm-offset-4 col-sm-10">
+		<!--<button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Merge</button>-->
+        <button type="reset" class="btn btn-default" name="submit_clear" id="submit_clear" value="Cancel">Clear</button>
+	</div>
+</div>
+</form>
+</div>
