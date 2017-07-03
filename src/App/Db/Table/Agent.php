@@ -189,7 +189,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
 	public function getLastNameLikeRecords($name)
 	{
 		 $callback = function ($select) use ($name) {
-            $select->where->like('lname', '%'. $name . '%');           
+            $select->where->like('lname', $name . '%');           
         };
         $rows = $this->select($callback)->toArray();
         return $rows;

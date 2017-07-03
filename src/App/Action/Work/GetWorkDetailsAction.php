@@ -156,16 +156,32 @@ class GetWorkDetailsAction
 		}
 		if(isset($_POST['ag_name']))
 		{
+			$no_of_wks = [];
 			$name = $_POST['ag_name'];
 			$table = new \App\Db\Table\Agent($this->adapter);
 			$ag_row = $table->getLastNameLikeRecords($name);
+			foreach($ag_row as $row) :
+				$table = new \App\Db\Table\WorkAgent($this->adapter);
+				$wks = $table->findRecordByAgentId($row['id']);
+				$no_wks = count($wks);
+				$no_of_wks[] = $no_wks;
+			endforeach;
+			for($i=0;$i<count($no_of_wks);$i++)
+			{
+				$ag_row[$i]['works'] = $no_of_wks[$i];
+			}
 			$output = array("ag_row" => $ag_row,);
 			echo json_encode($output);
 			exit;
 		}
 		if(isset($_POST['ag_id']))
 		{
-			
+			$ag_id = $_POST['ag_id'];
+			$table = new \App\Db\Table\WorkAgent($this->adapter);
+			$wks = $table->findRecordByAgentId($ag_id);
+			$output = array("ag_no_of_wks" => count($wks),);
+			echo json_encode($output);
+			exit;
 		}
 	}
 }
