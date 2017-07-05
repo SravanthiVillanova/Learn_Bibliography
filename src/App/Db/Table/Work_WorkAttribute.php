@@ -129,4 +129,33 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     {
         $this->delete(['work_id' => $id]);
     }
+	
+	public function findRecordByWorkId($wk_id)
+	{
+		$callback = function ($select) use ($wk_id){
+			$select->columns(['*']);
+			$select->where->equalTo('work_id', $wk_id);
+		};
+		$rows = $this->select($callback)->toArray(); 
+		return $rows;
+	}
+	
+	public function findWorkAttributeTypesByWorkId($wk_id)
+	{
+		$select = $this->sql->select();
+        $select->join('workattribute', 'work_workattribute.workattribute_id = workattribute.id', array('field','type'), 'inner');
+        $select->where(['work_id' => $wk_id]);
+
+        $paginatorAdapter = new Paginator(new DbSelect($select, $this->adapter));
+        $cnt = $paginatorAdapter->getTotalItemCount();
+		$paginatorAdapter->setDefaultItemCountPerPage($cnt);
+
+        $fieldRows = [];
+        foreach ($paginatorAdapter as $row) :
+			$fieldRows[] = $row;
+        endforeach;
+		
+		$output = json_encode($fieldRows);
+        return $output;
+	}
 }

@@ -54,7 +54,7 @@ function bindPublisherAutocomplete(context) {
         {
 			$("#pubLocation", context).html('');
 			$.each(data.publoc, function (key, val) {
-                $("#pubLocation", context).append('<option id="' + val.id + '">' + val.label + '</option>');
+                $("#pubLocation", context).append('<option id="' + val.id + '" value="' + val.id + '">' + val.label + '</option>');
 				$("#publoc_id", context).eq(i).val(val.id);
 				//arr.push(val.id);
 				i++;

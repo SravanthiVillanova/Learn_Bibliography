@@ -134,11 +134,13 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
 	
 	public function updateRecordByAgentId($src_ag_id, $dst_ag_id)
 	{
+		//echo "src id is " . $src_ag_id . "<br />";
+		//echo "dst id is " . $dst_ag_id . "<br />";
 		$this->update(
             [
-                'agent_id' => $dst_ag_id
+                'agent_id' => $src_ag_id
             ],
-            ['agent_id' => $src_ag_id]
+            ['agent_id' => $dst_ag_id]
         );
 	}
 }

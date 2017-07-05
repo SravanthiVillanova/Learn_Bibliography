@@ -84,13 +84,13 @@ class ManageAgentAction
                 }
             }
 			if ($post['action'] == "merge") {
-				echo "<pre>"; print_r($post); echo "</pre>"; die();
+				//echo "<pre>"; print_r($post); echo "</pre>"; //die();
 				// Switch Agent
 				$table = new \App\Db\Table\WorkAgent($this->adapter);
                 $table->updateRecordByAgentId($post['mrg_src_id'], $post['mrg_dest_id']);
 				// Purge
                 $table = new \App\Db\Table\Agent($this->adapter);
-                $table->deleteRecord($post['mrg_src_id']);
+                $table->deleteRecord($post['mrg_dest_id']);
 			}
             //Cancel edit\delete
             if ($post['submitt'] == "Cancel") {

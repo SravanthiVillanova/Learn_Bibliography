@@ -100,7 +100,8 @@ class ManageWorkAction
 					if($post['pub_id'][0] != NULL)
 					{
 						$table = new \App\Db\Table\WorkPublisher($this->adapter);
-						$table->insertRecords($wk_id,$post['pub_id'],$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
+						$table->insertRecords($wk_id,$post['pub_id'],$post['pub_location'],$post['pub_yrFrom'],$post['pub_yrTo']);
+						//$table->insertRecords($wk_id,$post['pub_id'],$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
 					}
 					//insert Agent(work_agent)
 					if($post['agent_id'][0] != NULL)

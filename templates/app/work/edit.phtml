@@ -34,160 +34,192 @@
 				$itemsCount = $paginator->getTotalItemCount();
 				$paginator_agtype->setItemCountPerPage($itemsCount);	
 				
-				//fetch publishers attached to work
-				$table = new \App\Db\Table\WorkPublisher($this->adapter);
-				$pub_rows = $table->findRecordByWorkId($id);
-				if(count($pub_rows) > 0)
-				{ 
-					//echo "<pre>";print_r($pub_rows);echo "</pre>";	die();
-					//echo "count of pub rows not zero";
-				?>
-					<script>
-						$(document).ready(function () {
-							$("#pubId").val("<?=$pub_rows[0]['publisher_id'];?>");
-							$("#pubName").val("<?=$pub_rows[0]['name'];?>");
-							$("#pubyrFrom").val("<?=$pub_rows[0]['publish_year'];?>");
-							$("#pubyrTo").val("<?=$pub_rows[0]['publish_year_end'];?>");
-							<?php
-								//fetch locations for the publisher_id
-								$table = new \App\Db\Table\PublisherLocation($this->adapter);
-								$paginator_publoc = $table->findPublisherLocations($pub_rows[0]['publisher_id']);
-								foreach($paginator_publoc as $row) :
-							?>
-									$("#pubLocation").append('<option value="<?=$row['id'];?>"><?php echo $row['location']; ?></option>');
-							<?php
-								endforeach; 
-							?>
-							$("#pubLocation").val("<?=$pub_rows[0]['location_id'];?>");
-							return false;
-						});
-					</script>
-					<?php
-						for($i=1;$i<count($pub_rows);$i++)
-						{
-					?>
-						<script>
-							$(document).ready(function () {
-								var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="<?=$pub_rows[$i]['publisher_id'];?>">'+
-								'<td><input type="text" class="form-control" name="pub_name[]" id="pubName" value="<?=$pub_rows[$i]['name'];?>"/></td>'+
-								'<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom" value="<?=$pub_rows[$i]['publish_year'];?>"/></td>'+
-								'<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" value="<?=$pub_rows[$i]['publish_year_end'];?>"/></td>'+
-								'<input type="hidden" name="publoc_id[]" id="publoc_id" value="">'+
-								'<td><select class="form-control pub_locations" name="pub_location[]" id="pubLocation">'+
-								'<option value="<?=$pub_rows[$i]['location_id'];?>"><?php echo $pub_rows[$i]['location']; ?></option>'+
-								<?php
-									//fetch locations for the publisher_id
-									$table = new \App\Db\Table\PublisherLocation($this->adapter);
-									$paginator_publoc = $table->findPublisherLocations($pub_rows[$i]['publisher_id']);
-									foreach($paginator_publoc as $row) :
-									if($row['location'] != $pub_rows[$i]['location'])
-									{
-								?>
-									'<option value="<?=$row['id']?>"><?php echo $row['location']; ?></option>'+						
-								<?php
-									}
-									endforeach; 
-								?>
-								'</select>'+
-								'</td>'+
-								'<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>'+
-								'</tr>');	
-								$("#pub_table").append(pub_row);
-								return false;
-							});
-						</script>
-				<?php   }
-				}
-			
-				//fetch agents attached to work
-				$table = new \App\Db\Table\WorkAgent($this->adapter);
-				$ag_rows = $table->findRecordByWorkId($id);
-				if(count($ag_rows) > 0)
-				{
-					//echo "<pre>";print_r($ag_rows);echo "</pre>";	die();
-					//echo "count of ag rows not zero";
-				?>
-					<script>
-						$(document).ready(function () {
-							$("#agentId").val("<?=$ag_rows[0]['agent_id'];?>");
-							$("#agent_type").val("<?=$ag_rows[0]['agenttype_id'];?>");
-							$("#agent_FirstName").val("<?=$ag_rows[0]['fname'];?>");
-							$("#agent_LastName").val("<?=$ag_rows[0]['lname'];?>");
-							$("#agent_AlternateName").val("<?=$ag_rows[0]['alternate_name'];?>");
-							$("#agent_OrganizationName").val("<?=$ag_rows[0]['organization_name'];?>");
-							return false;
-						});
-					</script>
-					<?php
-						for($i=1;$i<count($ag_rows);$i++)
-						{
-					?>
-						<script>
-							$(document).ready(function () {
-								var agent_row = $('<tr><td><input type="hidden" name="agent_id[]" id="agentId" value="<?=$ag_rows[$i]['agent_id'];?>">'+
-									'<select class="form-control agent_type" name="agent_type[]" id="agent_type">'+
-									'<option value="<?=$ag_rows[$i]['agenttype_id'];?>"><?php echo $ag_rows[$i]['type']; ?></option>'+
-								<?php
-									foreach($paginator_agtype as $row) :
-									if($row['type'] != $ag_rows[$i]['type'])
-									{
-								?>
-									'<option value="<?=$row['id']?>"><?php echo $row['type']; ?></option>'+						
-								<?php
-									}
-									endforeach; 
-								?>
-									'</select>'+
-									'</td>'+
-									'<td><input type="text" class="form-control" name="agent_FirstName[]" id="agent_FirstName" value="<?=$ag_rows[$i]['fname'];?>"/></td>'+
-									'<td><input type="text" class="form-control" name="agent_LastName[]" id="agent_LastName" value="<?=$ag_rows[$i]['lname'];?>"/></td>'+
-									'<td><input type="text" class="form-control" name="agent_AlternateName[]" id="agent_AlternateName" value="<?=$ag_rows[$i]['alternate_name'];?>"/></td>'+
-									'<td><input type="text" class="form-control" name="agent_OrganizationName[]" id="agent_OrganizationName" value="<?=$ag_rows[$i]['organization_name'];?>"/></td>'+
-									'<td><button type="submit" class="btn btn-default" name="agent_remove" id="agent_remove" value="Remove">Remove</button></td>'+
-									'</tr>');											
-								$("#agent_table").append(agent_row);
-						});
-						</script>
-						<?php		
-						}			
-				}
-				//die();		
-				//fetch folders
-				$arr_fl = [];
-				$table = new \App\Db\Table\Work_Folder($this->adapter);
-				$wkfl_row = $table->findRecordByWorkId($id);			
-				if(isset($wkfl_row['folder_id'])) 
-				{
-					//echo "fl id set";
-					$arr_fl[] = $wkfl_row['folder_id'];
-					$table = new \App\Db\Table\Folder($this->adapter);
-					$fl_row = $table->getParent($wkfl_row['folder_id']); 
-					while(isset($fl_row['parent_id'])) 
-					{
-						$arr_fl[] = $fl_row['parent_id'];				
-						$table = new \App\Db\Table\Folder($this->adapter);
-						$fl_row = $table->getParent($fl_row['parent_id']);
-						if($fl_row['parent_id'] == NULL)
-						{
-							break;
-						}
-					}
-					//echo "<pre>";print_r($arr_fl);echo "</pre>";
-					$hierarchy_level = 	count($arr_fl);	
-					//echo 'count is ' . $hierarchy_level;
-					if($hierarchy_level > 1)
-					{	
-						echo "hl greater than";
-					?>
-						
-					<?php
-					}
-					//die();
-				}
+				//die();						
 			}
         }
 ?>
 <script>
+//WorkType Autocomplete
+function bindWorkTypeAttributes(context)
+{
+	$('#Citation *').not('.ig').remove();
+	//$(".content_box a").not(".button")
+	var worktype_Id = $('#edit_work_type').val();
+	$.ajax({
+        method: 'post',
+        url: 'http://localhost<?=$this->url('get_work_details')?>',
+		data: {
+			worktype_Id: worktype_Id
+		},
+		dataType: "json", 
+        cache: false,
+        success: function(data)
+        {
+			$.each(data.worktype_attribute, function (key, val) {				
+				$("<div />").attr("class","form-group optiondiv").attr("id","optiondiv").appendTo("#Citation");
+				$("<label />").attr("class","col-xs-2 control-label").text(val.field).appendTo("#Citation");
+				//$("</label>").appendTo("#divforoptions");
+				$("<div />").attr("id","optionfieldsdiv").appendTo("#Citation");
+				// append input control at end of form
+				if(val.type == 'Textarea')
+				{
+					$("<textarea />")
+						.attr("class","form-control")
+						.attr("id", val.field)
+						.attr("name", 'wkatid,' + val.id)
+						.appendTo("#Citation");
+					//$("</textarea>").appendTo("#divforoptions");
+				}
+				if(val.type == 'Text')
+				{
+					$("<input />")
+						.attr("type","text")
+						.attr("class","form-control")
+						.attr("id", val.field)
+						.attr("name", 'wkatid,' + val.id)
+						.appendTo("#Citation");
+				}				
+				if(val.type == 'Select')
+				{
+					var container = $('<div/>');
+					$("<input />")
+						.attr("type","text")
+						.attr("class","form-control Attributeoption")
+						.attr("id", val.field + ':' + val.id)
+						.attr("name", 'wkatid,' + val.id)
+						.appendTo(container);
+					$("<button data-toggle='modal' data-target='#pubLookup'/>")
+						.attr("class","btn btn-default optionLookupBtn")
+						.attr("id","optionLookupBtn")
+						.attr("data-toggle","modal")
+						.attr("data-target","optionsLookup")
+						.attr("value","Lookup")
+						.text("Lookup")
+						.appendTo(container);	
+					container.appendTo('#Citation');
+				}	
+            })			
+			$(".optionLookupBtn").on('click', function(e){
+				// show Modal
+				var lookupBtn = this;
+				attr_option_lookup = $(lookupBtn).prev();
+				$("#optionsLookup").modal('show');
+				$('#optionsLookup').on('shown.bs.modal', function () {
+					$('#lookupOption').focus()
+					$('.option_search').on('click', function(e) {					
+						//console.log(attr_option_lookup);
+						//var attribute_Id = $(lookupBtn).prev().attr('id');
+						var attribute_Id = attr_option_lookup.attr('id');
+						var option = $('#lookupOption').val();
+						//console.log(attribute_Id);
+						$.ajax({
+							method: 'post',
+							url: 'http://localhost<?=$this->url('get_work_details')?>',
+							data: {
+								option: option,
+								attribute_Id: attribute_Id
+							},
+							dataType: "json", 
+							cache: false,
+							success: function(data)
+							{
+								$(".option_results",context).html('');
+								$(".option_results",context).append('<p>Search Results</p>');
+								$.each(data.attribute_options, function (key, val) {
+									$(".option_results",context).append('<p><a name="'+val.id+'" href="'+ val.title +'" class="link_options">' + val.title + '</a></p>');
+								})
+							},
+							error: function () { 
+								$(".option_results",context).append('<p>None available</p>');
+							}
+						});	
+						$(context).off('click', '.link_options');
+						$(context).on("click", ".link_options", function(e) {
+							var linkval = $(this).attr('href');
+							attr_option_lookup.val(linkval);
+							attr_option_lookup.attr('name', attr_option_lookup.attr('name') + 'optid,' + $(this).attr('name'));
+							console.log(attr_option_lookup.attr('name'));
+							$('#lookupOption').val('');
+							$(".option_results",context).html('');	
+							$('.option_lookup_close').trigger('click');																
+							return false;
+						});
+					});
+				});
+				return false;
+			});
+		},
+		error: function (data) { 
+            $("#Citation", context).html('<p>No Options</p>');
+			//alert('error');
+        }
+    });
+	return false;
+}
+_select = '';
+function bindClassificationFolder(context)
+{
+	fl_changed = $(_select,context).val();
+	var no_of_fl_parent = $('.select_fl').length;
+	for(var i = 0;i < no_of_fl_parent; i++)
+	{
+		if($('.select_fl').eq(i).val() === fl_changed)
+		{
+			change_idx = i;
+			folder_Id = $('.select_fl').eq(i).val();
+			break;
+		}
+	}
+	/*for(i = change_idx + 1; i < no_of_fl_parent; i++)
+	{
+		$('.label_fl').eq(i).remove();
+		$('.inner_div_fl').eq(i).remove();
+		$('.select_fl').eq(i).remove();
+	}*/
+	
+	$('.outer_div_fl').eq(change_idx).nextAll('.outer_div_fl').remove();
+			
+	no_of_fl_parent = $('.select_fl').length;
+
+	$.ajax({
+		method: 'post',
+		url: 'http://localhost<?=$this->url('get_work_details')?>',
+		data: {
+			folder_Id: folder_Id
+		},
+		dataType: "json", 
+		cache: false,
+		success: function(data)
+		{	
+			//$('.outer_div_fl').eq(no_of_fl_parent-1).css('background','#8ec252');
+					
+			if(data.folder_children.length > 0)
+			{
+				$('.outer_div_fl').eq(no_of_fl_parent-1).after('<div class="form-group outer_div_fl" name="outer_div_fl" />');
+				$('.outer_div_fl').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>');
+				$('.outer_div_fl').eq(no_of_fl_parent).append('<div class="col-xs-5 inner_div_fl" name="inner_div_fl" />');
+					
+				_select = $('<select class="form-control select_fl" name="select_fl[]">');
+				to_append = $('<option value="'+'"none"'+'></option>');
+				$.each(data.folder_children, function (key, val) {
+					to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+				});
+				_select.append($('<option />'));
+				_select.append(to_append);
+				$('.inner_div_fl').eq(no_of_fl_parent).append(_select);
+				$('.inner_div_fl').eq(no_of_fl_parent).append('</select>');
+					
+				_select.on('change',function(){
+					bindClassificationFolder(document);
+				});	
+			}
+		},
+		error: function (data) { 
+			//$("#Classification", context).html('<p>No Options</p>');
+		}
+	});			
+	return false;
+}
 //Publisher autocomplete and location fetch
 function bindPublisherAutocomplete(context) {							
 	//publisher enable/disable fields
@@ -276,8 +308,12 @@ function bindAgentAutocomplete(context)
     });	
 }
 $(document).ready(function () {	
+	//get attributes for selected worktypes
+	$('#edit_work_type',document).on('change', function() {	
+		bindWorkTypeAttributes(document);		
+	});
 	//Publisher
-	bindPublisherAutocomplete(document);
+	//bindPublisherAutocomplete(document);
 	//add publisher rows
 	$("#pub_add").click(function(){
 		var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="">'+
@@ -299,7 +335,7 @@ $(document).ready(function () {
         $(this).parent().parent().remove();
     });
 	//agent
-	bindAgentAutocomplete(document);
+	//bindAgentAutocomplete(document);
 	$("#agent_add").click(function(){
 		var agent_row = $('<tr><td><input type="hidden" name="agent_id[]" id="agentId" value="">'+
 						'<select class="form-control agent_type" name="agent_type[]" id="agent_type">'+
@@ -326,13 +362,78 @@ $(document).ready(function () {
 	$("#agent_table").on('click','#agent_remove',function(){
         $(this).parent().parent().remove();
     });
+	$(".select_fl").on('change', function() {
+		if($(this).val() == "none"){
+			$('.outer_div_fl').eq(0).nextAll('.outer_div_fl').remove();
+			$('.select_fl').eq(0).val('none');
+			return false;
+		}
+		else
+		{
+			fl_changed = $(this).val();
+			var no_of_fl_parent = $('.select_fl').length;
+
+			for(var i = 0;i < no_of_fl_parent; i++)
+			{
+				if($('.select_fl').eq(i).val() === fl_changed)
+				{
+					change_idx = i;
+					folder_Id = $('.select_fl').eq(i).val();
+					break;
+				}
+			}
+
+			$('.outer_div_fl').eq(change_idx).nextAll('.outer_div_fl').remove();
+			
+			no_of_fl_parent = $('.select_fl').length;
+
+			$.ajax({
+				method: 'post',
+				url: 'http://localhost<?=$this->url('get_work_details')?>',
+				data: {
+					folder_Id: folder_Id
+				},
+				dataType: "json", 
+				cache: false,
+				success: function(data)
+				{	
+					//$('.outer_div_fl').eq(no_of_fl_parent-1).css('background','#8ec252');
+					if(data.folder_children.length > 0)
+					{
+						$('.outer_div_fl').eq(no_of_fl_parent-1).after('<div class="form-group outer_div_fl" name="outer_div_fl" />');
+						$('.outer_div_fl').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>');
+						$('.outer_div_fl').eq(no_of_fl_parent).append('<div class="col-xs-5 inner_div_fl" name="inner_div_fl" />');
+					
+						_select = $('<select class="form-control select_fl" name="select_fl[]">');
+						to_append = $('<option value="none"></option>');
+						$.each(data.folder_children, function (key, val) {
+							to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+						});
+						_select.append($('<option />'));
+						_select.append(to_append);
+						$('.inner_div_fl').eq(no_of_fl_parent).append(_select);
+						$('.inner_div_fl').eq(no_of_fl_parent).append('</select>');
+					
+						_select.on('change',function(){
+							bindClassificationFolder(document);
+						});	
+					}
+				},
+				error: function (data) { 
+					//$("#Classification", context).html('<p>No Options</p>');
+				}
+			});	
+		
+			return false;
+		}
+	});
 });
 </script>
 <?php
-	echo "here stat is " . $status;
+	//echo "here stat is " . $status;
 	if($status != 1)
 	{
-		echo "yes stat";
+		//echo "yes stat";
 ?>
 <div class="col-md-7">
 <form id="personal-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
@@ -423,22 +524,116 @@ $(document).ready(function () {
 		</div>		 
     </div>
 	<div class="tab-pane" id="Classification">
-		<div class="form-group" id="class_grp">
-			<label class="col-xs-2 control-label">Subject Tree: </label>
-			<div class="col-xs-5">
-				<select class="form-control subject_tree" name="subject_tree" id="subject_tree">
-				<option value=""></option>
-				<?php
-					//fetch first level
+	<?php
+		//fetch folders
+		$arr_fl = [];
+		$table = new \App\Db\Table\Work_Folder($this->adapter);
+		$wkfl_row = $table->findRecordByWorkId($id);			
+		if(isset($wkfl_row['folder_id'])) 
+		{
+			$fl_id = $wkfl_row['folder_id'];
+			$arr_fl[] = $fl_id;
+			$table = new \App\Db\Table\Folder($this->adapter);
+			$fl_row = $table->getParent($wkfl_row['folder_id']); 
+			while(isset($fl_row['parent_id'])) 
+			{
+				$arr_fl[] = $fl_row['parent_id'];				
+				$table = new \App\Db\Table\Folder($this->adapter);
+				$fl_row = $table->getParent($fl_row['parent_id']);
+				if($fl_row['parent_id'] == NULL)
+				{
+					break;
+				}
+			}
+			$cnt = count($arr_fl);
+			echo "<pre>";print_r($arr_fl);echo "</pre>"; //die();
+			for($i = $cnt-1; $i >= 0; $i--)
+			{		
+				if($arr_fl[$i] == $fl_id)
+				{
 					$table = new \App\Db\Table\Folder($this->adapter);
-					$paginator = $table->findParent();
-					foreach($paginator as $row) :
+					$fl = $table->findRecordById($arr_fl[$i]);
+			?>
+					<div class="form-group outer_div_fl" name="outer_div_fl">
+						<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
+						<div class="col-xs-5 inner_div_fl" name="inner_div_fl">
+						<select class="form-control select_fl" name="select_fl[]">
+						<option value="none"></option>
+						<option value="<?=$arr_fl[$i]?>" selected><?php echo $fl['text_fr']; ?></option>
+						<?php
+						$table = new \App\Db\Table\Folder($this->adapter);
+						$fl_siblings = $table->getChild($arr_fl[$i+1]);
+						foreach($fl_siblings as $row) :
+							if($row['id'] != $arr_fl[$i])
+							{
+						?>
+							<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>	
+						<?php 
+							}
+						endforeach; ?>
+						</select>
+						</div>
+					</div>	
+					<?php
+				}
+				else if($i != ($cnt-1))
+				{
+					$table = new \App\Db\Table\Folder($this->adapter);
+					$fl = $table->findRecordById($arr_fl[$i]);
 				?>
-				<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
-				<?php endforeach; ?>
-				</select>
-			</div>
-		</div>		
+					<div class="form-group outer_div_fl" name="outer_div_fl">
+						<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
+						<div class="col-xs-5 inner_div_fl" name="inner_div_fl">
+						<select class="form-control select_fl" name="select_fl[]">
+						<option value="none"></option>
+						<option value="<?=$arr_fl[$i]?>" selected><?php echo $fl['text_fr']; ?></option>
+						<?php
+						$table = new \App\Db\Table\Folder($this->adapter);
+						$fl_siblings = $table->getChild($arr_fl[$i+1]);
+						foreach($fl_siblings as $row) :
+							if($row['id'] != $arr_fl[$i])
+							{
+							?>
+								<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
+							<?php
+							}
+						endforeach; ?>
+						</select>
+						</div>
+					</div>		
+				<?php
+				}
+				else
+				{
+					$table = new \App\Db\Table\Folder($this->adapter);
+					$fl = $table->findRecordById($arr_fl[$i]);
+				?>
+					<div class="form-group outer_div_fl" name="outer_div_fl">
+						<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
+						<div class="col-xs-5 inner_div_fl" name="inner_div_fl">
+						<select class="form-control select_fl" name="select_fl[]">
+						<option value="none"></option>
+						<option value="<?=$arr_fl[$i]?>" selected><?php echo $fl['text_fr']; ?></option>
+						<?php
+						$table = new \App\Db\Table\Folder($this->adapter);
+						//$fl_siblings = $table->getChild($arr_fl[$i+1]);
+						$fl_siblings = $table->getFoldersWithNullParent();
+						foreach($fl_siblings as $row) :
+							if($row['id'] != $arr_fl[$i])
+							{
+							?>
+								<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
+							<?php 
+							}
+						endforeach; ?>
+						</select>
+						</div>
+					</div>	
+					<?php
+				}
+			}
+		}
+		?>
     </div>  
 	<div class="tab-pane" id="Publisher">
 		<div class="form-group">
@@ -464,6 +659,73 @@ $(document).ready(function () {
 			</td>
 			<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>
 		</tr>
+		<?php
+		//fetch publishers attached to work
+		$table = new \App\Db\Table\WorkPublisher($this->adapter);
+		$pub_rows = $table->findRecordByWorkId($id);
+		if(count($pub_rows) > 0)
+		{ 
+			//echo "<pre>";print_r($pub_rows);echo "</pre>";	//die();
+					//echo "count of pub rows not zero";
+		?>
+		<script>
+		$(document).ready(function () {
+			$("#pubId").val("<?=$pub_rows[0]['publisher_id'];?>");
+			$("#pubName").val("<?=$pub_rows[0]['name'];?>");
+			$("#pubyrFrom").val("<?=$pub_rows[0]['publish_year'];?>");
+			$("#pubyrTo").val("<?=$pub_rows[0]['publish_year_end'];?>");
+			<?php
+			//fetch locations for the publisher_id
+			$table = new \App\Db\Table\PublisherLocation($this->adapter);
+			$paginator_publoc = $table->findPublisherLocations($pub_rows[0]['publisher_id']);
+			foreach($paginator_publoc as $row) :
+			?>
+				$("#pubLocation").append('<option value="<?=$row['id'];?>"><?php echo $row['location']; ?></option>');
+			<?php
+			endforeach; 
+			?>
+			$("#pubLocation").val("<?=$pub_rows[0]['location_id'];?>");
+			return false;
+		});
+		</script>
+		<?php
+		for($i=1;$i<count($pub_rows);$i++)
+		{
+		?>
+		<script>
+		$(document).ready(function () {
+			var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="<?=$pub_rows[$i]['publisher_id'];?>">'+
+							'<td><input type="text" class="form-control" name="pub_name[]" id="pubName" value="<?=$pub_rows[$i]['name'];?>"/></td>'+
+							'<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom" value="<?=$pub_rows[$i]['publish_year'];?>"/></td>'+
+							'<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" value="<?=$pub_rows[$i]['publish_year_end'];?>"/></td>'+
+							'<input type="hidden" name="publoc_id[]" id="publoc_id" value="">'+
+							'<td><select class="form-control pub_locations" name="pub_location[]" id="pubLocation">'+
+							'<option value="<?=$pub_rows[$i]['location_id'];?>"><?php echo $pub_rows[$i]['location']; ?></option>'+
+							<?php
+								//fetch locations for the publisher_id
+								$table = new \App\Db\Table\PublisherLocation($this->adapter);
+								$paginator_publoc = $table->findPublisherLocations($pub_rows[$i]['publisher_id']);
+								foreach($paginator_publoc as $row) :
+									if($row['location'] != $pub_rows[$i]['location'])
+									{
+							?>
+										'<option value="<?=$row['id']?>"><?php echo $row['location']; ?></option>'+						
+								<?php
+									}
+								endforeach; 
+								?>
+							'</select>'+
+							'</td>'+
+							'<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>'+
+							'</tr>');	
+			$("#pub_table").append(pub_row);
+			return false;
+		});
+		</script>
+		<?php   
+		}				
+		}
+		?>
 		</tbody>
 		</table>
 		<button type="submit" class="btn btn-default" name="pub_add" id="pub_add" value="Add">Add</button> 
@@ -499,11 +761,226 @@ $(document).ready(function () {
 			<td><input type="text" class="form-control" name="agent_OrganizationName[]" id="agent_OrganizationName" /></td>
 			<td><button type="submit" class="btn btn-default" name="agent_remove" id="agent_remove" value="Remove">Remove</button></td>
 		</tr>
+		<?php
+		//fetch agents attached to work
+		$table = new \App\Db\Table\WorkAgent($this->adapter);
+		$ag_rows = $table->findRecordByWorkId($id);
+		if(count($ag_rows) > 0)
+		{
+			//echo "<pre>";print_r($ag_rows);echo "</pre>";	die();
+			//echo "count of ag rows not zero";
+		?>
+			<script>
+			$(document).ready(function () {
+				$("#agentId").val("<?=$ag_rows[0]['agent_id'];?>");
+				$("#agent_type").val("<?=$ag_rows[0]['agenttype_id'];?>");
+				$("#agent_FirstName").val("<?=$ag_rows[0]['fname'];?>");
+				$("#agent_LastName").val("<?=$ag_rows[0]['lname'];?>");
+				$("#agent_AlternateName").val("<?=$ag_rows[0]['alternate_name'];?>");
+				$("#agent_OrganizationName").val("<?=$ag_rows[0]['organization_name'];?>");
+				return false;
+			});
+			</script>
+			<?php
+			for($i=1;$i<count($ag_rows);$i++)
+			{
+			?>
+				<script>
+				$(document).ready(function () {
+					var agent_row = $('<tr><td><input type="hidden" name="agent_id[]" id="agentId" value="<?=$ag_rows[$i]['agent_id'];?>">'+
+									'<select class="form-control agent_type" name="agent_type[]" id="agent_type">'+
+									'<option value="<?=$ag_rows[$i]['agenttype_id'];?>"><?php echo $ag_rows[$i]['type']; ?></option>'+
+									<?php
+									foreach($paginator_agtype as $row) :
+										if($row['type'] != $ag_rows[$i]['type'])
+										{
+									?>
+											'<option value="<?=$row['id']?>"><?php echo $row['type']; ?></option>'+						
+									<?php
+										}
+									endforeach; 
+									?>
+									'</select>'+
+									'</td>'+
+									'<td><input type="text" class="form-control" name="agent_FirstName[]" id="agent_FirstName" value="<?=$ag_rows[$i]['fname'];?>"/></td>'+
+									'<td><input type="text" class="form-control" name="agent_LastName[]" id="agent_LastName" value="<?=$ag_rows[$i]['lname'];?>"/></td>'+
+									'<td><input type="text" class="form-control" name="agent_AlternateName[]" id="agent_AlternateName" value="<?=$ag_rows[$i]['alternate_name'];?>"/></td>'+
+									'<td><input type="text" class="form-control" name="agent_OrganizationName[]" id="agent_OrganizationName" value="<?=$ag_rows[$i]['organization_name'];?>"/></td>'+
+									'<td><button type="submit" class="btn btn-default" name="agent_remove" id="agent_remove" value="Remove">Remove</button></td>'+
+									'</tr>');											
+					$("#agent_table").append(agent_row);
+				});
+				</script>
+			<?php		
+			}			
+		}
+		?>
 		</tbody>
 		</table>
 		<button type="submit" class="btn btn-default" name="agent_add" id="agent_add" value="Add">Add</button> 
 		</div>
     </div>
+	<div class="tab-pane" id="Citation">
+		<!--<div class="form-group" id="divforoptions">
+		</div>-->
+		<!-- Work Type Attribute Options Lookup -->
+		<div class="modal fade ig" id="optionsLookup" role="dialog">
+		<div class="modal-dialog ig">
+		<div class="modal-content ig">
+			<div class="modal-header ig">
+				<button type="button" class="close ig" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title ig" id="myModalLabel">Lookup</h4>
+			</div>
+			<div class="modal-body ig">
+				<div class="form-group ig">
+				<label class="col-xs-2 control-label ig">Title: </label>
+				<div class="col-xs-10 ig">
+					<input type="text" class="form-control ig" name="lookup_Option" id="lookupOption" />
+				</div>
+				</div>
+				<div class="form-group ig">
+				<div class="col-sm-offset-2 col-sm-10 ig">
+				<button type="button" class="btn btn-primary option_search ig" id="option_search">Search</button>
+				</div>
+				</div>
+				<div class="option_results ig">
+				</div>
+			</div>
+			<div class="modal-footer ignore ig">
+				<button type="button" class="btn btn-default option_lookup_close ig" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+		</div>
+		</div>
+		<script>
+			var worktype_Id = $('#edit_work_type').val();
+			alert("work type id is " + worktype_Id);
+			$.ajax({
+				method: 'post',
+				url: 'http://localhost<?=$this->url('get_work_details')?>',
+				data: {
+					worktype_Id: worktype_Id
+				},
+				dataType: "json", 
+				cache: false,
+				success: function(data)
+				{
+					$.each(data.worktype_attribute, function (key, val) {				
+					$("<div />").attr("class","form-group optiondiv").attr("id","optiondiv").appendTo("#Citation");
+					$("<label />").attr("class","col-xs-2 control-label").text(val.field).appendTo("#Citation");
+					//$("</label>").appendTo("#divforoptions");
+					$("<div />").attr("id","optionfieldsdiv").appendTo("#Citation");
+					// append input control at end of form
+					if(val.type == 'Textarea')
+					{
+						$("<textarea />")
+							.attr("class","form-control")
+							.attr("id", val.field)
+							.attr("name", 'wkatid,' + val.id)
+							.appendTo("#Citation");
+						//$("</textarea>").appendTo("#divforoptions");
+					}
+					if(val.type == 'Text')
+					{
+						$("<input />")
+							.attr("type","text")
+							.attr("class","form-control")
+							.attr("id", val.field)
+							.attr("name", 'wkatid,' + val.id)
+							.appendTo("#Citation");
+					}				
+					if(val.type == 'Select')
+					{
+						var container = $('<div/>');
+						$("<input />")
+							.attr("type","text")
+							.attr("class","form-control Attributeoption")
+							.attr("id", val.field + ':' + val.id)
+							.attr("name", 'wkatid,' + val.id)
+							.appendTo(container);
+						$("<button data-toggle='modal' data-target='#pubLookup'/>")
+							.attr("class","btn btn-default optionLookupBtn")
+							.attr("id","optionLookupBtn")
+							.attr("data-toggle","modal")
+							.attr("data-target","optionsLookup")
+							.attr("value","Lookup")
+							.text("Lookup")
+							.appendTo(container);	
+						container.appendTo('#Citation');
+					}	
+					})			
+					$(".optionLookupBtn").on('click', function(e){
+						// show Modal
+						var lookupBtn = this;
+						attr_option_lookup = $(lookupBtn).prev();
+						$("#optionsLookup").modal('show');
+						$('#optionsLookup').on('shown.bs.modal', function () {
+							$('#lookupOption').focus()
+							$('.option_search').on('click', function(e) {					
+								//console.log(attr_option_lookup);
+								//var attribute_Id = $(lookupBtn).prev().attr('id');
+								var attribute_Id = attr_option_lookup.attr('id');
+								var option = $('#lookupOption').val();
+								//console.log(attribute_Id);
+								$.ajax({
+									method: 'post',
+									url: 'http://localhost<?=$this->url('get_work_details')?>',
+									data: {
+										option: option,
+										attribute_Id: attribute_Id
+									},
+									dataType: "json", 
+									cache: false,
+									success: function(data)
+									{
+										$(".option_results",document).html('');
+										$(".option_results",document).append('<p>Search Results</p>');
+										$.each(data.attribute_options, function (key, val) {
+											$(".option_results",document).append('<p><a name="'+val.id+'" href="'+ val.title +'" class="link_options">' + val.title + '</a></p>');
+										})
+									},
+									error: function () { 
+										$(".option_results",document).append('<p>None available</p>');
+									}
+								});	
+								$(document).off('click', '.link_options');
+								$(document).on("click", ".link_options", function(e) {
+									var linkval = $(this).attr('href');
+									attr_option_lookup.val(linkval);
+									attr_option_lookup.attr('name', attr_option_lookup.attr('name') + 'optid,' + $(this).attr('name'));
+									console.log(attr_option_lookup.attr('name'));
+									$('#lookupOption').val('');
+									$(".option_results",document).html('');	
+									$('.option_lookup_close').trigger('click');																
+									return false;
+								});
+							});
+						});
+						return false;
+					});
+				},
+				error: function (data) { 
+					$("#Citation", document).html('<p>No Options</p>');
+					//alert('error');
+				}
+			});
+		</script>
+		<?php
+			//fetch worktype values
+			$table = new \App\Db\Table\Work_WorkAttribute($adapter);
+			$attrs = $table->findWorkAttributeTypesByWorkId($id);
+			$wktyp_attrs = json_decode($attrs, true);
+			//$wktyp_attrs = $table->findRecordByWorkId($id);
+			echo "<pre>"; print_r($wktyp_attrs); echo "</pre>";
+			for($i = 0; $i < count($wktyp_attrs); $i++)
+			{
+				if($wktyp_attrs[$i]['type'] == 'Select')
+				{
+				
+				}
+			}
+		?>
+	</div>
 </div>
 <div class="form-group">
 	<div class="col-sm-offset-2 col-sm-10">

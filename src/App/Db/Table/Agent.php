@@ -94,7 +94,8 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     
     public function deleteRecord($id)
     {
-        $this->delete(['id' => $id]);
+        //echo "id to del is " . $id . "<br />";
+		$this->delete(['id' => $id]);
     }
     
     public function findRecordById($id)
