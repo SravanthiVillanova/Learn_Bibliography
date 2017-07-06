@@ -182,4 +182,11 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
 		//$rows = $this->select($callback)->toArray();
         //return $rows;
 	}
+	
+	public function getOptionTitle($id,$wkat_id)
+	{
+		$rowset = $this->select(array('id' => $id, 'workattribute_id' => $wkat_id));
+        $row = $rowset->current();
+        return($row);
+	}
 }

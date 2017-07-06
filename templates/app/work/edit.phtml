@@ -7,7 +7,7 @@
        if ($request->getqueryParams('id') !== null) 
         {   
             $params = $request->getqueryParams();
-            $action = $params['action'];
+            $action = 'work_' . $params['action'];
             $id = $params['id'];
 			//fetch name based on id
 			$table = new \App\Db\Table\Work($adapter);
@@ -34,6 +34,10 @@
 				$itemsCount = $paginator->getTotalItemCount();
 				$paginator_agtype->setItemCountPerPage($itemsCount);	
 				
+				//fetch worktype values
+				$table = new \App\Db\Table\Work_WorkAttribute($adapter);
+				$attrs = $table->findWorkAttributeTypesByWorkId($id);
+				$wktyp_attrs = json_decode($attrs, true);
 				//die();						
 			}
         }
@@ -78,7 +82,14 @@ function bindWorkTypeAttributes(context)
 						.attr("id", val.field)
 						.attr("name", 'wkatid,' + val.id)
 						.appendTo("#Citation");
-				}				
+				}
+				if(val.type == 'RadioButton')
+				{
+					$('<div class="radio">' +
+					'<label class="radio"><input type="radio" name="wkatid,' + val.id + '" value="true" />True</label>' + 
+					'<label class="radio"><input type="radio" name="wkatid,' + val.id + '" value="false" />False</label>' + 
+					'</div>').appendTo("#Citation");
+				}
 				if(val.type == 'Select')
 				{
 					var container = $('<div/>');
@@ -437,7 +448,8 @@ $(document).ready(function () {
 ?>
 <div class="col-md-7">
 <form id="personal-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
-<input type="hidden" name="action" value="work_new">
+<input type="hidden" name="id" value="<?=$id?>">
+<input type="hidden" name="action" value="<?=$action?>">
 <?php 
 	//get user
 	$user = $this->isUser()->getUser();
@@ -852,9 +864,80 @@ $(document).ready(function () {
 		</div>
 		</div>
 		</div>
+		<?php
+			//echo "<pre>"; print_r($wktyp_attrs); echo "</pre>";
+		?>
 		<script>
+		function setValues(context)
+		{
+			var title = "";
+			<?php
+			//fetch worktype values
+			/*$table = new \App\Db\Table\Work_WorkAttribute($adapter);
+			$attrs = $table->findWorkAttributeTypesByWorkId($id);
+			$wktyp_attrs = json_decode($attrs, true);*/
+			//echo "<pre>"; print_r($wktyp_attrs); echo "</pre>";
+			for($i = 0; $i < count($wktyp_attrs); $i++)
+			{
+			?>				
+			<?php
+				if($wktyp_attrs[$i]['type'] == 'Select')
+				{
+					//if(preg_match('/(?<name>[A-Za-z]+)\:(?<digit>\d)/',$wktyp_attrs[$i]['field'] . ":" . $wktyp_attrs[$i]['workattribute_id'],$matches))
+					//{
+						$table = new \App\Db\Table\WorkAttribute_Option($adapter);
+						$wkopt = $table->getOptionTitle($wktyp_attrs[$i]['value'], $wktyp_attrs[$i]['workattribute_id']);
+			?>
+						title = <?php echo json_encode($wkopt['title']); ?>;
+						//var opt = <?php echo json_encode($wktyp_attrs[$i]['field'] . ":" . $wktyp_attrs[$i]['workattribute_id']); ?>;
+						var opt = <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['workattribute_id']); ?>;
+						$('input[name="' + opt + '"]').val(title);
+
+			<?php
+					//}
+				}
+				else if($wktyp_attrs[$i]['type'] == 'Textarea')
+				{
+				?>
+					title =  <?php echo json_encode($wktyp_attrs[$i]['value']); ?>;
+					$('textarea[name="' + <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').val(title);
+
+				<?php					
+				}
+				else if($wktyp_attrs[$i]['type'] == 'RadioButton')
+				{
+				?>
+					title =  <?php echo json_encode($wktyp_attrs[$i]['value']); ?>;
+					if(title == "true")
+					{
+						console.log("true");
+						$('input[id="' + <?php echo json_encode("t:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').prop("checked",true);
+					}
+					if(title == "false")
+					{
+						console.log("false");
+						$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').css("background","#8ec252");
+						$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').prop("checked",true);
+					}
+					//if(title == true)
+						
+					//$('textarea[name="' + <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['field']); ?> + '"]').val(title);
+				<?php
+				}
+				else
+				{
+				?>
+					title =  <?php echo json_encode($wktyp_attrs[$i]['value']); ?>;
+					$('input[name="' + <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').val(title);
+				<?php
+				}
+			}
+			?>
+			return false;
+		}
+		$(document).ready(function () {
 			var worktype_Id = $('#edit_work_type').val();
-			alert("work type id is " + worktype_Id);
+			//alert("work type id is " + worktype_Id);
 			$.ajax({
 				method: 'post',
 				url: 'http://localhost<?=$this->url('get_work_details')?>',
@@ -888,7 +971,14 @@ $(document).ready(function () {
 							.attr("id", val.field)
 							.attr("name", 'wkatid,' + val.id)
 							.appendTo("#Citation");
-					}				
+					}	
+					if(val.type == 'RadioButton')
+					{
+						$('<div class="radio">' +
+							'<label class="radio"><input type="radio" id="t:' + val.id + '" name="wkatid,' + val.id + '" value="true" />True</label>' + 
+							'<label class="radio"><input type="radio" id="f:' + val.id + '" name="wkatid,' + val.id + '" value="false" />False</label>' + 
+							'</div>').appendTo("#Citation");
+					}
 					if(val.type == 'Select')
 					{
 						var container = $('<div/>');
@@ -958,28 +1048,18 @@ $(document).ready(function () {
 						});
 						return false;
 					});
+					setValues(document);
 				},
 				error: function (data) { 
 					$("#Citation", document).html('<p>No Options</p>');
 					//alert('error');
 				}
 			});
+			//setValues(document);
+			return false;
+		});
 		</script>
-		<?php
-			//fetch worktype values
-			$table = new \App\Db\Table\Work_WorkAttribute($adapter);
-			$attrs = $table->findWorkAttributeTypesByWorkId($id);
-			$wktyp_attrs = json_decode($attrs, true);
-			//$wktyp_attrs = $table->findRecordByWorkId($id);
-			echo "<pre>"; print_r($wktyp_attrs); echo "</pre>";
-			for($i = 0; $i < count($wktyp_attrs); $i++)
-			{
-				if($wktyp_attrs[$i]['type'] == 'Select')
-				{
-				
-				}
-			}
-		?>
+		
 	</div>
 </div>
 <div class="form-group">

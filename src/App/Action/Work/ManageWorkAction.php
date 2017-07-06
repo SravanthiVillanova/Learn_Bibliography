@@ -77,7 +77,7 @@ class ManageWorkAction
             //add a new work type
             if ($post['action'] == "work_new") {
                 if ($post['submit_save'] == "Save") {
-					echo "<pre>";print_r($post);echo "</pre>"; 	
+					//echo "<pre>";print_r($post);echo "</pre>"; 	
 					//echo "pub count is " . count($post['pub_id']);
 					//echo "agent count is " . count($post['agent_id']);
 					//die();
@@ -129,6 +129,70 @@ class ManageWorkAction
 					{
 						$table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
 						$table->insertRecords($wk_id,$wkat_id,$wkopt_id);
+					}
+				}
+			}
+			if ($post['action'] == "work_edit") {
+				echo "<pre>"; print_r($post); echo "</pre>"; die();
+				if ($post['submit_save'] == "Save") {
+					//update General(work)
+					$table = new \App\Db\Table\Work($this->adapter);
+					$table->updateRecords($post['id'],$post['edit_work_type'],$post['edit_worktitle'],$post['edit_worksubtitle'],
+													$post['edit_workparalleltitle'],$post['description'],date('Y-m-d H:i:s'),
+													$post['user'],$post['edit_workstatus'],$post['pub_yrFrom']);
+										  
+					//update classification(work_folder)
+					$lg = count($post['select_fl']);
+					if($post['select_fl'][$lg-1] == "" || $post['select_fl'][$lg-1] == 'none')
+					{
+						$fl_to_move = $post['select_fl'][$lg-2];
+					}
+					else
+					{
+						$fl_to_move = $post['select_fl'][$lg-1];
+					}
+
+					if(isset($fl_to_move))
+					{
+						$table = new \App\Db\Table\Work_Folder($this->adapter);
+						$table->updateRecords($post['id'],$fl_to_move);
+					} //done till here
+					
+					//update Publisher(work_publisher)
+					if($post['pub_id'][0] != NULL)
+					{
+						$table = new \App\Db\Table\WorkPublisher($this->adapter);
+						$table->updateRecords($wk_id,$post['pub_id'],$post['pub_location'],$post['pub_yrFrom'],$post['pub_yrTo']);
+						//$table->insertRecords($wk_id,$post['pub_id'],$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
+					}
+					
+					//update Agent(work_agent)
+					if($post['agent_id'][0] != NULL)
+					{
+						$table = new \App\Db\Table\WorkAgent($this->adapter);
+						$table->updateRecords($wk_id,$post['agent_id'],$post['agent_type']);
+					}
+					
+					//map work to citation(work_workattribute)
+					$wkat_id = [];
+					foreach ($post as $key => $value) 
+					{
+						if((preg_match("/^[a-z]+\,\d+[a-z]+\,\d+$/", $key)) && ($value != NULL))
+						{
+							$keys = preg_split("/[a-z]+\,/", $key);
+							$wkat_id[] = $keys[1];
+							$wkopt_id[] = $keys[2];
+						}
+						if((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != NULL))
+						{
+							$wkat_id[] = preg_replace("/^[a-z]+\,/", "", $key) . "<br />";
+							$wkopt_id[] = $value;
+						}
+					}
+					if(count($wkat_id) > 0)
+					{
+						$table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
+						$table->updateRecords($wk_id,$wkat_id,$wkopt_id);
 					}
 				}
 			}

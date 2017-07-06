@@ -1,4 +1,8 @@
 <?php $this->headTitle('New Work'); ?>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="<?=$this->url('home')?>vendor/js/bootstrap-3.3.7.min.js"></script>
 <?php
 		//fetch worktypes
 		$table = new \App\Db\Table\WorkType($this->adapter);
@@ -14,11 +18,6 @@
 		
 		
 ?>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  <!--<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
-  <script src="<?=$this->url('home')?>vendor/js/bootstrap-3.3.7.min.js"></script>
 <script>
 function bindPublisherAutocomplete(context) {
 							
@@ -146,7 +145,14 @@ function bindWorkTypeAttributes(context)
 						.attr("id", val.field)
 						.attr("name", 'wkatid,' + val.id)
 						.appendTo("#Citation");
-				}				
+				}
+				if(val.type == 'RadioButton')
+				{
+					$('<div class="radio">' +
+					'<label class="radio"><input type="radio" name="wkatid,' + val.id + '" value="true" />True</label>' + 
+					'<label class="radio"><input type="radio" name="wkatid,' + val.id + '" value="false" />False</label>' + 
+					'</div>').appendTo("#Citation");
+				}
 				if(val.type == 'Select')
 				{
 					var container = $('<div/>');
