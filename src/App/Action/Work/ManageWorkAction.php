@@ -151,7 +151,7 @@ class ManageWorkAction
 					{
 						$fl_to_move = $post['select_fl'][$lg-1];
 					}
-
+					echo "folder id is $fl_to_move <br />"; die();
 					if(isset($fl_to_move))
 					{
 						$table = new \App\Db\Table\Work_Folder($this->adapter);

@@ -164,4 +164,14 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
             ['folder_id' => $sid]
         );
 	}
+	
+	public function updateRecords($wk_id,$fl_id)
+	{
+		$this->update(
+            [
+                'folder_id' => $fl_id
+            ],
+            ['work_id' => $wk_id]
+        );
+	}
 }

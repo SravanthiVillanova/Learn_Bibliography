@@ -159,4 +159,9 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
     {
         $this->delete(['work_id' => $id]);
     }
+	
+	public function updateRecords()
+	{
+		
+	}
 }

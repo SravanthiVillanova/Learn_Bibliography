@@ -645,6 +645,28 @@ $(document).ready(function () {
 				}
 			}
 		}
+		else
+		{
+		?>
+			<div class="form-group outer_div_fl" name="outer_div_fl">
+				<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
+				<div class="col-xs-5 inner_div_fl" name="inner_div_fl">
+				<select class="form-control select_fl" name="select_fl[]">
+				<option value="none"></option>
+				<?php
+				$table = new \App\Db\Table\Folder($this->adapter);
+				//$fl_siblings = $table->getChild($arr_fl[$i+1]);
+				$fl_siblings = $table->getFoldersWithNullParent();
+				foreach($fl_siblings as $row) :
+				?>
+					<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
+				<?php
+				endforeach; ?>
+				</select>
+				</div>
+			</div>	
+		<?php
+		}
 		?>
     </div>  
 	<div class="tab-pane" id="Publisher">

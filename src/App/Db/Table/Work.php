@@ -236,4 +236,24 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     {
         $this->delete(['id' => $id]);
     }
+	
+	public function updateRecords($id,$type_id,$title,$subtitle,$paralleltitle,$desc,$modify_date,$modify_user,$status,$pub_yrFrom)
+	{
+		$this->update(
+            [
+			'work_id' => NULL,
+            'type_id' => $type_id,
+			'title' => $title,
+			'subtitle' => $subtitle,
+			'paralleltitle' => $paralleltitle,
+			'description' => $desc,
+			'modify_date' => $modify_date,
+			'modify_user_id' => $modify_user,
+			'status' => $status,
+			'publish_year' => $pub_yrFrom,
+			'publish_month' => NULL,
+            ],
+            ['id' => $id]
+        );
+	}
 }
