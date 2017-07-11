@@ -35,6 +35,7 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
+use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 
 /**
@@ -139,19 +140,13 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
 	
 	public function findRecordByWorkId($wk_id)
     {	
-		$rows = [];
-		$select = $this->sql->select();
-        $select->join('publisher', 'work_publisher.publisher_id = publisher.id', array('name'), 'inner');
-		$select->join('publisher_location', 'work_publisher.location_id = publisher_location.id', array('location'), 'inner');
-        $select->where(['work_id' => $wk_id]);
-
-        $paginatorAdapter = new Paginator(new DbSelect($select, $this->adapter));
-        $cnt = $paginatorAdapter->getTotalItemCount();
-		
-		foreach($paginatorAdapter as $row) : 
-			$rows[] = $row;
-		endforeach;
-		
+		$callback = function ($select) use ($wk_id) {		
+			$select->columns(['*']);
+			$select->join('publisher', 'work_publisher.publisher_id = publisher.id', array('name'), 'inner');
+			$select->join('publisher_location', 'work_publisher.location_id = publisher_location.id', array('location'), 'inner');
+			$select->where(['work_id' => $wk_id]);		
+		 };
+		$rows = $this->select($callback)->toArray();
         return $rows;
     }
 	
@@ -160,8 +155,28 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         $this->delete(['work_id' => $id]);
     }
 	
-	public function updateRecords()
+	public function updateRecords($wk_id,$pub_id,$pub_location,$pub_yrFrom,$pub_yrTo)
 	{
-		
+		for($i=0;$i<count($pub_id);$i++)
+		{
+			//echo "<pre>"; echo $wk_id . ' ' . $pub_id[$i] . ' ' . $pub_locid[$i] . ' ' . $pub_yr[$i] . ' ' . $pub_yrEnd[$i]; echo "</pre>";
+			if(empty($pub_location[$i]))
+			{
+				//echo 'id is ' . $pub_locid[$i];
+				$pub_location[$i] = NULL;
+			}
+			$this->update(
+				[
+				'publisher_id' =>$pub_id[$i],
+				'location_id' => $pub_location[$i],
+				'publish_month' => 0,
+				'publish_year' => $pub_yrFrom[$i],
+				'publish_month_end' => NULL,
+				'publish_year_end' => $pub_yrTo[$i],
+				],
+				['work_id' => $wk_id]
+			);
+		}
 	}
+	
 }

@@ -109,11 +109,16 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
 
         $paginatorAdapter = new Paginator(new DbSelect($select, $this->adapter));
         $cnt = $paginatorAdapter->getTotalItemCount();
-		
-		foreach($paginatorAdapter as $row) : 
-			$rows[] = $row;
-		endforeach;
-		
+		if($cnt != 0)
+		{
+			foreach($paginatorAdapter as $row) : 
+				$rows[] = $row;
+			endforeach;
+		}
+		else
+		{
+			$rows = [];
+		}
         return $rows;
     }
 	
@@ -142,5 +147,25 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
             ],
             ['agent_id' => $dst_ag_id]
         );
+	}
+	
+	public function updateRecords($wk_id,$agent_id,$agent_type)
+	{
+		for($i=0;$i<count($agent_type);$i++)
+		{
+			//echo "<pre>"; echo $wk_id . ' ' . $pub_id[$i] . ' ' . $pub_locid[$i] . ' ' . $pub_yr[$i] . ' ' . $pub_yrEnd[$i]; echo "</pre>";
+			if(empty($agent_id[$i]))
+			{
+				//echo 'id is ' . $pub_locid[$i];
+				$agent_id[$i] = 0;
+			}
+			$this->update(
+				[
+				'agent_id' =>$agent_id[$i],
+				'agenttype_id' => $agent_type[$i],
+				],
+				['work_id' => $wk_id]
+			);
+		}
 	}
 }

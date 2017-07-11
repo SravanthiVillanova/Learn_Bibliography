@@ -89,14 +89,14 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     {
         $callback = function ($select) {
             $select->columns(
-                    [
-                        'letter' => new Expression(
-                            'DISTINCT(substring(?, 1, 1))',
-                            ['title'],
-                            [Expression::TYPE_IDENTIFIER]
-                        )
-                    ]
-                );
+                [
+                    'letter' => new Expression(
+                    'DISTINCT(substring(?, 1, 1))',
+                    ['title'],
+                    [Expression::TYPE_IDENTIFIER]
+                    )
+                ]
+            );
             $select->order('title');
         };
         

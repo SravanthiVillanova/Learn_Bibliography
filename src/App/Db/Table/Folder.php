@@ -152,7 +152,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 	
 	public function getHierarchyRecords($id)
 	{
-		echo 'id is ' . $id;
+		//echo 'id is ' . $id;
 		$rowset = $this->select(array('id' => $id));
         $row = $rowset->current();
 		
@@ -277,5 +277,25 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 	public function mergeDelete($sid)
 	{
 		$this->delete(['id' => $sid]);
+	}
+	
+	public function getSiblings($pid)
+	{
+		if(is_null($pid))
+		{
+			$callback = function ($select) {
+				$select->columns(['*']);
+				$select->where('parent_id IS NULL');
+			};
+		}
+		else
+		{
+			$callback = function ($select) use ($pid){
+			$select->columns(['*']);
+			$select->where->equalTo('parent_id', $pid);
+			};
+		}
+		$rows = $this->select($callback)->toArray(); 
+        return($rows);
 	}
 }

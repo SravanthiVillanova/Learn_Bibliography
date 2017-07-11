@@ -38,6 +38,14 @@
 				$table = new \App\Db\Table\Work_WorkAttribute($adapter);
 				$attrs = $table->findWorkAttributeTypesByWorkId($id);
 				$wktyp_attrs = json_decode($attrs, true);
+				
+				//fetch folders
+				$arr_fl = [];
+				$table = new \App\Db\Table\Work_Folder($this->adapter);
+				$wkfl_row = $table->findRecordsByWorkId($id);
+				
+				
+				//var_dump($pub_rows);
 				//die();						
 			}
         }
@@ -167,70 +175,6 @@ function bindWorkTypeAttributes(context)
     });
 	return false;
 }
-_select = '';
-function bindClassificationFolder(context)
-{
-	fl_changed = $(_select,context).val();
-	var no_of_fl_parent = $('.select_fl').length;
-	for(var i = 0;i < no_of_fl_parent; i++)
-	{
-		if($('.select_fl').eq(i).val() === fl_changed)
-		{
-			change_idx = i;
-			folder_Id = $('.select_fl').eq(i).val();
-			break;
-		}
-	}
-	/*for(i = change_idx + 1; i < no_of_fl_parent; i++)
-	{
-		$('.label_fl').eq(i).remove();
-		$('.inner_div_fl').eq(i).remove();
-		$('.select_fl').eq(i).remove();
-	}*/
-	
-	$('.outer_div_fl').eq(change_idx).nextAll('.outer_div_fl').remove();
-			
-	no_of_fl_parent = $('.select_fl').length;
-
-	$.ajax({
-		method: 'post',
-		url: 'http://localhost<?=$this->url('get_work_details')?>',
-		data: {
-			folder_Id: folder_Id
-		},
-		dataType: "json", 
-		cache: false,
-		success: function(data)
-		{	
-			//$('.outer_div_fl').eq(no_of_fl_parent-1).css('background','#8ec252');
-					
-			if(data.folder_children.length > 0)
-			{
-				$('.outer_div_fl').eq(no_of_fl_parent-1).after('<div class="form-group outer_div_fl" name="outer_div_fl" />');
-				$('.outer_div_fl').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>');
-				$('.outer_div_fl').eq(no_of_fl_parent).append('<div class="col-xs-5 inner_div_fl" name="inner_div_fl" />');
-					
-				_select = $('<select class="form-control select_fl" name="select_fl[]">');
-				to_append = $('<option value="'+'"none"'+'></option>');
-				$.each(data.folder_children, function (key, val) {
-					to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
-				});
-				_select.append($('<option />'));
-				_select.append(to_append);
-				$('.inner_div_fl').eq(no_of_fl_parent).append(_select);
-				$('.inner_div_fl').eq(no_of_fl_parent).append('</select>');
-					
-				_select.on('change',function(){
-					bindClassificationFolder(document);
-				});	
-			}
-		},
-		error: function (data) { 
-			//$("#Classification", context).html('<p>No Options</p>');
-		}
-	});			
-	return false;
-}
 //Publisher autocomplete and location fetch
 function bindPublisherAutocomplete(context) {							
 	//publisher enable/disable fields
@@ -318,6 +262,78 @@ function bindAgentAutocomplete(context)
 		}		
     });	
 }
+_select = '';
+function bindSourceClassification(that,context)
+{
+	var to_add_row = $(that).closest("tr");
+	to_add_row.children('td',context).children('select',context).eq(0).css('background-color','#8ec252');
+	fl_changed = $(that).val();
+
+	var no_of_fl_parent = to_add_row.find('.select_source_fl',context).length;
+	for(var i = 0;i < no_of_fl_parent; i++)
+	{
+		if(to_add_row.find('.select_source_fl',context).eq(i).val() === fl_changed)
+		{
+			change_idx = i;
+			folder_Id = to_add_row.find('.select_source_fl',context).eq(i).val();
+			break;
+		}
+	}
+		
+	if(folder_Id === "")
+	{
+		to_add_row.find('.source_fl_col',context).eq(0).nextAll('.source_fl_col',context).remove();
+		to_add_row.find('.select_source_fl',context).eq(0).val('');
+	}
+	else
+	{
+		to_add_row.find('.source_fl_col',context).eq(change_idx).nextAll('.source_fl_col',context).remove();
+	}
+	
+	//no_of_fl_parent = $('.select_source_fl',context).length;
+	no_of_fl_parent = to_add_row.find('.select_source_fl',context).length;
+
+	$.ajax({
+		method: 'post',
+		url: 'http://localhost<?=$this->url('get_work_details')?>',
+		data: {
+			folder_Id: folder_Id
+		},
+		dataType: "json", 
+		cache: false,
+		success: function(data)
+		{						
+			if(data.folder_children.length > 0)
+			{
+				//$('.source_fl_col',context).eq(no_of_fl_parent-1).css('background','#8ec252');		
+				//$('.source_fl_col',context).eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
+				//to_add_row.children('td',context).children('.source_fl_col',context).eq(no_of_fl_parent-1).css('background-color','#8ec252');
+				to_add_row.find('.source_fl_col',context).eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
+				
+				_select = $('<select class="form-control select_source_fl" name="select_source_fl[]">');
+				to_append = $('<option value=""></option>');
+				$.each(data.folder_children, function (key, val) {
+					to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+				});
+				_select.append($('<option />'));
+				_select.append(to_append);
+				//$('.source_fl_col',context).eq(no_of_fl_parent).append(_select);
+				to_add_row.find('.source_fl_col',context).eq(no_of_fl_parent).append(_select);
+				//$('.source_fl_col',context).eq(no_of_fl_parent).append('</select>');
+				to_add_row.find('.source_fl_col',context).eq(no_of_fl_parent).append('</select>');
+					
+				_select.on('change',function(){
+					bindSourceClassification(this,document);
+					return false;
+				});	
+			}
+		},
+		error: function (data) { 
+			//$("#Classification", context).html('<p>No Options</p>');
+		}
+	});	
+	return false;	
+}
 $(document).ready(function () {	
 	//get attributes for selected worktypes
 	$('#edit_work_type',document).on('change', function() {	
@@ -373,30 +389,62 @@ $(document).ready(function () {
 	$("#agent_table").on('click','#agent_remove',function(){
         $(this).parent().parent().remove();
     });
-	$(".select_fl").on('change', function() {
-		if($(this).val() == "none"){
-			$('.outer_div_fl').eq(0).nextAll('.outer_div_fl').remove();
-			$('.select_fl').eq(0).val('none');
+	//classification
+	//add classification rows
+	$("#fl_add").on('click', function(){
+		var fl_row = $('<tr name="source_fl_row[]">' +
+						'<b>Subject Tree</b><br>' + 
+						'<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;">' +				
+						'<select class="form-control select_source_fl" name="select_source_fl[]">' + 
+						'<option value=""></option>' + 
+						<?php
+						$table = new \App\Db\Table\Folder($this->adapter);
+						$fl_siblings = $table->getFoldersWithNullParent();
+						foreach($fl_siblings as $row) :
+						?>
+							'<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>' + 							
+						<?php endforeach; ?>
+						'</select>' + 
+						'</td>' + 
+						'<td><button type="submit" class="btn btn-default" name="fl_remove" id="fl_remove" value="Remove">Remove</button></td>' + 
+						'</tr>');
+		$("#source_fl_table").append(fl_row);
+		//bindSourceClassification(this,document);
+		return false;
+    });
+	//remove classification rows
+	$("#source_fl_table").on('click','#fl_remove',function(){
+        $(this).parent().parent().remove();
+    });
+	$('table[name="source_fl_table"]').on('change',".select_source_fl", function() {
+		var to_add_row = $(this).closest("tr");
+		to_add_row.children('td').children('select').eq(0).css('background-color','#8ec252');
+		
+		if($(this).val() == ""){
+			to_add_row.find('.source_fl_col').eq(0).nextAll('.source_fl_col').remove();
+			to_add_row.find('.source_fl_col').eq(0).val('');
 			return false;
 		}
 		else
 		{
 			fl_changed = $(this).val();
-			var no_of_fl_parent = $('.select_fl').length;
-
+			//alert("changed value is " + fl_changed);
+			var no_of_fl_parent = to_add_row.find('.select_source_fl').length;
+			//alert("select length is " + no_of_fl_parent);
 			for(var i = 0;i < no_of_fl_parent; i++)
 			{
-				if($('.select_fl').eq(i).val() === fl_changed)
+				if(to_add_row.find('.select_source_fl').eq(i).val() === fl_changed)
 				{
 					change_idx = i;
-					folder_Id = $('.select_fl').eq(i).val();
+					folder_Id = to_add_row.find('.select_source_fl').eq(i).val();
 					break;
 				}
 			}
-
-			$('.outer_div_fl').eq(change_idx).nextAll('.outer_div_fl').remove();
+			to_add_row.find('.source_fl_col').eq(change_idx).nextAll('.source_fl_col').remove();
+			//alert("folder id is " + folder_Id);
 			
-			no_of_fl_parent = $('.select_fl').length;
+			//no_of_fl_parent = $('.select_source_fl').length;
+			no_of_fl_parent = to_add_row.find('.select_source_fl').length;
 
 			$.ajax({
 				method: 'post',
@@ -407,36 +455,54 @@ $(document).ready(function () {
 				dataType: "json", 
 				cache: false,
 				success: function(data)
-				{	
-					//$('.outer_div_fl').eq(no_of_fl_parent-1).css('background','#8ec252');
-					if(data.folder_children.length > 0)
-					{
-						$('.outer_div_fl').eq(no_of_fl_parent-1).after('<div class="form-group outer_div_fl" name="outer_div_fl" />');
-						$('.outer_div_fl').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>');
-						$('.outer_div_fl').eq(no_of_fl_parent).append('<div class="col-xs-5 inner_div_fl" name="inner_div_fl" />');
+				{						
+					//$('.source_fl_col').eq(no_of_fl_parent-1).css('background','#8ec252');		
+					//$('.source_fl_col').eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
+					to_add_row.find('.source_fl_col').eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
 					
-						_select = $('<select class="form-control select_fl" name="select_fl[]">');
-						to_append = $('<option value="none"></option>');
-						$.each(data.folder_children, function (key, val) {
-							to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
-						});
-						_select.append($('<option />'));
-						_select.append(to_append);
-						$('.inner_div_fl').eq(no_of_fl_parent).append(_select);
-						$('.inner_div_fl').eq(no_of_fl_parent).append('</select>');
+					_select = $('<select class="form-control select_source_fl" name="select_source_fl[]">');
+					to_append = $('<option value=""></option>');
+					$.each(data.folder_children, function (key, val) {
+						to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+					});
+					_select.append($('<option />'));
+					_select.append(to_append);
+					//$('.source_fl_col').eq(no_of_fl_parent).append(_select);
+					//$('.source_fl_col').eq(no_of_fl_parent).append('</select>');
+					to_add_row.find('.source_fl_col').eq(no_of_fl_parent).append(_select);
+					to_add_row.find('.source_fl_col').eq(no_of_fl_parent).append('</select>');
 					
-						_select.on('change',function(){
-							bindClassificationFolder(document);
-						});	
-					}
+					_select.on('change',function(){
+						bindSourceClassification(this,document);
+						return false;
+					});		
 				},
 				error: function (data) { 
-					//$("#Classification", context).html('<p>No Options</p>');
+					$("#Classification", context).html('<p>No Options</p>');
 				}
 			});	
-		
 			return false;
 		}
+	});
+	//save
+	$('#submit_save').on('click', function(){
+		var no_of_rows = $('table[name="source_fl_table"]').find("tr").length;
+		var arr = [];
+		var values;
+		$('table[name="source_fl_table"]').each(function() {
+			$(this).find('tr').each(function(){
+				values = [];
+				$(this).find('td').find('.select_source_fl').each(function(){
+					//$(this).find('.select_source_fl').each(function(){
+						values.push($(this).val());
+					//});						
+				});
+				var newInput = $('<input type="hidden" name="arr[]" value="">');
+				newInput.val(values);
+				$("#edit-work-data").append(newInput);
+			});
+		});
+		return true;
 	});
 });
 </script>
@@ -447,7 +513,7 @@ $(document).ready(function () {
 		//echo "yes stat";
 ?>
 <div class="col-md-7">
-<form id="personal-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
+<form id="edit-work-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
 <input type="hidden" name="id" value="<?=$id?>">
 <input type="hidden" name="action" value="<?=$action?>">
 <?php 
@@ -505,14 +571,14 @@ $(document).ready(function () {
 				<select class="form-control" name="edit_work_type" id="edit_work_type" required="true">
 				<option value="<?=$wk_row['type_id']?>"><?php echo $wk_type; ?></option>					
 				<?php
-					foreach($paginator as $row) :
-						if($row['type'] != $wk_type)
-						{
+				foreach($paginator as $row) :
+					if($row['type'] != $wk_type)
+					{
 				?>
-				<option value="<?=$row['id']?>"><?php echo $row['type']; ?></option>							
+						<option value="<?=$row['id']?>"><?php echo $row['type']; ?></option>							
 				<?php 
-						}
-						endforeach; 
+					}
+				endforeach; 
 				?>
 				</select>
 			</div>
@@ -536,139 +602,98 @@ $(document).ready(function () {
 		</div>		 
     </div>
 	<div class="tab-pane" id="Classification">
-	<?php
-		//fetch folders
-		$arr_fl = [];
-		$table = new \App\Db\Table\Work_Folder($this->adapter);
-		$wkfl_row = $table->findRecordByWorkId($id);			
-		if(isset($wkfl_row['folder_id'])) 
-		{
-			$fl_id = $wkfl_row['folder_id'];
-			$arr_fl[] = $fl_id;
-			$table = new \App\Db\Table\Folder($this->adapter);
-			$fl_row = $table->getParent($wkfl_row['folder_id']); 
-			while(isset($fl_row['parent_id'])) 
-			{
-				$arr_fl[] = $fl_row['parent_id'];				
-				$table = new \App\Db\Table\Folder($this->adapter);
-				$fl_row = $table->getParent($fl_row['parent_id']);
-				if($fl_row['parent_id'] == NULL)
-				{
-					break;
-				}
-			}
-			$cnt = count($arr_fl);
-			echo "<pre>";print_r($arr_fl);echo "</pre>"; //die();
-			for($i = $cnt-1; $i >= 0; $i--)
-			{		
-				if($arr_fl[$i] == $fl_id)
-				{
-					$table = new \App\Db\Table\Folder($this->adapter);
-					$fl = $table->findRecordById($arr_fl[$i]);
-			?>
-					<div class="form-group outer_div_fl" name="outer_div_fl">
-						<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
-						<div class="col-xs-5 inner_div_fl" name="inner_div_fl">
-						<select class="form-control select_fl" name="select_fl[]">
-						<option value="none"></option>
-						<option value="<?=$arr_fl[$i]?>" selected><?php echo $fl['text_fr']; ?></option>
-						<?php
-						$table = new \App\Db\Table\Folder($this->adapter);
-						$fl_siblings = $table->getChild($arr_fl[$i+1]);
-						foreach($fl_siblings as $row) :
-							if($row['id'] != $arr_fl[$i])
-							{
-						?>
-							<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>	
-						<?php 
-							}
-						endforeach; ?>
-						</select>
-						</div>
-					</div>	
-					<?php
-				}
-				else if($i != ($cnt-1))
-				{
-					$table = new \App\Db\Table\Folder($this->adapter);
-					$fl = $table->findRecordById($arr_fl[$i]);
-				?>
-					<div class="form-group outer_div_fl" name="outer_div_fl">
-						<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
-						<div class="col-xs-5 inner_div_fl" name="inner_div_fl">
-						<select class="form-control select_fl" name="select_fl[]">
-						<option value="none"></option>
-						<option value="<?=$arr_fl[$i]?>" selected><?php echo $fl['text_fr']; ?></option>
-						<?php
-						$table = new \App\Db\Table\Folder($this->adapter);
-						$fl_siblings = $table->getChild($arr_fl[$i+1]);
-						foreach($fl_siblings as $row) :
-							if($row['id'] != $arr_fl[$i])
-							{
-							?>
-								<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
-							<?php
-							}
-						endforeach; ?>
-						</select>
-						</div>
-					</div>		
+		<div class="form-group">
+			<table name="source_fl_table" id="source_fl_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">        
+			<tbody>
 				<?php
+				if(count($wkfl_row) >= 1)
+				{
+					//echo "<pre>"; print_r($wkfl_row); echo "</pre>";
+					$wkfl_row = array_reverse($wkfl_row);
+					foreach($wkfl_row as $row):
+						$table = new \App\Db\Table\Folder($this->adapter);
+						$arr_fl = $table->getParentChain($row['folder_id']);
+						//var_dump($arr_fl);
+					?>
+						<tr name="source_fl_row[]">
+						<b>Subject Tree</b><br>						
+						<?php
+						for($i = 0; $i < count($arr_fl); $i++)
+						{
+							$table = new \App\Db\Table\Folder($this->adapter);
+							$fl = $table->findRecordById($arr_fl[$i]);
+						?>
+							<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;">
+							<select class="form-control select_source_fl" name="select_source_fl[]">
+							<option value="<?=$fl['id']?>" selected><?php echo $fl['text_fr']; ?></option>
+							<?php
+							$table = new \App\Db\Table\Folder($this->adapter);
+							$fl_siblings = $table->getSiblings($fl['parent_id']);
+							foreach($fl_siblings as $row) :
+								if($row['id'] != $arr_fl[$i])
+								{
+							?>
+									<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>
+							<?php
+								}
+							endforeach;
+							?>
+							</select>
+							</td>
+							<?php
+							if($i == (count($arr_fl)-1))
+							{
+								$table = new \App\Db\Table\Folder($this->adapter);
+								$chl_rows = $table->getChild($arr_fl[$i]);
+								if(count($chl_rows) != 0)
+								{
+							?>
+									<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;">
+									<select class="form-control select_source_fl" name="select_source_fl[]">
+									<option value=""></option>
+									<?php
+									foreach($chl_rows as $row) :
+									?>
+										<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>
+									<?php
+									endforeach;
+								}
+							}
+						}
+						?>
+						<td><button type="submit" class="btn btn-default" name="fl_remove" id="fl_remove" value="Remove">Remove</button></td>
+						</tr>
+					<?php
+					endforeach;
 				}
 				else
 				{
-					$table = new \App\Db\Table\Folder($this->adapter);
-					$fl = $table->findRecordById($arr_fl[$i]);
-				?>
-					<div class="form-group outer_div_fl" name="outer_div_fl">
-						<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
-						<div class="col-xs-5 inner_div_fl" name="inner_div_fl">
-						<select class="form-control select_fl" name="select_fl[]">
-						<option value="none"></option>
-						<option value="<?=$arr_fl[$i]?>" selected><?php echo $fl['text_fr']; ?></option>
-						<?php
-						$table = new \App\Db\Table\Folder($this->adapter);
-						//$fl_siblings = $table->getChild($arr_fl[$i+1]);
-						$fl_siblings = $table->getFoldersWithNullParent();
-						foreach($fl_siblings as $row) :
-							if($row['id'] != $arr_fl[$i])
-							{
+				?>		
+					<tr name="source_fl_row[]">
+						<b>Subject Tree</b><br>
+						<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;">				
+							<select class="form-control select_source_fl" name="select_source_fl[]">
+							<option value=""></option>
+							<?php
+							$table = new \App\Db\Table\Folder($this->adapter);
+							$fl_siblings = $table->getFoldersWithNullParent();
+							foreach($fl_siblings as $row) :
 							?>
 								<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
 							<?php 
-							}
-						endforeach; ?>
-						</select>
-						</div>
-					</div>	
-					<?php
+							endforeach; ?>
+							</select>
+						</td>
+						<td><button type="submit" class="btn btn-default" name="fl_remove" id="fl_remove" value="Remove">Remove</button></td>
+					</tr>
+				<?php
 				}
-			}
-		}
-		else
-		{
-		?>
-			<div class="form-group outer_div_fl" name="outer_div_fl">
-				<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
-				<div class="col-xs-5 inner_div_fl" name="inner_div_fl">
-				<select class="form-control select_fl" name="select_fl[]">
-				<option value="none"></option>
-				<?php
-				$table = new \App\Db\Table\Folder($this->adapter);
-				//$fl_siblings = $table->getChild($arr_fl[$i+1]);
-				$fl_siblings = $table->getFoldersWithNullParent();
-				foreach($fl_siblings as $row) :
-				?>
-					<option value="<?=$row['id']?>"><?php echo $row['text_fr']; ?></option>							
-				<?php
-				endforeach; ?>
-				</select>
-				</div>
-			</div>	
-		<?php
-		}
-		?>
-    </div>  
+				?>	
+			</tbody>
+			</table>
+			<button type="submit" class="btn btn-default" name="fl_add" id="fl_add" value="Add">Add</button>
+		</div>		
+    </div>
 	<div class="tab-pane" id="Publisher">
 		<div class="form-group">
 		<table class="table table-striped table-condensed" name="pub_table" style="font-size:10pt;" id="pub_table">
@@ -680,84 +705,52 @@ $(document).ready(function () {
 			<th>Remove</th>
 		</thead>
 		<tbody>
-		<tr name="pub_row[]">
-			<input type="hidden" name="pub_id[]" id="pubId" value="">
-			<td><input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" /></td>
-			<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"/></td>
-			<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" /></td>
-			<input type="hidden" name="publoc_id[]" id="publoc_id" value="">
-			<td>
-				<select class="form-control pub_locations" name="pub_location[]" id="pubLocation">
-				<option value=""></option>				
-				</select>
-			</td>
-			<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>
-		</tr>
 		<?php
 		//fetch publishers attached to work
 		$table = new \App\Db\Table\WorkPublisher($this->adapter);
 		$pub_rows = $table->findRecordByWorkId($id);
-		if(count($pub_rows) > 0)
-		{ 
-			//echo "<pre>";print_r($pub_rows);echo "</pre>";	//die();
-					//echo "count of pub rows not zero";
-		?>
-		<script>
-		$(document).ready(function () {
-			$("#pubId").val("<?=$pub_rows[0]['publisher_id'];?>");
-			$("#pubName").val("<?=$pub_rows[0]['name'];?>");
-			$("#pubyrFrom").val("<?=$pub_rows[0]['publish_year'];?>");
-			$("#pubyrTo").val("<?=$pub_rows[0]['publish_year_end'];?>");
-			<?php
-			//fetch locations for the publisher_id
-			$table = new \App\Db\Table\PublisherLocation($this->adapter);
-			$paginator_publoc = $table->findPublisherLocations($pub_rows[0]['publisher_id']);
-			foreach($paginator_publoc as $row) :
-			?>
-				$("#pubLocation").append('<option value="<?=$row['id'];?>"><?php echo $row['location']; ?></option>');
-			<?php
-			endforeach; 
-			?>
-			$("#pubLocation").val("<?=$pub_rows[0]['location_id'];?>");
-			return false;
-		});
-		</script>
-		<?php
-		for($i=1;$i<count($pub_rows);$i++)
+		if(count($pub_rows) != 0)
 		{
+			echo "<pre>"; print_r($pub_rows); echo "</pre>";
+			for($i = 0;$i < count($pub_rows);$i++)
+			{
 		?>
-		<script>
-		$(document).ready(function () {
-			var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="<?=$pub_rows[$i]['publisher_id'];?>">'+
-							'<td><input type="text" class="form-control" name="pub_name[]" id="pubName" value="<?=$pub_rows[$i]['name'];?>"/></td>'+
-							'<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom" value="<?=$pub_rows[$i]['publish_year'];?>"/></td>'+
-							'<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" value="<?=$pub_rows[$i]['publish_year_end'];?>"/></td>'+
-							'<input type="hidden" name="publoc_id[]" id="publoc_id" value="">'+
-							'<td><select class="form-control pub_locations" name="pub_location[]" id="pubLocation">'+
-							'<option value="<?=$pub_rows[$i]['location_id'];?>"><?php echo $pub_rows[$i]['location']; ?></option>'+
-							<?php
-								//fetch locations for the publisher_id
-								$table = new \App\Db\Table\PublisherLocation($this->adapter);
-								$paginator_publoc = $table->findPublisherLocations($pub_rows[$i]['publisher_id']);
-								foreach($paginator_publoc as $row) :
-									if($row['location'] != $pub_rows[$i]['location'])
-									{
-							?>
-										'<option value="<?=$row['id']?>"><?php echo $row['location']; ?></option>'+						
-								<?php
-									}
-								endforeach; 
-								?>
-							'</select>'+
-							'</td>'+
-							'<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>'+
-							'</tr>');	
-			$("#pub_table").append(pub_row);
-			return false;
-		});
-		</script>
-		<?php   
-		}				
+				<tr name="pub_row[]">
+					<input type="hidden" name="pub_id[]" id="pubId" >
+					<td><input type="text" class="form-control" name="pub_name[]" id="pubName"  /></td>
+					<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"  /></td>
+					<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo"  /></td>
+					<input type="hidden" name="publoc_id[]" id="publoc_id" value="">
+					<td>
+						<?php
+							//if(!is_null($pub_rows[$i]['']))
+						?>
+						<select class="form-control pub_locations" name="pub_location[]" id="pubLocation">
+						<option value=""></option>				
+						</select>
+					</td>
+					<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>
+				</tr>
+			<?php
+			}
+		}
+		else
+		{
+		?>		
+			<tr name="pub_row[]">
+				<input type="hidden" name="pub_id[]" id="pubId" value="">
+				<td><input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" /></td>
+				<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"/></td>
+				<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" /></td>
+				<input type="hidden" name="publoc_id[]" id="publoc_id" value="">
+				<td>
+					<select class="form-control pub_locations" name="pub_location[]" id="pubLocation">
+					<option value=""></option>				
+					</select>
+				</td>
+				<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>
+			</tr>
+		<?php
 		}
 		?>
 		</tbody>

@@ -231,71 +231,76 @@ function bindWorkTypeAttributes(context)
 	return false;
 }
 _select = '';
-_select = '';
 function bindSourceClassification(that,context)
 {
-	console.log("selected from func");
-	//fl_changed = $(_select,context).val();
+	var to_add_row = $(that).closest("tr");
+	to_add_row.children('td',context).children('select',context).eq(0).css('background-color','#8ec252');
 	fl_changed = $(that).val();
-		var no_of_fl_parent = $('.select_source_fl',context).length;
 
-		for(var i = 0;i < no_of_fl_parent; i++)
+	var no_of_fl_parent = to_add_row.find('.select_source_fl',context).length;
+	for(var i = 0;i < no_of_fl_parent; i++)
+	{
+		if(to_add_row.find('.select_source_fl',context).eq(i).val() === fl_changed)
 		{
-			if($('.select_source_fl',context).eq(i).val() === fl_changed)
-			{
-				change_idx = i;
-				folder_Id = $('.select_source_fl',context).eq(i).val();
-				break;
-			}
+			change_idx = i;
+			folder_Id = to_add_row.find('.select_source_fl',context).eq(i).val();
+			break;
 		}
+	}
 		
-		if(folder_Id === "")
-		{
-			$('.source_fl_col').eq(0).nextAll('.source_fl_col',context).remove();
-			$('.source_fl_col').eq(0).val('');
-		}
-		else
-		{
-			$('.source_fl_col').eq(change_idx).nextAll('.source_fl_col',context).remove();
-		}
-			
-		no_of_fl_parent = $('.select_source_fl',context).length;
+	if(folder_Id === "")
+	{
+		to_add_row.find('.source_fl_col',context).eq(0).nextAll('.source_fl_col',context).remove();
+		to_add_row.find('.select_source_fl',context).eq(0).val('');
+	}
+	else
+	{
+		to_add_row.find('.source_fl_col',context).eq(change_idx).nextAll('.source_fl_col',context).remove();
+	}
+	
+	//no_of_fl_parent = $('.select_source_fl',context).length;
+	no_of_fl_parent = to_add_row.find('.select_source_fl',context).length;
 
-		$.ajax({
-			method: 'post',
-			url: 'http://localhost<?=$this->url('get_work_details')?>',
-			data: {
-				folder_Id: folder_Id
-			},
-			dataType: "json", 
-			cache: false,
-			success: function(data)
-			{						
-				if(data.folder_children.length > 0)
-				{
-					$('.source_fl_col',context).eq(no_of_fl_parent-1).css('background','#8ec252');		
-					$('.source_fl_col',context).eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
+	$.ajax({
+		method: 'post',
+		url: 'http://localhost<?=$this->url('get_work_details')?>',
+		data: {
+			folder_Id: folder_Id
+		},
+		dataType: "json", 
+		cache: false,
+		success: function(data)
+		{						
+			if(data.folder_children.length > 0)
+			{
+				//$('.source_fl_col',context).eq(no_of_fl_parent-1).css('background','#8ec252');		
+				//$('.source_fl_col',context).eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
+				//to_add_row.children('td',context).children('.source_fl_col',context).eq(no_of_fl_parent-1).css('background-color','#8ec252');
+				to_add_row.find('.source_fl_col',context).eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
+				
+				_select = $('<select class="form-control select_source_fl" name="select_source_fl[]">');
+				to_append = $('<option value=""></option>');
+				$.each(data.folder_children, function (key, val) {
+					to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
+				});
+				_select.append($('<option />'));
+				_select.append(to_append);
+				//$('.source_fl_col',context).eq(no_of_fl_parent).append(_select);
+				to_add_row.find('.source_fl_col',context).eq(no_of_fl_parent).append(_select);
+				//$('.source_fl_col',context).eq(no_of_fl_parent).append('</select>');
+				to_add_row.find('.source_fl_col',context).eq(no_of_fl_parent).append('</select>');
 					
-					_select = $('<select class="form-control select_source_fl" name="select_source_fl[]">');
-					to_append = $('<option value=""></option>');
-					$.each(data.folder_children, function (key, val) {
-						to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
-					});
-					_select.append($('<option />'));
-					_select.append(to_append);
-					$('.source_fl_col',context).eq(no_of_fl_parent).append(_select);
-					$('.source_fl_col',context).eq(no_of_fl_parent).append('</select>');
-					
-					_select.on('change',function(){
-						bindSourceClassification(this,document);
-					});	
-				}
-			},
-			error: function (data) { 
-				//$("#Classification", context).html('<p>No Options</p>');
+				_select.on('change',function(){
+					bindSourceClassification(this,document);
+					return false;
+				});	
 			}
-		});	
-		return false;	
+		},
+		error: function (data) { 
+			//$("#Classification", context).html('<p>No Options</p>');
+		}
+	});	
+	return false;	
 }
 $(document).ready(function () {	
 	//Publisher
@@ -355,7 +360,7 @@ $(document).ready(function () {
 	//classification
 	//add classification rows
 	$("#fl_add").on('click', function(){
-		var fl_row = $('<tr name="source_fl_row">' +
+		var fl_row = $('<tr name="source_fl_row[]">' +
 						'<b>Subject Tree</b><br>' + 
 						'<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;">' +				
 						'<select class="form-control select_source_fl" name="select_source_fl[]">' + 
@@ -372,38 +377,42 @@ $(document).ready(function () {
 						'<td><button type="submit" class="btn btn-default" name="fl_remove" id="fl_remove" value="Remove">Remove</button></td>' + 
 						'</tr>');
 		$("#source_fl_table").append(fl_row);
-		bindSourceClassification(this,document);
+		//bindSourceClassification(this,document);
 		return false;
     });
 	//remove classification rows
 	$("#source_fl_table").on('click','#fl_remove',function(){
         $(this).parent().parent().remove();
     });
-	$(".select_source_fl").on('change', function() {
-		console.log("parent selected");
+	$('table[name="source_fl_table"]').on('change',".select_source_fl", function() {
+		var to_add_row = $(this).closest("tr");
+		to_add_row.children('td').children('select').eq(0).css('background-color','#8ec252');
+		
 		if($(this).val() == ""){
-			$('.source_fl_col').eq(0).nextAll('.source_fl_col').remove();
-			$('.source_fl_col').eq(0).val('');
+			to_add_row.find('.source_fl_col').eq(0).nextAll('.source_fl_col').remove();
+			to_add_row.find('.source_fl_col').eq(0).val('');
 			return false;
 		}
 		else
 		{
 			fl_changed = $(this).val();
 			//alert("changed value is " + fl_changed);
-			var no_of_fl_parent = $('.select_source_fl').length;
-
+			var no_of_fl_parent = to_add_row.find('.select_source_fl').length;
+			//alert("select length is " + no_of_fl_parent);
 			for(var i = 0;i < no_of_fl_parent; i++)
 			{
-				if($('.select_source_fl').eq(i).val() === fl_changed)
+				if(to_add_row.find('.select_source_fl').eq(i).val() === fl_changed)
 				{
 					change_idx = i;
-					folder_Id = $('.select_source_fl').eq(i).val();
+					folder_Id = to_add_row.find('.select_source_fl').eq(i).val();
 					break;
 				}
 			}
-			$('.source_fl_col').eq(change_idx).nextAll('.source_fl_col').remove();
+			to_add_row.find('.source_fl_col').eq(change_idx).nextAll('.source_fl_col').remove();
+			//alert("folder id is " + folder_Id);
 			
-			no_of_fl_parent = $('.select_source_fl').length;
+			//no_of_fl_parent = $('.select_source_fl').length;
+			no_of_fl_parent = to_add_row.find('.select_source_fl').length;
 
 			$.ajax({
 				method: 'post',
@@ -415,8 +424,9 @@ $(document).ready(function () {
 				cache: false,
 				success: function(data)
 				{						
-					$('.source_fl_col').eq(no_of_fl_parent-1).css('background','#8ec252');		
-					$('.source_fl_col').eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
+					//$('.source_fl_col').eq(no_of_fl_parent-1).css('background','#8ec252');		
+					//$('.source_fl_col').eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
+					to_add_row.find('.source_fl_col').eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
 					
 					_select = $('<select class="form-control select_source_fl" name="select_source_fl[]">');
 					to_append = $('<option value=""></option>');
@@ -425,93 +435,49 @@ $(document).ready(function () {
 					});
 					_select.append($('<option />'));
 					_select.append(to_append);
-					$('.source_fl_col').eq(no_of_fl_parent).append(_select);
-					$('.source_fl_col').eq(no_of_fl_parent).append('</select>');
+					//$('.source_fl_col').eq(no_of_fl_parent).append(_select);
+					//$('.source_fl_col').eq(no_of_fl_parent).append('</select>');
+					to_add_row.find('.source_fl_col').eq(no_of_fl_parent).append(_select);
+					to_add_row.find('.source_fl_col').eq(no_of_fl_parent).append('</select>');
 					
 					_select.on('change',function(){
 						bindSourceClassification(this,document);
-					});			
+						return false;
+					});		
 				},
 				error: function (data) { 
-					//$("#Classification", context).html('<p>No Options</p>');
+					$("#Classification", context).html('<p>No Options</p>');
 				}
 			});	
 			return false;
 		}
 	});
-	/*$('.select_source_fl').on('click',function(){
-		// Your code here
-		console.log("from newly added");
-		if($(this).val() == ""){
-			$('.source_fl_col').eq(0).nextAll('.source_fl_col').remove();
-			$('.source_fl_col').eq(0).val('');
-			return false;
-		}
-		else
-		{
-			fl_changed = $(this).val();
-			//alert("changed value is " + fl_changed);
-			var no_of_fl_parent = $('.select_source_fl').length;
-
-			for(var i = 0;i < no_of_fl_parent; i++)
-			{
-				if($('.select_source_fl').eq(i).val() === fl_changed)
-				{
-					change_idx = i;
-					folder_Id = $('.select_source_fl').eq(i).val();
-					break;
-				}
-			}
-			$('.source_fl_col').eq(change_idx).nextAll('.source_fl_col').remove();
-			
-			no_of_fl_parent = $('.select_source_fl').length;
-
-			$.ajax({
-				method: 'post',
-				url: 'http://localhost<?=$this->url('get_work_details')?>',
-				data: {
-					folder_Id: folder_Id
-				},
-				dataType: "json", 
-				cache: false,
-				success: function(data)
-				{						
-					$('.source_fl_col').eq(no_of_fl_parent-1).css('background','#8ec252');		
-					$('.source_fl_col').eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
-					
-					_select = $('<select class="form-control select_source_fl" name="select_source_fl[]">');
-					to_append = $('<option value=""></option>');
-					$.each(data.folder_children, function (key, val) {
-						to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
-					});
-					_select.append($('<option />'));
-					_select.append(to_append);
-					$('.source_fl_col').eq(no_of_fl_parent).append(_select);
-					$('.source_fl_col').eq(no_of_fl_parent).append('</select>');
-					
-					_select.on('change',function(){
-						bindSourceClassification(this,document);
-					});			
-				},
-				error: function (data) { 
-					//$("#Classification", context).html('<p>No Options</p>');
-				}
-			});	
-			return false;
-		}
-	});*/
+	
 	$('#submit_save').on('click', function(){
-		if(_select.val() == '')
-		{
-			_select.val(folder_Id);
-		}
+		var no_of_rows = $('table[name="source_fl_table"]').find("tr").length;
+		var arr = [];
+		var values;
+		$('table[name="source_fl_table"]').each(function() {
+			$(this).find('tr').each(function(){
+				values = [];
+				$(this).find('td').find('.select_source_fl').each(function(){
+					//$(this).find('.select_source_fl').each(function(){
+						values.push($(this).val());
+					//});						
+				});
+				var newInput = $('<input type="hidden" name="arr[]" value="">');
+				newInput.val(values);
+				$("#new-work-data").append(newInput);
+			});
+		});
 		return true;
 	});
 });
 </script>
 <div class="col-md-7">
-<form id="personal-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
+<form id="new-work-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
 <input type="hidden" name="action" value="work_new">
+<!--<input type="hidden" name="arr[]" id="arrs" value="frm jquery">-->
 <?php 
 	//get user
 	$user = $this->isUser()->getUser();
@@ -596,7 +562,7 @@ $(document).ready(function () {
 		<div class="form-group" id="class_grp">
 		<table name="source_fl_table" id="source_fl_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">        
 		<tbody>
-		<tr name="source_fl_row">
+		<tr name="source_fl_row[]">
 			<b>Subject Tree</b><br>
 			<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;">				
 				<select class="form-control select_source_fl" name="select_source_fl[]">

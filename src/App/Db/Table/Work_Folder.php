@@ -130,7 +130,7 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
 	
 	public function findRecordByFolderId($sid)
     {
-        echo "source id is $sid";
+        //echo "source id is $sid";
 		$callback = function ($select) use($sid) {
 			$select->columns(['work_id']);
 			$select->where->equalTo('folder_id', $sid);
@@ -173,5 +173,41 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
             ],
             ['work_id' => $wk_id]
         );
+	}
+	
+	public function insertWorkFolderRecords($wk_id,$folder)
+	{
+		for($i = 0;$i < count($folder);$i++)
+		{
+			$this->insert(
+				[
+					'work_id' => $wk_id,
+					'folder_id' => $folder[$i],
+				]
+			);
+		}
+	}
+	
+	public function findRecordsByWorkId($id)
+    {
+        $callback = function ($select) use($id) {
+			$select->columns(['*']);
+			$select->where->equalTo('work_id', $id);
+		};
+		$rows = $this->select($callback)->toArray(); 
+        return($rows);
+    }
+	
+	public function updateWorkFolderRecords($wk_id,$fl_id)
+	{
+		for($i = 0;$i < count($fl_id);$i++)
+		{
+			$this->update(
+				[
+					'folder_id' => $fl_id[$i]
+				],
+				['work_id' => $wk_id]
+			);
+		}
 	}
 }

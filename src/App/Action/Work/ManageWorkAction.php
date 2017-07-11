@@ -78,24 +78,25 @@ class ManageWorkAction
             if ($post['action'] == "work_new") {
                 if ($post['submit_save'] == "Save") {
 					//echo "<pre>";print_r($post);echo "</pre>"; 	
-					//echo "pub count is " . count($post['pub_id']);
-					//echo "agent count is " . count($post['agent_id']);
-					//die();
+					//extract classification rows
+					foreach($post['arr'] as $row):
+						$fl[] = explode(",",trim($row, ","));						
+					endforeach;
+					//extract folder ids for each row
+					for($i = 0;$i < count($fl);$i++)
+					{
+						$folder[$i] = $fl[$i][count($fl[$i])-1];
+					}
 					//insert General(work)
 					$table = new \App\Db\Table\Work($this->adapter);
 					$wk_id = $table->insertRecords($post['work_type'],$post['new_worktitle'],$post['new_worksubtitle'],$post['new_workparalleltitle'],
 										  $post['description'],date('Y-m-d H:i:s'),$post['user'],$post['select_workstatus'],$post['pub_yrFrom']);
 					//insert classification(work_folder)
-					if(isset($post['folder_child']))
+					if(count($folder) >= 1)
 					{
 						$table = new \App\Db\Table\Work_Folder($this->adapter);
-						$table->insertRecords($wk_id,$post['folder_child']);
-					}
-					else if($post['subject_tree'] != '')
-					{
-						$table = new \App\Db\Table\Work_Folder($this->adapter);
-						$table->insertRecords($wk_id,$post['subject_tree']);
-					}
+						$table->insertWorkFolderRecords($wk_id,$folder);
+					}					
 					//insert Publisher(work_publisher)
 					if($post['pub_id'][0] != NULL)
 					{
@@ -133,30 +134,29 @@ class ManageWorkAction
 				}
 			}
 			if ($post['action'] == "work_edit") {
-				echo "<pre>"; print_r($post); echo "</pre>"; die();
 				if ($post['submit_save'] == "Save") {
+					echo "<pre>"; print_r($post); echo "</pre>"; //die();
+					//extract classification rows
+					foreach($post['arr'] as $row):
+						$fl[] = explode(",",trim($row, ","));						
+					endforeach;
+					//extract folder ids for each row
+					for($i = 0;$i < count($fl);$i++)
+					{
+						$folder[$i] = $fl[$i][count($fl[$i])-1];
+					}
 					//update General(work)
-					$table = new \App\Db\Table\Work($this->adapter);
-					$table->updateRecords($post['id'],$post['edit_work_type'],$post['edit_worktitle'],$post['edit_worksubtitle'],
-													$post['edit_workparalleltitle'],$post['description'],date('Y-m-d H:i:s'),
-													$post['user'],$post['edit_workstatus'],$post['pub_yrFrom']);
+					//$table = new \App\Db\Table\Work($this->adapter);
+					//$table->updateRecords($post['id'],$post['edit_work_type'],$post['edit_worktitle'],$post['edit_worksubtitle'],
+											//$post['edit_workparalleltitle'],$post['description'],date('Y-m-d H:i:s'),
+											//$post['user'],$post['edit_workstatus'],$post['pub_yrFrom']);
 										  
 					//update classification(work_folder)
-					$lg = count($post['select_fl']);
-					if($post['select_fl'][$lg-1] == "" || $post['select_fl'][$lg-1] == 'none')
+					if(count($folder) != 0)
 					{
-						$fl_to_move = $post['select_fl'][$lg-2];
-					}
-					else
-					{
-						$fl_to_move = $post['select_fl'][$lg-1];
-					}
-					echo "folder id is $fl_to_move <br />"; die();
-					if(isset($fl_to_move))
-					{
-						$table = new \App\Db\Table\Work_Folder($this->adapter);
-						$table->updateRecords($post['id'],$fl_to_move);
-					} //done till here
+						//$table = new \App\Db\Table\Work_Folder($this->adapter);
+						//$table->updateRecords($post['id'],$folder);
+					} 
 					
 					//update Publisher(work_publisher)
 					if($post['pub_id'][0] != NULL)
@@ -165,7 +165,7 @@ class ManageWorkAction
 						$table->updateRecords($wk_id,$post['pub_id'],$post['pub_location'],$post['pub_yrFrom'],$post['pub_yrTo']);
 						//$table->insertRecords($wk_id,$post['pub_id'],$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
 					}
-					
+					die();
 					//update Agent(work_agent)
 					if($post['agent_id'][0] != NULL)
 					{

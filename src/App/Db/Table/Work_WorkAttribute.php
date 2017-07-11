@@ -150,11 +150,16 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         $cnt = $paginatorAdapter->getTotalItemCount();
 		$paginatorAdapter->setDefaultItemCountPerPage($cnt);
 
-        $fieldRows = [];
-        foreach ($paginatorAdapter as $row) :
-			$fieldRows[] = $row;
-        endforeach;
-		
+		if($cnt != 0)
+		{
+			foreach ($paginatorAdapter as $row) :
+				$fieldRows[] = $row;
+			endforeach;
+		}
+		else
+		{
+			$fieldRows = [];
+		}
 		$output = json_encode($fieldRows);
         return $output;
 	}
