@@ -102,23 +102,14 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
 	public function findRecordByWorkId($wk_id)
     {	
 		$rows = [];
-		$select = $this->sql->select();
-        $select->join('agenttype', 'work_agent.agenttype_id = agenttype.id', array('type'), 'inner');
-		$select->join('agent', 'work_agent.agent_id = agent.id', array('fname','lname','alternate_name','organization_name'), 'inner');
-        $select->where(['work_id' => $wk_id]);
+		$callback = function ($select) use ($wk_id) {	
+			$select->columns(['*']);
+			$select->join('agenttype', 'work_agent.agenttype_id = agenttype.id', array('type'), 'left');
+			$select->join('agent', 'work_agent.agent_id = agent.id', array('fname','lname','alternate_name','organization_name'), 'left');
+			$select->where(['work_id' => $wk_id]);
+		};
 
-        $paginatorAdapter = new Paginator(new DbSelect($select, $this->adapter));
-        $cnt = $paginatorAdapter->getTotalItemCount();
-		if($cnt != 0)
-		{
-			foreach($paginatorAdapter as $row) : 
-				$rows[] = $row;
-			endforeach;
-		}
-		else
-		{
-			$rows = [];
-		}
+        $rows = $this->select($callback)->toArray();
         return $rows;
     }
 	
@@ -139,8 +130,6 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
 	
 	public function updateRecordByAgentId($src_ag_id, $dst_ag_id)
 	{
-		//echo "src id is " . $src_ag_id . "<br />";
-		//echo "dst id is " . $dst_ag_id . "<br />";
 		$this->update(
             [
                 'agent_id' => $src_ag_id
@@ -153,10 +142,8 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
 	{
 		for($i=0;$i<count($agent_type);$i++)
 		{
-			//echo "<pre>"; echo $wk_id . ' ' . $pub_id[$i] . ' ' . $pub_locid[$i] . ' ' . $pub_yr[$i] . ' ' . $pub_yrEnd[$i]; echo "</pre>";
 			if(empty($agent_id[$i]))
 			{
-				//echo 'id is ' . $pub_locid[$i];
 				$agent_id[$i] = 0;
 			}
 			$this->update(

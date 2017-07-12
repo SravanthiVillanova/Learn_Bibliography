@@ -198,7 +198,7 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
         return($rows);
     }
 	
-	public function updateWorkFolderRecords($wk_id,$fl_id)
+	/*public function updateWorkFolderRecords($wk_id,$fl_id)
 	{
 		for($i = 0;$i < count($fl_id);$i++)
 		{
@@ -209,5 +209,5 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
 				['work_id' => $wk_id]
 			);
 		}
-	}
+	}*/
 }

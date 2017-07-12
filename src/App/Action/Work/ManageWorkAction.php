@@ -77,7 +77,7 @@ class ManageWorkAction
             //add a new work type
             if ($post['action'] == "work_new") {
                 if ($post['submit_save'] == "Save") {
-					//echo "<pre>";print_r($post);echo "</pre>"; 	
+					//echo "<pre>";print_r($post);echo "</pre>"; //die();	
 					//extract classification rows
 					foreach($post['arr'] as $row):
 						$fl[] = explode(",",trim($row, ","));						
@@ -89,19 +89,21 @@ class ManageWorkAction
 					}
 					//insert General(work)
 					$table = new \App\Db\Table\Work($this->adapter);
-					$wk_id = $table->insertRecords($post['work_type'],$post['new_worktitle'],$post['new_worksubtitle'],$post['new_workparalleltitle'],
-										  $post['description'],date('Y-m-d H:i:s'),$post['user'],$post['select_workstatus'],$post['pub_yrFrom']);
+					$wk_id = $table->insertRecords($post['work_type'],$post['new_worktitle'],$post['new_worksubtitle'],
+									$post['new_workparalleltitle'],$post['description'],date('Y-m-d H:i:s'),
+									$post['user'],$post['select_workstatus'],$post['pub_yrFrom']);
 					//insert classification(work_folder)
-					if(count($folder) >= 1)
+					if($folder[0] != NULL)
 					{
 						$table = new \App\Db\Table\Work_Folder($this->adapter);
 						$table->insertWorkFolderRecords($wk_id,$folder);
-					}					
+					}	
+				
 					//insert Publisher(work_publisher)
 					if($post['pub_id'][0] != NULL)
 					{
 						$table = new \App\Db\Table\WorkPublisher($this->adapter);
-						$table->insertRecords($wk_id,$post['pub_id'],$post['pub_location'],$post['pub_yrFrom'],$post['pub_yrTo']);
+						$table->insertRecords($wk_id,$post['pub_id'],$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
 						//$table->insertRecords($wk_id,$post['pub_id'],$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
 					}
 					//insert Agent(work_agent)
@@ -135,7 +137,7 @@ class ManageWorkAction
 			}
 			if ($post['action'] == "work_edit") {
 				if ($post['submit_save'] == "Save") {
-					echo "<pre>"; print_r($post); echo "</pre>"; //die();
+					//echo "<pre>"; print_r($post); echo "</pre>"; //die();
 					//extract classification rows
 					foreach($post['arr'] as $row):
 						$fl[] = explode(",",trim($row, ","));						
@@ -146,31 +148,45 @@ class ManageWorkAction
 						$folder[$i] = $fl[$i][count($fl[$i])-1];
 					}
 					//update General(work)
-					//$table = new \App\Db\Table\Work($this->adapter);
-					//$table->updateRecords($post['id'],$post['edit_work_type'],$post['edit_worktitle'],$post['edit_worksubtitle'],
-											//$post['edit_workparalleltitle'],$post['description'],date('Y-m-d H:i:s'),
-											//$post['user'],$post['edit_workstatus'],$post['pub_yrFrom']);
+					$table = new \App\Db\Table\Work($this->adapter);
+					$table->updateRecords($post['id'],$post['edit_work_type'],$post['edit_worktitle'],$post['edit_worksubtitle'],
+										$post['edit_workparalleltitle'],$post['description'],date('Y-m-d H:i:s'),
+										$post['user'],$post['edit_workstatus'],$post['pub_yrFrom']);
 										  
 					//update classification(work_folder)
-					if(count($folder) != 0)
+					if($folder[0] != NULL)
 					{
-						//$table = new \App\Db\Table\Work_Folder($this->adapter);
-						//$table->updateRecords($post['id'],$folder);
+						//delete all workfolders
+						$table = new \App\Db\Table\Work_Folder($this->adapter);
+						$table->deleteRecordByWorkId($post['id']);
+						
+						//insert all workfolders again
+						$table = new \App\Db\Table\Work_Folder($this->adapter);
+						$table->insertWorkFolderRecords($post['id'],$folder);
 					} 
 					
 					//update Publisher(work_publisher)
 					if($post['pub_id'][0] != NULL)
 					{
+						//delete all publishers
 						$table = new \App\Db\Table\WorkPublisher($this->adapter);
-						$table->updateRecords($wk_id,$post['pub_id'],$post['pub_location'],$post['pub_yrFrom'],$post['pub_yrTo']);
-						//$table->insertRecords($wk_id,$post['pub_id'],$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
+						$table->deleteRecordByWorkId($post['id']);
+						
+						//insert all publishers again
+						$table = new \App\Db\Table\WorkPublisher($this->adapter);
+						$table->insertRecords($post['id'],$post['pub_id'],$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
 					}
-					die();
+
 					//update Agent(work_agent)
 					if($post['agent_id'][0] != NULL)
 					{
+						//delete all agents
 						$table = new \App\Db\Table\WorkAgent($this->adapter);
-						$table->updateRecords($wk_id,$post['agent_id'],$post['agent_type']);
+						$table->deleteRecordByWorkId($post['id']);
+						
+						//insert Agents again
+						$table = new \App\Db\Table\WorkAgent($this->adapter);
+						$table->insertRecords($post['id'],$post['agent_id'],$post['agent_type']);
 					}
 					
 					//map work to citation(work_workattribute)
@@ -189,10 +205,16 @@ class ManageWorkAction
 							$wkopt_id[] = $value;
 						}
 					}
-					if(count($wkat_id) > 0)
+
+					if($wkat_id[0] != NULL)
 					{
+						//delete workattribute records
 						$table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
-						$table->updateRecords($wk_id,$wkat_id,$wkopt_id);
+						$table->deleteRecordByWorkId($post['id']);
+						
+						//insert workattributes again
+						$table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
+						$table->insertRecords($post['id'], $wkat_id, $wkopt_id);
 					}
 				}
 			}
@@ -251,12 +273,6 @@ class ManageWorkAction
             )
 			);			
 		}
-		
-		/*if(isset($post['action']))
-		{
-			if($post['action'] == 'work_new') {
-			}
-		}*/
 		
         $query = $request->getqueryParams();
 		if(isset($query['action']))
