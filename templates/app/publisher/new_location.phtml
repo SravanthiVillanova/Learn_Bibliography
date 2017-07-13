@@ -1,22 +1,21 @@
 <?php $this->headTitle('Add Publisher Location'); ?>
-<?php //$this->layout()->instructions = ""; ?>
+<?php //$this->layout()->instructions = "";  ?>
 <div class="col-md-4">
-<?php                                       
-                $id;
-                if ($request->getqueryParams('id') !== null) 
-                {   
-                    $params = $request->getqueryParams();
-                    $action = $params['action'];
-                    $id = $params['id'];
-                    //fetch name based on id
-                    $table = new \App\Db\Table\Publisher($adapter);
-                    $row = $table->findRecordById($id);
-                    $name = $row['name'];
-                    echo '<b>Publisher: </b>' . $name; 
-                } 
-?>
-    <form class="form-horizontal" method="post" action="<?=$this->url('manage_publisherlocation')?><?='?id=' . $params['id'] . '&count=1'?>">
-        <input type="hidden" name="action" value="<?=$action; ?>">
+    <?php
+    $id;
+    if ($request->getqueryParams('id') !== null) {
+        $params = $request->getqueryParams();
+        $action = $params['action'];
+        $id = $params['id'];
+        //fetch name based on id
+        $table = new \App\Db\Table\Publisher($adapter);
+        $row = $table->findRecordById($id);
+        $name = $row['name'];
+        echo '<b>Publisher: </b>' . $name;
+    }
+    ?>
+    <form class="form-horizontal" method="post" action="<?= $this->url('manage_publisherlocation') ?><?= '?id=' . $params['id'] . '&count=1' ?>">
+        <input type="hidden" name="action" value="<?= $action; ?>">
         <div class="form-group">
             <label class="col-xs-3 control-label">Location: </label>
             <div class="col-xs-7">

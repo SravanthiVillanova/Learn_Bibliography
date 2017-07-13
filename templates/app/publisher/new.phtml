@@ -1,17 +1,14 @@
 <?php $this->headTitle('New Publisher'); ?>
-<?php //$this->layout()->instructions = ""; ?>
- <?php                                       
-                if ($request->getqueryParams('action') !== null) 
-                {   
-                    $params = $request->getqueryParams();
-                    $action = $params['action'];
-                }
-        
-        
- ?>
+<?php //$this->layout()->instructions = "";  ?>
+<?php
+if ($request->getqueryParams('action') !== null) {
+    $params = $request->getqueryParams();
+    $action = $params['action'];
+}
+?>
 <div class="col-md-4">
-    <form class="form-horizontal" method="post" action="<?=$this->url('manage_publisher')?>">
-    <input type="hidden" name="action" value="<?php echo $action; ?>">
+    <form class="form-horizontal" method="post" action="<?= $this->url('manage_publisher') ?>">
+        <input type="hidden" name="action" value="<?php echo $action; ?>">
         <div class="form-group">
             <label class="col-xs-2 control-label">Name: </label>
             <div class="col-xs-7">
