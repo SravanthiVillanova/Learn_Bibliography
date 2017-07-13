@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Middleware;
 
 use Interop\Container\ContainerInterface;
@@ -9,13 +10,14 @@ class AuthenticationMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $router   = $container->get(RouterInterface::class);
+        $router = $container->get(RouterInterface::class);
         $template = ($container->has(TemplateRendererInterface::class))
             ? $container->get(TemplateRendererInterface::class)
             : null;
 
-		$basePath = $container->get(\Blast\BaseUrl\BasePathHelper::class)->__invoke();
-		$session = $container->get(\Zend\Session\Container::class);
+        $basePath = $container->get(\Blast\BaseUrl\BasePathHelper::class)->__invoke();
+        $session = $container->get(\Zend\Session\Container::class);
+
         return new AuthenticationMiddleware($router, $template, $basePath, $session);
     }
 }

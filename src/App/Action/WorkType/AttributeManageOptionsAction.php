@@ -8,7 +8,6 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Paginator;
 
 class AttributeManageOptionsAction
 {
@@ -18,24 +17,24 @@ class AttributeManageOptionsAction
 
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
-        $this->router   = $router;
+        $this->router = $router;
         $this->template = $template;
-        $this->adapter  = $adapter;
+        $this->adapter = $adapter;
     }
-    
+
     protected function getPaginator($query, $post)
     {
         if (!empty($post['action'])) {
             //add new option
-            if ($post['action'] == "new") {
-                if ($post['submitt'] == "Save") {
+            if ($post['action'] == 'new') {
+                if ($post['submitt'] == 'Save') {
                     $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
                     $table->addOption($post['id'], $post['new_option'], $post['option_value']);
                 }
             }
             //edit option
-            if ($post['action'] == "edit") {
-                if ($post['submitt'] == "Save") {
+            if ($post['action'] == 'edit') {
+                if ($post['submitt'] == 'Save') {
                     if (!is_null($post['id'])) {
                         $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
                         $table->updateOption($post['id'], $post['edit_option'], $post['edit_value']);
@@ -43,8 +42,8 @@ class AttributeManageOptionsAction
                 }
             }
             //delete option
-            if ($post['action'] == "delete") {
-                if ($post['submitt'] == "Delete") {
+            if ($post['action'] == 'delete') {
+                if ($post['submitt'] == 'Delete') {
                     if (!is_null($post['id'])) {
                         $table = new \App\Db\Table\Work_Workattribute($this->adapter);
                         $table->deleteRecordByValue($query['id'], $post['id']);
@@ -53,17 +52,17 @@ class AttributeManageOptionsAction
                     }
                 }
             }
-            if ($post['action'] == "merge") {
-                if ($post['submitt'] == "Merge") {
+            if ($post['action'] == 'merge') {
+                if ($post['submitt'] == 'Merge') {
                     if (!is_null($post['workattribute_id'])) {
-                        for ($i=0;$i<count($post['option_title']);$i++) {
+                        for ($i = 0; $i < count($post['option_title']); ++$i) {
                             $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
                             $rows = $table->getDuplicateOptionRecords($post['workattribute_id'], $post['option_title'][$i], $post['option_id'][$i]);
 
-                            for ($j=0;$j<count($rows);$j++) {
+                            for ($j = 0; $j < count($rows); ++$j) {
                                 $table = new \App\Db\Table\Work_Workattribute($this->adapter);
                                 $table->updateWork_WorkAttributeValue($post['workattribute_id'], $post['option_id'][$i], $rows[$j]['id']);
-                                
+
                                 $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
                                 $table->deleteOption($post['workattribute_id'], $rows[$j]['id']);
                             }
@@ -72,15 +71,17 @@ class AttributeManageOptionsAction
                 }
             }
             //Cancel add\edit\delete
-            if ($post['submitt'] == "Cancel") {
+            if ($post['submitt'] == 'Cancel') {
                 $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
                 $paginator = $table->displayAttributeOptions($query['id']);
+
                 return $paginator;
             }
         }
         // default: blank for listing in manage
         $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
         $paginator = $table->displayAttributeOptions($query['id']);
+
         return $paginator;
     }
 
@@ -92,7 +93,7 @@ class AttributeManageOptionsAction
             $action = $query['action'];
         }
         $post = [];
-        if ($request->getMethod() == "POST") {
+        if ($request->getMethod() == 'POST') {
             $post = $request->getParsedBody();
         }
         $paginator = $this->getPaginator($query, $post);
@@ -116,12 +117,12 @@ class AttributeManageOptionsAction
             $next = $currentPage + 1;
             $previous = $currentPage - 1;
         }
-        
+
         $searchParams = [];
         if (!empty($query['id'])) {
-            $searchParams[] = 'id=' . urlencode($query['id']);
+            $searchParams[] = 'id='.urlencode($query['id']);
         }
-        
+
         return new HtmlResponse(
             $this->template->render(
                 'app::worktype::manage_attribute_options',

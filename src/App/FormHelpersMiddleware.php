@@ -1,4 +1,5 @@
 <?php
+
 namespace App;
 
 use Zend\Form\View\HelperConfig as FormHelperConfig;
@@ -17,6 +18,7 @@ class FormHelpersMiddleware
     {
         $config = new FormHelperConfig();
         $config->configureServiceManager($this->helpers);
+
         return $next($request, $response);
     }
 }

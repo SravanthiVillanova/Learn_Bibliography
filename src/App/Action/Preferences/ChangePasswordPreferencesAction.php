@@ -14,14 +14,14 @@ class ChangePasswordPreferencesAction
     private $router;
 
     private $template;
-    
+
     private $adapter;
 
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
-        $this->router   = $router;
+        $this->router = $router;
         $this->template = $template;
-        $this->adapter  = $adapter;
+        $this->adapter = $adapter;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)

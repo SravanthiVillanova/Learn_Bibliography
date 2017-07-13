@@ -11,11 +11,12 @@ class GetWorkDetailsFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $router   = $container->get(RouterInterface::class);
+        $router = $container->get(RouterInterface::class);
         $template = ($container->has(TemplateRendererInterface::class))
             ? $container->get(TemplateRendererInterface::class)
             : null;
         $adapter = $container->get(Adapter::class);
+
         return new GetWorkDetailsAction($router, $template, $adapter);
         //return new \App\Action\SimpleRenderAction('app::work::get_work_details', $router, $template, $adapter);
     }

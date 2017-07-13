@@ -1,6 +1,6 @@
 <?php
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * PHP version 5
  *
@@ -22,44 +22,45 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
+
 namespace App\Db\Table;
 
 use Zend\Db\Sql\Select;
-use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
 
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
 class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct($adapter)
     {
         parent::__construct('workattribute', $adapter);
     }
-    
+
     /**
-     * Update an existing entry in the record table or create a new one
+     * Update an existing entry in the record table or create a new one.
      *
      * @param string $id      Record ID
      * @param string $source  Data source
@@ -67,27 +68,28 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Updated or newly added record
      */
-    
     public function displayAttributes()
     {
         $select = $this->sql->select();
         $paginatorAdapter = new DbSelect($select, $this->adapter);
+
         return new Paginator($paginatorAdapter);
     }
-    
+
     public function displayAttributes1($id)
     {
         $wtwa = new WorkType_WorkAttribute($this->adapter);
         $subselect = $wtwa->getWorkAttributeQuery($id);
-        
+
         $callback = function ($select) use ($subselect) {
-            $select->columns(['id','field']);
+            $select->columns(['id', 'field']);
             $select->where->notIn('field', $subselect);
         };
         $rows = $this->select($callback)->toArray();
+
         return $rows;
     }
-    
+
     public function addAttribute($field, $type)
     {
         $this->insert(
@@ -97,14 +99,15 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
             ]
         );
     }
-    
+
     public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));
         $row = $rowset->current();
-        return($row);
+
+        return $row;
     }
-    
+
     public function updateRecord($id, $field)
     {
         $this->update(
@@ -114,20 +117,21 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
             ['id' => $id]
         );
     }
-    
+
     public function deleteRecord($id)
     {
         $this->delete(['id' => $id]);
     }
-	
-	public function getAttributesForWorkType($id)
+
+    public function getAttributesForWorkType($id)
     {
         $subselect = $this->sql->select();
         $subselect->join('worktype_workattribute', 'workattribute.id = worktype_workattribute.workattribute_id', array(), 'inner');
         $subselect->where(['worktype_id' => $id]);
         $subselect->order('rank');
-        
+
         $paginatorAdapter = new DbSelect($subselect, $this->adapter);
-		return new Paginator($paginatorAdapter);
-    }   
+
+        return new Paginator($paginatorAdapter);
+    }
 }

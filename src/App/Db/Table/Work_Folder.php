@@ -1,6 +1,6 @@
 <?php
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * PHP version 5
  *
@@ -22,16 +22,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
+
 namespace App\Db\Table;
 
 use Zend\Db\Sql\Select;
-use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
@@ -39,27 +40,28 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
 class Work_Folder extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct($adapter)
     {
         parent::__construct('work_folder', $adapter);
     }
-    
+
     /**
-     * Update an existing entry in the record table or create a new one
+     * Update an existing entry in the record table or create a new one.
      *
      * @param string $id      Record ID
      * @param string $source  Data source
@@ -67,14 +69,13 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Updated or newly added record
      */
-    
     public function getWorkFolder()
     {
         //echo $id;
         /*$subselect = $this->sql->select()->distinct('work_id');
         //$subselect->join('work', 'work_folder.work_id = work.id', 'inner');
-		//$subselect->columns([new Expression(DISTINCT('work_id'))]);
-        
+        //$subselect->columns([new Expression(DISTINCT('work_id'))]);
+
         $paginatorAdapter = new Paginator(new DbSelect($subselect, $this->adapter));
         $cnt = $paginatorAdapter->getTotalItemCount();
         //echo "selected field count is $cnt <br />";
@@ -85,129 +86,133 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
         endforeach;
         //print_r($fieldRows);
         return $workIds;*/
-		
-		$callback = function ($select) {
+
+        $callback = function ($select) {
             $select->columns(
                     [
                         'work_id' => new Expression(
                             'DISTINCT(?)',
                             ['work_id'],
                             [Expression::TYPE_IDENTIFIER]
-                        )
+                        ),
                     ]
                 );
         };
-        
+
         $rows = $this->select($callback)->toArray();
-		$workIds = [];
+        $workIds = [];
         foreach ($rows as $row) :
                 $workIds[] = $row['work_id'];
         endforeach;
+
         return $workIds;
-    } 
-	
-	public function insertRecords($wk_id,$folder_id)
-	{
-		$this->insert(
-			[
-			'work_id' => $wk_id,
-			'folder_id' => $folder_id,
-			]
-		);
-	}
-	
-	public function findRecordByWorkId($id)
+    }
+
+    public function insertRecords($wk_id, $folder_id)
+    {
+        $this->insert(
+            [
+            'work_id' => $wk_id,
+            'folder_id' => $folder_id,
+            ]
+        );
+    }
+
+    public function findRecordByWorkId($id)
     {
         $rowset = $this->select(array('work_id' => $id));
         $row = $rowset->current();
-        return($row);
+
+        return $row;
     }
-	
-	public function deleteRecordByWorkId($id)
+
+    public function deleteRecordByWorkId($id)
     {
         $this->delete(['work_id' => $id]);
     }
-	
-	public function findRecordByFolderId($sid)
+
+    public function findRecordByFolderId($sid)
     {
         //echo "source id is $sid";
-		$callback = function ($select) use($sid) {
-			$select->columns(['work_id']);
-			$select->where->equalTo('folder_id', $sid);
-		};
-		$rows = $this->select($callback)->toArray(); 
-        return($rows);
-    }
-	
-	public function mergeWkFlDelete($sid,$did)
-	{
-		$wkfl = new Work_Folder($this->adapter);
-		$rows = array_map(function ($n) { return $n['work_id']; }, $wkfl->findRecordByFolderId($sid));
+        $callback = function ($select) use ($sid) {
+            $select->columns(['work_id']);
+            $select->where->equalTo('folder_id', $sid);
+        };
+        $rows = $this->select($callback)->toArray();
 
-		if(count($rows) >= 1)
-		{
-			$callback = function ($select) use ($did, $rows) {
+        return $rows;
+    }
+
+    public function mergeWkFlDelete($sid, $did)
+    {
+        $wkfl = new self($this->adapter);
+        $rows = array_map(function ($n) {
+            return $n['work_id'];
+        }, $wkfl->findRecordByFolderId($sid));
+
+        if (count($rows) >= 1) {
+            $callback = function ($select) use ($did, $rows) {
                 $select->where->in('work_id', $rows);
                 $select->where->equalTo('folder_id', $did);
             };
 
-			$this->delete($callback); 
-		}
-	}
-	
-	public function mergeWkFlUpdate($sid, $did)
-	{
-		$this->update(
+            $this->delete($callback);
+        }
+    }
+
+    public function mergeWkFlUpdate($sid, $did)
+    {
+        $this->update(
             [
-                'folder_id' => $did
+                'folder_id' => $did,
             ],
             ['folder_id' => $sid]
         );
-	}
-	
-	public function updateRecords($wk_id,$fl_id)
-	{
-		$this->update(
+    }
+
+    public function updateRecords($wk_id, $fl_id)
+    {
+        $this->update(
             [
-                'folder_id' => $fl_id
+                'folder_id' => $fl_id,
             ],
             ['work_id' => $wk_id]
         );
-	}
-	
-	public function insertWorkFolderRecords($wk_id,$folder)
-	{
-		for($i = 0;$i < count($folder);$i++)
-		{
-			$this->insert(
-				[
-					'work_id' => $wk_id,
-					'folder_id' => $folder[$i],
-				]
-			);
-		}
-	}
-	
-	public function findRecordsByWorkId($id)
-    {
-        $callback = function ($select) use($id) {
-			$select->columns(['*']);
-			$select->where->equalTo('work_id', $id);
-		};
-		$rows = $this->select($callback)->toArray(); 
-        return($rows);
     }
-	
-	/*public function updateWorkFolderRecords($wk_id,$fl_id)
-	{
-		for($i = 0;$i < count($fl_id);$i++)
-		{
-			$this->update(
-				[
-					'folder_id' => $fl_id[$i]
-				],
-				['work_id' => $wk_id]
-			);
-		}
-	}*/
+
+    public function insertWorkFolderRecords($wk_id, $folder)
+    {
+        for ($i = 0; $i < count($folder); ++$i) {
+            $this->insert(
+                [
+                    'work_id' => $wk_id,
+                    'folder_id' => $folder[$i],
+                ]
+            );
+        }
+    }
+
+    public function findRecordsByWorkId($id)
+    {
+        $callback = function ($select) use ($id) {
+            $select->columns(['*']);
+            $select->where->equalTo('work_id', $id);
+        };
+        $rows = $this->select($callback)->toArray();
+
+        return $rows;
+    }
+
+    /*public function updateWorkFolderRecords($wk_id,$fl_id)
+    {
+        for($i = 0;$i < count($fl_id);$i++)
+        {
+            $this->update(
+                [
+                    'folder_id' => $fl_id[$i]
+                ],
+                ['work_id' => $wk_id]
+            );
+        }
+    }*/
 }

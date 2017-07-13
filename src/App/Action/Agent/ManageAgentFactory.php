@@ -11,11 +11,12 @@ class ManageAgentFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $router   = $container->get(RouterInterface::class);
+        $router = $container->get(RouterInterface::class);
         $template = ($container->has(TemplateRendererInterface::class))
             ? $container->get(TemplateRendererInterface::class)
             : null;
         $adapter = $container->get(Adapter::class);
+
         return new ManageAgentAction($router, $template, $adapter);
     }
 }

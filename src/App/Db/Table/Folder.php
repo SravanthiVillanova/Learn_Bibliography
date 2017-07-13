@@ -1,6 +1,6 @@
 <?php
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * PHP version 5
  *
@@ -22,45 +22,46 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
+
 namespace App\Db\Table;
 
 use Zend\Db\Sql\Select;
-use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
 
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
 class Folder extends \Zend\Db\TableGateway\TableGateway
 {
-	//Private $file;
+    //Private $file;
    /**
-     * Constructor
+     * Constructor.
      */
     public function __construct($adapter)
     {
-        parent::__construct('folder', $adapter);				
+        parent::__construct('folder', $adapter);
     }
-    
+
     /**
-     * Update an existing entry in the record table or create a new one
+     * Update an existing entry in the record table or create a new one.
      *
      * @param string $id      Record ID
      * @param string $source  Data source
@@ -68,177 +69,176 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Updated or newly added record
      */
-    
     public function findParent()
     {
         $select = $this->sql->select()->where(['parent_id' => null]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
+
         return new Paginator($paginatorAdapter);
     }
-	
-	public function exportClassification($parent)
-	{
-		$fl = new Folder($this->adapter);
-		$callback = function ($select) {
+
+    public function exportClassification($parent)
+    {
+        $fl = new self($this->adapter);
+        $callback = function ($select) {
             $select->columns(['*']);
-			$select->where('parent_id IS NULL');
-		};
-		$row = $this->select($callback)->toArray();
-		$escaper = new \Zend\Escaper\Escaper('utf-8');
-		header("Content-Type: text/csv");
-		header("Content-Disposition: attachment; filename=test_export.csv");
-		$file = fopen('php://output','w') or die("Unable to open file!");
-		//add BOM to fix UTF-8 in Excel
-		fputs($file, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
-		foreach($row as $t):
-			$content = $t['id'] . ' ' . $escaper->escapeHtml($t['text_fr']) . ' ';
-			fputcsv($file, array($content));
-			$fl->getDepth($t['id'], $file, $content);				
-		endforeach;
-		fflush($file);
-		fclose($file);
-		exit;
-	}
-	
-	public function getDepth($id, $file, $content)
-	{
-		$fl = new Folder($this->adapter);
-		$escaper = new \Zend\Escaper\Escaper('utf-8');
-		$con = $content;
-		$current_parent_id = $id;
-		$callback = function ($select) use ($current_parent_id){
-			$select->columns(['*']);
-			$select->where->equalTo('parent_id', $current_parent_id);
-		};
-		$rc = $this->select($callback)->toArray(); 
-		if(count($rc) != 0) {				
-			for($i = 0;$i<count($rc);$i++) {
-				$con1 = ' ' . $escaper->escapeHtml($rc[$i]['text_fr']) . ' '; 
-				//$con .= $con1;			
-				fputcsv($file, array($con . $con1)); 
-				$current_parent_id = $rc[$i]['id'];	
-				$fl->getDepth($current_parent_id, $file, $con . $con1); 
-			}	
-		}
-	}	
-	
-	public function getChild($parent)
-	{
-		$callback = function ($select) use ($parent){
-			$select->columns(['*']);
-			$select->where->equalTo('parent_id', $parent);
-		};
-		$rows = $this->select($callback)->toArray(); 
-		//var_dump("count is " . count($rows));
-		return $rows;
-	}
-	
-	public function getParent($child)
-	{
-		$rowset = $this->select(array('id' => $child));
+            $select->where('parent_id IS NULL');
+        };
+        $row = $this->select($callback)->toArray();
+        $escaper = new \Zend\Escaper\Escaper('utf-8');
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename=test_export.csv');
+        $file = fopen('php://output', 'w') or die('Unable to open file!');
+        //add BOM to fix UTF-8 in Excel
+        fputs($file, $bom = (chr(0xEF).chr(0xBB).chr(0xBF)));
+        foreach ($row as $t):
+            $content = $t['id'].' '.$escaper->escapeHtml($t['text_fr']).' ';
+        fputcsv($file, array($content));
+        $fl->getDepth($t['id'], $file, $content);
+        endforeach;
+        fflush($file);
+        fclose($file);
+        exit;
+    }
+
+    public function getDepth($id, $file, $content)
+    {
+        $fl = new self($this->adapter);
+        $escaper = new \Zend\Escaper\Escaper('utf-8');
+        $con = $content;
+        $current_parent_id = $id;
+        $callback = function ($select) use ($current_parent_id) {
+            $select->columns(['*']);
+            $select->where->equalTo('parent_id', $current_parent_id);
+        };
+        $rc = $this->select($callback)->toArray();
+        if (count($rc) != 0) {
+            for ($i = 0; $i < count($rc); ++$i) {
+                $con1 = ' '.$escaper->escapeHtml($rc[$i]['text_fr']).' ';
+                //$con .= $con1;
+                fputcsv($file, array($con.$con1));
+                $current_parent_id = $rc[$i]['id'];
+                $fl->getDepth($current_parent_id, $file, $con.$con1);
+            }
+        }
+    }
+
+    public function getChild($parent)
+    {
+        $callback = function ($select) use ($parent) {
+            $select->columns(['*']);
+            $select->where->equalTo('parent_id', $parent);
+        };
+        $rows = $this->select($callback)->toArray();
+        //var_dump("count is " . count($rows));
+        return $rows;
+    }
+
+    public function getParent($child)
+    {
+        $rowset = $this->select(array('id' => $child));
         $row = $rowset->current();
-        return($row);
-	}
-	
-	public function getFoldersWithNullParent()
-	{
-		$callback = function ($select) {
-			$select->columns(['*']);
-			$select->where('parent_id IS NULL');
-		};
-		$rows = $this->select($callback)->toArray(); 
-        return($rows);
-	}
-	
-	public function getHierarchyRecords($id)
-	{
-		//echo 'id is ' . $id;
-		$rowset = $this->select(array('id' => $id));
+
+        return $row;
+    }
+
+    public function getFoldersWithNullParent()
+    {
+        $callback = function ($select) {
+            $select->columns(['*']);
+            $select->where('parent_id IS NULL');
+        };
+        $rows = $this->select($callback)->toArray();
+
+        return $rows;
+    }
+
+    public function getHierarchyRecords($id)
+    {
+        //echo 'id is ' . $id;
+        $rowset = $this->select(array('id' => $id));
         $row = $rowset->current();
-		
-		/*$parent = $row['parent_id'];
-		echo 'parent id is ' . $parent;*/
-		
-		/*$callback = function ($select) use ($parent){
-			$select->columns(['*']);
-			$select->where->equalTo('parent_id', $parent);
-		};
-		$rows = $this->select($callback)->toArray(); 
-		echo "<pre>";print_r($rows);echo "</pre>";*/
-		//return $row;
-	}
-	
-	public function getTrail($id,$r)
-	{
-		$str = "";
-		$str = $r;
-		$fl = new Folder($this->adapter);
-		$callback = function ($select) use ($id) {
+
+        /*$parent = $row['parent_id'];
+        echo 'parent id is ' . $parent;*/
+
+        /*$callback = function ($select) use ($parent){
+            $select->columns(['*']);
+            $select->where->equalTo('parent_id', $parent);
+        };
+        $rows = $this->select($callback)->toArray();
+        echo "<pre>";print_r($rows);echo "</pre>";*/
+        //return $row;
+    }
+
+    public function getTrail($id, $r)
+    {
+        $str = '';
+        $str = $r;
+        $fl = new self($this->adapter);
+        $callback = function ($select) use ($id) {
             $select->columns(['*']);
             $select->join(
                 ['b' => 'folder'], 'folder.id = b.parent_id',
-				['parent_id']
+                ['parent_id']
             );
-			$select->where->equalTo('b.id', $id);			
+            $select->where->equalTo('b.id', $id);
         };
-		$rc = $this->select($callback)->toArray();
-		if(count($rc) == 0)
-		{
-			return $str . ':' . 'Top';						
-		} 
-		else
-		{
-			$r = $r . ":" . $rc[0]['text_fr'] . "*" . $rc[0]['id']; //top:Millieu
-			$r = $fl->getTrail($rc[0]['parent_id'],$r); //getTrail( 1,top:Millieu:Biographie)
-			return $r;
-		}
-	}
-	
-	public function findRecordById($id)
+        $rc = $this->select($callback)->toArray();
+        if (count($rc) == 0) {
+            return $str.':'.'Top';
+        } else {
+            $r = $r.':'.$rc[0]['text_fr'].'*'.$rc[0]['id']; //top:Millieu
+            $r = $fl->getTrail($rc[0]['parent_id'], $r); //getTrail( 1,top:Millieu:Biographie)
+            return $r;
+        }
+    }
+
+    public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));
         $row = $rowset->current();
-        return($row);
-    }
-	
-	public function getParentChain($id)
-	{
-		$fl = new Folder($this->adapter);
-		$row = $fl->getParent($id);
-		
-		$encounteredIds = array($row['id']);
-		$current = $row['parent_id'];
-		
-		while($current != null && !in_array($current, $encounteredIds))
-		{
-			$row = $fl->getParent($current);
 
-			$encounteredIds[] = $row['id'];
-			$current = $row['parent_id'];
-		}
-		
-		$encounteredIds = array_reverse($encounteredIds);
-		
-		return $encounteredIds;
-	}
-	
-	public function insertRecords($parent_id, $text_en, $text_fr, $text_de, $text_nl, $text_es, $text_it, $sort_order)
+        return $row;
+    }
+
+    public function getParentChain($id)
+    {
+        $fl = new self($this->adapter);
+        $row = $fl->getParent($id);
+
+        $encounteredIds = array($row['id']);
+        $current = $row['parent_id'];
+
+        while ($current != null && !in_array($current, $encounteredIds)) {
+            $row = $fl->getParent($current);
+
+            $encounteredIds[] = $row['id'];
+            $current = $row['parent_id'];
+        }
+
+        $encounteredIds = array_reverse($encounteredIds);
+
+        return $encounteredIds;
+    }
+
+    public function insertRecords($parent_id, $text_en, $text_fr, $text_de, $text_nl, $text_es, $text_it, $sort_order)
     {
         $this->insert(
             [
-				'parent_id' => $parent_id,
-				'text_en' => $text_en,
+                'parent_id' => $parent_id,
+                'text_en' => $text_en,
                 'text_fr' => $text_fr,
                 'text_de' => $text_de,
                 'text_nl' => $text_nl,
-				'text_es' => $text_es,
-				'text_it' => $text_it,
-				'sort_order' => $sort_order,
+                'text_es' => $text_es,
+                'text_it' => $text_it,
+                'sort_order' => $sort_order,
             ]
         );
     }
-	
-	public function updateRecord($id, $text_en, $text_fr, $text_de, $text_nl, $text_es, $text_it, $sort_order)
+
+    public function updateRecord($id, $text_en, $text_fr, $text_de, $text_nl, $text_es, $text_it, $sort_order)
     {
         $this->update(
             [
@@ -246,56 +246,54 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
                 'text_fr' => $text_fr,
                 'text_de' => $text_de,
                 'text_nl' => $text_nl,
-				'text_es' => $text_es,
-				'text_it' => $text_it,
-				'sort_order' => $sort_order,
+                'text_es' => $text_es,
+                'text_it' => $text_it,
+                'sort_order' => $sort_order,
             ],
             ['id' => $id]
         );
     }
-	
-	public function moveFolder($id, $parent_id)
-	{
-		$this->update(
+
+    public function moveFolder($id, $parent_id)
+    {
+        $this->update(
             [
                 'parent_id' => $parent_id,
             ],
             ['id' => $id]
         );
-	}
-	
-	public function mergeFolder($sid, $did)
-	{
-		$this->update(
-			[
-				'parent_id' => $did,
-			],
-			['parent_id' => $sid]
-		);
-	}
-	
-	public function mergeDelete($sid)
-	{
-		$this->delete(['id' => $sid]);
-	}
-	
-	public function getSiblings($pid)
-	{
-		if(is_null($pid))
-		{
-			$callback = function ($select) {
-				$select->columns(['*']);
-				$select->where('parent_id IS NULL');
-			};
-		}
-		else
-		{
-			$callback = function ($select) use ($pid){
-			$select->columns(['*']);
-			$select->where->equalTo('parent_id', $pid);
-			};
-		}
-		$rows = $this->select($callback)->toArray(); 
-        return($rows);
-	}
+    }
+
+    public function mergeFolder($sid, $did)
+    {
+        $this->update(
+            [
+                'parent_id' => $did,
+            ],
+            ['parent_id' => $sid]
+        );
+    }
+
+    public function mergeDelete($sid)
+    {
+        $this->delete(['id' => $sid]);
+    }
+
+    public function getSiblings($pid)
+    {
+        if (is_null($pid)) {
+            $callback = function ($select) {
+                $select->columns(['*']);
+                $select->where('parent_id IS NULL');
+            };
+        } else {
+            $callback = function ($select) use ($pid) {
+                $select->columns(['*']);
+                $select->where->equalTo('parent_id', $pid);
+            };
+        }
+        $rows = $this->select($callback)->toArray();
+
+        return $rows;
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * PHP version 5
  *
@@ -22,36 +22,39 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
+
 namespace App\Db\Table;
 
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
 class UserTest extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct($adapter)
     {
         parent::__construct('user_test', $adapter);
     }
-    
+
     /**
-     * Update an existing entry in the record table or create a new one
+     * Update an existing entry in the record table or create a new one.
      *
      * @param string $id      Record ID
      * @param string $source  Data source
@@ -69,11 +72,12 @@ class UserTest extends \Zend\Db\TableGateway\TableGateway
             ]
         );
     }
-    
+
     public function findRecordByUser($user)
     {
         $rowset = $this->select(array('user' => $user));
         $row = $rowset->current();
-        return($row);
+
+        return $row;
     }
 }

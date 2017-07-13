@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Action;
 
 use App\Entity\AuthUserInterface;
 use App\Repository\UserAuthenticationInterface;
-use Zend\Session\Container;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Teapot\StatusCode\RFC\RFC7231;
@@ -11,13 +11,11 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
-use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Form;
 use Zend\Db\Adapter\Adapter;
 
 /**
- * Class LoginPageAction
- * @package App\Action
+ * Class LoginPageAction.
  */
 class LoginPageAction
 {
@@ -56,18 +54,19 @@ class LoginPageAction
      */
     private $defaultRedirectUri;
 
-	/**
-	 * @var \Zend\Session\Container
-	 */
-	private $session;
+    /**
+     * @var \Zend\Session\Container
+     */
+    private $session;
 
     /**
      * LoginPageAction constructor.
-     * @param Router\RouterInterface $router
+     *
+     * @param Router\RouterInterface                  $router
      * @param Template\TemplateRendererInterface|null $template
-     * @param UserAuthenticationInterface $userAuthenticationService
-     * @param AuthUserInterface $authenticationEntity
-     * @param string $defaultRedirectUri
+     * @param UserAuthenticationInterface             $userAuthenticationService
+     * @param AuthUserInterface                       $authenticationEntity
+     * @param string                                  $defaultRedirectUri
      */
     public function __construct(
         Router\RouterInterface $router,
@@ -81,14 +80,15 @@ class LoginPageAction
         //$this->authEntity = $authenticationEntity;
         $this->userAuthenticationService = $userAuthenticationService;
         $this->defaultRedirectUri = $defaultRedirectUri;
-		$this->adapter  = $adapter;
-		$this->session = $session;
+        $this->adapter = $adapter;
+        $this->session = $session;
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable|null $next
+     * @param ResponseInterface      $response
+     * @param callable|null          $next
+     *
      * @return HtmlResponse
      */
     public function __invoke(
@@ -98,70 +98,72 @@ class LoginPageAction
     ) {
         if ($request->getMethod() == 'POST') {
             //$user = false; // TODO -- get user
-			$post = [];
-				$post = $request->getParsedBody();
-				if(!empty($post['action'])){
-					if($post['action'] == 'login') {
-						$table = new \App\Db\Table\User($this->adapter);
-						$user = $table->checkUserAuthentication($post['user_name'], $post['user_pwd']);	
-						//$user1 = array_values($user);
-						$user1 = array_reduce($user, 'array_merge', array());
-					}
-				}
-				if(!(is_null($user1['id']))) {
-					$this->session->id = $user1['id'];
-					if(isset($user1['level'])) {
-						if ($user1['level'] == 1) 
-							$this->session->role = "role_a";
-						else
-							$this->session->role = "role_su";
-					}
-					else
-						$this->session->role = "role_u";
-					//echo 'assigned role is ' . $this->session->role;
-					//var_dump('before', $this->session->id, 'after'); die();
-					$table = new \App\Db\Table\Module_Access($this->adapter);
-					$modules = $table->getModules($this->session->role);//die();
-					foreach($modules as $row) :
-						$mods[] = $row['module'];
-					endforeach;
-					$this->session->modules_access = $mods;
-					//var_dump($this->session->modules_access);//die();
-					//echo "<pre>"; print_r($this->session->modules_access); echo "</pre>"; die();
-					return new RedirectResponse(
-						$this->getRedirectUri($request),
-						RFC7231::FOUND
-					);
-					
-				}
-                return new RedirectResponse(
+            $post = [];
+            $post = $request->getParsedBody();
+            if (!empty($post['action'])) {
+                if ($post['action'] == 'login') {
+                    $table = new \App\Db\Table\User($this->adapter);
+                    $user = $table->checkUserAuthentication($post['user_name'], $post['user_pwd']);
+                        //$user1 = array_values($user);
+                        $user1 = array_reduce($user, 'array_merge', array());
+                }
+            }
+            if (!(is_null($user1['id']))) {
+                $this->session->id = $user1['id'];
+                if (isset($user1['level'])) {
+                    if ($user1['level'] == 1) {
+                        $this->session->role = 'role_a';
+                    } else {
+                        $this->session->role = 'role_su';
+                    }
+                } else {
+                    $this->session->role = 'role_u';
+                }
+                    //echo 'assigned role is ' . $this->session->role;
+                    //var_dump('before', $this->session->id, 'after'); die();
+                    $table = new \App\Db\Table\Module_Access($this->adapter);
+                $modules = $table->getModules($this->session->role); //die();
+                    foreach ($modules as $row) :
+                        $mods[] = $row['module'];
+                endforeach;
+                $this->session->modules_access = $mods;
+                    //var_dump($this->session->modules_access);//die();
+                    //echo "<pre>"; print_r($this->session->modules_access); echo "</pre>"; die();
+                    return new RedirectResponse(
+                        $this->getRedirectUri($request),
+                        RFC7231::FOUND
+                    );
+            }
+
+            return new RedirectResponse(
                     $this->getRedirectUri($request),
                     RFC7231::FOUND
-                );			
+                );
         }
-		if(array_key_exists('logout', $request->getQueryParams())) {
-			if($request->getQueryParams()['logout'] == 'y'){
-				/*foreach ($this->session as $key => $val) {
-					unset($this->session->$key);
-				}*/
-				$toUrl = $this->getRedirectUri($request);
-				//$this->session->getManager()->destroy();
-				//session_destroy($this->session);
-				$sessionManager = $this->session->getManager();
-				//$sessionManager = $this->session->get(new \Zend\Session\SessionManager::class);
-				$sessionManager->destroy();
-				return new RedirectResponse(
+        if (array_key_exists('logout', $request->getQueryParams())) {
+            if ($request->getQueryParams()['logout'] == 'y') {
+                /*foreach ($this->session as $key => $val) {
+                    unset($this->session->$key);
+                }*/
+                $toUrl = $this->getRedirectUri($request);
+                //$this->session->getManager()->destroy();
+                //session_destroy($this->session);
+                $sessionManager = $this->session->getManager();
+                //$sessionManager = $this->session->get(new \Zend\Session\SessionManager::class);
+                $sessionManager->destroy();
+
+                return new RedirectResponse(
                     $toUrl,
                     RFC7231::FOUND
                 );
-			}
-		}
+            }
+        }
+
         return $this->renderLoginFormResponse($request);
     }
 
-
     /**
-     * Render an HTML reponse, containing the login form
+     * Render an HTML reponse, containing the login form.
      *
      * Provide the functionality required to let a user authenticate, based on using an HTML form.
      *
@@ -169,11 +171,11 @@ class LoginPageAction
      */
     private function renderLoginFormResponse($request)
     {
-			//var_dump("entered renderResponse-else");
-		return new HtmlResponse($this->template->render(self::PAGE_TEMPLATE, ['request' => $request,
-                    'adapter' => $this->adapter,]));
+        //var_dump("entered renderResponse-else");
+        return new HtmlResponse($this->template->render(self::PAGE_TEMPLATE, ['request' => $request,
+                    'adapter' => $this->adapter, ]));
 
-		/*return new HtmlResponse(
+        /*return new HtmlResponse(
             $this->template->render(
                 'layout/default',
                 [
@@ -181,7 +183,7 @@ class LoginPageAction
                     //'previous' => $previous,
                     //'next' => $next,
                    // 'countp' => $countPages,
-				   'request' => $request,
+                   'request' => $request,
                     'adapter' => $this->adapter,
                 ]
             )
@@ -189,28 +191,29 @@ class LoginPageAction
     }
 
     /**
-     * Get the URL to redirect the user to
+     * Get the URL to redirect the user to.
      *
      * The value returned here is where to send the user to after a successful authentication has
      * taken place. The intent is to avoid the user being redirected to a generic route after
      * login, requiring them to have to specify where they want to navigate to.
      *
      * @param ServerRequestInterface $request
+     *
      * @return string
      */
     private function getRedirectUri(ServerRequestInterface $request)
     {
         if (array_key_exists('logout', $request->getQueryParams())) {
-			$reqParams = $request->getServerParams();
-			//$baseUrl = $uri->getScheme() . '://' . $uri->getHost() . '/' . $uri->getPath();
-			$toUrl = 'http' . '://' . $reqParams["HTTP_HOST"] . '/' . $reqParams["REDIRECT_URL"];
-			//var_dump($toUrl . '?redirect_to=/bibliography_new/public/'); //die();
-		   return $toUrl . '?redirect_to=/bibliography_new/public/';
+            $reqParams = $request->getServerParams();
+            //$baseUrl = $uri->getScheme() . '://' . $uri->getHost() . '/' . $uri->getPath();
+            $toUrl = 'http'.'://'.$reqParams['HTTP_HOST'].'/'.$reqParams['REDIRECT_URL'];
+            //var_dump($toUrl . '?redirect_to=/bibliography_new/public/'); //die();
+           return $toUrl.'?redirect_to=/bibliography_new/public/';
         }
-		if (array_key_exists('redirect_to', $request->getQueryParams())) {			
-           return $request->getQueryParams()['redirect_to'];
-        }		
-		//return $request->getQueryParams()['redirect_to'];
+        if (array_key_exists('redirect_to', $request->getQueryParams())) {
+            return $request->getQueryParams()['redirect_to'];
+        }
+        //return $request->getQueryParams()['redirect_to'];
         return $this->defaultRedirectUri;
     }
 }

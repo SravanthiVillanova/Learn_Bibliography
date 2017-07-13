@@ -18,12 +18,12 @@ class HomePageAction
     private $router;
 
     private $template;
-    
+
     //private $instructions;
 
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null)
     {
-        $this->router   = $router;
+        $this->router = $router;
         $this->template = $template;
     }
 

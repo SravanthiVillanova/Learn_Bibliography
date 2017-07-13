@@ -1,6 +1,6 @@
 <?php
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * PHP version 5
  *
@@ -22,44 +22,45 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
+
 namespace App\Db\Table;
 
 use Zend\Db\Sql\Select;
-use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
 
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
 class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct($adapter)
     {
         parent::__construct('work_workattribute', $adapter);
     }
-    
+
     /**
-     * Update an existing entry in the record table or create a new one
+     * Update an existing entry in the record table or create a new one.
      *
      * @param string $id      Record ID
      * @param string $source  Data source
@@ -67,7 +68,6 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Updated or newly added record
      */
-    
     public function deleteWorkAttributeFromWork($wkat_id)
     {
         $callback = function ($select) use ($wkat_id) {
@@ -75,23 +75,24 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         };
         $rows = $this->select($callback)->toArray();
         $cnt = count($rows);
-        for ($i=0;$i<$cnt;$i++) {
+        for ($i = 0; $i < $cnt; ++$i) {
             $this->delete($callback);
         }
     }
-    
+
     public function countRecordsByAttributeOption($wkat_id, $id)
     {
         $select = $this->sql->select()->where(['workattribute_id' => $wkat_id, 'value' => $id]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
+
         return new Paginator($paginatorAdapter);
     }
-    
+
     public function deleteRecordByValue($wkat_id, $val)
     {
-        $this->delete(['workattribute_id' => $wkat_id,'value' => $val]);
+        $this->delete(['workattribute_id' => $wkat_id, 'value' => $val]);
     }
-    
+
     public function updateWork_WorkAttributeValue($wkat_id, $option_first_id, $val)
     {
         $callback = function ($select) use ($wkat_id, $val) {
@@ -99,7 +100,7 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
             $select->where->equalTo('value', $val);
         };
         $rows = $this->select($callback)->toArray();
-        for ($i=0;$i<count($rows);$i++) {
+        for ($i = 0; $i < count($rows); ++$i) {
             $this->update(
                 [
                     'value' => $option_first_id,
@@ -108,59 +109,57 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
             );
         }
     }
-	
-	public function insertRecords($wk_id, $wkat_id, $wkaopt_val)
-	{
-		for($i=0;$i<count($wkat_id);$i++)
-		{
-			$wkatid = $wkat_id[$i];
-			$wkaoptval = $wkaopt_val[$i];
-			$this->insert(
-				[
-				'work_id' => $wk_id,
-				'workattribute_id' => $wkatid,
-				'value' => $wkaoptval,
-				]
-			);
-		}
-	}
-	
-	public function deleteRecordByWorkId($id)
+
+    public function insertRecords($wk_id, $wkat_id, $wkaopt_val)
+    {
+        for ($i = 0; $i < count($wkat_id); ++$i) {
+            $wkatid = $wkat_id[$i];
+            $wkaoptval = $wkaopt_val[$i];
+            $this->insert(
+                [
+                'work_id' => $wk_id,
+                'workattribute_id' => $wkatid,
+                'value' => $wkaoptval,
+                ]
+            );
+        }
+    }
+
+    public function deleteRecordByWorkId($id)
     {
         $this->delete(['work_id' => $id]);
     }
-	
-	public function findRecordByWorkId($wk_id)
-	{
-		$callback = function ($select) use ($wk_id){
-			$select->columns(['*']);
-			$select->where->equalTo('work_id', $wk_id);
-		};
-		$rows = $this->select($callback)->toArray(); 
-		return $rows;
-	}
-	
-	public function findWorkAttributeTypesByWorkId($wk_id)
-	{
-		$select = $this->sql->select();
-        $select->join('workattribute', 'work_workattribute.workattribute_id = workattribute.id', array('field','type'), 'inner');
+
+    public function findRecordByWorkId($wk_id)
+    {
+        $callback = function ($select) use ($wk_id) {
+            $select->columns(['*']);
+            $select->where->equalTo('work_id', $wk_id);
+        };
+        $rows = $this->select($callback)->toArray();
+
+        return $rows;
+    }
+
+    public function findWorkAttributeTypesByWorkId($wk_id)
+    {
+        $select = $this->sql->select();
+        $select->join('workattribute', 'work_workattribute.workattribute_id = workattribute.id', array('field', 'type'), 'inner');
         $select->where(['work_id' => $wk_id]);
 
         $paginatorAdapter = new Paginator(new DbSelect($select, $this->adapter));
         $cnt = $paginatorAdapter->getTotalItemCount();
-		$paginatorAdapter->setDefaultItemCountPerPage($cnt);
+        $paginatorAdapter->setDefaultItemCountPerPage($cnt);
 
-		if($cnt != 0)
-		{
-			foreach ($paginatorAdapter as $row) :
-				$fieldRows[] = $row;
-			endforeach;
-		}
-		else
-		{
-			$fieldRows = [];
-		}
-		$output = json_encode($fieldRows);
+        if ($cnt != 0) {
+            foreach ($paginatorAdapter as $row) :
+                $fieldRows[] = $row;
+            endforeach;
+        } else {
+            $fieldRows = [];
+        }
+        $output = json_encode($fieldRows);
+
         return $output;
-	}
+    }
 }

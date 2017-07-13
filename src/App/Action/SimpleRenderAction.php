@@ -8,7 +8,6 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Paginator;
 
 class SimpleRenderAction
 {
@@ -20,9 +19,9 @@ class SimpleRenderAction
     public function __construct($templateName, Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
         $this->templateName = $templateName;
-        $this->router   = $router;
+        $this->router = $router;
         $this->template = $template;
-        $this->adapter  = $adapter;
+        $this->adapter = $adapter;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)

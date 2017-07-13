@@ -15,27 +15,26 @@ class AttributesWorkTypeAction
     private $router;
 
     private $template;
-    
+
     private $adapter;
-    
-    
+
     //private $dbh;
     //private $qstmt;
 
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
-        $this->router   = $router;
+        $this->router = $router;
         $this->template = $template;
-        $this->adapter  = $adapter;
+        $this->adapter = $adapter;
     }
-    
+
     protected function getPaginator($post)
     {
         //add, edit, delete actions on attribute
         if (!empty($post['action'])) {
             //add new attribute
-            if ($post['action'] == "new") {
-                if ($post['submitt'] == "Save") {
+            if ($post['action'] == 'new') {
+                if ($post['submitt'] == 'Save') {
                     /*echo '<pre>';
                     print_r($post);
                     echo '</pre>';*/
@@ -44,8 +43,8 @@ class AttributesWorkTypeAction
                 }
             }
             //edit attribute
-            if ($post['action'] == "edit") {
-                if ($post['submitt'] == "Save") {
+            if ($post['action'] == 'edit') {
+                if ($post['submitt'] == 'Save') {
                     if (!is_null($post['id'])) {
                         $table = new \App\Db\Table\WorkAttribute($this->adapter);
                         $table->updateRecord($post['id'], $post['edit_attribute']);
@@ -53,21 +52,21 @@ class AttributesWorkTypeAction
                 }
             }
             //delete attribute
-            if ($post['action'] == "delete") {
-                if ($post['submitt'] == "Delete") {
+            if ($post['action'] == 'delete') {
+                if ($post['submitt'] == 'Delete') {
                     if (!is_null($post['id'])) {
                         //no
                         $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
                         $table->deleteWorkAttributeFromWork($post['id']);
-                            
+
                         //yes
                         $table = new \App\Db\Table\WorkType_WorkAttribute($this->adapter);
                         $table->deleteAttributeFromAllWorkTypes($post['id']);
-                            
+
                         //yes
                         $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
                         $table->deleteWorkAttributeOptions($post['id']);
-                            
+
                         //no
                         $table = new \App\Db\Table\WorkAttribute($this->adapter);
                         $table->deleteRecord($post['id']);
@@ -75,13 +74,15 @@ class AttributesWorkTypeAction
                 }
             }
             //Cancel add\edit\delete
-            if ($post['submitt'] == "Cancel") {
+            if ($post['submitt'] == 'Cancel') {
                 $table = new \App\Db\Table\WorkAttribute($this->adapter);
+
                 return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
             }
         }
         // default: blank for listing in manage
         $table = new \App\Db\Table\WorkAttribute($this->adapter);
+
         return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
     }
 
@@ -89,14 +90,14 @@ class AttributesWorkTypeAction
     {
         $query = $request->getqueryParams();
         $post = [];
-        if ($request->getMethod() == "POST") {
+        if ($request->getMethod() == 'POST') {
             $post = $request->getParsedBody();
         }
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(7);
         $allItems = $paginator->getTotalItemCount();
         $countPages = $paginator->count();
-        
+
         $currentPage = isset($query['page']) ? $query['page'] : 1;
         if ($currentPage < 1) {
             $currentPage = 1;
@@ -113,6 +114,7 @@ class AttributesWorkTypeAction
             $next = $currentPage + 1;
             $previous = $currentPage - 1;
         }
+
         return new HtmlResponse(
             $this->template->render(
                 'app::worktype::attributes_worktype',

@@ -1,6 +1,6 @@
 <?php
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * PHP version 5
  *
@@ -22,44 +22,45 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
+
 namespace App\Db\Table;
 
 use Zend\Db\Sql\Select;
-use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
 
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
 class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct($adapter)
     {
         parent::__construct('workattribute_option', $adapter);
     }
-    
+
     /**
-     * Update an existing entry in the record table or create a new one
+     * Update an existing entry in the record table or create a new one.
      *
      * @param string $id      Record ID
      * @param string $source  Data source
@@ -67,7 +68,6 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Updated or newly added record
      */
-    
     public function deleteWorkAttributeOptions($wkat_id)
     {
         $callback = function ($select) use ($wkat_id) {
@@ -75,11 +75,11 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         };
         $rows = $this->select($callback)->toArray();
         $cnt = count($rows);
-        for ($i=0;$i<$cnt;$i++) {
+        for ($i = 0; $i < $cnt; ++$i) {
             $this->delete($callback);
         }
     }
-    
+
     public function displayAttributeOptions($wkat_id)
     {
         $select = $this->sql->select();
@@ -88,7 +88,7 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
 
         return new Paginator($paginatorAdapter);
     }
-    
+
     public function addOption($wkat_id, $title, $val)
     {
         $this->insert(
@@ -99,14 +99,15 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
             ]
         );
     }
-    
+
     public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));
         $row = $rowset->current();
-        return($row);
+
+        return $row;
     }
-    
+
     public function updateOption($id, $title, $val)
     {
         $this->update(
@@ -117,28 +118,29 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
             ['id' => $id]
         );
     }
-    
+
     public function deleteOption($wkat_id, $id)
     {
         $this->delete(
             [
                 'workattribute_id' => $wkat_id,
-                'id' => $id
+                'id' => $id,
             ]
         );
     }
-    
+
     public function getDuplicateOptions($wkat_id)
     {
         $select = $this->sql->select();
         $select->where->equalTo('workattribute_id', $wkat_id);
         $select->group('title');
         $select->having('count(title) > 1');
-        
+
         $paginatorAdapter = new DbSelect($select, $this->adapter);
+
         return new Paginator($paginatorAdapter);
     }
-    
+
     public function getDuplicateOptionRecords($wkat_id, $option_dup_title, $option_dup_id)
     {
         $callback = function ($select) use ($wkat_id, $option_dup_title, $option_dup_id) {
@@ -151,42 +153,45 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         //echo "<pre>"; print_r($rows); echo "</pre>";
         return $rows;
     }
-	
-	public function getAttributeOptions($opt_title,$wkat_id)
-	{
-		$callback = function ($select) use ($opt_title,$wkat_id) {
-            $select->where->like('title', $opt_title . '%');
+
+    public function getAttributeOptions($opt_title, $wkat_id)
+    {
+        $callback = function ($select) use ($opt_title, $wkat_id) {
+            $select->where->like('title', $opt_title.'%');
             $select->where->equalTo('workattribute_id', $wkat_id);
         };
         $rows = $this->select($callback)->toArray();
+
         return $rows;
-	}
-	
-	public function getOptionIds($wkat_id,$opt_title)
-	{
-		$rows = [];
-		for($i=0;$i<count($wkat_id);$i++)
-		{
-			$wkatid = $wkat_id[$i];
-			$opttitle = $opt_title[$i];
-			$callback = function ($select) use ($wkatid,$opttitle) {
-				$select->where->equalTo('workattribute_id', $wkatid);
-				$select->where->equalTo('title', $opttitle);
-			};	
-			
-			$rows = $rows + $this->select($callback)->toArray() + $rows;
-			echo "count is " . $i;
-			echo "<pre>";print_r($rows);echo "</pre>";
-		}
-		//echo "<pre>";print_r($rows);echo "</pre>";
-		//$rows = $this->select($callback)->toArray();
+    }
+
+    public function getOptionIds($wkat_id, $opt_title)
+    {
+        $rows = [];
+        for ($i = 0; $i < count($wkat_id); ++$i) {
+            $wkatid = $wkat_id[$i];
+            $opttitle = $opt_title[$i];
+            $callback = function ($select) use ($wkatid, $opttitle) {
+                $select->where->equalTo('workattribute_id', $wkatid);
+                $select->where->equalTo('title', $opttitle);
+            };
+
+            $rows = $rows + $this->select($callback)->toArray() + $rows;
+            echo 'count is '.$i;
+            echo '<pre>';
+            print_r($rows);
+            echo '</pre>';
+        }
+        //echo "<pre>";print_r($rows);echo "</pre>";
+        //$rows = $this->select($callback)->toArray();
         //return $rows;
-	}
-	
-	public function getOptionTitle($id,$wkat_id)
-	{
-		$rowset = $this->select(array('id' => $id, 'workattribute_id' => $wkat_id));
+    }
+
+    public function getOptionTitle($id, $wkat_id)
+    {
+        $rowset = $this->select(array('id' => $id, 'workattribute_id' => $wkat_id));
         $row = $rowset->current();
-        return($row);
-	}
+
+        return $row;
+    }
 }

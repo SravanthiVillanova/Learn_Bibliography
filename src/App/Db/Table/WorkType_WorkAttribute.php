@@ -1,6 +1,6 @@
 <?php
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * PHP version 5
  *
@@ -22,16 +22,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
+
 namespace App\Db\Table;
 
 use Zend\Db\Sql\Select;
-use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
@@ -39,27 +40,28 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
 class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct($adapter)
     {
         parent::__construct('worktype_workattribute', $adapter);
     }
-    
+
     /**
-     * Update an existing entry in the record table or create a new one
+     * Update an existing entry in the record table or create a new one.
      *
      * @param string $id      Record ID
      * @param string $source  Data source
@@ -67,7 +69,6 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Updated or newly added record
      */
-    
     public function displayRanks($id)
     {
         $select = $this->sql->select();
@@ -80,7 +81,7 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 
         return $paginatorAdapter;
     }
-    
+
     public function getWorkAttributeQuery($id)
     {
         //echo $id;
@@ -88,7 +89,7 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         $subselect->join('workattribute', 'worktype_workattribute.workattribute_id = workattribute.id', array('field'), 'inner');
         $subselect->where(['worktype_id' => $id]);
         $subselect->order('rank');
-        
+
         $paginatorAdapter = new Paginator(new DbSelect($subselect, $this->adapter));
         $cnt = $paginatorAdapter->getTotalItemCount();
         //echo "selected field count is $cnt <br />";
@@ -99,59 +100,59 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         endforeach;
         //print_r($fieldRows);
         return $fieldRows;
-    }   
-    
+    }
+
     public function addAttributeToWorkType($wkt_id, $wkat_ids)
     {
-		$cnt = count($wkat_ids);
-        for ($i=0;$i<$cnt;$i++) {
+        $cnt = count($wkat_ids);
+        for ($i = 0; $i < $cnt; ++$i) {
             $this->insert(
             [
                 'worktype_id' => $wkt_id,
                 'workattribute_id' => $wkat_ids[$i],
-                'rank' => new Expression('999' . $i),
+                'rank' => new Expression('999'.$i),
             ]
             );
         }
     }
-    
+
     public function deleteAttributeFromWorkType($wkt_id, $wkat_ids)
     {
-		$callback = function ($select) use ($wkt_id, $wkat_ids) {
+        $callback = function ($select) use ($wkt_id, $wkat_ids) {
             $select->where->in('workattribute_id', $wkat_ids);
             $select->where->equalTo('worktype_id', $wkt_id);
             //$select->order('rank');
         };
         $rows = $this->select($callback)->toArray();
         $cnt = count($rows);
-        for ($i=0;$i<$cnt;$i++) {
+        for ($i = 0; $i < $cnt; ++$i) {
             $this->delete($callback);
         }
     }
-    
-    public function updateWorkTypeAttributeRank($wkt_id,$wkatids)
+
+    public function updateWorkTypeAttributeRank($wkt_id, $wkatids)
     {
-        $wkat_ids = explode(",",$wkatids);
-	    foreach($wkat_ids as $id) :
-			$sort_wkatids[] = (int)preg_replace("/^\w{2,3}_/", "", $id);
-		endforeach;
-		$callback = function ($select) use ($wkt_id) {
+        $wkat_ids = explode(',', $wkatids);
+        foreach ($wkat_ids as $id) :
+            $sort_wkatids[] = (int) preg_replace("/^\w{2,3}_/", '', $id);
+        endforeach;
+        $callback = function ($select) use ($wkt_id) {
             $select->where->equalTo('worktype_id', $wkt_id);
-			$select->order('rank');
+            $select->order('rank');
         };
         $rows = $this->select($callback)->toArray();
         $cnt = count($rows);
-		//to avoid primary key conflicts, set records rank wise first
-		for($i=0;$i<$cnt;$i++) {
-			$this->update(
-			[
-				'rank' => new Expression('1999' . $i),
-			],
-			['workattribute_id' => $sort_wkatids[$i]]
-			);
-		}
-		//update ranks
-        for ($i=0;$i<$cnt;$i++) {
+        //to avoid primary key conflicts, set records rank wise first
+        for ($i = 0; $i < $cnt; ++$i) {
+            $this->update(
+            [
+                'rank' => new Expression('1999'.$i),
+            ],
+            ['workattribute_id' => $sort_wkatids[$i]]
+            );
+        }
+        //update ranks
+        for ($i = 0; $i < $cnt; ++$i) {
             $this->update(
             [
                 'rank' => $i,
@@ -160,7 +161,7 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
             );
         }
     }
-    
+
     public function countWorkTypesByWorkAttributes($wkat_id)
     {
         $callback = function ($select) use ($wkat_id) {
@@ -169,7 +170,7 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
                     'count_worktypes' => new Expression(
                     'COUNT(?)', ['worktype_id'],
                     [Expression::TYPE_IDENTIFIER]
-                    )
+                    ),
                 ]
                 );
             $select->where->equalTo('workattribute_id', $wkat_id);
@@ -177,7 +178,7 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 
         return $this->select($callback)->toArray();
     }
-    
+
     public function deleteRecordByWorkType($wkt_id)
     {
         $callback = function ($select) use ($wkt_id) {
@@ -185,11 +186,11 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         };
         $rows = $this->select($callback)->toArray();
         $cnt = count($rows);
-        for ($i=0;$i<$cnt;$i++) {
+        for ($i = 0; $i < $cnt; ++$i) {
             $this->delete($callback);
         }
     }
-    
+
     public function deleteAttributeFromAllWorkTypes($wkat_id)
     {
         $callback = function ($select) use ($wkat_id) {
@@ -197,24 +198,24 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         };
         $rows = $this->select($callback)->toArray();
         $cnt = count($rows);
-        for ($i=0;$i<$cnt;$i++) {
+        for ($i = 0; $i < $cnt; ++$i) {
             $this->delete($callback);
         }
     }
-	
-	public function findRecordById($wkt_id)
+
+    public function findRecordById($wkt_id)
     {
         /*$rowset = $this->select(array('worktype_id' => $wkt_id));
         $row = $rowset->current();
-		var_dump($row);
+        var_dump($row);
         //return($row);*/
-		$callback = function ($select) use ($wkt_id) {
-			$select->columns(['*']);
+        $callback = function ($select) use ($wkt_id) {
+            $select->columns(['*']);
             $select->where->equalTo('worktype_id', $wkt_id);
         };
         $rows = $this->select($callback)->toArray();
-		//var_dump(count($rows));
-		return $rows;
-		//var_dump($rows);
+        //var_dump(count($rows));
+        return $rows;
+        //var_dump($rows);
     }
 }

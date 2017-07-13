@@ -1,6 +1,6 @@
 <?php
 /**
- * Row Definition for record
+ * Row Definition for record.
  *
  * PHP version 5
  *
@@ -20,26 +20,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
- * @package  Db_Row
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
+
 namespace App\Db\Row;
 
 /**
- * Row Definition for user
+ * Row Definition for user.
  *
  * @category VuFind
- * @package  Db_Row
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
 class TranslateLanguage extends \Zend\Db\RowGateway\RowGateway
 {
     /**
-     * Constructor
+     * Constructor.
      *
      * @param \Zend\Db\Adapter\Adapter $adapter Database adapter
      */

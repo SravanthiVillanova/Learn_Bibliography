@@ -147,13 +147,16 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-	<script src="<?=$this->url('home')?>vendor/js/jquery-1.11.0.min.js"></script>
-    <script src="<?=$this->url('home')?>vendor/js/bootstrap-3.3.7.min.js"></script>
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="<?=$this->url('home')?>js/menu.js"></script>
+	
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
  <div class="app-content" width="100%">
  <div style="width: 80%">
             <?php echo $this->content ?>
- </div>  
+ </div> 
+
  <?php
 			
 			// Page Instructions Content
@@ -187,4 +190,5 @@
 </div>
 
 </body>
-</html>
+
+ <script src="<?=$this->url('home')?>vendor/js/bootstrap-3.3.7.min.js"></script>

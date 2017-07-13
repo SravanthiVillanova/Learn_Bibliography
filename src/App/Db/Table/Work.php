@@ -1,6 +1,6 @@
 <?php
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * PHP version 5
  *
@@ -22,16 +22,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
+
 namespace App\Db\Table;
 
 use Zend\Db\Sql\Select;
-use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
@@ -39,27 +40,28 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
 class Work extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct($adapter)
     {
         parent::__construct('work', $adapter);
     }
-    
+
     /**
-     * Update an existing entry in the record table or create a new one
+     * Update an existing entry in the record table or create a new one.
      *
      * @param string $id      Record ID
      * @param string $source  Data source
@@ -67,14 +69,14 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Updated or newly added record
      */
-    
     public function countRecordsByWorkType($id)
     {
         $select = $this->sql->select()->where(['type_id' => $id]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
+
         return new Paginator($paginatorAdapter);
     }
-    
+
     public function updateWorkTypeId($id)
     {
         $this->update(
@@ -84,8 +86,8 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             ['type_id' => $id]
         );
     }
-	
-	public function findInitialLetter()
+
+    public function findInitialLetter()
     {
         $callback = function ($select) {
             $select->columns(
@@ -94,16 +96,16 @@ class Work extends \Zend\Db\TableGateway\TableGateway
                     'DISTINCT(substring(?, 1, 1))',
                     ['title'],
                     [Expression::TYPE_IDENTIFIER]
-                    )
+                    ),
                 ]
             );
             $select->order('title');
         };
-        
+
         return $this->select($callback)->toArray();
     }
-	
-	public function findInitialLetterReview()
+
+    public function findInitialLetterReview()
     {
         $callback = function ($select) {
             $select->columns(
@@ -112,148 +114,156 @@ class Work extends \Zend\Db\TableGateway\TableGateway
                             'DISTINCT(substring(?, 1, 1))',
                             ['title'],
                             [Expression::TYPE_IDENTIFIER]
-                        )
+                        ),
                     ]
                 );
-			$select->where->equalTo('status', 0);
+            $select->where->equalTo('status', 0);
             $select->order('title');
         };
-        
+
         return $this->select($callback)->toArray();
     }
-	
-	public function findInitialLetterClassify()
+
+    public function findInitialLetterClassify()
     {
-		$wid = new Work_Folder($this->adapter);
+        $wid = new Work_Folder($this->adapter);
         $subselect = $wid->getWorkFolder();
-		
-        $callback = function ($select) use($subselect) {
+
+        $callback = function ($select) use ($subselect) {
             $select->columns(
                     [
                         'letter' => new Expression(
                             'DISTINCT(substring(?, 1, 1))',
                             ['title'],
                             [Expression::TYPE_IDENTIFIER]
-                        )
+                        ),
                     ]
                 );
-			$select->where->notIn('id', $subselect);
+            $select->where->notIn('id', $subselect);
             $select->order('title');
         };
-        
+
         return $this->select($callback)->toArray();
     }
-	
-	public function displayRecordsByName($letter)
+
+    public function displayRecordsByName($letter)
     {
         $select = $this->sql->select();
         $select->where->like('title', $letter.'%');
         $paginatorAdapter = new DbSelect($select, $this->adapter);
+
         return new Paginator($paginatorAdapter);
     }
-	
-	public function displayReviewRecordsByLetter($letter)
+
+    public function displayReviewRecordsByLetter($letter)
     {
         $select = $this->sql->select();
         $select->where->like('title', $letter.'%');
-		$select->where->equalTo('status', 0);
+        $select->where->equalTo('status', 0);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
+
         return new Paginator($paginatorAdapter);
     }
-	
-	public function displayClassifyRecordsByLetter($letter)
+
+    public function displayClassifyRecordsByLetter($letter)
     {
         $wid = new Work_Folder($this->adapter);
         $subselect = $wid->getWorkFolder();
-		
-		$select = $this->sql->select();
-		$select->where->notIn('id', $subselect);
+
+        $select = $this->sql->select();
+        $select->where->notIn('id', $subselect);
         $select->where->like('title', $letter.'%');
 
         $paginatorAdapter = new DbSelect($select, $this->adapter);
+
         return new Paginator($paginatorAdapter);
     }
-	
-	public function fetchReviewRecords()
+
+    public function fetchReviewRecords()
     {
         $select = $this->sql->select()->where(['status' => 0]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
+
         return new Paginator($paginatorAdapter);
     }
-	
-	public function fetchClassifyRecords()
-	{
+
+    public function fetchClassifyRecords()
+    {
         $wid = new Work_Folder($this->adapter);
         $subselect = $wid->getWorkFolder();
-		
-		$select = $this->sql->select();
-		$select->where->notIn('id', $subselect);
 
-		$paginatorAdapter = new DbSelect($select, $this->adapter);
-        return new Paginator($paginatorAdapter);
-	}
-	
-	public function findRecords($title)
-    {
-		$select = $this->sql->select();
-		$select->where->expression('LOWER(title) LIKE ?', strtolower($title).'%');
-        //->where(['name' => $name]);
+        $select = $this->sql->select();
+        $select->where->notIn('id', $subselect);
+
         $paginatorAdapter = new DbSelect($select, $this->adapter);
+
         return new Paginator($paginatorAdapter);
     }
-	
-	public function findRecordById($id)
+
+    public function findRecords($title)
+    {
+        $select = $this->sql->select();
+        $select->where->expression('LOWER(title) LIKE ?', strtolower($title).'%');
+        //->where(['name' => $name]);
+        $paginatorAdapter = new DbSelect($select, $this->adapter);
+
+        return new Paginator($paginatorAdapter);
+    }
+
+    public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));
         $row = $rowset->current();
-        return($row);
+
+        return $row;
     }
-	
-	public function insertRecords($type_id,$title,$subtitle,$paralleltitle,$description,$create_date,$create_user_id,$status,$pub_yrFrom)
-	{
-		$this->insert(
+
+    public function insertRecords($type_id, $title, $subtitle, $paralleltitle, $description, $create_date, $create_user_id, $status, $pub_yrFrom)
+    {
+        $this->insert(
             [
-			'work_id' => NULL,
+            'work_id' => null,
             'type_id' => $type_id,
-			'title' => $title,
-			'subtitle' => $subtitle,
-			'paralleltitle' => $paralleltitle,
-			'description' => $description,
-			'create_date' => $create_date,
-			'create_user_id' => $create_user_id,
-			'modify_date' => '0000-00-00 00:00:00',
-			'modify_user_id' => NULL,
-			'status' => $status,
-			'publish_year' => $pub_yrFrom,
-			'publish_month' => NULL,
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'paralleltitle' => $paralleltitle,
+            'description' => $description,
+            'create_date' => $create_date,
+            'create_user_id' => $create_user_id,
+            'modify_date' => '0000-00-00 00:00:00',
+            'modify_user_id' => null,
+            'status' => $status,
+            'publish_year' => $pub_yrFrom,
+            'publish_month' => null,
             ]
         );
-		$id = $this->getLastInsertValue();
-		return $id;
-	}
-	
-	public function deleteRecordByWorkId($id)
+        $id = $this->getLastInsertValue();
+
+        return $id;
+    }
+
+    public function deleteRecordByWorkId($id)
     {
         $this->delete(['id' => $id]);
     }
-	
-	public function updateRecords($id,$type_id,$title,$subtitle,$paralleltitle,$desc,$modify_date,$modify_user,$status,$pub_yrFrom)
-	{
-		$this->update(
+
+    public function updateRecords($id, $type_id, $title, $subtitle, $paralleltitle, $desc, $modify_date, $modify_user, $status, $pub_yrFrom)
+    {
+        $this->update(
             [
-			'work_id' => NULL,
+            'work_id' => null,
             'type_id' => $type_id,
-			'title' => $title,
-			'subtitle' => $subtitle,
-			'paralleltitle' => $paralleltitle,
-			'description' => $desc,
-			'modify_date' => $modify_date,
-			'modify_user_id' => $modify_user,
-			'status' => $status,
-			'publish_year' => $pub_yrFrom,
-			'publish_month' => NULL,
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'paralleltitle' => $paralleltitle,
+            'description' => $desc,
+            'modify_date' => $modify_date,
+            'modify_user_id' => $modify_user,
+            'status' => $status,
+            'publish_year' => $pub_yrFrom,
+            'publish_month' => null,
             ],
             ['id' => $id]
         );
-	}
+    }
 }

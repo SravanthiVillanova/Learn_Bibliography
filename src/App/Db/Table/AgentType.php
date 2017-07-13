@@ -1,6 +1,6 @@
 <?php
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * PHP version 5
  *
@@ -22,43 +22,45 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
+
 namespace App\Db\Table;
 
 use Zend\Db\Sql\Select;
-use Zend\Db\ResultSet\ResultSet;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
+
 /**
- * Table Definition for record
+ * Table Definition for record.
  *
  * @category VuFind
- * @package  Db_Table
+ *
  * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
  * @author   Ere Maijala <ere.maijala@helsinki.fi>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
  * @link     https://vufind.org Main Site
  */
 class AgentType extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct($adapter)
     {
         parent::__construct('agenttype', $adapter);
     }
-    
+
     /**
-     * Update an existing entry in the record table or create a new one
+     * Update an existing entry in the record table or create a new one.
      *
      * @param string $id      Record ID
      * @param string $source  Data source
@@ -74,7 +76,7 @@ class AgentType extends \Zend\Db\TableGateway\TableGateway
             ]
         );
     }
-    
+
     public function updateRecord($id, $type)
     {
         $this->update(
@@ -84,24 +86,26 @@ class AgentType extends \Zend\Db\TableGateway\TableGateway
             ['id' => $id]
         );
     }
-    
+
     public function deleteRecord($id)
     {
         $this->delete(['id' => $id]);
     }
-    
+
     public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));
         $row = $rowset->current();
-        return($row);
+
+        return $row;
     }
-	
-	public function fetchAgentTypes()
+
+    public function fetchAgentTypes()
     {
         $select = $this->sql->select();
         $paginatorAdapter = new DbSelect($select, $this->adapter);
-		$rows = new Paginator($paginatorAdapter);
+        $rows = new Paginator($paginatorAdapter);
+
         return $rows;
     }
 }
