@@ -107,6 +107,8 @@ class ManageUsersAction
             $previous = $currentPage - 1;
         }
 
+        $searchParams = [];
+
         return new HtmlResponse(
             $this->template->render(
                 'app::users::manage_users',
@@ -115,6 +117,7 @@ class ManageUsersAction
                     'previous' => $previous,
                     'next' => $next,
                     'countp' => $countPages,
+                    'searchParams' => implode('&', $searchParams),
                 ]
             )
         );

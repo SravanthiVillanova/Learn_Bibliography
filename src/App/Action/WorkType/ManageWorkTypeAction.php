@@ -133,8 +133,12 @@ class ManageWorkTypeAction
             $next = $currentPage + 1;
             $previous = $currentPage - 1;
         }
-        if ($post['action'] == 'sortable' && $post['submit_add'] == 'Save') {
-            return new HtmlResponse(
+
+        $searchParams = [];
+
+        if (isset($post['action'])) {
+            if ($post['action'] == 'sortable' && $post['submit_add'] == 'Save') {
+                return new HtmlResponse(
             $this->template->render(
                 'app::worktype::manage_worktypeattribute',
                 [
@@ -144,9 +148,11 @@ class ManageWorkTypeAction
                     'countp' => $countPages,
                     'request' => $request,
                     'adapter' => $this->adapter,
+                     'searchParams' => implode('&', $searchParams),
                 ]
             )
         );
+            }
         } else {
             return new HtmlResponse(
             $this->template->render(
@@ -156,6 +162,7 @@ class ManageWorkTypeAction
                     'previous' => $previous,
                     'next' => $next,
                     'countp' => $countPages,
+                    'searchParams' => implode('&', $searchParams),
                 ]
             )
         );

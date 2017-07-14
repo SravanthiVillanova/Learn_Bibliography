@@ -35,16 +35,18 @@ class ManageWorkAction
         // search by letter
         if (!empty($params['letter'])) {
             //review records
-            if ($params['action'] == 'review') {
-                $table = new \App\Db\Table\Work($this->adapter);
+            if (isset($params['action'])) {
+                if ($params['action'] == 'review') {
+                    $table = new \App\Db\Table\Work($this->adapter);
 
-                return $table->displayReviewRecordsByLetter($params['letter']);
-            }
+                    return $table->displayReviewRecordsByLetter($params['letter']);
+                }
             //classify records
             elseif ($params['action'] == 'classify') {
                 $table = new \App\Db\Table\Work($this->adapter);
 
                 return $table->displayClassifyRecordsByLetter($params['letter']);
+            }
             } else {
                 $table = new \App\Db\Table\Work($this->adapter);
 
@@ -228,10 +230,12 @@ class ManageWorkAction
             return $rows;
         }*/
         //Cancel edit\delete
-        if ($post['submit_cancel'] == 'Cancel') {
-            $table = new \App\Db\Table\Work($this->adapter);
+        if (isset($post['submit_cancel'])) {
+            if ($post['submit_cancel'] == 'Cancel') {
+                $table = new \App\Db\Table\Work($this->adapter);
 
-            return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+                return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+            }
         }
         // default: blank/missing search
         $table = new \App\Db\Table\Work($this->adapter);
@@ -247,6 +251,7 @@ class ManageWorkAction
         }
 
         if (isset($post['get_parent'])) {
+            echo 'get parent';
             $table = new \App\Db\Table\Folder($this->adapter);
             $rows = $table->getChild($post['get_parent']);
 
@@ -297,7 +302,9 @@ class ManageWorkAction
             $next = $currentPage + 1;
             $previous = $currentPage - 1;
         }
-
+        //echo "crnt page is $currentPage <br />";
+        //echo "prev is $previous <br />";
+        //echo "next is $next <br />";
         $searchParams = [];
         if (!empty($query['find_worktitle'])) {
             $searchParams[] = 'find_worktitle='.urlencode($query['find_worktitle']);
@@ -305,23 +312,26 @@ class ManageWorkAction
         if (!empty($query['letter']) && $query['action'] == 'alphasearch') {
             $searchParams[] = 'letter='.urlencode($query['letter']);
         }
-        if ($query['action'] == 'review') {
-            if (!empty($query['letter'])) {
-                $searchParams[] = 'action='.urlencode($query['action']).'&letter='.urlencode($query['letter']);
-            } else {
-                $searchParams[] = 'action='.urlencode($query['action']);
+        if (isset($query['action'])) {
+            if ($query['action'] == 'review') {
+                if (!empty($query['letter'])) {
+                    $searchParams[] = 'action='.urlencode($query['action']).'&letter='.urlencode($query['letter']);
+                } else {
+                    $searchParams[] = 'action='.urlencode($query['action']);
+                }
             }
-        }
-        if ($query['action'] == 'classify') {
-            if (!empty($query['letter'])) {
-                $searchParams[] = 'action='.urlencode($query['action']).'&letter='.urlencode($query['letter']);
-            } else {
-                $searchParams[] = 'action='.urlencode($query['action']);
+            if ($query['action'] == 'classify') {
+                if (!empty($query['letter'])) {
+                    $searchParams[] = 'action='.urlencode($query['action']).'&letter='.urlencode($query['letter']);
+                } else {
+                    $searchParams[] = 'action='.urlencode($query['action']);
+                }
             }
         }
 
-        if ($query['action'] == 'review') {
-            //echo "entered if";
+        if (isset($query['action'])) {
+            if ($query['action'] == 'review') {
+                //echo "entered if";
             return new HtmlResponse(
             $this->template->render(
                 'app::work::review_work',
@@ -337,8 +347,9 @@ class ManageWorkAction
                 ]
             )
             );
-        } elseif ($query['action'] == 'classify') {
-            //echo "entered else if";
+            }
+            if ($query['action'] == 'classify') {
+                //echo "entered else if";
             return new HtmlResponse(
             $this->template->render(
                 'app::work::classify_work',
@@ -354,6 +365,7 @@ class ManageWorkAction
                 ]
             )
             );
+            }
         } else {
             //echo "entered else";
             return new HtmlResponse(

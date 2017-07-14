@@ -82,7 +82,9 @@
 		<?php endforeach; ?>
 		</tbody>
 		</table>
-		<?php if($this->countp > 1) { ?>
+		<?php if($this->countp > 1) { 
+		//echo "prev is $this->previous <br />";
+		//echo "next is $this->next <br />";?>
         <form method="get" action="page">
             <?=$this->paginationControl($this->rows,
                 'Sliding',

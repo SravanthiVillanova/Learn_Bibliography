@@ -148,8 +148,9 @@ class ManagePublisherAction
             $searchParams[] = 'letter='.urlencode($query['letter']);
         }
 
-        if ($post['action'] == 'merge_publisher') {
-            return new HtmlResponse(
+        if (isset($post['action'])) {
+            if ($post['action'] == 'merge_publisher') {
+                return new HtmlResponse(
             $this->template->render(
                 'app::publisher::merge_publisher',
                 [
@@ -162,6 +163,7 @@ class ManagePublisherAction
                 ]
             )
         );
+            }
         } else {
             return new HtmlResponse(
             $this->template->render(

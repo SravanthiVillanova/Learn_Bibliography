@@ -165,7 +165,9 @@ class ManageClassificationAction
             $searchParams[] = 'id='.urlencode($query['id']).'&fl='.urlencode($query['fl']).'&action=get_children';
         }
 
-        //gel folder name for bread crumb
+        $ts = [];
+        if (isset($query['action'])) {
+            //get folder name for bread crumb
         if ($query['action'] == 'get_children') {
             $table = new \App\Db\Table\Folder($this->adapter);
             $r = $table->getTrail($query['id'], '');
@@ -173,6 +175,7 @@ class ManageClassificationAction
 
             $ts = explode(':', $r);
             $ts = array_reverse($ts);
+        }
         }
 
         return new HtmlResponse(
@@ -183,7 +186,7 @@ class ManageClassificationAction
                     'previous' => $previous,
                     'next' => $next,
                     'countp' => $countPages,
-                    'previous_folder' => $previous_folder,
+                    //'previous_folder' => $previous_folder,
                     'trail' => $ts,
                     'searchParams' => implode('&', $searchParams),
                 ]

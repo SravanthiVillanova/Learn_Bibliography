@@ -115,6 +115,8 @@ class AttributesWorkTypeAction
             $previous = $currentPage - 1;
         }
 
+        $searchParams = [];
+
         return new HtmlResponse(
             $this->template->render(
                 'app::worktype::attributes_worktype',
@@ -123,6 +125,7 @@ class AttributesWorkTypeAction
                     'previous' => $previous,
                     'next' => $next,
                     'countp' => $countPages,
+                    'searchParams' => implode('&', $searchParams),
                 ]
             )
         );

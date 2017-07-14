@@ -150,7 +150,7 @@
 	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="<?=$this->url('home')?>js/menu.js"></script>
-	
+	 <script src="<?=$this->url('home')?>vendor/js/bootstrap-3.3.7.min.js"></script>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
  <div class="app-content" width="100%">
  <div style="width: 80%">
@@ -162,10 +162,20 @@
 			// Page Instructions Content
             include_once('instructions.inc');
 			
+			$str = "";
             $page = basename($this->url());
-	
-            //echo $instructions[basename($this->url())];
-	      
+			$str = preg_replace('/^\/\w+\/\w+\//','',parse_url($this->url())['path']);
+			if(isset($_SERVER['QUERY_STRING']))
+			{
+				if(preg_match('/action=(?<action_name>[A-Za-z]+)/', $_SERVER['QUERY_STRING'], $matches))
+				{
+					$str .= "?" . $_SERVER['QUERY_STRING'];
+					//echo $str . "<br />";
+				}
+			}
+				
+			echo "$str <br />";
+			
            if (isset($_POST['instructions'])) {   
 			  //print_r($_POST['instructions']);
             $instructions[basename($this->url())] = $_POST['instructions'];
@@ -190,5 +200,3 @@
 </div>
 
 </body>
-
- <script src="<?=$this->url('home')?>vendor/js/bootstrap-3.3.7.min.js"></script>
