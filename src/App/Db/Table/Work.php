@@ -266,4 +266,22 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             ['id' => $id]
         );
     }
+	
+	public function getPendingReviewWorksCount()
+    {
+        $callback = function ($select) {
+            $select->columns(
+                    [
+                        'review_count' => new Expression(
+                            'Count(?)',
+                            ['*'],
+                            [Expression::TYPE_IDENTIFIER]
+                        ),
+                    ]
+                );
+            $select->where->equalTo('status', 0);
+        };
+
+        return $this->select($callback)->toArray();
+    }
 }

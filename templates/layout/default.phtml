@@ -18,12 +18,13 @@
   </div>-->
   
 
-     <!--<div class="breadcrumb">
-          <li><a href="#">Home /</a></li>
+    <!--<div class="breadcrumb">
+          <li><a href="<?=$this->url('home')?>">Home /</a></li>
      </div>-->
   <?php if (!$this->layout()->hideNavigation):
 			if ($this->isUser()->isLogged()): 				
   ?>
+  <a href="<?=$this->url('home')?>" style="float:left;color:white;">Home /</a>
   <a href="<?=$this->url('login')?><?='?logout=y'?>" style="float:right;color:white;">Logout</a>
   <?php endif;
   endif; ?>
@@ -48,7 +49,7 @@
 				if (in_array("Work", $modules)) { 
 			?>
             <li class="dropdown">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Work<b class="caret"></b></a>			  
+				<a href="#" class="dropdown-toggle " data-toggle="dropdown">Work<b class="caret"></b></a>			  
 				<ul class="dropdown-menu">
                 <li><a href="<?php echo $this->url('new_work') ?>">New</a></li>
                 <li><a href="<?php echo $this->url('search_work') ?>">Search</a></li>
@@ -154,45 +155,144 @@
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
  <div class="app-content" width="100%">
  <div style="width: 80%">
-            <?php echo $this->content ?>
+    <?php 
+		echo $this->content;
+	?>
  </div> 
 
- <?php
-			
-			// Page Instructions Content
-            include_once('instructions.inc');
-			
-			$str = "";
-            $page = basename($this->url());
-			$str = preg_replace('/^\/\w+\/\w+\//','',parse_url($this->url())['path']);
-			if(isset($_SERVER['QUERY_STRING']))
+ <?php			
+	$str = "";
+    $page = basename($this->url());
+
+	if($page == "public")
+	{
+		$str = $page . "/";
+	}
+	else
+	{
+		$str = preg_replace('/^\/\w+\/\w+\//','',parse_url($this->url())['path']);
+		if(isset($_SERVER['QUERY_STRING']))
+		{
+			if(preg_match('/action=(?<action_name>[A-Za-z]+)/', $_SERVER['QUERY_STRING'], $matches))
 			{
-				if(preg_match('/action=(?<action_name>[A-Za-z]+)/', $_SERVER['QUERY_STRING'], $matches))
-				{
-					$str .= "?" . $_SERVER['QUERY_STRING'];
-					//echo $str . "<br />";
-				}
+				$str .= "?" . $_SERVER['QUERY_STRING'];
+						//echo $str . "<br />";
 			}
-				
-			echo "$str <br />";
+		}
+	}
 			
-           if (isset($_POST['instructions'])) {   
-			  //print_r($_POST['instructions']);
-            $instructions[basename($this->url())] = $_POST['instructions'];
-			
-           }
-	      // print_r($instructions);
-	        $this->layout()->instructions = isset($instructions[$page])
-                    ? $instructions[$page] : ''; 
+	$ins = $this->isUser()->isInsSet($str);
+
+	if(isset($ins['instructions']))
+	{
+		$this->layout()->instructions = $ins['instructions'];
+	?>
+		<script>
+		$(document).ready(function () {
+			var pgid = <?php echo json_encode($ins['id']);?>;
+			var pgnm = <?php echo json_encode($ins['page_name']);?>;
+			$('#page_id').val(pgid);
+			$('#page_name').val(pgnm);
+			return false;
+		});
+		</script>
+	<?php
+	}
+	else
+	{
+		$this->layout()->instructions = '';
+	?>
+		<script>
+		$(document).ready(function () {	
+			var pgnm = <?php echo json_encode($str);?>;
+			$('#page_name').val(pgnm);
+			return false;
+		});
+		</script>
+	<?php
+	}
+	
+	$usr = $this->isUser()->getUserType();
+
+	if($usr['level'] == "Administrator")
+	{
+	?>
+		<b><?php
+			if($page == "public")
+			{
+				echo "Welcome, " . $usr['name'] . "<br/>"; 
+				$cnt = $this->isUser()->getRvwCount();
+				echo "You have " . $cnt[0]['review_count'] . " works awaiting review.<br />";
+			}
+			?>
+		</b>
+	<?php			
+	}
+	if($usr['level'] == "Super User" || $usr['level'] == "User")
+	{
+	?>
+		<b>
+		<?php 
+		if($page == "public")
+		{
+			echo "Welcome, " . $usr['name']; 
+		}
+		?>
+		</b>
+	<?php
+	}				
 ?>
+<script>
+$(document).ready(function () {	
+	var lvl = <?php echo json_encode($usr['level']);?>;
+	if(lvl === "Super User" || lvl === "User")
+	{
+		//$('#ins_submit').prop("disabled", "disabled");
+		$('#ins_submit').hide();
+		return false;
+	}
+	if(lvl === "Administrator")
+	{
+		//$('#ins_submit').prop("disabled", false);
+		$('#ins_submit').show();
+		return false;
+	}
+	$('#ins_submit').on('click', function(){
+		//alert('ins save clicked');
+		var ins_text = $('#instructions').val();
+		var pg_id = $('#page_id').val();
+		var pg_nm = $('#page_name').val();
+		//alert(ins_text);
+		$.ajax({
+				method: 'post',
+				url: 'http://localhost<?=$this->url('get_work_details')?>',
+				data: {
+					ins_text: ins_text,
+					pg_id: pg_id,
+					pg_nm: pg_nm
+				},
+				dataType: "json", 
+				cache: false,
+				success: function(data)
+				{	
+				},
+				error: function (data) { 
+					//$("#Classification", context).html('<p>No Options</p>');
+				}
+			});					
+		return false;
+	});
+});
+</script>
         <main class="container">  
 				<div style="float: right; width: 20%;">
 				<div class="tipbox">
 				<div>Instructions</div>
 				<form method="post" name="ins_box">
-				<input type="hidden" name="action" value="ins">
-				<textarea name="instructions" rows="5" cols="22"><?php echo $this->layout()->instructions; ?></textarea><br>
-				<input type="submit" name="submit" value="Save">
+				<input type="hidden" name="page_id" id="page_id" value="">
+				<input type="hidden" name="page_name" id="page_name" value="">
+				<textarea name="instructions" id="instructions" rows="5" cols="22"><?php echo $this->layout()->instructions; ?></textarea><br>
+				<input type="submit" name="ins_submit" id="ins_submit" value="Save">
 				</form>
 				</div>
 			   </div>	

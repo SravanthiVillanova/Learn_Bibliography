@@ -50,4 +50,42 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
 
         return null;
     }
+	
+	public function isInsSet($str)
+	{
+		//fetch instructions
+		$table = new \App\Db\Table\Page_Instructions($this->adapter);
+		$ins = $table->findRecordByPageName($str);
+			
+		return $ins;
+	}
+	
+	public function getUserType()
+	{
+		$usr_typ = "";
+		
+		$table = new \App\Db\Table\User($this->adapter);
+		$usr = $table->findRecordById($this->session->id);
+		
+		if (isset($usr['level'])) {
+           if ($usr['level'] == 1)
+                $usr['level'] = "Administrator";
+            else
+                $usr['level'] = "Super User";
+        } 
+		else
+		{
+            $usr['level'] = "User";
+		}
+		
+		return $usr;
+	}
+	
+	public function getRvwCount()
+	{
+		$table = new \App\Db\Table\Work($this->adapter);
+		$cnt = $table->getPendingReviewWorksCount();
+		
+		return $cnt;
+	}
 }

@@ -164,5 +164,22 @@ class GetWorkDetailsAction
             echo json_encode($output);
             exit;
         }
+		if (isset($_POST['ins_text'])) {
+			$ins_str =  $_POST['ins_text'];
+			if(!empty($_POST['pg_id']))
+			{
+				$pg_id = $_POST['pg_id'];
+				//echo $pg_id;
+				$table = new \App\Db\Table\Page_Instructions($this->adapter);
+				$table->updateRecord($pg_id,$ins_str);				
+			}
+			else
+			{
+				$pg_nm = $_POST['pg_nm'];
+				//echo $pg_nm;
+				$table = new \App\Db\Table\Page_Instructions($this->adapter);
+				$table->insertRecord($pg_nm,$ins_str);	
+			}
+		}
     }
 }
