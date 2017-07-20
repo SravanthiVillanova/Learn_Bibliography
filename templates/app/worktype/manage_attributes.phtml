@@ -1,30 +1,30 @@
 <?php $this->headTitle('Manage WorkType Attributes'); ?>
 <?php //$this->layout()->instructions = ""; ?>
 <div class="col-md-9">
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
-  <style>
-  #sortable1, #sortable2 {
-    border: 1px solid #eee;
-    width: 200px;
-    min-height: 100px;
-    list-style-type: none;
-    margin: 0;
-    padding: 5px 0 0 0;
-    float: left;
-    margin-right: 10px;
-  }
-  #sortable1 li, #sortable2 li {
-    margin: 0 5px 5px 5px;
-    padding: 5px;
-    font-size: 1.2em;
-    width: 180px;
-  }
-  </style>
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script>
-  $( function() {
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<link rel="stylesheet" href="/resources/demos/style.css">
+    <style>
+	#sortable1, #sortable2 {
+		border: 1px solid #eee;
+		width: 200px;
+		min-height: 100px;
+		list-style-type: none;
+		margin: 0;
+		padding: 5px 0 0 0;
+		float: left;
+		margin-right: 10px;
+	}
+	#sortable1 li, #sortable2 li {
+		margin: 0 5px 5px 5px;
+		padding: 5px;
+		font-size: 1.2em;
+		width: 180px;
+	}
+	</style>
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+$( function() {
     $( "#sortable1, #sortable2" ).sortable({
 		connectWith: ".connectedSortable",
 		update : function () 
@@ -36,40 +36,40 @@
 			$('#remove_attr').val(sort2);			
         } 
     }).disableSelection();
-  } );
-  </script>
-  <?php                                       
-        $id;
-        if ($request->getqueryParams() !== null) 
-        {   
-            $params = $request->getqueryParams();
-            $id = $params['id'];           
-        } 
-        if ($id !== null) 
-        {   
-            //fetch name based on id
-            $table = new \App\Db\Table\WorkType($adapter);
-            $row = $table->findRecordById($id);
-            $type = $row['type'];
-            echo '<b>Attributes for: </b>'.$type.'<br/>'; 
-		}
+} );
+</script>
+<?php                                       
+$id;
+if ($request->getqueryParams() !== null) 
+{   
+    $params = $request->getqueryParams();
+    $id = $params['id'];           
+} 
+if ($id !== null) 
+{   
+    //fetch name based on id
+    $table = new \App\Db\Table\WorkType($adapter);
+    $row = $table->findRecordById($id);
+    $type = $row['type'];
+    echo '<b>Attributes for: </b>'.$type.'<br/>'; 
+}
 ?>
 <form class="form-horizontal" method="post" action="<?=$this->url('manage_worktype')?><?='?id=' . $id . '&action=sortable'?>">
-<input type="hidden" name="id" value="<?=$id?>">
-<input type="hidden" name="action" id="action" value="sortable">
-<input type="hidden" name="sort_order" id="sort_order" value="">
-<input type="hidden" name="remove_attr" id="remove_attr" value="">
-<p>Used Attributes                       Unused Attributes</p>
-<?php
-		//check if any attributes are attached to work type
-		$table = new \App\Db\Table\WorkType_WorkAttribute($this->adapter);
-		$rows = $table->findRecordById($id);
+	<input type="hidden" name="id" value="<?=$id?>">
+	<input type="hidden" name="action" id="action" value="sortable">
+	<input type="hidden" name="sort_order" id="sort_order" value="">
+	<input type="hidden" name="remove_attr" id="remove_attr" value="">
+	<p>Used Attributes                       Unused Attributes</p>
+	<?php
+	//check if any attributes are attached to work type
+	$table = new \App\Db\Table\WorkType_WorkAttribute($this->adapter);
+	$rows = $table->findRecordById($id);
 		
-		if(count($rows) != 0) { 
-?>
-<ul id="sortable1" class="list-group connectedSortable">
-<?php
-			//display attributes attached to a worktype
+	if(count($rows) != 0) { 
+	?>
+		<ul id="sortable1" class="list-group connectedSortable">
+		<?php
+		//display attributes attached to a worktype
 		$table = new \App\Db\Table\WorkType_WorkAttribute($this->adapter);	
 		$paginator = $table->displayRanks($id);
 		$paginator->setDefaultItemCountPerPage(20);
@@ -79,37 +79,35 @@
 		foreach($paginator as $row) :
 			$output = (array)$row;
             $params = implode(', ', $output); 
-?>
+		?>
 
-  <li class="list-group-item ui-state-default" predmet-id="id_<?=$row['workattribute_id']?>"><?=$escaper->escapeHtml($row['field'])?></li>
-<?php
-	endforeach;
-?>
-</ul>
+			<li class="list-group-item ui-state-default" predmet-id="id_<?=$row['workattribute_id']?>"><?=$escaper->escapeHtml($row['field'])?></li>
+		<?php endforeach; ?>
+		</ul>
 
-<ul id="sortable2" class="list-group connectedSortable">
-<?php
-$escaper = new Zend\Escaper\Escaper('utf-8');
-			//display attributes not attached to a work type
-			$table = new \App\Db\Table\WorkAttribute($adapter);
-			$rows = $table->displayAttributes1($id);
-			$cnt = count($rows);
-			for($i=0;$i<$cnt;$i++) {
-?>
-  <li class="list-group-item ui-state-default" predmet-id="nid_<?=$rows[$i]['id']?>"><?=$escaper->escapeHtml($rows[$i]['field'])?></li>
-<?php
-			} 
-?>
-</ul>
-<?php
-		} else {
-?>
-<ul id="sortable1" class="list-group connectedSortable">
-<!--<li class="list-group-item ui-state-default" predmet-id=""></li>-->
-</ul>
+		<ul id="sortable2" class="list-group connectedSortable">
+		<?php
+		$escaper = new Zend\Escaper\Escaper('utf-8');
+		//display attributes not attached to a work type
+		$table = new \App\Db\Table\WorkAttribute($adapter);
+		$rows = $table->displayAttributes1($id);
+		$cnt = count($rows);
+		for($i=0;$i<$cnt;$i++) {
+		?>
+			<li class="list-group-item ui-state-default" predmet-id="nid_<?=$rows[$i]['id']?>"><?=$escaper->escapeHtml($rows[$i]['field'])?></li>
+		<?php
+		} 
+		?>
+		</ul>
+		<?php
+	} else {
+	?>
+		<ul id="sortable1" class="list-group connectedSortable">
+			<!--<li class="list-group-item ui-state-default" predmet-id=""></li>-->
+		</ul>
 
-<ul id="sortable2" class="list-group connectedSortable">
-<?php
+		<ul id="sortable2" class="list-group connectedSortable">
+			<?php
 			//display attributes not attached to a work type
 			$escaper = new Zend\Escaper\Escaper('utf-8');			
 			$table = new \App\Db\Table\WorkAttribute($adapter);
@@ -118,21 +116,19 @@ $escaper = new Zend\Escaper\Escaper('utf-8');
 			$cnt = $rows->getTotalItemCount();
 			//echo "count is " . $cnt;
 			foreach($rows as $row) :
-?>
-  <li class="list-group-item ui-state-default" predmet-id="nid_<?=$row['id']?>"><?=$escaper->escapeHtml($row['field'])?></li>
-<?php
-			endforeach;
-?>
-</ul>
-<?php
-		}
-?>
+			?>
+				<li class="list-group-item ui-state-default" predmet-id="nid_<?=$row['id']?>"><?=$escaper->escapeHtml($row['field'])?></li>
+			<?php endforeach; ?>
+		</ul>
+	<?php
+	}
+	?>
 
-<div class="form-group">
-<div class="col-sm-offset-2 col-sm-10">
-    <input type="submit" class="btn btn-default" id="submit_add" name="submit_add" value="Save"/>
-	<input type="submit" class="btn btn-default" id = "submit_cancel" name="submitt" value="Cancel"/>
-</div>
-</div>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<input type="submit" class="btn btn-default" id="submit_add" name="submit_add" value="Save"/>
+			<input type="submit" class="btn btn-default" id = "submit_cancel" name="submitt" value="Cancel"/>
+		</div>
+	</div>
 </form>
- </div>
+</div>

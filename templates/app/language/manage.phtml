@@ -36,14 +36,13 @@
                         <a href="<?= $this->url('delete_language') ?><?= '?id=' . $row['id'] . '&action=delete' ?>">Delete</a>
                     </td>
                 </tr>
-<?php endforeach; ?>
+			<?php endforeach; ?>
         </tbody>
     </table>
     <form method="get" action="page">
         <?php
         echo $this->paginationControl($this->rows, 'Sliding', 'app::controls', ['route' => 'manage_language']);
         ?>
-
     </form>	      
 </div>
 

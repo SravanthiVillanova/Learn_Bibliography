@@ -177,84 +177,81 @@ if ($request->getqueryParams('id') !== null) {
                 }
             }
             $cnt = count($arr_fl);
-            echo "<pre>";
-            print_r($arr_fl);
-            echo "</pre>"; //die();
             for ($i = $cnt - 1; $i >= 0; $i--) {
                 if ($arr_fl[$i] == $id) {
-                    ?>
+        ?>
                     <div class="form-group outer_div_fl" name="outer_div_fl">
                         <label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
                         <div class="col-xs-5 inner_div_fl" name="inner_div_fl">
                             <select class="form-control select_fl" name="select_fl[]">
                                 <option value="none"></option>
-            <?php
-            $table = new \App\Db\Table\Folder($this->adapter);
-            $fl_siblings = $table->getChild($arr_fl[$i + 1]);
-            foreach ($fl_siblings as $row) :
-                ?>
+								<?php
+								$table = new \App\Db\Table\Folder($this->adapter);
+								$fl_siblings = $table->getChild($arr_fl[$i + 1]);
+								foreach ($fl_siblings as $row) :
+								?>
                                     <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>	
-                                    <?php endforeach; ?>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                     </div>	
-                                <?php
-                            }
-                            else if ($i != ($cnt - 1)) {
-                                $table = new \App\Db\Table\Folder($this->adapter);
-                                $fl = $table->findRecordById($arr_fl[$i]);
-                                ?>
+                <?php
+                }
+                else if ($i != ($cnt - 1)) {
+                    $table = new \App\Db\Table\Folder($this->adapter);
+                    $fl = $table->findRecordById($arr_fl[$i]);
+                ?>
                     <div class="form-group outer_div_fl" name="outer_div_fl">
                         <label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
                         <div class="col-xs-5 inner_div_fl" name="inner_div_fl">
                             <select class="form-control select_fl" name="select_fl[]">
                                 <option value="none"></option>
                                 <option value="<?= $arr_fl[$i] ?>" selected><?php echo $fl['text_fr']; ?></option>
-            <?php
-            $table = new \App\Db\Table\Folder($this->adapter);
-            $fl_siblings = $table->getChild($arr_fl[$i + 1]);
-            foreach ($fl_siblings as $row) :
-                if ($row['id'] != $arr_fl[$i]) {
-                    ?>
+								<?php
+								$table = new \App\Db\Table\Folder($this->adapter);
+								$fl_siblings = $table->getChild($arr_fl[$i + 1]);
+								foreach ($fl_siblings as $row) :
+									if ($row['id'] != $arr_fl[$i]) {
+								?>
                                         <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>							
-                                        <?php
+                                <?php
                                     }
                                 endforeach;
                                 ?>
                             </select>
                         </div>
                     </div>		
-                                <?php
-                            } else {
-                                $table = new \App\Db\Table\Folder($this->adapter);
-                                $fl = $table->findRecordById($arr_fl[$i]);
-                                ?>
+                <?php
+                } else {
+                    $table = new \App\Db\Table\Folder($this->adapter);
+                    $fl = $table->findRecordById($arr_fl[$i]);
+                ?>
                     <div class="form-group outer_div_fl" name="outer_div_fl">
                         <label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>
                         <div class="col-xs-5 inner_div_fl" name="inner_div_fl">
                             <select class="form-control select_fl" name="select_fl[]">
                                 <option value="none"></option>
                                 <option value="<?= $arr_fl[$i] ?>" selected><?php echo $fl['text_fr']; ?></option>
-                    <?php
-                    $table = new \App\Db\Table\Folder($this->adapter);
-                    //$fl_siblings = $table->getChild($arr_fl[$i+1]);
-                    $fl_siblings = $table->getFoldersWithNullParent();
-                    foreach ($fl_siblings as $row) :
-                        if ($row['id'] != $arr_fl[$i]) {
-                            ?>
+								<?php
+								$table = new \App\Db\Table\Folder($this->adapter);
+								//$fl_siblings = $table->getChild($arr_fl[$i+1]);
+								$fl_siblings = $table->getFoldersWithNullParent();
+								foreach ($fl_siblings as $row) :
+									if ($row['id'] != $arr_fl[$i]) {
+								?>
                                         <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>							
-                                        <?php
+                                <?php
                                     }
                                 endforeach;
                                 ?>
                             </select>
                         </div>
                     </div>	
-                                <?php
-                            }
-                        }
-                    }
-                    ?>
+                <?php
+                }
+            }
+        }
+        ?>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Save</button> 

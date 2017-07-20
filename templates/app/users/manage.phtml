@@ -15,10 +15,10 @@
             foreach ($this->rows as $row) :
                 $output = (array) $row;
                 $params = implode(', ', $output);
-                ?>
-                <tr>
+             ?>
+				<tr>
                     <td>
-    <?php echo $escaper->escapeHtml($row['name']); ?>
+						<?php echo $escaper->escapeHtml($row['name']); ?>
                     </td>
                     <td>			             
                         <a href="<?= $this->url('edit_user') ?><?= '?id=' . $row['id'] . '&action=edit' ?>">Edit</a>        

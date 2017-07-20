@@ -50,25 +50,13 @@ if ($request->getqueryParams('id') !== null) {
             <label class="col-xs-4 control-label">Access Level: </label>
             <div class="col-xs-7">
                 <select class="form-control" name="access_level">
-                    <option value="1" 
-<?php
-if ($level == "Administrator")
-    echo 'selected="selected"';
-?>>
+                    <option value="1" <?php if ($level == "Administrator") echo 'selected="selected"'; ?>>
                         Administrator
                     </option>
-                    <option value="0" 
-<?php
-if ($level == "Super User")
-    echo 'selected="selected"';
-?>>
+                    <option value="0" <?php if ($level == "Super User") echo 'selected="selected"'; ?>>
                         Super User
                     </option>
-                    <option value="NULL" 
-<?php
-if ($level == "User")
-    echo 'selected="selected"';
-?>>
+                    <option value="NULL" <?php if ($level == "User") echo 'selected="selected"'; ?>>
                         User
                     </option>
                 </select>

@@ -1,5 +1,5 @@
 <?php $this->headTitle('Manage Agent'); ?>
-<?php //$this->layout()->instructions = "";  ?>
+<?php //$this->layout()->instructions = "";    ?>
 <div class="col-md-12">     
     <p>
         <?php foreach ($this->carat as $value) { ?>
@@ -33,10 +33,10 @@
                         <a href="<?= $this->url('delete_agent') ?><?= '?id=' . $row['id'] . '&action=delete' ?>">Delete</a>
                     </td>
                 </tr>
-<?php endforeach; ?>
+            <?php endforeach; ?>
         </tbody>
     </table>
-        <?php if ($this->countp > 1) { ?>
+    <?php if ($this->countp > 1) { ?>
         <form method="get" action="page">
             <?=
             $this->paginationControl($this->rows, 'Sliding', 'app::controls', [

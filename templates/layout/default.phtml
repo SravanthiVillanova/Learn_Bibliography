@@ -1,6 +1,11 @@
 <html>
 <head>
   <title>Panta Rhei - Administration</title>
+  	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script src="<?=$this->url('home')?>vendor/js/bootstrap-3.3.7.min.js"></script>
+    <!--<script src="<?//=$this->url('home')?>js/menu.js"></script>-->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <link rel="stylesheet" href="<?=$this->url('home')?>vendor/css/bootstrap-3.3.7.min.css" >
   <link rel="stylesheet" href="<?=$this->url('home')?>css/main.css" media="screen" />
   <link rel="stylesheet" href="<?=$this->url('home')?>css/main_admin.css" media="screen" />
@@ -8,26 +13,47 @@
 </head>
 <body>
 <div class="banner">
-  <h1>Administration</h1>
-   <!--<div class="breadcrumb">
-    <div class="item" style="float: left;"><a href="#home">Home / </a></div>
-   <div style="float: left;">Home /</div>
-    <div style="float: right;">
-      [<a href="logout.php">Log Out</a>]
-    </div>
-  </div>-->
-  
-
-    <!--<div class="breadcrumb">
-          <li><a href="<?=$this->url('home')?>">Home /</a></li>
-     </div>-->
+  <h1>Administration</h1><br />
   <?php if (!$this->layout()->hideNavigation):
-			if ($this->isUser()->isLogged()): 				
+			if ($this->isUser()->isLogged()):
+				//$lnk = preg_replace('/^\/\w+\/\w+\//','',parse_url($this->url())['path']);
+				$crumbs = explode("/",$this->url());
+				$c = count($crumbs);
   ?>
-  <a href="<?=$this->url('home')?>" style="float:left;color:white;">Home /</a>
-  <a href="<?=$this->url('login')?><?='?logout=y'?>" style="float:right;color:white;">Logout</a>
-  <?php endif;
-  endif; ?>
+  <?php
+	if(strtolower($crumbs[$c-2]) == "public")
+	{
+	?>
+		<a href="<?=$this->url('home')?>" style="float:left;color:white;">Home > </a>
+	<?php
+	}
+	else if(strtolower($crumbs[$c-2]) == "preferences")
+	{
+	?>
+		<a href="<?=$this->url('home')?>" style="float:left;color:white;">Home > </a>
+		<a href="<?=$this->url('changepassword_preferences')?>" style="float:left;color:white;">
+		<?php echo $crumbs[$c-2] . " "; ?>
+		</a>
+		<?php echo " " . "> " . $crumbs[$c-1];?>
+	<?php
+	}
+	else
+	{
+  ?>
+		<a href="<?=$this->url('home')?>" style="float:left;color:white;">Home > </a>
+		<a href="<?=$this->url('manage_'. strtolower($crumbs[$c-2]))?>" style="float:left;color:white;">
+		<?php echo $crumbs[$c-2] . " "; ?>
+		</a>
+		<?php echo " " . "> " . $crumbs[$c-1];?>
+		
+  <?php 
+    }
+	?>
+		<a href="<?=$this->url('login')?><?='?logout=y'?>" style="float:right;color:white;">Logout</a>
+	<?php
+	endif;
+  endif;
+	  ?>
 </div>
 
 <!-- Fixed navbar -->
@@ -148,11 +174,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <script src="<?=$this->url('home')?>js/menu.js"></script>
-	 <script src="<?=$this->url('home')?>vendor/js/bootstrap-3.3.7.min.js"></script>
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
  <div class="app-content" width="100%">
  <div style="width: 80%">
     <?php 
@@ -160,7 +182,7 @@
 	?>
  </div> 
 
- <?php			
+ <?php
 	$str = "";
     $page = basename($this->url());
 

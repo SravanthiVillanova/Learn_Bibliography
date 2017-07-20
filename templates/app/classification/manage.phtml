@@ -16,21 +16,21 @@
                     </a>
                         <?php
                         echo ' > ';
-                    }
-                    if (preg_match('/Top/', $this->trail[$i], $matches)) {
-                        ?>
+                }
+                if (preg_match('/Top/', $this->trail[$i], $matches)) {
+                ?>
                     <a href="<?= $this->url('manage_classification') ?><?= '?action=get_siblings' ?>">
                     <?php echo "Top"; ?>
                     </a>
                         <?php
                         echo ' > ';
-                    }
                 }
-                echo $this->trail[$i];
-            } else {
-                echo "Top > ";
             }
-            ?>
+            echo $this->trail[$i];
+        } else {
+            echo "Top > ";
+        }
+        ?>
         </a>
     </p>
     <table class="table table-striped table-condensed" style="font-size:10pt;">

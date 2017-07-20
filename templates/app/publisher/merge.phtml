@@ -42,9 +42,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-    <?php foreach ($this->rows as $row) : ?>
-                                    <tr>
-                                <div class="form-group">
+							<?php foreach ($this->rows as $row) : ?>
+                                <tr>
+									<div class="form-group">
                                     <td>
                                         <div class="radio">
                                             <label><input type="radio" id='sel_source' name="select_source" value=<?= $escaper->escapeHtml($row['name']) ?>>
@@ -52,7 +52,7 @@
                                         </div>
                                     </td>
                                     <td>
-        <?php echo $escaper->escapeHtml($row['name']); ?>
+										<?php echo $escaper->escapeHtml($row['name']); ?>
                                     </td>
                                     <td> 
                                         <?php
@@ -65,9 +65,9 @@
                                         echo $no_of_works;
                                         ?>
                                     </td> 
-                                </div>    
+									</div>    
                                 </tr>
-    <?php endforeach; ?>
+							<?php endforeach; ?>
                             <tr>
                                 <td valign="center">
                                     <br /><br />

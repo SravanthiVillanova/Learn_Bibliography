@@ -29,18 +29,18 @@
                 </tr>
             </thead>
             <tbody>
-<?php
-$escaper = new Zend\Escaper\Escaper('utf-8');
-foreach ($this->rows as $row) :
-    //$row1 = [];        
-    $row1 = $row;
-    ?>
+			<?php
+			$escaper = new Zend\Escaper\Escaper('utf-8');
+			foreach ($this->rows as $row) :
+				//$row1 = [];        
+				$row1 = $row;
+			?>
                 <form>
                     <tr>
                         <td>
                             <div class="checkbox">
                                 <label><input type="checkbox" id='select' name="selectchk1[]" value=<?= $escaper->escapeHtml($row['location']) ?>>
-    <?php echo $escaper->escapeHtml($row['location']); ?>
+								<?php echo $escaper->escapeHtml($row['location']); ?>
                                 </label>
                             </div>
                         </td>
@@ -55,8 +55,8 @@ foreach ($this->rows as $row) :
                             </div>
                         </td>
                     </tr>
-<?php endforeach; ?>
-                </tbody>
+			<?php endforeach; ?>
+            </tbody>
         </table>
 
         <div class="form-group">

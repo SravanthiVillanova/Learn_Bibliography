@@ -33,11 +33,6 @@
 namespace App\Db\Table;
 
 use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Paginator;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
 
 /**
  * Table Definition for record.
@@ -69,32 +64,31 @@ class Page_Instructions extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Updated or newly added record
      */
-    
-	public function findRecordByPageName($str)
+    public function findRecordByPageName($str)
     {
         $rowset = $this->select(array('page_name' => $str));
         $row = $rowset->current();
 
         return $row;
     }
-	
-	public function updateRecord($pg_id,$ins_str)
-	{
-		$this->update(
+
+    public function updateRecord($pg_id, $ins_str)
+    {
+        $this->update(
             [
                 'instructions' => $ins_str,
             ],
             ['id' => $pg_id]
         );
-	}
-	
-	public function insertRecord($pg_nm,$ins_str)
-	{
-		$this->insert(
+    }
+
+    public function insertRecord($pg_nm, $ins_str)
+    {
+        $this->insert(
             [
             'page_name' => $pg_nm,
             'instructions' => $ins_str,
             ]
         );
-	}	
+    }
 }

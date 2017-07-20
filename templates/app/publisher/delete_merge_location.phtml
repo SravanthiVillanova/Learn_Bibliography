@@ -33,7 +33,7 @@ if ($request->getqueryParams('id') !== null) {
                 $row = $table->findLocationId($id, $locs);
                 //var_dump($row);
                 foreach ($row as $locid) {
-                    ?>
+                ?>
                     <input type="hidden" name="locids[]" value="<?= $locid['id'] ?>">
                 <?php } ?>
             </ul>

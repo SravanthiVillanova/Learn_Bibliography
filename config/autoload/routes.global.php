@@ -112,7 +112,7 @@ return [
             ],
             'allowed_methods' => ['GET','POST'],
         ],
-        
+		
         [
            'name' => 'new_work',
 		    'path' => '/Work/new',

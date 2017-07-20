@@ -80,19 +80,20 @@ class ManageWorkAction
         if (!empty($post['action'])) {
             //add a new work type
             if ($post['action'] == 'work_new') {
-                if ($post['submit_save'] == 'Save') {
-                    //echo "<pre>";print_r($post);echo "</pre>"; //die();
+                if (isset($post['submit_save'])) {
+                    if ($post['submit_save'] == 'Save') {
+                        //echo "<pre>";print_r($post);echo "</pre>"; //die();
                     //extract classification rows
                     foreach ($post['arr'] as $row):
                         $fl[] = explode(',', trim($row, ','));
-                    endforeach;
+                        endforeach;
                     //extract folder ids for each row
                     for ($i = 0; $i < count($fl); ++$i) {
                         $folder[$i] = $fl[$i][count($fl[$i]) - 1];
                     }
                     //insert General(work)
                     $table = new \App\Db\Table\Work($this->adapter);
-                    $wk_id = $table->insertRecords($post['work_type'], $post['new_worktitle'], $post['new_worksubtitle'],
+                        $wk_id = $table->insertRecords($post['work_type'], $post['new_worktitle'], $post['new_worksubtitle'],
                                     $post['new_workparalleltitle'], $post['description'], date('Y-m-d H:i:s'),
                                     $post['user'], $post['select_workstatus'], $post['pub_yrFrom']);
                     //insert classification(work_folder)
@@ -114,37 +115,39 @@ class ManageWorkAction
                     }
                     //map work to citation(work_workattribute)
                     $wkat_id = [];
-                    foreach ($post as $key => $value) {
-                        if ((preg_match("/^[a-z]+\,\d+[a-z]+\,\d+$/", $key)) && ($value != null)) {
-                            $keys = preg_split("/[a-z]+\,/", $key);
-                            $wkat_id[] = $keys[1];
-                            $wkopt_id[] = $keys[2];
+                        foreach ($post as $key => $value) {
+                            if ((preg_match("/^[a-z]+\,\d+[a-z]+\,\d+$/", $key)) && ($value != null)) {
+                                $keys = preg_split("/[a-z]+\,/", $key);
+                                $wkat_id[] = $keys[1];
+                                $wkopt_id[] = $keys[2];
+                            }
+                            if ((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != null)) {
+                                $wkat_id[] = preg_replace("/^[a-z]+\,/", '', $key).'<br />';
+                                $wkopt_id[] = $value;
+                            }
                         }
-                        if ((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != null)) {
-                            $wkat_id[] = preg_replace("/^[a-z]+\,/", '', $key).'<br />';
-                            $wkopt_id[] = $value;
+                        if (count($wkat_id) > 0) {
+                            $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
+                            $table->insertRecords($wk_id, $wkat_id, $wkopt_id);
                         }
-                    }
-                    if (count($wkat_id) > 0) {
-                        $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
-                        $table->insertRecords($wk_id, $wkat_id, $wkopt_id);
                     }
                 }
             }
             if ($post['action'] == 'work_edit') {
-                if ($post['submit_save'] == 'Save') {
-                    //echo "<pre>"; print_r($post); echo "</pre>"; //die();
+                if (isset($post['submit_save'])) {
+                    if ($post['submit_save'] == 'Save') {
+                        //echo "<pre>"; print_r($post); echo "</pre>"; //die();
                     //extract classification rows
                     foreach ($post['arr'] as $row):
                         $fl[] = explode(',', trim($row, ','));
-                    endforeach;
+                        endforeach;
                     //extract folder ids for each row
                     for ($i = 0; $i < count($fl); ++$i) {
                         $folder[$i] = $fl[$i][count($fl[$i]) - 1];
                     }
                     //update General(work)
                     $table = new \App\Db\Table\Work($this->adapter);
-                    $table->updateRecords($post['id'], $post['edit_work_type'], $post['edit_worktitle'], $post['edit_worksubtitle'],
+                        $table->updateRecords($post['id'], $post['edit_work_type'], $post['edit_worktitle'], $post['edit_worksubtitle'],
                                         $post['edit_workparalleltitle'], $post['description'], date('Y-m-d H:i:s'),
                                         $post['user'], $post['edit_workstatus'], $post['pub_yrFrom']);
 
@@ -183,26 +186,27 @@ class ManageWorkAction
 
                     //map work to citation(work_workattribute)
                     $wkat_id = [];
-                    foreach ($post as $key => $value) {
-                        if ((preg_match("/^[a-z]+\,\d+[a-z]+\,\d+$/", $key)) && ($value != null)) {
-                            $keys = preg_split("/[a-z]+\,/", $key);
-                            $wkat_id[] = $keys[1];
-                            $wkopt_id[] = $keys[2];
+                        foreach ($post as $key => $value) {
+                            if ((preg_match("/^[a-z]+\,\d+[a-z]+\,\d+$/", $key)) && ($value != null)) {
+                                $keys = preg_split("/[a-z]+\,/", $key);
+                                $wkat_id[] = $keys[1];
+                                $wkopt_id[] = $keys[2];
+                            }
+                            if ((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != null)) {
+                                $wkat_id[] = preg_replace("/^[a-z]+\,/", '', $key).'<br />';
+                                $wkopt_id[] = $value;
+                            }
                         }
-                        if ((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != null)) {
-                            $wkat_id[] = preg_replace("/^[a-z]+\,/", '', $key).'<br />';
-                            $wkopt_id[] = $value;
-                        }
-                    }
 
-                    if ($wkat_id[0] != null) {
-                        //delete workattribute records
+                        if ($wkat_id[0] != null) {
+                            //delete workattribute records
                         $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
-                        $table->deleteRecordByWorkId($post['id']);
+                            $table->deleteRecordByWorkId($post['id']);
 
                         //insert workattributes again
                         $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
-                        $table->insertRecords($post['id'], $wkat_id, $wkopt_id);
+                            $table->insertRecords($post['id'], $wkat_id, $wkopt_id);
+                        }
                     }
                 }
             }

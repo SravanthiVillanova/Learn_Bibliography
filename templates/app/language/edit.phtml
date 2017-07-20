@@ -1,16 +1,7 @@
 <?php $this->headTitle('Edit Language'); ?>
 <?php //$this->layout()->instructions = "";  ?>
-
 <?php
 $id;
-/* if ($request->getqueryParams() !== null) 
-  {
-  $queryString = implode('',$request->getqueryParams());
-  // var_dump($queryString);
-  $params = explode(',',$queryString);
-  // var_dump($params);
-  //echo trim($params[1]);
-  } */
 if ($request->getqueryParams('id') !== null) {
     $params = $request->getqueryParams();
     $action = $params['action'];

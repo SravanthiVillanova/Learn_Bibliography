@@ -1,16 +1,6 @@
 <?php $this->headTitle('New Language'); ?>
 <?php //$this->layout()->instructions = "";  ?>
 <?php
-//if ($this->flashMessenger()->hasMessages()) {
-//echo '<div class="alert alert-info">';
-//    $messages = $this->flashMessenger()->getMessages();
-//     foreach($messages as $message) {
-//     echo $message;
-// }
-// echo '</div>';
-//}
-?>
-<?php
 if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();
     $action = $params['action'];

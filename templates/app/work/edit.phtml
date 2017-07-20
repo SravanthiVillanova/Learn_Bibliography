@@ -1,55 +1,51 @@
-<?php $this->headTitle('Edit Work'); ?>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<script src="<?=$this->url('home')?>vendor/js/bootstrap-3.3.7.min.js"></script>
-<?php                                       
-        $id;
-       if ($request->getqueryParams('id') !== null) 
-        {   
-            $params = $request->getqueryParams();
-            $action = 'work_' . $params['action'];
-            $id = $params['id'];
-			//fetch name based on id
-			$table = new \App\Db\Table\Work($adapter);
-			$wk_row = $table->findRecordById($id);
-			$type_id = $wk_row['type_id'];	
-			$status = $wk_row['status'];
-			//echo 'work with id ' . $id . 'has status ' . $status;			
-			if($status != 1)
-			{
-				//fetch worktype based on id
-				$table = new \App\Db\Table\WorkType($adapter);
-				$wk_types = $table->findRecordById($type_id);
-				$wk_type = $wk_types['type'];	
-					
-				//fetch worktypes
-				$table = new \App\Db\Table\WorkType($this->adapter);
-				$paginator = $table->fetchAllWorkTypes();
-				$itemsCount = $paginator->getTotalItemCount();
-				$paginator->setItemCountPerPage($itemsCount);
-				
-				//fetch agent types
-				$table = new \App\Db\Table\AgentType($this->adapter);
-				$paginator_agtype = $table->fetchAgentTypes();
-				$itemsCount = $paginator->getTotalItemCount();
-				$paginator_agtype->setItemCountPerPage($itemsCount);	
-				
-				//fetch worktype values
-				$table = new \App\Db\Table\Work_WorkAttribute($adapter);
-				$attrs = $table->findWorkAttributeTypesByWorkId($id);
-				$wktyp_attrs = json_decode($attrs, true);
-				
-				//fetch folders
-				$arr_fl = [];
-				$table = new \App\Db\Table\Work_Folder($this->adapter);
-				$wkfl_row = $table->findRecordsByWorkId($id);
-				
-				
-				//var_dump($pub_rows);
-				//die();						
-			}
-        }
+<?php
+$this->headTitle('Edit Work');
+?>
+<?php
+$id;
+if ($request->getqueryParams('id') !== null) {
+    $params  = $request->getqueryParams();
+    $action  = 'work_' . $params['action'];
+    $id      = $params['id'];
+    //fetch name based on id
+    $table   = new \App\Db\Table\Work($adapter);
+    $wk_row  = $table->findRecordById($id);
+    $type_id = $wk_row['type_id'];
+    $status  = $wk_row['status'];
+    //echo 'work with id ' . $id . 'has status ' . $status;            
+    if ($status != 1) {
+        //fetch worktype based on id
+        $table    = new \App\Db\Table\WorkType($adapter);
+        $wk_types = $table->findRecordById($type_id);
+        $wk_type  = $wk_types['type'];
+        
+        //fetch worktypes
+        $table      = new \App\Db\Table\WorkType($this->adapter);
+        $paginator  = $table->fetchAllWorkTypes();
+        $itemsCount = $paginator->getTotalItemCount();
+        $paginator->setItemCountPerPage($itemsCount);
+        
+        //fetch agent types
+        $table            = new \App\Db\Table\AgentType($this->adapter);
+        $paginator_agtype = $table->fetchAgentTypes();
+        $itemsCount       = $paginator->getTotalItemCount();
+        $paginator_agtype->setItemCountPerPage($itemsCount);
+        
+        //fetch worktype values
+        $table       = new \App\Db\Table\Work_WorkAttribute($adapter);
+        $attrs       = $table->findWorkAttributeTypesByWorkId($id);
+        $wktyp_attrs = json_decode($attrs, true);
+        
+        //fetch folders
+        $arr_fl = [];
+        $table    = new \App\Db\Table\Work_Folder($this->adapter);
+        $wkfl_row = $table->findRecordsByWorkId($id);
+        
+        
+        //var_dump($pub_rows);
+        //die();                        
+    }
+}
 ?>
 <script>
 //WorkType Autocomplete

@@ -12,31 +12,31 @@
         </thead>
         <tbody>
 		<?php 
-			$escaper = new Zend\Escaper\Escaper('utf-8'); 
-			foreach($this->rows as $row) : 
-				$output = (array)$row;
-                $params = implode(', ', $output);        
+		$escaper = new Zend\Escaper\Escaper('utf-8'); 
+		foreach($this->rows as $row) : 
+			$output = (array)$row;
+            $params = implode(', ', $output);        
 		?>
         <tr>
-        <td>
-			<?php echo $escaper->escapeHtml($row['field']); ?>			
-		</td>
-		<td>
-			<a href="<?=$this->url('manage_attribute_options')?><?='?id=' . $row['id']?>">Manage Options</a>
-			|
-			<a href="<?=$this->url('merge_duplicate_option')?><?= '?id=' . $row['id'] . '&action=merge' ?>">Merge Duplicate Values</a>
-		</td>
-        <td>                   
-            <a href="<?=$this->url('edit_attribute')?><?='?id=' . $row['id'] . '&action=edit'?>">Edit</a>        
-			|
-			<a href="<?=$this->url('delete_attribute')?><?='?id=' . $row['id'] . '&action=delete'?>">Delete</a>          			
-        </td>
+			<td>
+				<?php echo $escaper->escapeHtml($row['field']); ?>			
+			</td>
+			<td>
+				<a href="<?=$this->url('manage_attribute_options')?><?='?id=' . $row['id']?>">Manage Options</a>
+				|
+				<a href="<?=$this->url('merge_duplicate_option')?><?= '?id=' . $row['id'] . '&action=merge' ?>">Merge Duplicate Values</a>
+			</td>
+			<td>                   
+				<a href="<?=$this->url('edit_attribute')?><?='?id=' . $row['id'] . '&action=edit'?>">Edit</a>        
+				|
+				<a href="<?=$this->url('delete_attribute')?><?='?id=' . $row['id'] . '&action=delete'?>">Delete</a>          			
+			</td>
         </tr>
 		<?php endforeach; ?>
         </tbody>
-		</table>
-		<?php if($this->countp > 1) { ?>
-        <form method="get" action="page">
+	</table>
+	<?php if($this->countp > 1) { ?>
+		<form method="get" action="page">
             <?=$this->paginationControl($this->rows,
                 'Sliding',
                 'app::controls',
@@ -46,5 +46,5 @@
                 ]
             );?>
         </form>
-        <?php } ?>
+    <?php } ?>
 </div>

@@ -266,8 +266,8 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             ['id' => $id]
         );
     }
-	
-	public function getPendingReviewWorksCount()
+
+    public function getPendingReviewWorksCount()
     {
         $callback = function ($select) {
             $select->columns(

@@ -36,10 +36,10 @@
                         <a href="<?= $this->url('delete_publisher') ?><?= '?id=' . $row['id'] . '&action=delete' ?>">Delete</a>
                     </td>
                 </tr>
-<?php endforeach; ?>
+			<?php endforeach; ?>
         </tbody>
     </table>
-        <?php if ($this->countp > 1) { ?>
+    <?php if ($this->countp > 1) { ?>
         <form method="get" action="page">
             <?=
             $this->paginationControl($this->rows, 'Sliding', 'app::controls', [
