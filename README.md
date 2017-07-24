@@ -20,6 +20,8 @@ Installation:
 Download/Clone the project from github
 Goto prj directory path, type composer install
 
+Change the paths accordingly in config\autoload folder.
+
 Database Installation:
 ------------------------
 1. Goto 'path of\mysql\bin' and type mysql -u username -p password
