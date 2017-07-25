@@ -77,7 +77,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         return new Paginator($paginatorAdapter);
     }
 
-    public function exportClassification($parent)
+    public function exportClassification()
     {
         $fl = new self($this->adapter);
         $callback = function ($select) {

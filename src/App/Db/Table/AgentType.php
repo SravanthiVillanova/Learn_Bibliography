@@ -104,8 +104,7 @@ class AgentType extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         $paginatorAdapter = new DbSelect($select, $this->adapter);
-        $rows = new Paginator($paginatorAdapter);
 
-        return $rows;
+        return new Paginator($paginatorAdapter);
     }
 }

@@ -5,8 +5,11 @@ if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();
     $action = $params['action'];
 }
+$url_components = parse_url($this->serverUrl());
+$url_host = $url_components['scheme'] . '://' . $url_components['host'];
 ?>
 <script>
+	var ur = <?php echo json_encode($url_host); ?>;
     function addMergeButton(context) {
         if (($('#mrg_src_id', context).val().length != 0) && ($('#mrg_dest_id', context).val().length != 0)) {
             $('#submit_clear', context).before('<button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Merge</button>');
@@ -21,7 +24,8 @@ if ($request->getqueryParams('action') !== null) {
             var find_srcag = $('#find_src_agent').val();
             $.ajax({
                 method: 'post',
-                url: 'http://localhost<?= $this->url("get_work_details") ?>',
+                //url: 'http://localhost<?= $this->url("get_work_details") ?>',
+				url: ur + '<?=$this->url('get_work_details')?>',
                 data: {
                     ag_name: find_srcag
                 },
@@ -72,7 +76,8 @@ if ($request->getqueryParams('action') !== null) {
             var find_dstag = $('#find_dest_agent').val();
             $.ajax({
                 method: 'post',
-                url: 'http://localhost<?= $this->url("get_work_details") ?>',
+                //url: 'http://localhost<?= $this->url("get_work_details") ?>',
+				url: ur + '<?=$this->url('get_work_details')?>',
                 data: {
                     ag_name: find_dstag
                 },

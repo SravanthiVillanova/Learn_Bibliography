@@ -5,8 +5,11 @@ if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();
     $action = $params['action'];
 }
+$url_components = parse_url($this->serverUrl());
+$url_host = $url_components['scheme'] . '://' . $url_components['host'];
 ?>
 <script>
+	var ur = <?php echo json_encode($url_host); ?>;
     _select = '';
     function bindSourceClassification(that, context)
     {
@@ -37,7 +40,8 @@ if ($request->getqueryParams('action') !== null) {
 
         $.ajax({
             method: 'post',
-            url: 'http://localhost<?= $this->url('get_work_details') ?>',
+            //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+			url: ur + '<?=$this->url('get_work_details')?>',
             data: {
                 folder_Id: folder_Id
             },
@@ -100,7 +104,8 @@ if ($request->getqueryParams('action') !== null) {
 
         $.ajax({
             method: 'post',
-            url: 'http://localhost<?= $this->url('get_work_details') ?>',
+            //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+			url: ur + '<?=$this->url('get_work_details')?>',
             data: {
                 folder_Id: folder_Id
             },
@@ -162,7 +167,8 @@ if ($request->getqueryParams('action') !== null) {
 
                 $.ajax({
                     method: 'post',
-                    url: 'http://localhost<?= $this->url('get_work_details') ?>',
+                    //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+					url: ur + '<?=$this->url('get_work_details')?>',
                     data: {
                         folder_Id: folder_Id
                     },
@@ -221,7 +227,8 @@ if ($request->getqueryParams('action') !== null) {
 
                 $.ajax({
                     method: 'post',
-                    url: 'http://localhost<?= $this->url('get_work_details') ?>',
+                    //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+					url: ur + '<?=$this->url('get_work_details')?>',
                     data: {
                         folder_Id: folder_Id
                     },
@@ -284,7 +291,8 @@ if ($request->getqueryParams('action') !== null) {
 
             $.ajax({
                 method: 'post',
-                url: 'http://localhost<?= $this->url("get_work_details") ?>',
+                //url: 'http://localhost<?= $this->url("get_work_details") ?>',
+				url: ur + '<?=$this->url('get_work_details')?>',
                 data: {
                     fl_id: src_id
                 },
@@ -303,7 +311,8 @@ if ($request->getqueryParams('action') !== null) {
                     });
                     $.ajax({
                         method: 'post',
-                        url: 'http://localhost<?= $this->url('get_work_details') ?>',
+                        //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+						url: ur + '<?=$this->url('get_work_details')?>',
                         data: {
                             fl_id: dst_id
                         },

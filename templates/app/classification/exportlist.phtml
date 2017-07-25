@@ -1,9 +1,9 @@
 <?php $this->headTitle('Exportlist Classification'); ?>
 <?php //$this->layout()->instructions = "";  ?>
 <?php
-$parent = NULL;
+//$parent = NULL;
 $table = new \App\Db\Table\Folder($this->adapter);
-$table->exportClassification($parent);
+$table->exportClassification();
 ?>
 <div class="row">
     <div class="col-md-4">

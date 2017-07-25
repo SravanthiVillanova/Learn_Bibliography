@@ -15,11 +15,6 @@
                     $row = $table->findRecordById($id);
                     $title = $row['title'];
                     echo "<p>$title</p>";
-                    //fetch no of works associated
-                    /*$table = new \App\Db\Table\Work($this->adapter);
-                    $paginator = $table->countRecordsByWorkType($id);
-                    $cnt = $paginator->getTotalItemCount();
-                    echo "<p><b>There are $cnt works associated with it.</b></p>";*/
                 } 
             ?>
         <ul>

@@ -11,8 +11,7 @@ if ($request->getqueryParams('id') !== null) {
     $table   = new \App\Db\Table\Work($adapter);
     $wk_row  = $table->findRecordById($id);
     $type_id = $wk_row['type_id'];
-    $status  = $wk_row['status'];
-    //echo 'work with id ' . $id . 'has status ' . $status;            
+    $status  = $wk_row['status'];          
     if ($status != 1) {
         //fetch worktype based on id
         $table    = new \App\Db\Table\WorkType($adapter);
@@ -46,8 +45,11 @@ if ($request->getqueryParams('id') !== null) {
         //die();                        
     }
 }
+$url_components = parse_url($this->serverUrl());
+$url_host = $url_components['scheme'] . '://' . $url_components['host'];
 ?>
 <script>
+var ur = <?php echo json_encode($url_host); ?>;
 //WorkType Autocomplete
 function bindWorkTypeAttributes(context)
 {
@@ -56,7 +58,8 @@ function bindWorkTypeAttributes(context)
 	var worktype_Id = $('#edit_work_type').val();
 	$.ajax({
         method: 'post',
-        url: 'http://localhost<?=$this->url('get_work_details')?>',
+        //url: 'http://localhost<?=$this->url('get_work_details')?>',
+		url: ur + '<?=$this->url('get_work_details')?>',
 		data: {
 			worktype_Id: worktype_Id
 		},
@@ -130,7 +133,8 @@ function bindWorkTypeAttributes(context)
 						//console.log(attribute_Id);
 						$.ajax({
 							method: 'post',
-							url: 'http://localhost<?=$this->url('get_work_details')?>',
+							//url: 'http://localhost<?=$this->url('get_work_details')?>',
+							url: ur + '<?=$this->url('get_work_details')?>',
 							data: {
 								option: option,
 								attribute_Id: attribute_Id
@@ -180,7 +184,8 @@ function bindPublisherAutocomplete(context) {
 	//Publisher autocomplete
 	$(function() {
 		$( "#pubName", context).autocomplete({
-			source: 'http://localhost<?=$this->url('get_work_details')?>?autofor=publisher',
+			//source: 'http://localhost<?=$this->url('get_work_details')?>?autofor=publisher',
+			source: ur + '<?=$this->url('get_work_details')?>?autofor=publisher',
 			autoFocus:true,
 			select: function(event, ui){
                 $('#pubName', context).val(ui.item.label);
@@ -196,7 +201,8 @@ function bindPublisherAutocomplete(context) {
 		//arr = [];
 		$.ajax({
         method: 'post',
-        url: 'http://localhost<?=$this->url('get_work_details')?>',
+        //url: 'http://localhost<?=$this->url('get_work_details')?>',
+		url: ur + '<?=$this->url('get_work_details')?>',
 		data: {
 			publisher_Id: publisher_Id
 		},
@@ -237,7 +243,8 @@ function bindAgentAutocomplete(context)
 		//agent first name autocomplete
 		$(function() {
 			$( "#agent_FirstName", context).autocomplete({
-				source: 'http://localhost<?=$this->url('get_work_details')?>?autofor=agent',
+				//source: 'http://localhost<?=$this->url('get_work_details')?>?autofor=agent',
+				source: ur + '<?=$this->url('get_work_details')?>?autofor=agent',
 				autoFocus:true,
 				select: function(event, ui){
 					$('#agent_FirstName', context).val(ui.item.label);
@@ -295,7 +302,8 @@ function bindSourceClassification(that,context)
 
 	$.ajax({
 		method: 'post',
-		url: 'http://localhost<?=$this->url('get_work_details')?>',
+		//url: 'http://localhost<?=$this->url('get_work_details')?>',
+		url: ur + '<?=$this->url('get_work_details')?>',
 		data: {
 			folder_Id: folder_Id
 		},
@@ -456,7 +464,8 @@ $(document).ready(function () {
 
 			$.ajax({
 				method: 'post',
-				url: 'http://localhost<?=$this->url('get_work_details')?>',
+				//url: 'http://localhost<?=$this->url('get_work_details')?>',
+				url: ur + '<?=$this->url('get_work_details')?>',
 				data: {
 					folder_Id: folder_Id
 				},
@@ -518,10 +527,8 @@ $(document).ready(function () {
 });
 </script>
 <?php
-	//echo "here stat is " . $status;
 	if($status != 1)
 	{
-		//echo "yes stat";
 ?>
 <div class="col-md-7">
 <form id="edit-work-data" class="form-horizontal" method="POST" action="<?=$this->url('manage_work')?>">
@@ -724,7 +731,7 @@ $(document).ready(function () {
 		//$pub_rows = $table->findWorkPubRecords($id);
 		if(count($pub_rows) != 0)
 		{
-			echo "<pre>"; print_r($pub_rows); echo "</pre>";
+			//echo "<pre>"; print_r($pub_rows); echo "</pre>";
 			for($i = 0;$i < count($pub_rows);$i++)
 			{
 		?>
@@ -813,7 +820,7 @@ $(document).ready(function () {
 		$ag_rows = $table->findRecordByWorkId($id);
 		if(count($ag_rows) > 0)
 		{
-			echo "<pre>"; print_r($ag_rows); echo "</pre>";
+			//echo "<pre>"; print_r($ag_rows); echo "</pre>";
 			for($i = 0;$i < count($ag_rows);$i++)
 			{
 		?>		<tr>
@@ -977,6 +984,7 @@ $(document).ready(function () {
 			//echo "<pre>"; print_r($wktyp_attrs); echo "</pre>";
 		?>
 		<script>
+		var ur = <?php echo json_encode($url_host); ?>;
 		function setValues(context)
 		{
 			var title = "";
@@ -1019,12 +1027,12 @@ $(document).ready(function () {
 					title =  <?php echo json_encode($wktyp_attrs[$i]['value']); ?>;
 					if(title == "true")
 					{
-						console.log("true");
+						//console.log("true");
 						$('input[id="' + <?php echo json_encode("t:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').prop("checked",true);
 					}
 					if(title == "false")
 					{
-						console.log("false");
+						//console.log("false");
 						$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').css("background","#8ec252");
 						$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').prop("checked",true);
 					}
@@ -1049,7 +1057,8 @@ $(document).ready(function () {
 			//alert("work type id is " + worktype_Id);
 			$.ajax({
 				method: 'post',
-				url: 'http://localhost<?=$this->url('get_work_details')?>',
+				//url: 'http://localhost<?=$this->url('get_work_details')?>',
+				url: ur + '<?=$this->url('get_work_details')?>',
 				data: {
 					worktype_Id: worktype_Id
 				},
@@ -1123,7 +1132,8 @@ $(document).ready(function () {
 								//console.log(attribute_Id);
 								$.ajax({
 									method: 'post',
-									url: 'http://localhost<?=$this->url('get_work_details')?>',
+									//url: 'http://localhost<?=$this->url('get_work_details')?>',
+									url: ur + '<?=$this->url('get_work_details')?>',
 									data: {
 										option: option,
 										attribute_Id: attribute_Id

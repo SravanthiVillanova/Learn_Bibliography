@@ -11,8 +11,13 @@ $table = new \App\Db\Table\AgentType($this->adapter);
 $paginator_agtype = $table->fetchAgentTypes();
 $itemsCount_ag = $paginator_agtype->getTotalItemCount();
 $paginator_agtype->setItemCountPerPage($itemsCount_ag);
+
+//get url host
+$url_components = parse_url($this->serverUrl());
+$url_host = $url_components['scheme'] . '://' . $url_components['host'];
 ?>
 <script>
+	var ur = <?php echo json_encode($url_host); ?>;
     function bindPublisherAutocomplete(context) {
         //publisher enable/disable fields
         $("#pubLocation", context).prop("disabled", "disabled");
@@ -20,7 +25,8 @@ $paginator_agtype->setItemCountPerPage($itemsCount_ag);
         //Publisher autocomplete
         $(function() {
             $("#pubName", context).autocomplete({
-                source: 'http://localhost<?= $this->url('get_work_details ') ?>?autofor=publisher',
+                //source: 'http://localhost<?= $this->url('get_work_details') ?>?autofor=publisher',
+				source: ur + '<?=$this->url('get_work_details')?>?autofor=publisher',
                 autoFocus: true,
                 select: function(event, ui) {
                     $('#pubName', context).val(ui.item.label);
@@ -36,7 +42,8 @@ $paginator_agtype->setItemCountPerPage($itemsCount_ag);
             //arr = [];
             $.ajax({
                 method: 'post',
-                url: 'http://localhost<?= $this->url('get_work_details ') ?>',
+                //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+				url: ur + '<?=$this->url('get_work_details')?>',
                 data: {
                     publisher_Id: publisher_Id
                 },
@@ -72,7 +79,8 @@ $paginator_agtype->setItemCountPerPage($itemsCount_ag);
             //agent first name autocomplete
             $(function() {
                 $("#agent_FirstName", context).autocomplete({
-                    source: 'http://localhost<?= $this->url('get_work_details ') ?>?autofor=agent',
+                    source: 'http://localhost<?= $this->url('get_work_details') ?>?autofor=agent',
+					source: ur + '<?=$this->url('get_work_details')?>?autofor=agent',
                     autoFocus: true,
                     select: function(event, ui) {
                         $('#agent_FirstName', context).val(ui.item.label);
@@ -104,7 +112,8 @@ $paginator_agtype->setItemCountPerPage($itemsCount_ag);
         var worktype_Id = $('#work_type').val();
         $.ajax({
             method: 'post',
-            url: 'http://localhost<?= $this->url('get_work_details ') ?>',
+            //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+			url: ur + '<?=$this->url('get_work_details')?>',
             data: {
                 worktype_Id: worktype_Id
             },
@@ -173,7 +182,8 @@ $paginator_agtype->setItemCountPerPage($itemsCount_ag);
 							//console.log(attribute_Id);
 							$.ajax({
 								method: 'post',
-								url: 'http://localhost<?= $this->url('get_work_details ') ?>',
+								//url: 'http://localhost<?= $this->url('get_work_details') ?>',
+								url: ur + '<?=$this->url('get_work_details')?>',
 								data: {
 									option: option,
 									attribute_Id: attribute_Id
@@ -242,7 +252,8 @@ $paginator_agtype->setItemCountPerPage($itemsCount_ag);
 
         $.ajax({
             method: 'post',
-            url: 'http://localhost<?= $this->url('get_work_details ') ?>',
+            //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+			url: ur + '<?=$this->url('get_work_details')?>',
             data: {
                 folder_Id: folder_Id
             },
@@ -309,9 +320,10 @@ $paginator_agtype->setItemCountPerPage($itemsCount_ag);
                     '<select class="form-control agent_type" name="agent_type[]" id="agent_type">' +
                     '<option value=""></option>' +
                     <?php
-					foreach ($paginator_agtype as $row) :
+					foreach ($paginator_agtype as $ag_row) :
+					//print_r($row);
 					?>
-						'<option value="<?= $row['id '] ?>"><?php echo $row['type ']; ?></option>' +
+						'<option value="<?= $ag_row['id'] ?>"><?php echo $ag_row['type']; ?></option>' +
                     <?php endforeach; ?>
                     '</select>' +
                     '</td>' +
@@ -347,7 +359,7 @@ $paginator_agtype->setItemCountPerPage($itemsCount_ag);
 					$fl_siblings = $table->getFoldersWithNullParent();
 					foreach ($fl_siblings as $row) :
 					?>
-						'<option value="<?= $row['id '] ?>"><?php echo $row['text_fr ']; ?></option>' +
+						'<option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>' +
                     <?php endforeach; ?>
                     '</select>' +
                     '</td>' +
@@ -389,7 +401,8 @@ $paginator_agtype->setItemCountPerPage($itemsCount_ag);
 
                 $.ajax({
                     method: 'post',
-                    url: 'http://localhost<?= $this->url('get_work_details ') ?>',
+                    //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+					url: ur + '<?=$this->url('get_work_details')?>',
                     data: {
                         folder_Id: folder_Id
                     },
@@ -686,7 +699,7 @@ $paginator_agtype->setItemCountPerPage($itemsCount_ag);
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Save</button>
-                <button type="submit" class="btn btn-default" name="submit_cancel" value="Cancel">Cancel</button>
+                <button type="submit" class="btn btn-default" name="submit_cancel" value="Cancel" formnovalidate>Cancel</button>
             </div>
         </div>
     </form>

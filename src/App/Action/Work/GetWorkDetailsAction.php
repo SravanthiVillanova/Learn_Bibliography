@@ -177,6 +177,7 @@ class GetWorkDetailsAction
                 $table = new \App\Db\Table\Page_Instructions($this->adapter);
                 $table->insertRecord($pg_nm, $ins_str);
             }
+			exit;
         }
     }
 }

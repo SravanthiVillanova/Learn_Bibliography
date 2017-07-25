@@ -183,6 +183,9 @@
  </div> 
 
  <?php
+	$url_components = parse_url($this->serverUrl());
+	$url_host = $url_components['scheme'] . '://' . $url_components['host'];
+	
 	$str = "";
     $page = basename($this->url());
 
@@ -279,31 +282,6 @@ $(document).ready(function () {
 		$('#ins_submit').show();
 		return false;
 	}
-	$('#ins_submit').on('click', function(){
-		//alert('ins save clicked');
-		var ins_text = $('#instructions').val();
-		var pg_id = $('#page_id').val();
-		var pg_nm = $('#page_name').val();
-		//alert(ins_text);
-		$.ajax({
-				method: 'post',
-				url: 'http://localhost<?=$this->url('get_work_details')?>',
-				data: {
-					ins_text: ins_text,
-					pg_id: pg_id,
-					pg_nm: pg_nm
-				},
-				dataType: "json", 
-				cache: false,
-				success: function(data)
-				{	
-				},
-				error: function (data) { 
-					//$("#Classification", context).html('<p>No Options</p>');
-				}
-			});					
-		return false;
-	});
 });
 </script>
         <main class="container">  
@@ -319,6 +297,37 @@ $(document).ready(function () {
 				</div>
 			   </div>	
         </main>
+		<script>
+		$(document).ready(function () {
+			var ur = <?php echo json_encode($url_host); ?>;
+			$('#ins_submit').on('click', function(){
+				//console.log('ins save clicked');
+				var ins_text = $('#instructions').val();
+				var pg_id = $('#page_id').val();
+				var pg_nm = $('#page_name').val();				
+				//alert(ins_text);
+				$.ajax({
+					method: 'post',
+					//url: 'http://localhost<?=$this->url('get_work_details')?>',
+					url: ur + '<?=$this->url('get_work_details')?>',
+					data: {
+						ins_text: ins_text,
+						pg_id: pg_id,
+						pg_nm: pg_nm
+					},
+					dataType: "json", 
+					cache: false,
+					success: function(data)
+					{	
+					},
+					error: function (data) { 
+					//$("#Classification", context).html('<p>No Options</p>');
+					}
+				});					
+				return false;
+			});
+		});
+		</script>
 </div>
 
 </body>
