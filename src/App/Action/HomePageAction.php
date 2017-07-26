@@ -8,7 +8,6 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 
-
 class HomePageAction
 {
     private $router;

@@ -208,7 +208,7 @@ class LoginPageAction
             //$baseUrl = $uri->getScheme() . '://' . $uri->getHost() . '/' . $uri->getPath();
             $toUrl = 'http'.'://'.$reqParams['HTTP_HOST'].'/'.$reqParams['REDIRECT_URL'];
             //var_dump($toUrl . '?redirect_to=/bibliography_new/public/'); //die();
-           return $toUrl.'?redirect_to=/bibliography_new/public/';
+           return $toUrl.'?redirect_to=/VuBib/public/';
         }
         if (array_key_exists('redirect_to', $request->getQueryParams())) {
             return $request->getQueryParams()['redirect_to'];

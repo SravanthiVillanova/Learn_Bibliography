@@ -30,29 +30,27 @@ class ChangePasswordPreferencesAction
         if ($request->getMethod() == 'POST') {
             $post = $request->getParsedBody();
         }
-		
-       if (!empty($post['action'])) {
-           //change user password
-            if ($post['action'] == 'change_pwd') {
-				if(!is_null($post['user']))
-				{
-                    if ($post['submit_Save'] == 'Save') {
-						$table = new \App\Db\Table\User($this->adapter);
-						$table->changePassword($post['user'],$post['change_pwd']);
-					}
-				}
-            }
-       }
-	   
-	   return new HtmlResponse(
-		$this->template->render(
-			'app::preferences::changepassword_preferences', 
-			[
-				'request' => $request, 
-				'adapter' => $this->adapter
-			]
-		)
-	  );
         
+        if (!empty($post['action'])) {
+            //change user password
+            if ($post['action'] == 'change_pwd') {
+                if (!is_null($post['user'])) {
+                    if ($post['submit_Save'] == 'Save') {
+                        $table = new \App\Db\Table\User($this->adapter);
+                        $table->changePassword($post['user'], $post['change_pwd']);
+                    }
+                }
+            }
+        }
+       
+        return new HtmlResponse(
+        $this->template->render(
+            'app::preferences::changepassword_preferences',
+            [
+                'request' => $request,
+                'adapter' => $this->adapter
+            ]
+        )
+      );
     }
 }

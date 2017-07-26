@@ -72,65 +72,65 @@ class ManageClassificationAction
             }
             //move folder
             if ($post['action'] == 'move') {
-				if ($post['submit_save'] == 'Save') {
-					$lg = count($post['select_fl']);
-					if ($post['select_fl'][$lg - 1] == '' || $post['select_fl'][$lg - 1] == 'none') {
-						$fl_to_move = $post['select_fl'][$lg - 2];
-					} else {
-						$fl_to_move = $post['select_fl'][$lg - 1];
-					}
+                if ($post['submit_save'] == 'Save') {
+                    $lg = count($post['select_fl']);
+                    if ($post['select_fl'][$lg - 1] == '' || $post['select_fl'][$lg - 1] == 'none') {
+                        $fl_to_move = $post['select_fl'][$lg - 2];
+                    } else {
+                        $fl_to_move = $post['select_fl'][$lg - 1];
+                    }
 
-					$table = new \App\Db\Table\Folder($this->adapter);
-					$table->moveFolder($post['id'], $fl_to_move);
-				}
+                    $table = new \App\Db\Table\Folder($this->adapter);
+                    $table->moveFolder($post['id'], $fl_to_move);
+                }
             }
             //merge folder
             if ($post['action'] == 'merge_classification') {
-				if ($post['submit_save'] == 'Save') {
-					$src_cnt = count($post['select_source_fl']);
-					$dst_cnt = count($post['select_dest_fl']);
+                if ($post['submit_save'] == 'Save') {
+                    $src_cnt = count($post['select_source_fl']);
+                    $dst_cnt = count($post['select_dest_fl']);
 
-					if ($post['select_source_fl'][$src_cnt - 1] == '') {
-						$source_id = $post['select_source_fl'][$src_cnt - 2];
-					} else {
-						$source_id = $post['select_source_fl'][$src_cnt - 1];
-					}
+                    if ($post['select_source_fl'][$src_cnt - 1] == '') {
+                        $source_id = $post['select_source_fl'][$src_cnt - 2];
+                    } else {
+                        $source_id = $post['select_source_fl'][$src_cnt - 1];
+                    }
 
-					if ($post['select_dest_fl'][$dst_cnt - 1] == '') {
-						$dest_id = $post['select_dest_fl'][$dst_cnt - 2];
-					} else {
-						$dest_id = $post['select_dest_fl'][$dst_cnt - 1];
-					}
-					// Move children
-					$table = new \App\Db\Table\Folder($this->adapter);
-					$table->mergeFolder($source_id, $dest_id);
-	
-					//first delete potential duplicates to avoid key violation
-					$table = new \App\Db\Table\Work_Folder($this->adapter);
-					$table->mergeWkFlDelete($source_id, $dest_id);
+                    if ($post['select_dest_fl'][$dst_cnt - 1] == '') {
+                        $dest_id = $post['select_dest_fl'][$dst_cnt - 2];
+                    } else {
+                        $dest_id = $post['select_dest_fl'][$dst_cnt - 1];
+                    }
+                    // Move children
+                    $table = new \App\Db\Table\Folder($this->adapter);
+                    $table->mergeFolder($source_id, $dest_id);
+    
+                    //first delete potential duplicates to avoid key violation
+                    $table = new \App\Db\Table\Work_Folder($this->adapter);
+                    $table->mergeWkFlDelete($source_id, $dest_id);
 
-					// Move works
-					$table = new \App\Db\Table\Work_Folder($this->adapter);
-					$table->mergeWkFlUpdate($source_id, $dest_id);
+                    // Move works
+                    $table = new \App\Db\Table\Work_Folder($this->adapter);
+                    $table->mergeWkFlUpdate($source_id, $dest_id);
 
-					// Track merge history -- update any previous history, then add the current merge:
-					$table = new \App\Db\Table\Folder_Merge_History($this->adapter);
-					$table->mergeFlMgHistUpdate($source_id, $dest_id);
+                    // Track merge history -- update any previous history, then add the current merge:
+                    $table = new \App\Db\Table\Folder_Merge_History($this->adapter);
+                    $table->mergeFlMgHistUpdate($source_id, $dest_id);
 
-					// Track merge history -- update any previous history, then add the current merge:
-					$table = new \App\Db\Table\Folder_Merge_History($this->adapter);
-					$table->insertRecord($source_id, $dest_id);
+                    // Track merge history -- update any previous history, then add the current merge:
+                    $table = new \App\Db\Table\Folder_Merge_History($this->adapter);
+                    $table->insertRecord($source_id, $dest_id);
 
-					// Purge
-					$table = new \App\Db\Table\Folder($this->adapter);
-					$table->mergeDelete($source_id);
-				}
+                    // Purge
+                    $table = new \App\Db\Table\Folder($this->adapter);
+                    $table->mergeDelete($source_id);
+                }
             }
-			//Cancel
+            //Cancel
             if ($post['submit_cancel'] == 'Cancel') {
                 $table = new \App\Db\Table\Folder($this->adapter);
-				$paginator = $table->findParent();
-				
+                $paginator = $table->findParent();
+                
                 return $paginator;
             }
         }

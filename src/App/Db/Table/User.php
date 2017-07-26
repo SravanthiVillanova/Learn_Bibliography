@@ -152,16 +152,16 @@ class User extends \Zend\Db\TableGateway\TableGateway
         return $row;
     }
     
-	public function changePassword($id,$pwd)
-	{
-		$this->update(
+    public function changePassword($id, $pwd)
+    {
+        $this->update(
             [
                 'password' => md5($pwd),
             ],
             ['id' => $id]
             );
-	}
-	
+    }
+    
     public function isAdmin()
     {
         echo 'user is';
