@@ -77,7 +77,7 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         $select->order('rank');
 
         $paginatorAdapter = new Paginator(new DbSelect($select, $this->adapter));
-        $cnt = $paginatorAdapter->getTotalItemCount();
+        //$cnt = $paginatorAdapter->getTotalItemCount();
 
         return $paginatorAdapter;
     }

@@ -164,6 +164,49 @@ class GetWorkDetailsAction
             echo json_encode($output);
             exit;
         }
+		if (isset($_POST['pub_name'])) {
+            $no_of_wks = [];
+            $name = $_POST['pub_name'];
+            $table = new \App\Db\Table\Publisher($this->adapter);
+            $publisher_row = $table->findRecords($name);
+			foreach($publisher_row as $row) :
+				$pub_row[] = $row;
+			endforeach;
+            foreach ($pub_row as $row) :
+                $table = new \App\Db\Table\WorkPublisher($this->adapter);
+				$wks = $table->findRecordByPublisherId($row['id']);
+				$no_wks = count($wks);
+				$no_of_wks[] = $no_wks;
+            endforeach;
+            for ($i = 0; $i < count($no_of_wks); ++$i) {
+                $pub_row[$i]['works'] = $no_of_wks[$i];
+            }
+            $output = array('pub_row' => $pub_row);
+            echo json_encode($output);
+            exit;
+        }
+		if (isset($_POST['publisher_Id_locs'])) {
+            $pub_id = $_POST['publisher_Id_locs'];
+            $table = new \App\Db\Table\PublisherLocation($this->adapter);
+            $pub_loc_rows = $table->getPublisherLocations($pub_id);
+            foreach ($pub_loc_rows as $i => $row) {
+                $pub_loc_rows[$i]['value'] = $row['location'];
+                $pub_loc_rows[$i]['label'] = $row['location'];
+                $pub_loc_rows[$i]['id'] = $row['id'];
+            }
+			foreach ($pub_loc_rows as $row) :
+				$table = new \App\Db\Table\WorkPublisher($this->adapter);
+				$wks = $table->findRecordByLocationId($row['id']);
+				$no_wks = count($wks);
+				$no_of_wks[] = $no_wks;				
+			endforeach;
+			for ($i = 0; $i < count($no_of_wks); ++$i) {
+                $pub_loc_rows[$i]['works'] = $no_of_wks[$i];
+            }
+            $output = array('pub_locs' => $pub_loc_rows);
+            echo json_encode($output);
+            exit;
+        }
         if (isset($_POST['ins_text'])) {
             $ins_str = $_POST['ins_text'];
             if (!empty($_POST['pg_id'])) {

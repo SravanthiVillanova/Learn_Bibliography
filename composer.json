@@ -35,7 +35,8 @@
         "phpunit/phpunit": "^4.8",
         "squizlabs/php_codesniffer": "^2.3",
 		"phpmd/phpmd": "2.4.2",
-		"friendsofphp/php-cs-fixer": "^1.12"
+		"friendsofphp/php-cs-fixer": "^1.12",
+		"phing/phing": "2.15.2"
     },
     "autoload": {
         "psr-4": {

@@ -165,4 +165,20 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
         //var_dump($rows);
         return $rows;
     }
+	
+	public function movePublisher($pub_src_id, $pub_dest_id, $src_loc_id)
+	{
+		//update publoc set pubid = destpubid where pubid=srcpubid and id=$source_locid
+		$this->update(
+            [
+                'publisher_id' => $pub_dest_id,
+            ],
+            ['publisher_id' => $pub_src_id, 'id' => $src_loc_id]
+        );
+	}
+	
+	public function mergePublisher($src_loc_id)
+    {
+        $this->delete(['id' => $src_loc_id]);
+    }
 }

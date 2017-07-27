@@ -114,7 +114,7 @@ class ManageWorkTypeAction
         }
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(7);
-        $allItems = $paginator->getTotalItemCount();
+        //$allItems = $paginator->getTotalItemCount();
         $countPages = $paginator->count();
 
         $currentPage = isset($query['page']) ? $query['page'] : 1;

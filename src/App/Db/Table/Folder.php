@@ -153,7 +153,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         return $rows;
     }
 
-    public function getHierarchyRecords($id)
+    /*public function getHierarchyRecords($id)
     {
         //echo 'id is ' . $id;
         $rowset = $this->select(array('id' => $id));
@@ -167,9 +167,9 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
             $select->where->equalTo('parent_id', $parent);
         };
         $rows = $this->select($callback)->toArray();
-        echo "<pre>";print_r($rows);echo "</pre>";*/
+        echo "<pre>";print_r($rows);echo "</pre>";
         //return $row;
-    }
+    }*/
 
     public function getTrail($id, $r)
     {

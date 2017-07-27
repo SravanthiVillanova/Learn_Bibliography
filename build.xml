@@ -1,15 +1,36 @@
 <?xml version="1.0"?>
 <!-- build xml -->
-<project name="bibliography_new" basedir="." default="main">
-<property name="tmp" value="/tmp" />
+<project name="VuBib" basedir="." default="main">
+<property name="tmp" value="./tmp" />
 <property name="package"  value="${phing.project.name}" override="true" />
 <property name="builddir" value="${tmp}/build/${phing.project.name}" override="true" />
 <property name="srcdir"   value="${project.basedir}" override="true" />
-<property name="php-cs-fixers" value="no_blank_lines_before_namespaces,function_call_space,trailing_spaces,unused_use,lowercase_keywords,encoding,parenthesis,php_closing_tag,visibility,duplicate_semicolon,extra_empty_lines,no_blank_lines_after_class_opening,no_empty_lines_after_phpdocs,operators_spaces,spaces_before_semicolon,ternary_spaces,concat_with_spaces,short_array_syntax,phpdoc_no_access,remove_leading_slash_use,eof_ending" />
 
-<!--<target name="php-cs-fixer">
-    <exec command="${srcdir}/vendor/bin/php-cs-fixer fix ${srcdir}/src --fixers=${php-cs-fixers} --verbose" passthru="true" escape="false" />
-</target>-->
+<!-- Main Target -->
+  <target name="main" description="main target">
+    <trycatch property="exceptionmsg">
+      <try>
+        <phingcall target="ci-tasks" />
+      </try>
+      <catch>
+        
+      </catch>
+    </trycatch>
+  </target>
 
+<!-- Continuous Integration Tasks -->
+  <target name="ci-tasks" description="continuous integration tasks">
+
+    <!-- Create dirs -->
+    <mkdir dir="${builddir}/reports"/>
+
+    <!-- Call standard tasks -->
+    <phingcall target="phpmd"/>
+  </target>
+
+<!-- Report rule violations with PHPMD (mess detector) -->
+  <target name="phpmd">
+    <exec command="${srcdir}/vendor/bin/phpmd ${srcdir}/src xml ${srcdir}/test/phpmd.xml --exclude ${srcdir}/test --reportfile ${builddir}/reports/phpmd.xml" />
+  </target>
 
 </project>

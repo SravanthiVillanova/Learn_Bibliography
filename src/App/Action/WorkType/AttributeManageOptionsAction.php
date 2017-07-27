@@ -89,16 +89,16 @@ class AttributeManageOptionsAction
     {
         $countPages = 0;
         $query = $request->getqueryParams();
-        if (!empty($query['action'])) {
+        /*if (!empty($query['action'])) {
             $action = $query['action'];
-        }
+        }*/
         $post = [];
         if ($request->getMethod() == 'POST') {
             $post = $request->getParsedBody();
         }
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(10);
-        $allItems = $paginator->getTotalItemCount();
+        //$allItems = $paginator->getTotalItemCount();
         $countPages = $paginator->count();
 
         $currentPage = isset($query['page']) ? $query['page'] : 1;

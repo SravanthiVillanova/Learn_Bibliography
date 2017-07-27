@@ -42,12 +42,12 @@ class LoginPageAction
     /**
      * @var Form
      */
-    private $form;
+    //private $form;
 
     /**
      * @var AuthUserInterface
      */
-    private $authEntity;
+    //private $authEntity;
 
     /**
      * @var string
@@ -72,44 +72,30 @@ class LoginPageAction
         Router\RouterInterface $router,
         Template\TemplateRendererInterface $template,
         UserAuthenticationInterface $userAuthenticationService,
-        //AuthUserInterface $authenticationEntity,
         $defaultRedirectUri, Adapter $adapter, $session
     ) {
         $this->router = $router;
         $this->template = $template;
-        //$this->authEntity = $authenticationEntity;
         $this->userAuthenticationService = $userAuthenticationService;
         $this->defaultRedirectUri = $defaultRedirectUri;
         $this->adapter = $adapter;
         $this->session = $session;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param callable|null          $next
-     *
-     * @return HtmlResponse
-     */
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
-    ) {
-        if ($request->getMethod() == 'POST') {
-            //$user = false; // TODO -- get user
-            $post = [];
-            $post = $request->getParsedBody();
-            if (!empty($post['action'])) {
-                if ($post['action'] == 'login') {
+	protected function doLogin($post)
+	{
+		$user1 = [];
+		if ($post['action'] == 'login') {
                     $table = new \App\Db\Table\User($this->adapter);
                     $user = $table->checkUserAuthentication($post['user_name'], $post['user_pwd']);
-                        //$user1 = array_values($user);
-                        $user1 = array_reduce($user, 'array_merge', array());
+                    $user1 = array_reduce($user, 'array_merge', array());
                 }
-            }
-            if (!(is_null($user1['id']))) {
-                $this->session->id = $user1['id'];
+		return $user1;
+	}
+	
+	protected function setModuleAccess($user1)
+	{
+		$this->session->id = $user1['id'];
                 if (isset($user1['level'])) {
                     if ($user1['level'] == 1) {
                         $this->session->role = 'role_a';
@@ -119,37 +105,37 @@ class LoginPageAction
                 } else {
                     $this->session->role = 'role_u';
                 }
-                    //echo 'assigned role is ' . $this->session->role;
-                    //var_dump('before', $this->session->id, 'after'); die();
-                    $table = new \App\Db\Table\Module_Access($this->adapter);
-                $modules = $table->getModules($this->session->role); //die();
-                    foreach ($modules as $row) :
-                        $mods[] = $row['module'];
+                $table = new \App\Db\Table\Module_Access($this->adapter);
+                $modules = $table->getModules($this->session->role); 
+                foreach ($modules as $row) :
+                    $mods[] = $row['module'];
                 endforeach;
                 $this->session->modules_access = $mods;
-                    //var_dump($this->session->modules_access);//die();
-                    //echo "<pre>"; print_r($this->session->modules_access); echo "</pre>"; die();
-                    return new RedirectResponse(
-                        $this->getRedirectUri($request),
-                        RFC7231::FOUND
-                    );
+	}
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null) 
+	{
+        if ($request->getMethod() == 'POST') {
+            $post = [];
+            $post = $request->getParsedBody();
+            if (!empty($post['action'])) {
+				$user1 = $this->doLogin($post);               
             }
-
-            return new RedirectResponse(
+            if (!(is_null($user1['id']))) {
+				$this->setModuleAccess($user1);               
+                return new RedirectResponse(
                     $this->getRedirectUri($request),
                     RFC7231::FOUND
                 );
+            }
+            return new RedirectResponse(
+                $this->getRedirectUri($request),
+                RFC7231::FOUND
+            );
         }
         if (array_key_exists('logout', $request->getQueryParams())) {
             if ($request->getQueryParams()['logout'] == 'y') {
-                /*foreach ($this->session as $key => $val) {
-                    unset($this->session->$key);
-                }*/
                 $toUrl = $this->getRedirectUri($request);
-                //$this->session->getManager()->destroy();
-                //session_destroy($this->session);
                 $sessionManager = $this->session->getManager();
-                //$sessionManager = $this->session->get(new \Zend\Session\SessionManager::class);
                 $sessionManager->destroy();
 
                 return new RedirectResponse(
@@ -171,23 +157,8 @@ class LoginPageAction
      */
     private function renderLoginFormResponse($request)
     {
-        //var_dump("entered renderResponse-else");
         return new HtmlResponse($this->template->render(self::PAGE_TEMPLATE, ['request' => $request,
                     'adapter' => $this->adapter, ]));
-
-        /*return new HtmlResponse(
-            $this->template->render(
-                'layout/default',
-                [
-                    //'rows' => $paginator,
-                    //'previous' => $previous,
-                    //'next' => $next,
-                   // 'countp' => $countPages,
-                   'request' => $request,
-                    'adapter' => $this->adapter,
-                ]
-            )
-        );*/
     }
 
     /**
@@ -207,8 +178,7 @@ class LoginPageAction
             $reqParams = $request->getServerParams();
             //$baseUrl = $uri->getScheme() . '://' . $uri->getHost() . '/' . $uri->getPath();
             $toUrl = 'http'.'://'.$reqParams['HTTP_HOST'].'/'.$reqParams['REDIRECT_URL'];
-            //var_dump($toUrl . '?redirect_to=/bibliography_new/public/'); //die();
-           return $toUrl.'?redirect_to=/VuBib/public/';
+            return $toUrl.'?redirect_to=/VuBib/public/';
         }
         if (array_key_exists('redirect_to', $request->getQueryParams())) {
             return $request->getQueryParams()['redirect_to'];

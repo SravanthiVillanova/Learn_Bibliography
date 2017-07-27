@@ -27,12 +27,10 @@ class ManageAgentTypeAction
         $this->template = $template;
         $this->adapter = $adapter;
     }
-
-    protected function getPaginator($post)
-    {
-        //edit, delete actions on agenttype
-        if (!empty($post['action'])) {
-            //add a new agent type
+	
+	protected function doAction($post)
+	{
+		//add a new agent type
             if ($post['action'] == 'new') {
                 if ($post['submitt'] == 'Save') {
                     $table = new \App\Db\Table\AgentType($this->adapter);
@@ -59,6 +57,15 @@ class ManageAgentTypeAction
                     }
                 }
             }
+	}
+	
+    protected function getPaginator($post)
+    {
+        //edit, delete actions on agenttype
+        if (!empty($post['action'])) {
+			//add edit delete agenttype
+            $this->doAction($post);
+			
             //Cancel edit\delete
             if ($post['submitt'] == 'Cancel') {
                 $table = new \App\Db\Table\AgentType($this->adapter);
@@ -81,7 +88,7 @@ class ManageAgentTypeAction
         }
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(7);
-        $allItems = $paginator->getTotalItemCount();
+        //$allItems = $paginator->getTotalItemCount();
         $countPages = $paginator->count();
 
         $currentPage = isset($query['page']) ? $query['page'] : 1;

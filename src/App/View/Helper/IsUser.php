@@ -62,7 +62,7 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
 
     public function getUserType()
     {
-        $usr_typ = '';
+       // $usr_typ = '';
 
         $table = new \App\Db\Table\User($this->adapter);
         $usr = $table->findRecordById($this->session->id);

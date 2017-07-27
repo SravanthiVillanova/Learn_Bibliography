@@ -28,11 +28,9 @@ class ManageLanguageAction
         $this->adapter = $adapter;
     }
 
-    protected function getPaginator($post)
-    {
-        //edit, delete actions on language
-        if (!empty($post['action'])) {
-            //add a new language term
+	protected function doAction($post)
+	{
+		//add a new language term
             if ($post['action'] == 'new') {
                 if ($post['submitt'] == 'Save') {
                     $table = new \App\Db\Table\TranslateLanguage($this->adapter);
@@ -61,6 +59,15 @@ class ManageLanguageAction
                     }
                 }
             }
+	}
+	
+    protected function getPaginator($post)
+    {
+        //edit, delete actions on language
+        if (!empty($post['action'])) {
+            //add edit delete language
+			$this->doAction($post);
+			
             //Cancel edit\delete
             if ($post['submitt'] == 'Cancel') {
                 $table = new \App\Db\Table\TranslateLanguage($this->adapter);
@@ -83,7 +90,7 @@ class ManageLanguageAction
         }
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(7);
-        $allItems = $paginator->getTotalItemCount();
+        //$allItems = $paginator->getTotalItemCount();
         $countPages = $paginator->count();
 
         $currentPage = isset($query['page']) ? $query['page'] : 1;

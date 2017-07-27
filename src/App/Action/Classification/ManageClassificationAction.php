@@ -28,27 +28,9 @@ class ManageClassificationAction
         $this->adapter = $adapter;
     }
 
-    protected function getPaginator($query, $post)
-    {
-        if (!empty($query['action'])) {
-            //manage classification hierarchy
-            if ($query['action'] == 'get_children') {
-                $table = new \App\Db\Table\Folder($this->adapter);
-                $rows = $table->getChild($query['id']);
-                $paginator = new Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($rows));
-
-                return $paginator;
-            }
-            //view link click
-            if ($query['action'] == 'get_siblings') {
-                $table = new \App\Db\Table\Folder($this->adapter);
-                $rows = $table->findParent();
-                //$paginator = new Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($rows));
-                return $rows;
-            }
-        }
-        if (!empty($post['action'])) {
-            //add folder
+	protected function doAction($post)
+	{
+		 //add folder
             if ($post['action'] == 'new') {
                 if ($post['submit'] == 'Save') {
                     //echo "<pre>";print_r($post);echo "</pre>"; die();
@@ -72,7 +54,19 @@ class ManageClassificationAction
             }
             //move folder
             if ($post['action'] == 'move') {
-                if ($post['submit_save'] == 'Save') {
+				if (isset($post['submit_save'])) {
+                    $this->doMove($post);
+				}
+            }
+            //merge folder
+            if ($post['action'] == 'merge_classification') {
+                $this->doMerge($post);
+            }
+	}
+	
+	protected function doMove($post)
+	{
+		if ($post['submit_save'] == 'Save') {
                     $lg = count($post['select_fl']);
                     if ($post['select_fl'][$lg - 1] == '' || $post['select_fl'][$lg - 1] == 'none') {
                         $fl_to_move = $post['select_fl'][$lg - 2];
@@ -83,10 +77,11 @@ class ManageClassificationAction
                     $table = new \App\Db\Table\Folder($this->adapter);
                     $table->moveFolder($post['id'], $fl_to_move);
                 }
-            }
-            //merge folder
-            if ($post['action'] == 'merge_classification') {
-                if ($post['submit_save'] == 'Save') {
+	}
+	
+	protected function doMerge($post)
+	{
+		//if ($post['submit_save'] == 'Save') {
                     $src_cnt = count($post['select_source_fl']);
                     $dst_cnt = count($post['select_dest_fl']);
 
@@ -124,15 +119,41 @@ class ManageClassificationAction
                     // Purge
                     $table = new \App\Db\Table\Folder($this->adapter);
                     $table->mergeDelete($source_id);
-                }
+                //}
+	}
+	
+    protected function getPaginator($query, $post)
+    {
+        if (!empty($query['action'])) {
+            //manage classification hierarchy
+            if ($query['action'] == 'get_children') {
+                $table = new \App\Db\Table\Folder($this->adapter);
+                $rows = $table->getChild($query['id']);
+                $paginator = new Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($rows));
+
+                return $paginator;
             }
+            //view link click
+            if ($query['action'] == 'get_siblings') {
+                $table = new \App\Db\Table\Folder($this->adapter);
+                $rows = $table->findParent();
+                //$paginator = new Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($rows));
+                return $rows;
+            }
+        }
+        if (!empty($post['action'])) {
+            //add edit move merge folder
+			$this->doAction($post);
+			
             //Cancel
-            if ($post['submit_cancel'] == 'Cancel') {
+			if (isset($post['submit'])) {
+            if ($post['submit'] == 'Cancel') {
                 $table = new \App\Db\Table\Folder($this->adapter);
                 $paginator = $table->findParent();
                 
                 return $paginator;
             }
+			}
         }
         // default: blank for listing in manage
         $table = new \App\Db\Table\Folder($this->adapter);
@@ -141,17 +162,38 @@ class ManageClassificationAction
         return $paginator;
     }
 
+	protected function getFolderNameForViewLinks($query)
+	{
+		$ts = [];
+		//get folder name for bread crumb
+        if ($query['action'] == 'get_children') {
+            $table = new \App\Db\Table\Folder($this->adapter);
+            $r = $table->getTrail($query['id'], '');
+            $r = $query['fl'].$r;
+
+            $ts = explode(':', $r);
+            $ts = array_reverse($ts);
+        }
+		return $ts;
+	}
+	
+	protected function getSearchParams($query)
+	{
+		$searchParams = [];
+        if (!empty($query['id']) && !empty($query['fl']) && $query['action'] == 'get_children') {
+            $searchParams[] = 'id='.urlencode($query['id']).'&fl='.urlencode($query['fl']).'&action=get_children';
+        }
+	}
+	
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $query = $request->getqueryParams();
-        //print_r($query);
         $post = [];
         if ($request->getMethod() == 'POST') {
             $post = $request->getParsedBody();
         }
         $paginator = $this->getPaginator($query, $post);
-        $paginator->setDefaultItemCountPerPage(15);
-        $allItems = $paginator->getTotalItemCount();
+        $paginator->setDefaultItemCountPerPage(15);        
         $countPages = $paginator->count();
 
         $currentPage = isset($query['page']) ? $query['page'] : 1;
@@ -171,22 +213,12 @@ class ManageClassificationAction
             $previous = $currentPage - 1;
         }
 
-        $searchParams = [];
-        if (!empty($query['id']) && !empty($query['fl']) && $query['action'] == 'get_children') {
-            $searchParams[] = 'id='.urlencode($query['id']).'&fl='.urlencode($query['fl']).'&action=get_children';
-        }
+		$searchParams = $this->getSearchParams($query);
 
         $ts = [];
         if (isset($query['action'])) {
-            //get folder name for bread crumb
-        if ($query['action'] == 'get_children') {
-            $table = new \App\Db\Table\Folder($this->adapter);
-            $r = $table->getTrail($query['id'], '');
-            $r = $query['fl'].$r;
-
-            $ts = explode(':', $r);
-            $ts = array_reverse($ts);
-        }
+            $ts = $this->getFolderNameForViewLinks($query);
+			
         }
 
         return new HtmlResponse(

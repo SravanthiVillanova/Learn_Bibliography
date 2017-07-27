@@ -141,14 +141,15 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
 
     public function findRecords($name, $type)
     {
-        if ($type == 'fname') {
-            $select = $this->sql->select()->where(['fname' => $name]);
+        $select = $this->sql->select();
+		if ($type == 'fname') {
+            $select->where->like('fname', $name.'%');
         } elseif ($type == 'lname') {
-            $select = $this->sql->select()->where(['lname' => $name]);
+            $select->where->like('lname', $name.'%');
         } elseif ($type == 'altname') {
-            $select = $this->sql->select()->where(['alternate_name' => $name]);
+            $select->where->like('alternate_name', $name.'%');
         } elseif ($type == 'orgname') {
-            $select = $this->sql->select()->where(['organization_name' => $name]);
+            $select->where->like('organization_name', $name.'%');
         }
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
