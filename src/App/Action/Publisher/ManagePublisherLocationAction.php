@@ -22,42 +22,60 @@ class ManagePublisherLocationAction
         $this->adapter = $adapter;
     }
 
+	protected function doDelete($post)
+	{
+		if ($post['submitt'] == 'Delete') {
+            if (!is_null($post['id']) && ((count($post['locs'])) >= 0)) {
+                //var_dump($post['locids']);
+                $table = new \App\Db\Table\WorkPublisher($this->adapter);
+                $table->updatePublisherLocation($query['id'], $post['locids']);
+                $table = new \App\Db\Table\PublisherLocation($this->adapter);
+                $table->deletePublisherRecord($post['id'], $post['locs']);
+            }
+        }
+	}
+	
+	protected function doMerge($post)
+	{
+		if ($post['submitt'] == 'Merge') {
+            if (!is_null($post['id'])) {
+                $table = new \App\Db\Table\WorkPublisher($this->adapter);
+                $table->updatePublisherLocationId($query['id'], $post['sourceids'], $post['destid']);
+
+                $table = new \App\Db\Table\PublisherLocation($this->adapter);
+                $table->deletePublisherRecordById($query['id'], $post['sourceids']);
+            }
+        }
+	}
+	
+	protected function doAction($post)
+	{
+		 //add a new publisher
+        if ($post['action'] == 'new') {
+            if ($post['submitt'] == 'Save') {
+                $table = new \App\Db\Table\PublisherLocation($this->adapter);
+                $table->addPublisherLocation($query['id'], $post['add_publisherloc']);
+            }
+        }
+        
+		//delete a location for a publisher
+        if ($post['action'] == 'delete') {
+			$this->doDelete($post);               
+        }
+		
+        //Merge publisher locations
+        if ($post['action'] == 'merge') {
+            $this->doMerge($post);   
+        }
+	}
+	
     protected function getPaginator($query, $post)
     {
-        //echo $post['action']
         //add location based on action query parameter
         if (!empty($post['action'])) {
-            //add a new publisher
-            if ($post['action'] == 'new') {
-                if ($post['submitt'] == 'Save') {
-                    $table = new \App\Db\Table\PublisherLocation($this->adapter);
-                    $table->addPublisherLocation($query['id'], $post['add_publisherloc']);
-                }
-            }
-            //delete a location for a publisher */
-            if ($post['action'] == 'delete') {
-                if ($post['submitt'] == 'Delete') {
-                    if (!is_null($post['id']) && ((count($post['locs'])) >= 0)) {
-                        //var_dump($post['locids']);
-                           $table = new \App\Db\Table\WorkPublisher($this->adapter);
-                        $table->updatePublisherLocation($query['id'], $post['locids']);
-                        $table = new \App\Db\Table\PublisherLocation($this->adapter);
-                        $table->deletePublisherRecord($post['id'], $post['locs']);
-                    }
-                }
-            }
-            //Merge publisher locations */
-            if ($post['action'] == 'merge') {
-                if ($post['submitt'] == 'Merge') {
-                    if (!is_null($post['id'])) {
-                        $table = new \App\Db\Table\WorkPublisher($this->adapter);
-                        $table->updatePublisherLocationId($query['id'], $post['sourceids'], $post['destid']);
-
-                        $table = new \App\Db\Table\PublisherLocation($this->adapter);
-                        $table->deletePublisherRecordById($query['id'], $post['sourceids']);
-                    }
-                }
-            }
+			//add delete merge publisher locations
+            $this->doAction($post);
+           
             //Cancel
             if ($post['submitt'] == 'Cancel') {
                 $table = new \App\Db\Table\PublisherLocation($this->adapter);

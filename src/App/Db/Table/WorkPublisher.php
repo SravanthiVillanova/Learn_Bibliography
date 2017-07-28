@@ -197,9 +197,9 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         }*/
 	}
 	
-	public function movePublisher($pub_src_id, $pub_dest_id, $src_loc_id, $dest_loc_id)
+	public function mergePublisher($pub_src_id, $pub_dest_id, $src_loc_id, $dest_loc_id)
 	{
-		//update workpub set pubid=destpubid where pubid=srcpubid and locid = $source_locid
+		//update workpub set pubid=destpubid and locid=mrgpublocid where pubid=srcpubid and locid=$source_locid
 		$this->update(
             [
                 'publisher_id' => $pub_dest_id,

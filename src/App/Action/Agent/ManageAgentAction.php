@@ -104,17 +104,20 @@ class ManageAgentAction
 	protected function doDelete($post)
 	{
 		if (!is_null($post['id'])) {
-                        $table = new \App\Db\Table\WorkAgent($this->adapter);
-                        $table->deleteRecordByAgentId($post['id']);
-                        $table = new \App\Db\Table\Agent($this->adapter);
-                        $table->deleteRecord($post['id']);
-                    }
+            $table = new \App\Db\Table\WorkAgent($this->adapter);
+            $table->deleteRecordByAgentId($post['id']);
+            $table = new \App\Db\Table\Agent($this->adapter);
+            $table->deleteRecord($post['id']);
+        }
 	}
     protected function getPaginator($params, $post)
     {
 		//search
 		if (!empty($params)) {
-			return ($this->searchAgent($params));
+			if (!empty($params['letter']) || !empty($params['find_agentfname']) || !empty($params['find_agentlname']) 
+				|| !empty($params['find_agentaltname']) || !empty($params['find_agentorgname'])) {
+			    return ($this->searchAgent($params));
+			}
 		}
 	   
         //edit, delete actions on agent
@@ -153,6 +156,7 @@ class ManageAgentAction
         if (!empty($query['letter'])) {
             $searchParams[] = 'letter='.urlencode($query['letter']);
         }
+		return $searchParams;
 	}
 	
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
@@ -187,7 +191,15 @@ class ManageAgentAction
         }
 
 		$searchParams = $this->getSearchParams($query);
-
+        
+		if (!is_null($searchParams)) {
+		    $searchParams = implode('&', $searchParams);
+		}
+		else
+		{
+			$searchParams = '';
+		}
+		
         return new HtmlResponse(
             $this->template->render(
                 'app::agent::manage_agent',
@@ -196,7 +208,7 @@ class ManageAgentAction
                     'previous' => $previous,
                     'next' => $next,
                     'countp' => $countPages,
-                    'searchParams' => implode('&', $searchParams),
+                    'searchParams' => $searchParams,
                     'carat' => $characs,
                 ]
             )

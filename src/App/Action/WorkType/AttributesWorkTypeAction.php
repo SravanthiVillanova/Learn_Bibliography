@@ -28,33 +28,28 @@ class AttributesWorkTypeAction
         $this->adapter = $adapter;
     }
 
-    protected function getPaginator($post)
-    {
-        //add, edit, delete actions on attribute
-        if (!empty($post['action'])) {
-            //add new attribute
-            if ($post['action'] == 'new') {
-                if ($post['submitt'] == 'Save') {
-                    /*echo '<pre>';
-                    print_r($post);
-                    echo '</pre>';*/
-                    $table = new \App\Db\Table\WorkAttribute($this->adapter);
-                    $table->addAttribute($post['new_attribute'], $post['field_type']);
-                }
+	protected function doAdd($post)
+	{
+		if ($post['submitt'] == 'Save') {
+            $table = new \App\Db\Table\WorkAttribute($this->adapter);
+            $table->addAttribute($post['new_attribute'], $post['field_type']);
+        }
+	}
+	
+	protected function doEdit($post)
+	{
+		if ($post['submitt'] == 'Save') {
+            if (!is_null($post['id'])) {
+                $table = new \App\Db\Table\WorkAttribute($this->adapter);
+                $table->updateRecord($post['id'], $post['edit_attribute']);
             }
-            //edit attribute
-            if ($post['action'] == 'edit') {
-                if ($post['submitt'] == 'Save') {
-                    if (!is_null($post['id'])) {
-                        $table = new \App\Db\Table\WorkAttribute($this->adapter);
-                        $table->updateRecord($post['id'], $post['edit_attribute']);
-                    }
-                }
-            }
-            //delete attribute
-            if ($post['action'] == 'delete') {
-                if ($post['submitt'] == 'Delete') {
-                    if (!is_null($post['id'])) {
+        }
+	}
+	
+	protected function doDelete($post)
+	{
+		if ($post['submitt'] == 'Delete') {
+            if (!is_null($post['id'])) {
                         //no
                         $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
                         $table->deleteWorkAttributeFromWork($post['id']);
@@ -70,9 +65,33 @@ class AttributesWorkTypeAction
                         //no
                         $table = new \App\Db\Table\WorkAttribute($this->adapter);
                         $table->deleteRecord($post['id']);
-                    }
-                }
             }
+        }
+	}
+	
+	protected function doAction($post)
+	{
+		//add new attribute
+        if ($post['action'] == 'new') {
+			$this->doAdd($post);                 
+        }
+        //edit attribute
+        if ($post['action'] == 'edit') {
+			$this->doEdit($post);                
+        }
+        //delete attribute
+        if ($post['action'] == 'delete') {
+			$this->doDelete($post);               
+        }
+	}
+	
+    protected function getPaginator($post)
+    {
+        //add, edit, delete actions on attribute
+        if (!empty($post['action'])) {
+			//add edit delete attribute
+            $this->doAction($post);
+            
             //Cancel add\edit\delete
             if ($post['submitt'] == 'Cancel') {
                 $table = new \App\Db\Table\WorkAttribute($this->adapter);

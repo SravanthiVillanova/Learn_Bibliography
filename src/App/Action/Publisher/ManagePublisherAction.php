@@ -69,20 +69,7 @@ class ManagePublisherAction
 	{
 		//$table = new \App\Db\Table\Publisher($this->adapter);
         //return $table->findRecords($post['source_publisher']);
-		echo "<pre>"; print_r($post); echo "</pre>"; die();
-		foreach ($_POST['source_location_id'] as $sourceId => $action) {
-        if ($action == 'move') {
-            $sql = "UPDATE work_publisher SET publisher_id = '" . $_POST['end_publisher_id'] . "' WHERE publisher_id = '" . $_POST['source_publisher_id'] . "' AND location_id = '$sourceId'";
-            $do->query($sql);
-            $sql = "UPDATE publisher_location SET publisher_id = '" . $_POST['end_publisher_id'] . "' WHERE publisher_id = '" . $_POST['source_publisher_id'] . "' AND id = '$sourceId'";
-            $do->query($sql);
-        } elseif ($action == 'merge') {
-            $sql = "UPDATE work_publisher SET publisher_id = '" . $_POST['end_publisher_id'] . "', location_id = '" . $_POST['merge_publisher_id'] . "' WHERE publisher_id = '" . $_POST['source_publisher_id'] . "' AND location_id = '$sourceId'";
-            $do->query($sql);
-            $sql = "DELETE FROM publisher_location WHERE id = '$sourceId'";
-            $do->query($sql);
-        }
-		}
+		//echo "<pre>"; print_r($post); echo "</pre>"; die();
 		foreach ($post['src_loc'] as $source_locid => $action) :
 			if($action == 'move') {
 				//update workpub set pubid=destpubid where pubid=srcpubid and locid = $source_locid
@@ -102,22 +89,33 @@ class ManagePublisherAction
 			}
 		endforeach;
 	}
+	
+	protected function doNew($post)
+	{
+		$table = new \App\Db\Table\Publisher($this->adapter);
+        $table->insertRecords($post['name_publisher']);
+	}
+	
+	protected function doEdit($post)
+	{
+		if (!is_null($post['id'])) {
+            $table = new \App\Db\Table\Publisher($this->adapter);
+            $table->updateRecord($_POST['id'], $_POST['publisher_newname']);
+        }
+	}
+	
 	protected function doAction($post)
 	{
 		//add a new publisher
             if ($post['action'] == 'new') {
                 if ($post['submitt'] == 'Save') {
-                    $table = new \App\Db\Table\Publisher($this->adapter);
-                    $table->insertRecords($post['name_publisher']);
+                   $this->doNew($post);
                 }
             }
             //edit a publisher
             if ($post['action'] == 'edit') {
                 if ($post['submitt'] == 'Save') {
-                    if (!is_null($post['id'])) {
-                        $table = new \App\Db\Table\Publisher($this->adapter);
-                        $table->updateRecord($_POST['id'], $_POST['publisher_newname']);
-                    }
+                    $this->doEdit($post);
                 }
             }
             //delete a publisher */
@@ -127,7 +125,7 @@ class ManagePublisherAction
                 }
             } 
 			if ($post['action'] == 'merge_publisher') {
-                if ($post['submit_save'] == 'Save') {
+                if ($post['submitt'] == 'Save') {
                     $this->doMerge($post);
                 }
             }
@@ -137,23 +135,26 @@ class ManagePublisherAction
     {
 		//search
 		if (!empty($params)) {
-			return ($this->searchAgent($params));
+			if (!empty($params['name']) || !empty($params['location']) || !empty($params['letter'])) {
+			    return ($this->searchAgent($params));
+			}
 		}
 		      
         //edit, delete actions on publisher
-        if (!empty($post['action'])) {            
+        if (!empty($post['action'])) {  		
 			   //add edit delete merge publisher
                 $this->doAction($post);
 			
             //Cancel edit\delete
-			if (isset($post['submitt'])) {
+			//if (isset($post['submitt'])) {
 				if ($post['submitt'] == 'Cancel') {
 					$table = new \App\Db\Table\Publisher($this->adapter);
 
 					return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
 				}
-			}
+			//}
         }
+		
         // default: blank/missing search
         $table = new \App\Db\Table\Publisher($this->adapter);
 
@@ -172,13 +173,20 @@ class ManagePublisherAction
         if (!empty($query['letter'])) {
             $searchParams[] = 'letter='.urlencode($query['letter']);
         }
+		return $searchParams;
+	}
+	
+	protected function getLetters()
+	{
+		$table = new \App\Db\Table\Publisher($this->adapter);
+        $characs = $table->findInitialLetter();
+		return $characs;
 	}
 	
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $table = new \App\Db\Table\Publisher($this->adapter);
-        $characs = $table->findInitialLetter();
-
+        $characs = $this->getLetters();
+		
         $query = $request->getqueryParams();
         $post = [];
         if ($request->getMethod() == 'POST') {
@@ -215,8 +223,8 @@ class ManagePublisherAction
 			$searchParams = '';
 		}
 		
-        if (isset($post['action'])) {
-            if ($post['action'] == 'merge_publisher') {
+        if (isset($post['action']) && $post['action'] == 'merge_publisher') {
+            //if ($post['action'] == 'merge_publisher') {
                 return new HtmlResponse(
                 $this->template->render(
                 'app::publisher::merge_publisher',
@@ -230,8 +238,8 @@ class ManagePublisherAction
                 ]
             )
             );
-            }
-            if ($post['action'] == 'new' || $post['action'] == 'edit' || $post['action'] == 'delete') {
+            //}
+            /*if ($post['action'] == 'new' || $post['action'] == 'edit' || $post['action'] == 'delete') {
                 return new HtmlResponse(
                 $this->template->render(
                 'app::publisher::manage_publisher',
@@ -240,12 +248,12 @@ class ManagePublisherAction
                     'previous' => $previous,
                     'next' => $next,
                     'countp' => $countPages,
-                    'searchParams' => implode('&', $searchParams),
+                    'searchParams' => $searchParams,
                     'carat' => $characs,
                 ]
             )
             );
-            }
+            }*/
         } else {
             return new HtmlResponse(
             $this->template->render(

@@ -25,16 +25,9 @@ class ManageWorkAction
         $this->adapter = $adapter;
     }
 
-    /*public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
-        return new HtmlResponse($this->template->render('app::work::manage_work', ['rows' => $rows]));
-    }*/
-
-    protected function getPaginator($params, $post)
-    {
-        // search by letter
-        if (!empty($params['letter'])) {
-            //review records
+	protected function workLetters($params)
+	{
+		//review records
             if (isset($params['action'])) {
                 if ($params['action'] == 'review') {
                     $table = new \App\Db\Table\Work($this->adapter);
@@ -52,17 +45,19 @@ class ManageWorkAction
 
                 return $table->displayRecordsByName($params['letter']);
             }
-        }
-        // Work Lookup
-        if (!empty($params['find_worktitle'])) {
-            //echo "name is " . $params['find_worktitle'];
-            $table = new \App\Db\Table\Work($this->adapter);
+	}
+
+	protected function findWork($params)
+	{
+		$table = new \App\Db\Table\Work($this->adapter);
             $paginator = $table->findRecords($params['find_worktitle']);
 
             return $paginator;
-        }
-        if (!empty($params['action'])) {
-            //Display works which need review
+	}
+	
+	protected function workReviewClassify($params)
+	{
+		//Display works which need review
             if ($params['action'] == 'review') {
                 $table = new \App\Db\Table\Work($this->adapter);
                 $paginator = $table->fetchReviewRecords();
@@ -76,11 +71,11 @@ class ManageWorkAction
 
                 return $paginator;
             }
-        }
-        if (!empty($post['action'])) {
-            //add a new work type
-            if ($post['action'] == 'work_new') {
-                if (isset($post['submit_save'])) {
+	}
+	
+	protected function doAdd($post)
+	{
+		if (isset($post['submit_save'])) {
                     if ($post['submit_save'] == 'Save') {
                         //echo "<pre>";print_r($post);echo "</pre>"; //die();
                     //extract classification rows
@@ -131,10 +126,12 @@ class ManageWorkAction
                             $table->insertRecords($wk_id, $wkat_id, $wkopt_id);
                         }
                     }
-                }
-            }
-            if ($post['action'] == 'work_edit') {
-                if (isset($post['submit_save'])) {
+        }
+	}
+	
+	protected function doEdit($post)
+	{
+		if (isset($post['submit_save'])) {
                     if ($post['submit_save'] == 'Save') {
                         //echo "<pre>"; print_r($post); echo "</pre>"; //die();
                     //extract classification rows
@@ -209,9 +206,12 @@ class ManageWorkAction
                         }
                     }
                 }
-            }
-            if ($post['action'] == 'delete') {
-                if ($post['submitt'] == 'Delete') {
+	}
+	
+	protected function doDelete($post)
+	{
+		if (isset($post['submitt'])) {
+		if ($post['submitt'] == 'Delete') {
                     if (!is_null($post['work_id'])) {
                         $table = new \App\Db\Table\WorkAgent($this->adapter);
                         $table->deleteRecordByWorkId($post['work_id']);
@@ -225,14 +225,43 @@ class ManageWorkAction
                         $table->deleteRecordByWorkId($post['work_id']);
                     }
                 }
+		}
+	}
+	
+	protected function doAction($post)
+	{
+		//add a new work type
+            if ($post['action'] == 'work_new') {
+                $this->doAdd($post);
             }
+            if ($post['action'] == 'work_edit') {
+				$this->doEdit($post);                
+            }
+            if ($post['action'] == 'delete') {
+				$this->doDelete($post);                
+            }
+	}
+	
+    protected function getPaginator($params, $post)
+    {
+        // search by letter
+        if (!empty($params['letter'])) {
+			return ($this->workLetters($params));           
         }
-        /*if(isset($post['get_parent']))
-        {
-            $table = new \App\Db\Table\Folder($this->adapter);
-            $rows = $table->getChild($post['get_parent']);
-            return $rows;
-        }*/
+        // Work Lookup
+        if (!empty($params['find_worktitle'])) {
+			return($this->findWork($params));
+            //echo "name is " . $params['find_worktitle'];
+            
+        }
+        if (!empty($params['action'])) {
+			return($this->workReviewClassify($params));            
+        }
+        if (!empty($post['action'])) {
+			//add edit delete work
+            $this->doAction($post);           
+        }
+
         //Cancel edit\delete
         if (isset($post['submit_cancel'])) {
             if ($post['submit_cancel'] == 'Cancel') {

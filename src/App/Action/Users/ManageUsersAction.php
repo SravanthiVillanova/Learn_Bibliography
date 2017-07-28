@@ -28,45 +28,67 @@ class ManageUsersAction
         $this->adapter = $adapter;
     }
 
+	protected function doAdd($post)
+	{
+		if ($post['submitt'] == 'Save') {
+            //echo "<pre>";print_r($post);echo"</pre>";
+            $table = new \App\Db\Table\User($this->adapter);
+            $table->insertRecords($post['newuser_name'], $post['new_username'], md5($post['new_user_pwd']), $post['access_level']);
+        }
+	}
+	
+	protected function doEdit($post)
+	{
+		if ($post['submitt'] == 'Save') {
+            if (!is_null($post['id'])) {
+            if (empty($post['edit_user_pwd'])) {
+                $pwd = null;
+            } else {
+                $pwd = md5($post['edit_user_pwd']);
+            }
+                $table = new \App\Db\Table\User($this->adapter);
+                $table->updateRecord($post['id'], $post['edituser_name'], $post['edit_username'], $pwd,
+                                    $post['access_level']);
+            }
+        }
+	}
+	
+	protected function doDelete($post)
+	{
+		if ($post['submitt'] == 'Delete') {
+            if (!is_null($post['id'])) {
+                //echo "delete";
+                $table = new \App\Db\Table\User($this->adapter);
+                $table->deleteRecord($post['id']);
+            }
+        }
+	}
+	
+	protected function doAction($post)
+	{
+		//add new user
+        if ($post['action'] == 'new') {
+			$this->doAdd($post);                
+        }
+        //edit user
+        if ($post['action'] == 'edit') {
+            $this->doEdit($post);
+        }
+        //delete user
+        if ($post['action'] == 'delete') {
+            $this->doDelete($post);
+        }
+	}
+	
     protected function getPaginator($post)
     {
         //add, edit, delete actions on user
        if (!empty($post['action'])) {
-           //add new user
-            if ($post['action'] == 'new') {
-                if ($post['submit_Save'] == 'Save') {
-                    //echo "<pre>";print_r($post);echo"</pre>";
-                    $table = new \App\Db\Table\User($this->adapter);
-                    $table->insertRecords($post['newuser_name'], $post['new_username'], md5($post['new_user_pwd']), $post['access_level']);
-                }
-            }
-            //edit a work type
-            if ($post['action'] == 'edit') {
-                if ($post['submit_Save'] == 'Save') {
-                    if (!is_null($post['id'])) {
-                        if (empty($post['edit_user_pwd'])) {
-                            $pwd = null;
-                        } else {
-                            $pwd = md5($post['edit_user_pwd']);
-                        }
-                        $table = new \App\Db\Table\User($this->adapter);
-                        $table->updateRecord($post['id'], $post['edituser_name'], $post['edit_username'], $pwd,
-                                            $post['access_level']);
-                    }
-                }
-            }
-            //delete a work type
-            if ($post['action'] == 'delete') {
-                if ($post['submitt'] == 'Delete') {
-                    if (!is_null($post['id'])) {
-                        //echo "delete";
-                        $table = new \App\Db\Table\User($this->adapter);
-                        $table->deleteRecord($post['id']);
-                    }
-                }
-            }
+		   //add edit delete users
+            $this->doAction($post);
+          
             //Cancel add\edit\delete
-            if ($post['submit_Cancel'] == 'Cancel') {
+            if ($post['submitt'] == 'Cancel') {
                 $table = new \App\Db\Table\User($this->adapter);
 
                 return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
