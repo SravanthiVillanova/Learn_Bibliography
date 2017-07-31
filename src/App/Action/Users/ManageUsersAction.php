@@ -28,47 +28,47 @@ class ManageUsersAction
         $this->adapter = $adapter;
     }
 
-	protected function doAdd($post)
-	{
-		if ($post['submitt'] == 'Save') {
+    protected function doAdd($post)
+    {
+        if ($post['submitt'] == 'Save') {
             //echo "<pre>";print_r($post);echo"</pre>";
             $table = new \App\Db\Table\User($this->adapter);
             $table->insertRecords($post['newuser_name'], $post['new_username'], md5($post['new_user_pwd']), $post['access_level']);
         }
-	}
-	
-	protected function doEdit($post)
-	{
-		if ($post['submitt'] == 'Save') {
+    }
+    
+    protected function doEdit($post)
+    {
+        if ($post['submitt'] == 'Save') {
             if (!is_null($post['id'])) {
-            if (empty($post['edit_user_pwd'])) {
-                $pwd = null;
-            } else {
-                $pwd = md5($post['edit_user_pwd']);
-            }
+                if (empty($post['edit_user_pwd'])) {
+                    $pwd = null;
+                } else {
+                    $pwd = md5($post['edit_user_pwd']);
+                }
                 $table = new \App\Db\Table\User($this->adapter);
                 $table->updateRecord($post['id'], $post['edituser_name'], $post['edit_username'], $pwd,
                                     $post['access_level']);
             }
         }
-	}
-	
-	protected function doDelete($post)
-	{
-		if ($post['submitt'] == 'Delete') {
+    }
+    
+    protected function doDelete($post)
+    {
+        if ($post['submitt'] == 'Delete') {
             if (!is_null($post['id'])) {
                 //echo "delete";
                 $table = new \App\Db\Table\User($this->adapter);
                 $table->deleteRecord($post['id']);
             }
         }
-	}
-	
-	protected function doAction($post)
-	{
-		//add new user
+    }
+    
+    protected function doAction($post)
+    {
+        //add new user
         if ($post['action'] == 'new') {
-			$this->doAdd($post);                
+            $this->doAdd($post);
         }
         //edit user
         if ($post['action'] == 'edit') {
@@ -78,13 +78,13 @@ class ManageUsersAction
         if ($post['action'] == 'delete') {
             $this->doDelete($post);
         }
-	}
-	
+    }
+    
     protected function getPaginator($post)
     {
         //add, edit, delete actions on user
        if (!empty($post['action'])) {
-		   //add edit delete users
+           //add edit delete users
             $this->doAction($post);
           
             //Cancel add\edit\delete

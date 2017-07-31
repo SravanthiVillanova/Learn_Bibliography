@@ -21,28 +21,28 @@ class AttributeManageOptionsAction
         $this->template = $template;
         $this->adapter = $adapter;
     }
-	
-	protected function doAdd($post)
-	{
-		if ($post['submitt'] == 'Save') {
+    
+    protected function doAdd($post)
+    {
+        if ($post['submitt'] == 'Save') {
             $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
             $table->addOption($post['id'], $post['new_option'], $post['option_value']);
         }
-	}
-	
-	protected function doEdit($post)
-	{
-		if ($post['submitt'] == 'Save') {
+    }
+    
+    protected function doEdit($post)
+    {
+        if ($post['submitt'] == 'Save') {
             if (!is_null($post['id'])) {
                 $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
                 $table->updateOption($post['id'], $post['edit_option'], $post['edit_value']);
             }
         }
-	}
-	
-	protected function doDelete($post, $query)
-	{
-		if ($post['submitt'] == 'Delete') {
+    }
+    
+    protected function doDelete($post, $query)
+    {
+        if ($post['submitt'] == 'Delete') {
             if (!is_null($post['id'])) {
                 $table = new \App\Db\Table\Work_Workattribute($this->adapter);
                 $table->deleteRecordByValue($query['id'], $post['id']);
@@ -50,17 +50,17 @@ class AttributeManageOptionsAction
                 $table->deleteOption($query['id'], $post['id']);
             }
         }
-	}
-	
-	protected function doMerge($post)
-	{
-		if ($post['submitt'] == 'Merge') {
+    }
+    
+    protected function doMerge($post)
+    {
+        if ($post['submitt'] == 'Merge') {
             if (!is_null($post['workattribute_id'])) {
                 for ($i = 0; $i < count($post['option_title']); ++$i) {
                     $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
                     $rows = $table->getDuplicateOptionRecords($post['workattribute_id'], $post['option_title'][$i], $post['option_id'][$i]);
 
-					for ($j = 0; $j < count($rows); ++$j) {
+                    for ($j = 0; $j < count($rows); ++$j) {
                         $table = new \App\Db\Table\Work_Workattribute($this->adapter);
                         $table->updateWork_WorkAttributeValue($post['workattribute_id'], $post['option_id'][$i], $rows[$j]['id']);
 
@@ -70,32 +70,32 @@ class AttributeManageOptionsAction
                 }
             }
         }
-	}
-	
-	protected function doAction($post, $query)
-	{
-		//add new option
+    }
+    
+    protected function doAction($post, $query)
+    {
+        //add new option
         if ($post['action'] == 'new') {
-			$this->doAdd($post);            
+            $this->doAdd($post);
         }
         //edit option
         if ($post['action'] == 'edit') {
-			$this->doEdit($post);           
+            $this->doEdit($post);
         }
         //delete option
         if ($post['action'] == 'delete') {
-			$this->doDelete($post, $query);                
+            $this->doDelete($post, $query);
         }
-		//Merge option
+        //Merge option
         if ($post['action'] == 'merge') {
-            $this->doMerge($post);    
+            $this->doMerge($post);
         }
-	}
-	
+    }
+    
     protected function getPaginator($query, $post)
     {
         if (!empty($post['action'])) {
-			//add edit delete merge option
+            //add edit delete merge option
             $this->doAction($post, $query);
             
             //Cancel add\edit\delete

@@ -142,7 +142,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     public function findRecords($name, $type)
     {
         $select = $this->sql->select();
-		if ($type == 'fname') {
+        if ($type == 'fname') {
             $select->where->like('fname', $name.'%');
         } elseif ($type == 'lname') {
             $select->where->like('lname', $name.'%');

@@ -28,9 +28,9 @@ class ManagePublisherAction
         $this->adapter = $adapter;
     }
 
-	protected function searchAgent($params)
-	{
-		// search by name
+    protected function searchAgent($params)
+    {
+        // search by name
         if (!empty($params['name'])) {
             $table = new \App\Db\Table\Publisher($this->adapter);
 
@@ -48,68 +48,67 @@ class ManagePublisherAction
 
             return $table->displayRecordsByName($params['letter']);
         }
-	}
-	
-	protected function doDelete($post)
-	{
-		$locs = [];
-		if (!is_null($post['id'])) {
-                        $table = new \App\Db\Table\WorkPublisher($this->adapter);
-                        $table->deleteRecordByPub($post['id']);
+    }
+    
+    protected function doDelete($post)
+    {
+        $locs = [];
+        if (!is_null($post['id'])) {
+            $table = new \App\Db\Table\WorkPublisher($this->adapter);
+            $table->deleteRecordByPub($post['id']);
 
-                        $table = new \App\Db\Table\PublisherLocation($this->adapter);
-                        $table->deletePublisherRecord($post['id'], $locs);
+            $table = new \App\Db\Table\PublisherLocation($this->adapter);
+            $table->deletePublisherRecord($post['id'], $locs);
 
-                        $table = new \App\Db\Table\Publisher($this->adapter);
-                        $table->deleteRecord($post['id']);
-                    }
-	}
-	
-	protected function doMerge($post)
-	{
-		//$table = new \App\Db\Table\Publisher($this->adapter);
+            $table = new \App\Db\Table\Publisher($this->adapter);
+            $table->deleteRecord($post['id']);
+        }
+    }
+    
+    protected function doMerge($post)
+    {
+        //$table = new \App\Db\Table\Publisher($this->adapter);
         //return $table->findRecords($post['source_publisher']);
-		//echo "<pre>"; print_r($post); echo "</pre>"; die();
-		foreach ($post['src_loc'] as $source_locid => $action) :
-			if($action == 'move') {
-				//update workpub set pubid=destpubid where pubid=srcpubid and locid = $source_locid
-				$table = new \App\Db\Table\WorkPublisher($this->adapter);
-				$table->movePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid);
-				//update publoc set pubid = destpubid where pubid=srcpubid and id=$source_locid
-				$table = new \App\Db\Table\PublisherLocation($this->adapter);
-				$table->movePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid);
-			}
-			elseif ($action == 'merge') {
-				//update workpub set pubid=destpubid and locid=mrgpublocid where pubid=srcpubid and locid=$source_locid
-				$table = new \App\Db\Table\WorkPublisher($this->adapter);
-				$table->mergePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid, $post['dest_loc_select']);
-				//delete $source_locid from publoc
-				$table = new \App\Db\Table\PublisherLocation($this->adapter);
-				$table->mergePublisher($source_locid);
-			}
-		endforeach;
-	}
-	
-	protected function doNew($post)
-	{
-		$table = new \App\Db\Table\Publisher($this->adapter);
+        //echo "<pre>"; print_r($post); echo "</pre>"; die();
+        foreach ($post['src_loc'] as $source_locid => $action) :
+            if ($action == 'move') {
+                //update workpub set pubid=destpubid where pubid=srcpubid and locid = $source_locid
+                $table = new \App\Db\Table\WorkPublisher($this->adapter);
+                $table->movePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid);
+                //update publoc set pubid = destpubid where pubid=srcpubid and id=$source_locid
+                $table = new \App\Db\Table\PublisherLocation($this->adapter);
+                $table->movePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid);
+            } elseif ($action == 'merge') {
+                //update workpub set pubid=destpubid and locid=mrgpublocid where pubid=srcpubid and locid=$source_locid
+                $table = new \App\Db\Table\WorkPublisher($this->adapter);
+                $table->mergePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid, $post['dest_loc_select']);
+                //delete $source_locid from publoc
+                $table = new \App\Db\Table\PublisherLocation($this->adapter);
+                $table->mergePublisher($source_locid);
+            }
+        endforeach;
+    }
+    
+    protected function doNew($post)
+    {
+        $table = new \App\Db\Table\Publisher($this->adapter);
         $table->insertRecords($post['name_publisher']);
-	}
-	
-	protected function doEdit($post)
-	{
-		if (!is_null($post['id'])) {
+    }
+    
+    protected function doEdit($post)
+    {
+        if (!is_null($post['id'])) {
             $table = new \App\Db\Table\Publisher($this->adapter);
             $table->updateRecord($_POST['id'], $_POST['publisher_newname']);
         }
-	}
-	
-	protected function doAction($post)
-	{
-		//add a new publisher
+    }
+    
+    protected function doAction($post)
+    {
+        //add a new publisher
             if ($post['action'] == 'new') {
                 if ($post['submitt'] == 'Save') {
-                   $this->doNew($post);
+                    $this->doNew($post);
                 }
             }
             //edit a publisher
@@ -123,47 +122,47 @@ class ManagePublisherAction
                 if ($post['submitt'] == 'Delete') {
                     $this->doDelete($post);
                 }
-            } 
-			if ($post['action'] == 'merge_publisher') {
-                if ($post['submitt'] == 'Save') {
-                    $this->doMerge($post);
-                }
             }
-	}
-	
+        if ($post['action'] == 'merge_publisher') {
+            if ($post['submitt'] == 'Save') {
+                $this->doMerge($post);
+            }
+        }
+    }
+    
     protected function getPaginator($params, $post)
     {
-		//search
-		if (!empty($params)) {
-			if (!empty($params['name']) || !empty($params['location']) || !empty($params['letter'])) {
-			    return ($this->searchAgent($params));
-			}
-		}
-		      
-        //edit, delete actions on publisher
-        if (!empty($post['action'])) {  		
-			   //add edit delete merge publisher
-                $this->doAction($post);
-			
-            //Cancel edit\delete
-			//if (isset($post['submitt'])) {
-				if ($post['submitt'] == 'Cancel') {
-					$table = new \App\Db\Table\Publisher($this->adapter);
-
-					return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
-				}
-			//}
+        //search
+        if (!empty($params)) {
+            if (!empty($params['name']) || !empty($params['location']) || !empty($params['letter'])) {
+                return ($this->searchAgent($params));
+            }
         }
-		
+              
+        //edit, delete actions on publisher
+        if (!empty($post['action'])) {
+            //add edit delete merge publisher
+                $this->doAction($post);
+            
+            //Cancel edit\delete
+            //if (isset($post['submitt'])) {
+                if ($post['submitt'] == 'Cancel') {
+                    $table = new \App\Db\Table\Publisher($this->adapter);
+
+                    return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+                }
+            //}
+        }
+        
         // default: blank/missing search
         $table = new \App\Db\Table\Publisher($this->adapter);
 
         return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
     }
 
-	protected function getSearchParams($query)
-	{
-		$searchParams = [];
+    protected function getSearchParams($query)
+    {
+        $searchParams = [];
         if (!empty($query['name'])) {
             $searchParams[] = 'name='.urlencode($query['name']);
         }
@@ -173,20 +172,20 @@ class ManagePublisherAction
         if (!empty($query['letter'])) {
             $searchParams[] = 'letter='.urlencode($query['letter']);
         }
-		return $searchParams;
-	}
-	
-	protected function getLetters()
-	{
-		$table = new \App\Db\Table\Publisher($this->adapter);
+        return $searchParams;
+    }
+    
+    protected function getLetters()
+    {
+        $table = new \App\Db\Table\Publisher($this->adapter);
         $characs = $table->findInitialLetter();
-		return $characs;
-	}
-	
+        return $characs;
+    }
+    
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $characs = $this->getLetters();
-		
+        
         $query = $request->getqueryParams();
         $post = [];
         if ($request->getMethod() == 'POST') {
@@ -214,15 +213,13 @@ class ManagePublisherAction
         }
 
         $searchParams = $this->getSearchParams($query);
-		
-		if (!is_null($searchParams)) {
-		    $searchParams = implode('&', $searchParams);
-		}
-		else
-		{
-			$searchParams = '';
-		}
-		
+        
+        if (!is_null($searchParams)) {
+            $searchParams = implode('&', $searchParams);
+        } else {
+            $searchParams = '';
+        }
+        
         if (isset($post['action']) && $post['action'] == 'merge_publisher') {
             //if ($post['action'] == 'merge_publisher') {
                 return new HtmlResponse(

@@ -152,8 +152,8 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
     {
         $this->delete(['work_id' => $id]);
     }
-	
-	public function findRecordByPublisherId($pub_id)
+    
+    public function findRecordByPublisherId($pub_id)
     {
         $callback = function ($select) use ($pub_id) {
             $select->columns(['*']);
@@ -163,8 +163,8 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
 
         return $rows;
     }
-	
-	public function findRecordByLocationId($loc_id)
+    
+    public function findRecordByLocationId($loc_id)
     {
         $callback = function ($select) use ($loc_id) {
             $select->columns(['*']);
@@ -174,18 +174,18 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
 
         return $rows;
     }
-	
-	public function movePublisher($pub_src_id, $pub_dest_id, $src_loc_id)
-	{
-		//update workpub set pubid=destpubid where pubid=srcpubid and locid = $source_locid
-		$this->update(
+    
+    public function movePublisher($pub_src_id, $pub_dest_id, $src_loc_id)
+    {
+        //update workpub set pubid=destpubid where pubid=srcpubid and locid = $source_locid
+        $this->update(
             [
                 'publisher_id' => $pub_dest_id,
             ],
             ['publisher_id' => $pub_src_id, 'location_id' => $src_loc_id]
         );
-		
-		/*$callback = function ($select) use ($pub_src_id, $src_loc_id) {
+        
+        /*$callback = function ($select) use ($pub_src_id, $src_loc_id) {
             $select->columns(['*']);
             $select->where->equalTo('publisher_id', $pub_id);
             $select->where->equalTo('location_id', $src_loc_id);
@@ -195,17 +195,17 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         for ($i = 0; $i < $cnt; ++$i) {
             $this->update(['publisher_id' => $pub_dest_id]);
         }*/
-	}
-	
-	public function mergePublisher($pub_src_id, $pub_dest_id, $src_loc_id, $dest_loc_id)
-	{
-		//update workpub set pubid=destpubid and locid=mrgpublocid where pubid=srcpubid and locid=$source_locid
-		$this->update(
+    }
+    
+    public function mergePublisher($pub_src_id, $pub_dest_id, $src_loc_id, $dest_loc_id)
+    {
+        //update workpub set pubid=destpubid and locid=mrgpublocid where pubid=srcpubid and locid=$source_locid
+        $this->update(
             [
                 'publisher_id' => $pub_dest_id,
-				'location_id' =>  $dest_loc_id,
+                'location_id' =>  $dest_loc_id,
             ],
             ['publisher_id' => $pub_src_id, 'location_id' => $src_loc_id]
-        );				
-	}
+        );
+    }
 }

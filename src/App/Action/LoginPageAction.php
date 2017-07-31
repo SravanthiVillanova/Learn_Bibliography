@@ -82,46 +82,46 @@ class LoginPageAction
         $this->session = $session;
     }
 
-	protected function doLogin($post)
-	{
-		$user1 = [];
-		if ($post['action'] == 'login') {
-                    $table = new \App\Db\Table\User($this->adapter);
-                    $user = $table->checkUserAuthentication($post['user_name'], $post['user_pwd']);
-                    $user1 = array_reduce($user, 'array_merge', array());
-                }
-		return $user1;
-	}
-	
-	protected function setModuleAccess($user1)
-	{
-		$this->session->id = $user1['id'];
-                if (isset($user1['level'])) {
-                    if ($user1['level'] == 1) {
-                        $this->session->role = 'role_a';
-                    } else {
-                        $this->session->role = 'role_su';
-                    }
-                } else {
-                    $this->session->role = 'role_u';
-                }
-                $table = new \App\Db\Table\Module_Access($this->adapter);
-                $modules = $table->getModules($this->session->role); 
-                foreach ($modules as $row) :
+    protected function doLogin($post)
+    {
+        $user1 = [];
+        if ($post['action'] == 'login') {
+            $table = new \App\Db\Table\User($this->adapter);
+            $user = $table->checkUserAuthentication($post['user_name'], $post['user_pwd']);
+            $user1 = array_reduce($user, 'array_merge', array());
+        }
+        return $user1;
+    }
+    
+    protected function setModuleAccess($user1)
+    {
+        $this->session->id = $user1['id'];
+        if (isset($user1['level'])) {
+            if ($user1['level'] == 1) {
+                $this->session->role = 'role_a';
+            } else {
+                $this->session->role = 'role_su';
+            }
+        } else {
+            $this->session->role = 'role_u';
+        }
+        $table = new \App\Db\Table\Module_Access($this->adapter);
+        $modules = $table->getModules($this->session->role);
+        foreach ($modules as $row) :
                     $mods[] = $row['module'];
-                endforeach;
-                $this->session->modules_access = $mods;
-	}
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null) 
-	{
+        endforeach;
+        $this->session->modules_access = $mods;
+    }
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
+    {
         if ($request->getMethod() == 'POST') {
             $post = [];
             $post = $request->getParsedBody();
             if (!empty($post['action'])) {
-				$user1 = $this->doLogin($post);               
+                $user1 = $this->doLogin($post);
             }
             if (!(is_null($user1['id']))) {
-				$this->setModuleAccess($user1);               
+                $this->setModuleAccess($user1);
                 return new RedirectResponse(
                     $this->getRedirectUri($request),
                     RFC7231::FOUND

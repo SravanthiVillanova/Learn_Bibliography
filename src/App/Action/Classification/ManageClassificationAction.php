@@ -28,9 +28,9 @@ class ManageClassificationAction
         $this->adapter = $adapter;
     }
 
-	protected function doAction($post)
-	{
-		 //add folder
+    protected function doAction($post)
+    {
+        //add folder
             if ($post['action'] == 'new') {
                 if ($post['submit'] == 'Save') {
                     //echo "<pre>";print_r($post);echo "</pre>"; die();
@@ -54,74 +54,74 @@ class ManageClassificationAction
             }
             //move folder
             if ($post['action'] == 'move') {
-				if (isset($post['submit_save'])) {
+                if (isset($post['submit_save'])) {
                     $this->doMove($post);
-				}
+                }
             }
             //merge folder
             if ($post['action'] == 'merge_classification') {
                 $this->doMerge($post);
             }
-	}
-	
-	protected function doMove($post)
-	{
-		if ($post['submit_save'] == 'Save') {
-                    $lg = count($post['select_fl']);
-                    if ($post['select_fl'][$lg - 1] == '' || $post['select_fl'][$lg - 1] == 'none') {
-                        $fl_to_move = $post['select_fl'][$lg - 2];
-                    } else {
-                        $fl_to_move = $post['select_fl'][$lg - 1];
-                    }
+    }
+    
+    protected function doMove($post)
+    {
+        if ($post['submit_save'] == 'Save') {
+            $lg = count($post['select_fl']);
+            if ($post['select_fl'][$lg - 1] == '' || $post['select_fl'][$lg - 1] == 'none') {
+                $fl_to_move = $post['select_fl'][$lg - 2];
+            } else {
+                $fl_to_move = $post['select_fl'][$lg - 1];
+            }
 
-                    $table = new \App\Db\Table\Folder($this->adapter);
-                    $table->moveFolder($post['id'], $fl_to_move);
-                }
-	}
-	
-	protected function doMerge($post)
-	{
-		//if ($post['submit_save'] == 'Save') {
+            $table = new \App\Db\Table\Folder($this->adapter);
+            $table->moveFolder($post['id'], $fl_to_move);
+        }
+    }
+    
+    protected function doMerge($post)
+    {
+        //if ($post['submit_save'] == 'Save') {
                     $src_cnt = count($post['select_source_fl']);
-                    $dst_cnt = count($post['select_dest_fl']);
+        $dst_cnt = count($post['select_dest_fl']);
 
-                    if ($post['select_source_fl'][$src_cnt - 1] == '') {
-                        $source_id = $post['select_source_fl'][$src_cnt - 2];
-                    } else {
-                        $source_id = $post['select_source_fl'][$src_cnt - 1];
-                    }
+        if ($post['select_source_fl'][$src_cnt - 1] == '') {
+            $source_id = $post['select_source_fl'][$src_cnt - 2];
+        } else {
+            $source_id = $post['select_source_fl'][$src_cnt - 1];
+        }
 
-                    if ($post['select_dest_fl'][$dst_cnt - 1] == '') {
-                        $dest_id = $post['select_dest_fl'][$dst_cnt - 2];
-                    } else {
-                        $dest_id = $post['select_dest_fl'][$dst_cnt - 1];
-                    }
+        if ($post['select_dest_fl'][$dst_cnt - 1] == '') {
+            $dest_id = $post['select_dest_fl'][$dst_cnt - 2];
+        } else {
+            $dest_id = $post['select_dest_fl'][$dst_cnt - 1];
+        }
                     // Move children
                     $table = new \App\Db\Table\Folder($this->adapter);
-                    $table->mergeFolder($source_id, $dest_id);
+        $table->mergeFolder($source_id, $dest_id);
     
                     //first delete potential duplicates to avoid key violation
                     $table = new \App\Db\Table\Work_Folder($this->adapter);
-                    $table->mergeWkFlDelete($source_id, $dest_id);
+        $table->mergeWkFlDelete($source_id, $dest_id);
 
                     // Move works
                     $table = new \App\Db\Table\Work_Folder($this->adapter);
-                    $table->mergeWkFlUpdate($source_id, $dest_id);
+        $table->mergeWkFlUpdate($source_id, $dest_id);
 
                     // Track merge history -- update any previous history, then add the current merge:
                     $table = new \App\Db\Table\Folder_Merge_History($this->adapter);
-                    $table->mergeFlMgHistUpdate($source_id, $dest_id);
+        $table->mergeFlMgHistUpdate($source_id, $dest_id);
 
                     // Track merge history -- update any previous history, then add the current merge:
                     $table = new \App\Db\Table\Folder_Merge_History($this->adapter);
-                    $table->insertRecord($source_id, $dest_id);
+        $table->insertRecord($source_id, $dest_id);
 
                     // Purge
                     $table = new \App\Db\Table\Folder($this->adapter);
-                    $table->mergeDelete($source_id);
+        $table->mergeDelete($source_id);
                 //}
-	}
-	
+    }
+    
     protected function getPaginator($query, $post)
     {
         if (!empty($query['action'])) {
@@ -143,17 +143,17 @@ class ManageClassificationAction
         }
         if (!empty($post['action'])) {
             //add edit move merge folder
-			$this->doAction($post);
-			
+            $this->doAction($post);
+            
             //Cancel
-			if (isset($post['submit'])) {
-            if ($post['submit'] == 'Cancel') {
-                $table = new \App\Db\Table\Folder($this->adapter);
-                $paginator = $table->findParent();
+            if (isset($post['submit'])) {
+                if ($post['submit'] == 'Cancel') {
+                    $table = new \App\Db\Table\Folder($this->adapter);
+                    $paginator = $table->findParent();
                 
-                return $paginator;
+                    return $paginator;
+                }
             }
-			}
         }
         // default: blank for listing in manage
         $table = new \App\Db\Table\Folder($this->adapter);
@@ -162,10 +162,10 @@ class ManageClassificationAction
         return $paginator;
     }
 
-	protected function getFolderNameForViewLinks($query)
-	{
-		$ts = [];
-		//get folder name for bread crumb
+    protected function getFolderNameForViewLinks($query)
+    {
+        $ts = [];
+        //get folder name for bread crumb
         if ($query['action'] == 'get_children') {
             $table = new \App\Db\Table\Folder($this->adapter);
             $r = $table->getTrail($query['id'], '');
@@ -174,17 +174,17 @@ class ManageClassificationAction
             $ts = explode(':', $r);
             $ts = array_reverse($ts);
         }
-		return $ts;
-	}
-	
-	protected function getSearchParams($query)
-	{
-		$searchParams = [];
+        return $ts;
+    }
+    
+    protected function getSearchParams($query)
+    {
+        $searchParams = [];
         if (!empty($query['id']) && !empty($query['fl']) && $query['action'] == 'get_children') {
             $searchParams[] = 'id='.urlencode($query['id']).'&fl='.urlencode($query['fl']).'&action=get_children';
         }
-	}
-	
+    }
+    
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $query = $request->getqueryParams();
@@ -193,7 +193,7 @@ class ManageClassificationAction
             $post = $request->getParsedBody();
         }
         $paginator = $this->getPaginator($query, $post);
-        $paginator->setDefaultItemCountPerPage(15);        
+        $paginator->setDefaultItemCountPerPage(15);
         $countPages = $paginator->count();
 
         $currentPage = isset($query['page']) ? $query['page'] : 1;
@@ -213,12 +213,17 @@ class ManageClassificationAction
             $previous = $currentPage - 1;
         }
 
-		$searchParams = $this->getSearchParams($query);
+        $searchParams = $this->getSearchParams($query);
 
+        if (!is_null($searchParams)) {
+            $searchParams = implode('&', $searchParams);
+        } else {
+            $searchParams = '';
+        }
+        
         $ts = [];
         if (isset($query['action'])) {
             $ts = $this->getFolderNameForViewLinks($query);
-			
         }
 
         return new HtmlResponse(
@@ -231,7 +236,7 @@ class ManageClassificationAction
                     'countp' => $countPages,
                     //'previous_folder' => $previous_folder,
                     'trail' => $ts,
-                    'searchParams' => implode('&', $searchParams),
+                    'searchParams' => $searchParams,
                 ]
             )
         );

@@ -28,68 +28,68 @@ class AttributesWorkTypeAction
         $this->adapter = $adapter;
     }
 
-	protected function doAdd($post)
-	{
-		if ($post['submitt'] == 'Save') {
+    protected function doAdd($post)
+    {
+        if ($post['submitt'] == 'Save') {
             $table = new \App\Db\Table\WorkAttribute($this->adapter);
             $table->addAttribute($post['new_attribute'], $post['field_type']);
         }
-	}
-	
-	protected function doEdit($post)
-	{
-		if ($post['submitt'] == 'Save') {
+    }
+    
+    protected function doEdit($post)
+    {
+        if ($post['submitt'] == 'Save') {
             if (!is_null($post['id'])) {
                 $table = new \App\Db\Table\WorkAttribute($this->adapter);
                 $table->updateRecord($post['id'], $post['edit_attribute']);
             }
         }
-	}
-	
-	protected function doDelete($post)
-	{
-		if ($post['submitt'] == 'Delete') {
+    }
+    
+    protected function doDelete($post)
+    {
+        if ($post['submitt'] == 'Delete') {
             if (!is_null($post['id'])) {
-                        //no
+                //no
                         $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
-                        $table->deleteWorkAttributeFromWork($post['id']);
+                $table->deleteWorkAttributeFromWork($post['id']);
 
                         //yes
                         $table = new \App\Db\Table\WorkType_WorkAttribute($this->adapter);
-                        $table->deleteAttributeFromAllWorkTypes($post['id']);
+                $table->deleteAttributeFromAllWorkTypes($post['id']);
 
                         //yes
                         $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
-                        $table->deleteWorkAttributeOptions($post['id']);
+                $table->deleteWorkAttributeOptions($post['id']);
 
                         //no
                         $table = new \App\Db\Table\WorkAttribute($this->adapter);
-                        $table->deleteRecord($post['id']);
+                $table->deleteRecord($post['id']);
             }
         }
-	}
-	
-	protected function doAction($post)
-	{
-		//add new attribute
+    }
+    
+    protected function doAction($post)
+    {
+        //add new attribute
         if ($post['action'] == 'new') {
-			$this->doAdd($post);                 
+            $this->doAdd($post);
         }
         //edit attribute
         if ($post['action'] == 'edit') {
-			$this->doEdit($post);                
+            $this->doEdit($post);
         }
         //delete attribute
         if ($post['action'] == 'delete') {
-			$this->doDelete($post);               
+            $this->doDelete($post);
         }
-	}
-	
+    }
+    
     protected function getPaginator($post)
     {
         //add, edit, delete actions on attribute
         if (!empty($post['action'])) {
-			//add edit delete attribute
+            //add edit delete attribute
             $this->doAction($post);
             
             //Cancel add\edit\delete

@@ -22,9 +22,9 @@ class ManagePublisherLocationAction
         $this->adapter = $adapter;
     }
 
-	protected function doDelete($post)
-	{
-		if ($post['submitt'] == 'Delete') {
+    protected function doDelete($post)
+    {
+        if ($post['submitt'] == 'Delete') {
             if (!is_null($post['id']) && ((count($post['locs'])) >= 0)) {
                 //var_dump($post['locids']);
                 $table = new \App\Db\Table\WorkPublisher($this->adapter);
@@ -33,11 +33,11 @@ class ManagePublisherLocationAction
                 $table->deletePublisherRecord($post['id'], $post['locs']);
             }
         }
-	}
-	
-	protected function doMerge($post)
-	{
-		if ($post['submitt'] == 'Merge') {
+    }
+    
+    protected function doMerge($post)
+    {
+        if ($post['submitt'] == 'Merge') {
             if (!is_null($post['id'])) {
                 $table = new \App\Db\Table\WorkPublisher($this->adapter);
                 $table->updatePublisherLocationId($query['id'], $post['sourceids'], $post['destid']);
@@ -46,11 +46,11 @@ class ManagePublisherLocationAction
                 $table->deletePublisherRecordById($query['id'], $post['sourceids']);
             }
         }
-	}
-	
-	protected function doAction($post)
-	{
-		 //add a new publisher
+    }
+    
+    protected function doAction($post)
+    {
+        //add a new publisher
         if ($post['action'] == 'new') {
             if ($post['submitt'] == 'Save') {
                 $table = new \App\Db\Table\PublisherLocation($this->adapter);
@@ -58,22 +58,22 @@ class ManagePublisherLocationAction
             }
         }
         
-		//delete a location for a publisher
+        //delete a location for a publisher
         if ($post['action'] == 'delete') {
-			$this->doDelete($post);               
+            $this->doDelete($post);
         }
-		
+        
         //Merge publisher locations
         if ($post['action'] == 'merge') {
-            $this->doMerge($post);   
+            $this->doMerge($post);
         }
-	}
-	
+    }
+    
     protected function getPaginator($query, $post)
     {
         //add location based on action query parameter
         if (!empty($post['action'])) {
-			//add delete merge publisher locations
+            //add delete merge publisher locations
             $this->doAction($post);
            
             //Cancel

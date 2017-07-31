@@ -28,9 +28,9 @@ class ManageLanguageAction
         $this->adapter = $adapter;
     }
 
-	protected function doAction($post)
-	{
-		//add a new language term
+    protected function doAction($post)
+    {
+        //add a new language term
             if ($post['action'] == 'new') {
                 if ($post['submitt'] == 'Save') {
                     $table = new \App\Db\Table\TranslateLanguage($this->adapter);
@@ -59,15 +59,15 @@ class ManageLanguageAction
                     }
                 }
             }
-	}
-	
+    }
+    
     protected function getPaginator($post)
     {
         //edit, delete actions on language
         if (!empty($post['action'])) {
             //add edit delete language
-			$this->doAction($post);
-			
+            $this->doAction($post);
+            
             //Cancel edit\delete
             if ($post['submitt'] == 'Cancel') {
                 $table = new \App\Db\Table\TranslateLanguage($this->adapter);
