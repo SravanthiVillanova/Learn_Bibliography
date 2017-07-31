@@ -178,7 +178,8 @@ class LoginPageAction
             $reqParams = $request->getServerParams();
             //$baseUrl = $uri->getScheme() . '://' . $uri->getHost() . '/' . $uri->getPath();
             $toUrl = 'http'.'://'.$reqParams['HTTP_HOST'].'/'.$reqParams['REDIRECT_URL'];
-            return $toUrl.'?redirect_to=/VuBib/public/';
+            //return $toUrl.'?redirect_to=/VuBib/public/';
+			return $toUrl.'?redirect_to=' . $reqParams['REDIRECT_BASE'];
         }
         if (array_key_exists('redirect_to', $request->getQueryParams())) {
             return $request->getQueryParams()['redirect_to'];
