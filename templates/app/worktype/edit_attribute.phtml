@@ -1,5 +1,8 @@
 <?php $this->headTitle('Edit Attribute'); ?>
-<?php //$this->layout()->instructions = ""; ?>
+<?php
+	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' 
+	                                 . ' Edit';
+ ?>
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {

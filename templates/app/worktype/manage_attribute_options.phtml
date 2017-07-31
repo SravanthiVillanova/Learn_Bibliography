@@ -1,8 +1,10 @@
 <?php
 $this->headTitle('Manage Options - Attributes');
 ?>
-<?php //$this->layout()->instructions = ""; 
-?>
+<?php 
+	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' 
+	                                . ' Attribute Options';
+ ?>
 <?php
 if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();

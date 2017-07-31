@@ -1,5 +1,8 @@
 <?php $this->headTitle('Search Work'); ?>
-<?php //$this->layout()->instructions = ""; ?>
+<?php 
+	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_work') . '" style="float:left;color:white;"> Work > </a>' 
+	                                . ' Find';
+ ?>
 <div class="col-md-4">
     <form class="form-horizontal" method="get" action="<?=$this->url('manage_work')?>">
         <div class="form-group">

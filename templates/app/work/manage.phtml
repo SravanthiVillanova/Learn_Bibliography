@@ -1,5 +1,7 @@
 <?php $this->headTitle('Manage Work'); ?>
-<?php //$this->layout()->instructions = "Create a new card (use the lookup function to retrieve basic information based on the title) or select a title to review, change or publish an existing card."; ?>
+<?php 
+	  $this->layout()->breadcrumbs .= ' Work';
+ ?>
 <div class="col-md-9">
 <p>
 <?php foreach ($this->carat as $value) { ?>

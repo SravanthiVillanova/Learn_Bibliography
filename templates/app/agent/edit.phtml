@@ -1,8 +1,9 @@
 <?php
 $this->headTitle('Edit Agent');
 ?> 
-<?php //$this->layout()->instructions = ""; 
-?> 
+<?php 
+	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_agent') . '" style="float:left;color:white;"> Agent > </a>' . ' Edit';
+ ?>
 
 <?php
 $id;

@@ -1,7 +1,9 @@
 <?php header('Content-Type: text/html; charset=UTF-8'); ?>
 <?php $this->headTitle('Delete Language'); ?>
-<?php //$this->layout()->instructions = "The english words cannot be changed.";  ?>
-
+<?php 
+	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_language') . '" style="float:left;color:white;"> Language > </a>' 
+	                                . ' Delete';
+ ?>
 <div class="col-xs-4">
     <form method="post" action="<?= $this->url('manage_language') ?>">
         <p>Are you sure you want to delete this?</p>

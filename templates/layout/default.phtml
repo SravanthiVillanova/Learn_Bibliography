@@ -14,46 +14,21 @@
 <body>
 <div class="banner">
   <h1>Administration</h1><br />
-  <?php if (!$this->layout()->hideNavigation):
-			if ($this->isUser()->isLogged()):
-				//$lnk = preg_replace('/^\/\w+\/\w+\//','',parse_url($this->url())['path']);
-				$crumbs = explode("/",$this->url());
-				$c = count($crumbs);
-  ?>
+
   <?php
-	if(strtolower($crumbs[$c-2]) == "public")
-	{
-	?>
-		<a href="<?=$this->url('home')?>" style="float:left;color:white;">Home > </a>
-	<?php
-	}
-	else if(strtolower($crumbs[$c-2]) == "preferences")
-	{
-	?>
-		<a href="<?=$this->url('home')?>" style="float:left;color:white;">Home > </a>
-		<a href="<?=$this->url('changepassword_preferences')?>" style="float:left;color:white;">
-		<?php echo $crumbs[$c-2] . " "; ?>
-		</a>
-		<?php echo " " . "> " . $crumbs[$c-1];?>
-	<?php
+	// Set up breadcrumbs:
+    if (isset($this->layout()->breadcrumbs)) {
+		$this->layout()->breadcrumbs = '<a href="' .  $this->url('home') . '" style="float:left;color:white;">Home > </a>'   
+		                              . $this->layout()->breadcrumbs;
+		echo $this->layout()->breadcrumbs;
 	}
 	else
 	{
+		$this->layout()->breadcrumbs = '<a href="' .  $this->url('home') . '" style="float:left;color:white;">Home > </a>';
+		echo $this->layout()->breadcrumbs;
+	}
   ?>
-		<a href="<?=$this->url('home')?>" style="float:left;color:white;">Home > </a>
-		<a href="<?=$this->url('manage_'. strtolower($crumbs[$c-2]))?>" style="float:left;color:white;">
-		<?php echo $crumbs[$c-2] . " "; ?>
-		</a>
-		<?php echo " " . "> " . $crumbs[$c-1];?>
-		
-  <?php 
-    }
-	?>
-		<a href="<?=$this->url('login')?><?='?logout=y'?>" style="float:right;color:white;">Logout</a>
-	<?php
-	endif;
-  endif;
-	  ?>
+  <a href="<?=$this->url('login')?><?='?logout=y'?>" style="float:right;color:white;">Logout</a>
 </div>
 
 <!-- Fixed navbar -->

@@ -1,5 +1,7 @@
 <?php $this->headTitle('Manage Agent'); ?>
-<?php //$this->layout()->instructions = "";    ?>
+<?php 
+	  $this->layout()->breadcrumbs .= ' Agent';
+ ?>
 <div class="col-md-12">     
     <p>
         <?php foreach ($this->carat as $value) { ?>

@@ -7,6 +7,9 @@ if ($request->getqueryParams('id') !== null) {
     $action  = $params['action'];
     $id      = $params['id'];
     $wkat_id = $params['wkat_id'];
+	$this->layout()->breadcrumbs .= '<a href="' .  $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' .   
+	        '<a href="' .  $this->url('manage_attribute_options') . '?id=' . $wkat_id . '" style="float:left;color:white;"> Attribute Options > </a>' 
+			. ' Edit';
     //fetch name based on id
     $table   = new \App\Db\Table\WorkAttribute_Option($adapter);
     $row     = $table->findRecordById($id);

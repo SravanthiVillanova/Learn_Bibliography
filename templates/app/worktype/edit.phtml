@@ -1,5 +1,8 @@
 <?php $this->headTitle('Edit WorkType'); ?>
-<?php //$this->layout()->instructions = ""; ?>
+<?php
+	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_worktype') . '" style="float:left;color:white;"> Worktype > </a>' 
+	                                 . ' Edit';
+ ?>
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {

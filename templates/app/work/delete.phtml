@@ -1,4 +1,8 @@
 <?php $this->headTitle('Delete Work'); ?>
+<?php 
+	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_work') . '" style="float:left;color:white;"> Work > </a>' 
+	                                . ' Delete';
+ ?>
 <div class="col-xs-4">
        <form method="post" action="<?=$this->url('manage_work')?>">
         <p>Are you sure you want to delete this?</p>        

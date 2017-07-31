@@ -93,10 +93,12 @@ class ManagePublisherLocationAction
     {
         $query = $request->getqueryParams();
 
-        if ($query['count'] == 4) {
-            $table = new \App\Db\Table\PublisherLocation($this->adapter);
-            $row = $table->findPublisherId($query['id']);
-            $query['id'] = $row['publisher_id'];
+        if (isset($query['count'])) {
+            if ($query['count'] == 4) {
+                $table = new \App\Db\Table\PublisherLocation($this->adapter);
+                $row = $table->findPublisherId($query['id']);
+                $query['id'] = $row['publisher_id'];
+            }
         }
         $post = [];
         if ($request->getMethod() == 'POST') {

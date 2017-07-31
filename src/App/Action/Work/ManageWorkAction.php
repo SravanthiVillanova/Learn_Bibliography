@@ -275,6 +275,33 @@ class ManageWorkAction
         return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
     }
 
+    protected function getSearchParams($query)
+    {
+        $searchParams = [];
+        if (!empty($query['find_worktitle'])) {
+            $searchParams[] = 'find_worktitle='.urlencode($query['find_worktitle']);
+        }
+        if (!empty($query['letter']) && $query['action'] == 'alphasearch') {
+            $searchParams[] = 'letter='.urlencode($query['letter']);
+        }
+        if (isset($query['action'])) {
+            if ($query['action'] == 'review') {
+                if (!empty($query['letter'])) {
+                    $searchParams[] = 'action='.urlencode($query['action']).'&letter='.urlencode($query['letter']);
+                } else {
+                    $searchParams[] = 'action='.urlencode($query['action']);
+                }
+            }
+            if ($query['action'] == 'classify') {
+                if (!empty($query['letter'])) {
+                    $searchParams[] = 'action='.urlencode($query['action']).'&letter='.urlencode($query['letter']);
+                } else {
+                    $searchParams[] = 'action='.urlencode($query['action']);
+                }
+            }
+        }
+        return $searchParams;
+    }
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $post = [];
@@ -315,7 +342,6 @@ class ManageWorkAction
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(20);
-        //$allItems = $paginator->getTotalItemCount();
         $countPages = $paginator->count();
 
         $currentPage = isset($query['page']) ? $query['page'] : 1;
@@ -334,31 +360,13 @@ class ManageWorkAction
             $next = $currentPage + 1;
             $previous = $currentPage - 1;
         }
-        //echo "crnt page is $currentPage <br />";
-        //echo "prev is $previous <br />";
-        //echo "next is $next <br />";
-        $searchParams = [];
-        if (!empty($query['find_worktitle'])) {
-            $searchParams[] = 'find_worktitle='.urlencode($query['find_worktitle']);
-        }
-        if (!empty($query['letter']) && $query['action'] == 'alphasearch') {
-            $searchParams[] = 'letter='.urlencode($query['letter']);
-        }
-        if (isset($query['action'])) {
-            if ($query['action'] == 'review') {
-                if (!empty($query['letter'])) {
-                    $searchParams[] = 'action='.urlencode($query['action']).'&letter='.urlencode($query['letter']);
-                } else {
-                    $searchParams[] = 'action='.urlencode($query['action']);
-                }
-            }
-            if ($query['action'] == 'classify') {
-                if (!empty($query['letter'])) {
-                    $searchParams[] = 'action='.urlencode($query['action']).'&letter='.urlencode($query['letter']);
-                } else {
-                    $searchParams[] = 'action='.urlencode($query['action']);
-                }
-            }
+        
+        $searchParams = $this->getSearchParams($query);
+        
+        if (!is_null($searchParams)) {
+            $searchParams = implode('&', $searchParams);
+        } else {
+            $searchParams = '';
         }
 
         if (isset($query['action'])) {
@@ -372,7 +380,7 @@ class ManageWorkAction
                     'previous' => $previous,
                     'next' => $next,
                     'countp' => $countPages,
-                    'searchParams' => implode('&', $searchParams),
+                    'searchParams' => $searchParams,
                     'carat' => $characs,
                     'request' => $request,
                     'adapter' => $this->adapter,
@@ -390,7 +398,7 @@ class ManageWorkAction
                     'previous' => $previous,
                     'next' => $next,
                     'countp' => $countPages,
-                    'searchParams' => implode('&', $searchParams),
+                    'searchParams' => $searchParams,
                     'carat' => $characs,
                     'request' => $request,
                     'adapter' => $this->adapter,
@@ -408,7 +416,7 @@ class ManageWorkAction
                     'previous' => $previous,
                     'next' => $next,
                     'countp' => $countPages,
-                    'searchParams' => implode('&', $searchParams),
+                    'searchParams' => $searchParams,
                     'carat' => $characs,
                     'request' => $request,
                     'adapter' => $this->adapter,

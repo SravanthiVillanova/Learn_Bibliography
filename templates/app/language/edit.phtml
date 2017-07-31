@@ -1,5 +1,8 @@
 <?php $this->headTitle('Edit Language'); ?>
-<?php //$this->layout()->instructions = "";  ?>
+<?php 
+	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_language') . '" style="float:left;color:white;"> Language > </a>' 
+	                                . ' Edit';
+ ?>
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {

@@ -1,5 +1,8 @@
 <?php $this->headTitle('New Agent Type'); ?>
-<?php //$this->layout()->instructions = "";  ?>
+<?php 
+	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_agenttype') . '" style="float:left;color:white;"> Agenttype > </a>' 
+	                                  . ' New';
+ ?>
 <?php
 if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();
