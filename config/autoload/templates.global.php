@@ -105,7 +105,7 @@ return [
         ],
         'factories' => [
             Zend\View\Helper\ViewModel::class => App\View\Helper\ViewModelFactory::class,
-			'isUser' => App\View\Helper\isUserFactory::class,
+			'isUser' => App\View\Helper\IsUserFactory::class,
 			Zend\Form\ConfigProvider::class => App\FormHelpersMiddlewareFactory::class,
         ],
         // zend-servicemanager-style configuration for adding view helpers:
