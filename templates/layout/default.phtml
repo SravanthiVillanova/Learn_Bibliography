@@ -158,33 +158,27 @@
  </div> 
 
  <?php
-	//ServerRequestInterface $request;
-	//$request->getServerParams();
-	//echo $reqParams['REDIRECT_BASE'];
-	
 	$url_components = parse_url($this->serverUrl());
 	$url_host = $url_components['scheme'] . '://' . $url_components['host'];
 	
-	echo "<pre>"; print_r($url_components); echo "</pre>";
 	$str = "";
-    $page = basename($this->url());
-	//$chk = parse_url($this->url(), PHP_URL_SCHEME);//parse_url($url, PHP_URL_HOST); 
-	//var_dump($chk);
-	echo "<pre>"; print_r($_SERVER); echo "</pre>";
-	echo $page . "<br/>";
-	if($page == "public")
+    $page = "";
+	
+	$returnValue = preg_replace('/index.php/','',$_SERVER['PHP_SELF']);
+	
+	if($returnValue == $_SERVER['REQUEST_URI'])
 	{
+		$page = "public";
 		$str = $page . "/";
 	}
 	else
 	{
-		$str = preg_replace('/^\/\w+\/\w+\//','',parse_url($this->url())['path']);
+		$str = str_replace($returnValue,'',parse_url($this->url())['path']);
 		if(isset($_SERVER['QUERY_STRING']))
 		{
 			if(preg_match('/action=(?<action_name>[A-Za-z]+)/', $_SERVER['QUERY_STRING'], $matches))
 			{
-				$str .= "?" . $_SERVER['QUERY_STRING'];
-						//echo $str . "<br />";
+				$str .= "?action=" . $matches['action_name'];
 			}
 		}
 	}

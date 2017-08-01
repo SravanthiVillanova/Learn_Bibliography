@@ -78,97 +78,65 @@ class Module_Access extends \Zend\Db\TableGateway\TableGateway
       *
       * @return Updated or newly added record
       */
-     public function getModules($role)
-     {
+    public function getModules($role)
+    {
          $v_role = $role;
-        //echo 'role is' . $v_role;
         //if($role == 'role_a') {
             $callback = function ($select) use ($v_role) {
                 $select->columns(['module']);
                 $select->where->equalTo($v_role, 1);
             };
          $row = $this->select($callback)->toArray();
-            //var_dump($row);
             return $row;
         //}
-     }
-    public function insertRecords($newuser_name, $new_username, $new_user_pwd, $access_level)
-    {
-        $this->insert(
+    }
+    
+	public function setModuleAccess($module,$role)
+	{
+		/*echo "module is $module <br />";
+		echo "role is $role <br />";
+		echo "val is $val <br />";*/
+		if($role == 'Super User') 
+		{
+			$role = 'role_su';
+		}
+		elseif ($role == 'User')
+		{
+			$role = 'role_u';
+		}
+		$this->update(
             [
-            'name' => $newuser_name,
-            'username' => $new_username,
-            'password' => $new_user_pwd,
-            'level' => $access_level,
-            ]
+                $role => 1,
+            ],
+            ['module' => $module]
+            );
+	}
+	
+	public function unsetModuleAccess($module,$role)
+	{
+		if($role == 'Super User') 
+		{
+			$role = 'role_su';
+		}
+		elseif ($role == 'User')
+		{
+			$role = 'role_u';
+		}
+		$this->update(
+            [
+                $role => 0,
+            ],
+            ['module' => $module]
         );
-    }
-
-    public function findRecordById($id)
-    {
-        $rowset = $this->select(array('id' => $id));
-        $row = $rowset->current();
-
-        return $row;
-    }
-
-    public function deleteRecord($id)
-    {
-        $this->delete(['id' => $id]);
-    }
-
-    public function updateRecord($id, $name, $username, $pwd, $level)
-    {
-        //echo "pwd is " . $pwd;
-        if (is_null($pwd)) {
-            //echo "if pwd is empty ".$pwd;
-            $this->update(
-            [
-                'name' => $name,
-                'username' => $username,
-                'level' => $level,
-            ],
-            ['id' => $id]
-            );
-        } else {
-            //echo "else if pwd not empty ".$pwd;
-            $this->update(
-            [
-                'name' => $name,
-                'username' => $username,
-                'password' => $pwd,
-                'level' => $level,
-            ],
-            ['id' => $id]
-            );
-        }
-    }
-
-    public function checkUserAuthentication($username, $pwd)
-    {
-
-        /*$rowset = $this->select(array('username' => $username, 'password' => md5($pwd));
-        $row = $rowset->current();
-        return($row);*/
-        $callback = function ($select) use ($username, $pwd) {
-            $select->columns(['*']);
-            $select->where->equalTo('username', $username);
-            $select->where->equalTo('password', md5($pwd));
+	}
+	
+	public function getAllModules()
+	{
+		$callback = function ($select) {
+            $select->columns(['module']);
         };
-
-        $row = $this->select($callback)->toArray();
-        /*if(count($row) == 1) {
-            $row['status'] = 'authenticated';
-        }
-        else {
-            $row['status'] = 'not authenticated';
-        }*/
-        return $row;
-    }
-
-    public function isAdmin()
-    {
-        echo 'user is';
-        var_dump($this->session->id);
-    }
+        $rows = $this->select($callback)->toArray();
+		$mod_rows = array_column($rows, 'module');
+        return $mod_rows;
+	}
 }

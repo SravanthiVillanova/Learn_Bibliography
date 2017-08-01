@@ -78,6 +78,47 @@ class ManageUsersAction
         if ($post['action'] == 'delete') {
             $this->doDelete($post);
         }
+		//change user module access
+		if ($post['action'] == 'users_access') {
+			$table = new \App\Db\Table\Module_Access($this->adapter);
+			$all_modules = $table->getAllModules();
+			foreach($all_modules as $row) :
+				if (isset($post['access'][$row]))
+				{
+					if (isset($post['access'][$row]['Super User']))
+					{
+						$table = new \App\Db\Table\Module_Access($this->adapter);
+						$table->setModuleAccess($row,'Super User');
+					}
+					elseif (!isset($post['access'][$row]['Super User']))
+					{
+						$table = new \App\Db\Table\Module_Access($this->adapter);
+						$table->unsetModuleAccess($row,'Super User');
+					}
+					
+					if (isset($post['access'][$row]['User']))
+					{
+						$table = new \App\Db\Table\Module_Access($this->adapter);
+						$table->setModuleAccess($row,'User');
+					}
+					elseif (!isset($post['access'][$row]['User']))
+					{
+						$table = new \App\Db\Table\Module_Access($this->adapter);
+						$table->unsetModuleAccess($row,'User');
+					}
+				}
+				else
+				{
+					//for role superuser, set module to 0
+					$table = new \App\Db\Table\Module_Access($this->adapter);
+					$table->unsetModuleAccess($row,'Super User');
+					
+					//for role user,set module to 0
+					$table = new \App\Db\Table\Module_Access($this->adapter);
+					$table->unsetModuleAccess($row,'User');
+				}
+			endforeach;
+		}
     }
     
     protected function getPaginator($post)
