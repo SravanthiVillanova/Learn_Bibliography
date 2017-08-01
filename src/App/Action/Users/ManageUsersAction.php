@@ -39,13 +39,13 @@ class ManageUsersAction
     
     protected function doEdit($post)
     {
-        if ($post['submitt'] == 'Save') {
+		if ($post['submitt'] == 'Save') {
             if (!is_null($post['id'])) {
                 if (empty($post['edit_user_pwd'])) {
                     $pwd = null;
                 } else {
                     $pwd = md5($post['edit_user_pwd']);
-                }
+                }									
                 $table = new \App\Db\Table\User($this->adapter);
                 $table->updateRecord($post['id'], $post['edituser_name'], $post['edit_username'], $pwd,
                                     $post['access_level']);
