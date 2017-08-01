@@ -158,12 +158,16 @@
  </div> 
 
  <?php
+	//ServerRequestInterface $request;
+	//$request->getServerParams();
+	//echo $reqParams['REDIRECT_BASE'];
+	
 	$url_components = parse_url($this->serverUrl());
 	$url_host = $url_components['scheme'] . '://' . $url_components['host'];
 	
 	$str = "";
     $page = basename($this->url());
-
+	echo $page;
 	if($page == "public")
 	{
 		$str = $page . "/";
