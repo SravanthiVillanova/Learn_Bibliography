@@ -48,7 +48,7 @@ class ManagePublisherLocationAction
         }
     }
     
-    protected function doAction($post)
+    protected function doAction($post, $query)
     {
         //add a new publisher
         if ($post['action'] == 'new') {
@@ -74,7 +74,7 @@ class ManagePublisherLocationAction
         //add location based on action query parameter
         if (!empty($post['action'])) {
             //add delete merge publisher locations
-            $this->doAction($post);
+            $this->doAction($post, $query);
            
             //Cancel
             if ($post['submitt'] == 'Cancel') {
