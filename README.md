@@ -29,4 +29,4 @@ Database Installation:
 3. mysql --default-character-set=utf8 -u username -p password database name< path of panta_rhei.sql
 4. Dump sample data to get started: goto path of\mysql\bin path and give mysql -u username database name< path of each table.sql file
    (eg: mysql -u username test< path of agenttype.sql). Load data to tables users, module_access, page_instructions, translate_language,
-folder to get started.
+folder,worktype, workattribute, workattribute_option to get started.
