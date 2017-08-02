@@ -44,7 +44,7 @@ class AttributeManageOptionsAction
     {
         if ($post['submitt'] == 'Delete') {
             if (!is_null($post['id'])) {
-                $table = new \App\Db\Table\Work_Workattribute($this->adapter);
+                $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
                 $table->deleteRecordByValue($query['id'], $post['id']);
                 $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
                 $table->deleteOption($query['id'], $post['id']);
@@ -61,7 +61,7 @@ class AttributeManageOptionsAction
                     $rows = $table->getDuplicateOptionRecords($post['workattribute_id'], $post['option_title'][$i], $post['option_id'][$i]);
 
                     for ($j = 0; $j < count($rows); ++$j) {
-                        $table = new \App\Db\Table\Work_Workattribute($this->adapter);
+                        $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
                         $table->updateWork_WorkAttributeValue($post['workattribute_id'], $post['option_id'][$i], $rows[$j]['id']);
 
                         $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
