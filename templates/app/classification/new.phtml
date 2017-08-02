@@ -21,13 +21,15 @@ if ($request->getqueryParams('action') !== null) {
         <div class="form-group">  
             <label class="col-xs-4 control-label">Parent: </label>
             <div class="col-xs-7">
-                <select class="form-control" name="parent_id">
+                <select class="form-control" name="parent_id">				
                     <option value=""></option>
-                    <option value="1">Biographie</option>
-                    <option value="3035">Oeuvres</option>
-                    <option value="10434">Doctrine</option>
-                    <option value="16938">Influence et Survie</option>
-                    <option value="19675"> </option>
+                        <?php
+                        $table = new \App\Db\Table\Folder($this->adapter);
+                        $fl_parents = $table->findParent();
+                        foreach ($fl_parents as $row) :
+                            ?>
+                            <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>							
+                        <?php endforeach; ?>
                 </select>
             </div>
         </div>
