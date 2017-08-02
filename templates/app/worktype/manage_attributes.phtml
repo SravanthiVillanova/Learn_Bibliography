@@ -62,7 +62,7 @@ if ($id !== null)
 	<input type="hidden" name="action" id="action" value="sortable">
 	<input type="hidden" name="sort_order" id="sort_order" value="">
 	<input type="hidden" name="remove_attr" id="remove_attr" value="">
-	<p>Used Attributes                       Unused Attributes</p>
+	<p><b>Used Attributes</b>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<b>Unused Attributes</b></p>
 	<?php
 	//check if any attributes are attached to work type
 	$table = new \App\Db\Table\WorkType_WorkAttribute($this->adapter);
