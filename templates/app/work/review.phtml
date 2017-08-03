@@ -68,9 +68,9 @@
 					echo $m_user . " " . date("M d, y", strtotime($row['modify_date']));?>
 		</td>
 		<td>
-			<a href="#">Edit</a>        
+			<a href="<?=$this->url('edit_work')?><?='?id='. $row['id']. '&action=edit'?>">Edit</a>        
             |
-            <a href="#">Delete</a>
+            <a href="<?=$this->url('delete_work')?><?='?id='. $row['id']. '&action=delete'?>">Delete</a>
 		</td>			
 		</tr>
 		<?php endforeach; ?>

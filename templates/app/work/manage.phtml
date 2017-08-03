@@ -23,8 +23,6 @@
 		<tbody>
 		<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
         <?php foreach($this->rows as $row) : 
-				//var_dump($row);
-					//echo "hello";
 		?>
 		<tr>
 		<td>
@@ -38,17 +36,17 @@
                 $table = new \App\Db\Table\WorkType($adapter);
                 $work_type = $table->findRecordById($row['type_id']);
                 $type = $work_type['type'];
-				echo $escaper->escapeHtml($type); 
+				echo $escaper->escapeHtml($type); 				
 			?>
 		</td>
 		<td>
 			<?php
-					if ($row['status'] == 0 || $row['status'] == 2): ?>
-						<img src="../images/images_admin/review.gif" alt="Needs Review" title="Needs Review">
+					if (is_null($row['status'])): ?>
+						<img src="../images/images_admin/inactive.gif" alt="In progress" title="Inactive">						
 			<?php	elseif ($row['status'] == 1): ?>
 						<img src="../images/images_admin/active.gif" alt="Complete" title="Active">					
-			<?php	else: ?>
-						<img src="../images/images_admin/inactive.gif" alt="In progress" title="Inactive">
+			<?php	elseif ($row['status'] == 0 || $row['status'] == 2): ?>
+						<img src="../images/images_admin/review.gif" alt="Needs Review" title="Needs Review">
 			<?php	endif;
 					//echo $row['status'];
 			?>

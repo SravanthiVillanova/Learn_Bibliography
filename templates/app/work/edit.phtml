@@ -15,7 +15,8 @@ if ($request->getqueryParams('id') !== null) {
     $table   = new \App\Db\Table\Work($adapter);
     $wk_row  = $table->findRecordById($id);
     $type_id = $wk_row['type_id'];
-    $status  = $wk_row['status'];          
+    $status  = $wk_row['status'];      
+
     if ($status != 1) {
         //fetch worktype based on id
         $table    = new \App\Db\Table\WorkType($adapter);
@@ -38,15 +39,11 @@ if ($request->getqueryParams('id') !== null) {
         $table       = new \App\Db\Table\Work_WorkAttribute($adapter);
         $attrs       = $table->findWorkAttributeTypesByWorkId($id);
         $wktyp_attrs = json_decode($attrs, true);
-        
+
         //fetch folders
         $arr_fl = [];
         $table    = new \App\Db\Table\Work_Folder($this->adapter);
-        $wkfl_row = $table->findRecordsByWorkId($id);
-        
-        
-        //var_dump($pub_rows);
-        //die();                        
+        $wkfl_row = $table->findRecordsByWorkId($id);                       
     }
 }
 $url_components = parse_url($this->serverUrl());
@@ -130,11 +127,9 @@ function bindWorkTypeAttributes(context)
 				$('#optionsLookup').on('shown.bs.modal', function () {
 					$('#lookupOption').focus()
 					$('.option_search').on('click', function(e) {					
-						//console.log(attr_option_lookup);
 						//var attribute_Id = $(lookupBtn).prev().attr('id');
 						var attribute_Id = attr_option_lookup.attr('id');
 						var option = $('#lookupOption').val();
-						//console.log(attribute_Id);
 						$.ajax({
 							method: 'post',
 							//url: 'http://localhost<?=$this->url('get_work_details')?>',
@@ -162,7 +157,7 @@ function bindWorkTypeAttributes(context)
 							var linkval = $(this).attr('href');
 							attr_option_lookup.val(linkval);
 							attr_option_lookup.attr('name', attr_option_lookup.attr('name') + 'optid,' + $(this).attr('name'));
-							console.log(attr_option_lookup.attr('name'));
+							//console.log(attr_option_lookup.attr('name'));
 							$('#lookupOption').val('');
 							$(".option_results",context).html('');	
 							$('.option_lookup_close').trigger('click');																
@@ -218,7 +213,7 @@ function bindPublisherAutocomplete(context) {
 			$.each(data.publoc, function (key, val) {
 				//if(val.id !== null)
 				//{
-                $("#pubLocation", context).append('<option id="' + val.id + '">' + val.label + '</option>');
+                $("#pubLocation", context).append('<option id="' + val.id + '" value="' + val.id + '">' + val.label + '</option>');
 				$("#publoc_id", context).eq(i).val(val.id);
 				//}
 				//arr.push(val.id);
@@ -351,8 +346,10 @@ $(document).ready(function () {
 	$('#edit_work_type',document).on('change', function() {	
 		bindWorkTypeAttributes(document);		
 	});
+		
 	//Publisher
-	bindPublisherAutocomplete(document);
+	//bindPublisherAutocomplete(document);
+	
 	//add publisher rows
 	$("#pub_add").click(function(){
 		var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="">'+
@@ -374,11 +371,10 @@ $(document).ready(function () {
     });
 	//change publisher location
 	$("#pub_table").on('change','.pub_locations',function(){
-		//alert("loc changed");
 		var lc_chg = $(this).val();
 		var rw = $(this).closest("tr");
 		//rw.css('background-color','#8ec252');
-		rw.find('input[name="publoc_id[]"]').val(lc_chg);
+		rw.find('input[name="publoc_id[]"]').val(lc_chg);		
 		return false;
 	});
 	//agent
@@ -448,9 +444,7 @@ $(document).ready(function () {
 		else
 		{
 			fl_changed = $(this).val();
-			//alert("changed value is " + fl_changed);
 			var no_of_fl_parent = to_add_row.find('.select_source_fl').length;
-			//alert("select length is " + no_of_fl_parent);
 			for(var i = 0;i < no_of_fl_parent; i++)
 			{
 				if(to_add_row.find('.select_source_fl').eq(i).val() === fl_changed)
@@ -461,7 +455,6 @@ $(document).ready(function () {
 				}
 			}
 			to_add_row.find('.source_fl_col').eq(change_idx).nextAll('.source_fl_col').remove();
-			//alert("folder id is " + folder_Id);
 			
 			//no_of_fl_parent = $('.select_source_fl').length;
 			no_of_fl_parent = to_add_row.find('.select_source_fl').length;
@@ -510,7 +503,7 @@ $(document).ready(function () {
 	});
 	//save
 	$('#submit_save').on('click', function(){
-		var no_of_rows = $('table[name="source_fl_table"]').find("tr").length;
+		//var no_of_rows = $('table[name="source_fl_table"]').find("tr").length;
 		var arr = [];
 		var values;
 		$('table[name="source_fl_table"]').each(function() {
@@ -615,8 +608,8 @@ $(document).ready(function () {
 			<label class="col-xs-2 control-label">Status: </label>
 			<div class="col-xs-10">
 				<div class="radio">
-					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="00" <?php echo (!isset($status))?'checked':'' ?>>In Progress</label>
-					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="0" <?php echo ($status == 0)?'checked':'' ?>>Pending Review</label>
+					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="00" <?php echo (is_null($status))?'checked':'' ?>>In Progress</label>
+					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="0" <?php echo ($status === 0)?'checked':'' ?>>Pending Review</label>
 					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="2" <?php echo ($status == 2)?'checked':'' ?>>Unseen Source Doc</label>
 					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="1" <?php echo ($status == 1)?'checked':'' ?>>Complete</label>
 				</div>
@@ -631,12 +624,10 @@ $(document).ready(function () {
 				<?php
 				if(count($wkfl_row) >= 1)
 				{
-					//echo "<pre>"; print_r($wkfl_row); echo "</pre>";
 					$wkfl_row = array_reverse($wkfl_row);
 					foreach($wkfl_row as $row):
 						$table = new \App\Db\Table\Folder($this->adapter);
 						$arr_fl = $table->getParentChain($row['folder_id']);
-						//var_dump($arr_fl);
 					?>
 						<tr name="source_fl_row[]">
 						<td><b>Subject Tree</b><br></td>					
@@ -733,9 +724,9 @@ $(document).ready(function () {
 		$table = new \App\Db\Table\WorkPublisher($this->adapter);
 		$pub_rows = $table->findRecordByWorkId($id);
 		//$pub_rows = $table->findWorkPubRecords($id);
+
 		if(count($pub_rows) != 0)
 		{
-			//echo "<pre>"; print_r($pub_rows); echo "</pre>";
 			for($i = 0;$i < count($pub_rows);$i++)
 			{
 		?>
@@ -757,9 +748,12 @@ $(document).ready(function () {
 								<?php
 								$table = new \App\Db\Table\PublisherLocation($this->adapter);
 								$loc_rows = $table->getPublisherLocations($pub_rows[$i]['publisher_id']);
+								//var_dump($loc_rows);
 								foreach($loc_rows as $row):
+									
 									if($row['id'] != $pub_rows[$i]['location_id'])
 									{
+										//echo $row['id'] . " and " . $pub_rows[$i]['location_id'];
 								?>
 										<option value="<?=$row['id']?>"><?php echo $row['location']; ?></option>	
 								<?php
@@ -824,7 +818,6 @@ $(document).ready(function () {
 		$ag_rows = $table->findRecordByWorkId($id);
 		if(count($ag_rows) > 0)
 		{
-			//echo "<pre>"; print_r($ag_rows); echo "</pre>";
 			for($i = 0;$i < count($ag_rows);$i++)
 			{
 		?>		<tr>
@@ -984,9 +977,7 @@ $(document).ready(function () {
 		</div>
 		</div>
 		</div>
-		<?php
-			//echo "<pre>"; print_r($wktyp_attrs); echo "</pre>";
-		?>
+
 		<script>
 		var ur = <?php echo json_encode($url_host); ?>;
 		function setValues(context)
@@ -997,7 +988,6 @@ $(document).ready(function () {
 			/*$table = new \App\Db\Table\Work_WorkAttribute($adapter);
 			$attrs = $table->findWorkAttributeTypesByWorkId($id);
 			$wktyp_attrs = json_decode($attrs, true);*/
-			//echo "<pre>"; print_r($wktyp_attrs); echo "</pre>";
 			for($i = 0; $i < count($wktyp_attrs); $i++)
 			{
 			?>				
@@ -1010,9 +1000,12 @@ $(document).ready(function () {
 						$wkopt = $table->getOptionTitle($wktyp_attrs[$i]['value'], $wktyp_attrs[$i]['workattribute_id']);
 			?>
 						title = <?php echo json_encode($wkopt['title']); ?>;
-						//var opt = <?php echo json_encode($wktyp_attrs[$i]['field'] . ":" . $wktyp_attrs[$i]['workattribute_id']); ?>;
+						opt_id = <?php echo json_encode($wkopt['id']); ?>;
+
 						var opt = <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['workattribute_id']); ?>;
-						$('input[name="' + opt + '"]').val(title);
+						sel_opt = $('input[name="' + opt + '"]');
+						$('input[name="' + opt + '"]').attr('name', sel_opt.attr('name') + 'optid,' + opt_id);
+						sel_opt.val(title);
 
 			<?php
 					//}
@@ -1031,13 +1024,11 @@ $(document).ready(function () {
 					title =  <?php echo json_encode($wktyp_attrs[$i]['value']); ?>;
 					if(title == "true")
 					{
-						//console.log("true");
 						$('input[id="' + <?php echo json_encode("t:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').prop("checked",true);
 					}
 					if(title == "false")
 					{
-						//console.log("false");
-						$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').css("background","#8ec252");
+						//$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').css("background","#8ec252");
 						$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').prop("checked",true);
 					}
 					//if(title == true)
@@ -1058,7 +1049,6 @@ $(document).ready(function () {
 		}
 		$(document).ready(function () {
 			var worktype_Id = $('#edit_work_type').val();
-			//alert("work type id is " + worktype_Id);
 			$.ajax({
 				method: 'post',
 				//url: 'http://localhost<?=$this->url('get_work_details')?>',
@@ -1129,11 +1119,9 @@ $(document).ready(function () {
 						$('#optionsLookup').on('shown.bs.modal', function () {
 							$('#lookupOption').focus()
 							$('.option_search').on('click', function(e) {					
-								//console.log(attr_option_lookup);
 								//var attribute_Id = $(lookupBtn).prev().attr('id');
 								var attribute_Id = attr_option_lookup.attr('id');
 								var option = $('#lookupOption').val();
-								//console.log(attribute_Id);
 								$.ajax({
 									method: 'post',
 									//url: 'http://localhost<?=$this->url('get_work_details')?>',
