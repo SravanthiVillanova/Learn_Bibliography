@@ -273,7 +273,7 @@ _select = '';
 function bindSourceClassification(that,context)
 {
 	var to_add_row = $(that).closest("tr");
-	to_add_row.children('td',context).children('select',context).eq(0).css('background-color','#8ec252');
+	//to_add_row.children('td',context).children('select',context).eq(0).css('background-color','#8ec252');
 	fl_changed = $(that).val();
 
 	var no_of_fl_parent = to_add_row.find('.select_source_fl',context).length;
@@ -436,7 +436,7 @@ $(document).ready(function () {
     });
 	$('table[name="source_fl_table"]').on('change',".select_source_fl", function() {
 		var to_add_row = $(this).closest("tr");
-		to_add_row.children('td').children('select').eq(0).css('background-color','#8ec252');
+		//to_add_row.children('td').children('select').eq(0).css('background-color','#8ec252');
 		
 		if($(this).val() == ""){
 			to_add_row.find('.source_fl_col').eq(0).nextAll('.source_fl_col').remove();
