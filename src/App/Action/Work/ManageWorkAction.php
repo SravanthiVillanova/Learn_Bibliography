@@ -77,7 +77,7 @@ class ManageWorkAction
     {
         if (isset($post['submit_save'])) {
             if ($post['submit_save'] == 'Save') {
-                echo "<pre>";print_r($post);echo "</pre>"; //die();
+                //echo "<pre>";print_r($post);echo "</pre>"; //die();
                     //insert General(work)
                     $table = new \App\Db\Table\Work($this->adapter);
                 $wk_id = $table->insertRecords($post['work_type'], $post['new_worktitle'], $post['new_worksubtitle'],
@@ -88,12 +88,12 @@ class ManageWorkAction
                     foreach ($post['arr'] as $row):
                         $fl[] = explode(',', trim($row, ','));
 					endforeach;
-					echo "<pre>";print_r($fl);echo "</pre>";
+
                     //extract folder ids for each row
                     for ($i = 0; $i < count($fl); ++$i) {
                         $folder[$i] = $fl[$i][count($fl[$i]) - 1];
                     }
-                    echo "<pre>";print_r($folder);echo "</pre>";
+
                      //insert classification(work_folder)
                     if ($folder[0] != null) {
                         $table = new \App\Db\Table\Work_Folder($this->adapter);

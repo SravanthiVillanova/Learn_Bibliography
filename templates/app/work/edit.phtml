@@ -349,7 +349,7 @@ $(document).ready(function () {
 	});
 		
 	//Publisher
-	//bindPublisherAutocomplete(document);
+	bindPublisherAutocomplete(document);
 	
 	//add publisher rows
 	$("#pub_add").click(function(){
@@ -378,8 +378,9 @@ $(document).ready(function () {
 		rw.find('input[name="publoc_id[]"]').val(lc_chg);		
 		return false;
 	});
+	
 	//agent
-	//bindAgentAutocomplete(document);
+	bindAgentAutocomplete(document);
 	$("#agent_add").click(function(){
 		var agent_row = $('<tr><td><input type="hidden" name="agent_id[]" id="agentId" value="">'+
 						'<select class="form-control agent_type" name="agent_type[]" id="agent_type">'+
