@@ -43,7 +43,8 @@ if ($request->getqueryParams('id') !== null) {
         //fetch folders
         $arr_fl = [];
         $table    = new \App\Db\Table\Work_Folder($this->adapter);
-        $wkfl_row = $table->findRecordsByWorkId($id);                       
+        $wkfl_row = $table->findRecordsByWorkId($id);    
+		echo "<pre>"; print_r($wkfl_row); echo "</pre>";
     }
 }
 $url_components = parse_url($this->serverUrl());
