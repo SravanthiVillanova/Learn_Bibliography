@@ -77,7 +77,7 @@ class ManageWorkAction
     {
         if (isset($post['submit_save'])) {
             if ($post['submit_save'] == 'Save') {
-                //echo "<pre>";print_r($post);echo "</pre>"; //die();
+                echo "<pre>";print_r($post);echo "</pre>"; //die();
                     //insert General(work)
                     $table = new \App\Db\Table\Work($this->adapter);
                 $wk_id = $table->insertRecords($post['work_type'], $post['new_worktitle'], $post['new_worksubtitle'],
@@ -137,7 +137,7 @@ class ManageWorkAction
     {
         if (isset($post['submit_save'])) {
             if ($post['submit_save'] == 'Save') {
-                //echo "<pre>"; print_r($post); echo "</pre>"; //die();
+                echo "<pre>"; print_r($post); echo "</pre>"; //die();
                     //update General(work)
                     $table = new \App\Db\Table\Work($this->adapter);
                 $table->updateRecords($post['id'], $post['edit_work_type'], $post['edit_worktitle'], $post['edit_worksubtitle'],
