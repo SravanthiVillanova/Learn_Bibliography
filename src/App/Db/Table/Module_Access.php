@@ -80,63 +80,57 @@ class Module_Access extends \Zend\Db\TableGateway\TableGateway
       */
     public function getModules($role)
     {
-         $v_role = $role;
+        $v_role = $role;
         //if($role == 'role_a') {
             $callback = function ($select) use ($v_role) {
                 $select->columns(['module']);
                 $select->where->equalTo($v_role, 1);
             };
-         $row = $this->select($callback)->toArray();
-            return $row;
+        $row = $this->select($callback)->toArray();
+        return $row;
         //}
     }
     
-	public function setModuleAccess($module,$role)
-	{
-		/*echo "module is $module <br />";
-		echo "role is $role <br />";
-		echo "val is $val <br />";*/
-		if($role == 'Super User') 
-		{
-			$role = 'role_su';
-		}
-		elseif ($role == 'User')
-		{
-			$role = 'role_u';
-		}
-		$this->update(
+    public function setModuleAccess($module, $role)
+    {
+        /*echo "module is $module <br />";
+        echo "role is $role <br />";
+        echo "val is $val <br />";*/
+        if ($role == 'Super User') {
+            $role = 'role_su';
+        } elseif ($role == 'User') {
+            $role = 'role_u';
+        }
+        $this->update(
             [
                 $role => 1,
             ],
             ['module' => $module]
             );
-	}
-	
-	public function unsetModuleAccess($module,$role)
-	{
-		if($role == 'Super User') 
-		{
-			$role = 'role_su';
-		}
-		elseif ($role == 'User')
-		{
-			$role = 'role_u';
-		}
-		$this->update(
+    }
+    
+    public function unsetModuleAccess($module, $role)
+    {
+        if ($role == 'Super User') {
+            $role = 'role_su';
+        } elseif ($role == 'User') {
+            $role = 'role_u';
+        }
+        $this->update(
             [
                 $role => 0,
             ],
             ['module' => $module]
         );
-	}
-	
-	public function getAllModules()
-	{
-		$callback = function ($select) {
+    }
+    
+    public function getAllModules()
+    {
+        $callback = function ($select) {
             $select->columns(['module']);
         };
         $rows = $this->select($callback)->toArray();
-		$mod_rows = array_column($rows, 'module');
+        $mod_rows = array_column($rows, 'module');
         return $mod_rows;
-	}
+    }
 }

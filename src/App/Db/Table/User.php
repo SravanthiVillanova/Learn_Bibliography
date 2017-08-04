@@ -106,9 +106,9 @@ class User extends \Zend\Db\TableGateway\TableGateway
     public function updateRecord($id, $name, $username, $pwd, $level)
     {
         if ($level == 'NULL') {
-			$level = NULL;
-		}
-		//echo "pwd is " . $pwd;
+            $level = null;
+        }
+        //echo "pwd is " . $pwd;
         if (is_null($pwd)) {
             //echo "if pwd is empty ".$pwd;
             $this->update(

@@ -220,10 +220,10 @@ class Work extends \Zend\Db\TableGateway\TableGateway
 
     public function insertRecords($type_id, $title, $subtitle, $paralleltitle, $description, $create_date, $create_user_id, $status, $pub_yrFrom)
     {
-		if ($status === '00') {
-			$status = NULL;
-		}
-		$this->insert(
+        if ($status === '00') {
+            $status = null;
+        }
+        $this->insert(
             [
             'work_id' => null,
             'type_id' => $type_id,
@@ -251,11 +251,11 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     }
 
     public function updateRecords($id, $type_id, $title, $subtitle, $paralleltitle, $desc, $modify_date, $modify_user, $status, $pub_yrFrom)
-    {       
-		if ($status === '00') {
-			$status = NULL;
-		}
-		$this->update(
+    {
+        if ($status === '00') {
+            $status = null;
+        }
+        $this->update(
             [
             'work_id' => null,
             'type_id' => $type_id,
