@@ -87,12 +87,13 @@ class ManageWorkAction
                     //extract classification rows
                     foreach ($post['arr'] as $row):
                         $fl[] = explode(',', trim($row, ','));
-                endforeach;
+					endforeach;
+					echo "<pre>";print_r($fl);echo "</pre>";
                     //extract folder ids for each row
                     for ($i = 0; $i < count($fl); ++$i) {
                         $folder[$i] = $fl[$i][count($fl[$i]) - 1];
                     }
-                    
+                    echo "<pre>";print_r($folder);echo "</pre>";
                      //insert classification(work_folder)
                     if ($folder[0] != null) {
                         $table = new \App\Db\Table\Work_Folder($this->adapter);
