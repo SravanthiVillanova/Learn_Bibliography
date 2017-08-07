@@ -22,7 +22,7 @@ class ManagePublisherLocationAction
         $this->adapter = $adapter;
     }
 
-    protected function doDelete($post)
+    protected function doDelete($post,$query)
     {
         if ($post['submitt'] == 'Delete') {
             if (!is_null($post['id']) && ((count($post['locs'])) >= 0)) {
@@ -35,7 +35,7 @@ class ManagePublisherLocationAction
         }
     }
     
-    protected function doMerge($post)
+    protected function doMerge($post,$query)
     {
         if ($post['submitt'] == 'Merge') {
             if (!is_null($post['id'])) {
@@ -60,12 +60,12 @@ class ManagePublisherLocationAction
         
         //delete a location for a publisher
         if ($post['action'] == 'delete') {
-            $this->doDelete($post);
+            $this->doDelete($post,$query);
         }
         
         //Merge publisher locations
         if ($post['action'] == 'merge') {
-            $this->doMerge($post);
+            $this->doMerge($post,$query);
         }
     }
     
