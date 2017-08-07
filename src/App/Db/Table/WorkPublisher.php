@@ -59,29 +59,26 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
     public function updatePublisherLocation($pub_id, $loc_ids)
     {
         $callback = function ($select) use ($pub_id, $loc_ids) {
-            $select->columns(['id', 'work_id']);
+            //$select->columns(['id', 'work_id']);
             $select->where->in('location_id', $loc_ids);
             $select->where->equalTo('publisher_id', $pub_id);
         };
+		$this->update(['location_id' => null], $callback);
+		/*
         $rows = $this->select($callback)->toArray();
         $cnt = count($rows);
         for ($i = 0; $i < $cnt; ++$i) {
             $this->update(['location_id' => null]);
-        }
+        }*/
     }
 
     public function updatePublisherLocationId($pub_id, $source_ids, $dest_id)
     {
         $callback = function ($select) use ($pub_id, $source_ids) {
-            $select->columns(['id', 'work_id', 'publisher_id', 'location_id']);
             $select->where->equalTo('publisher_id', $pub_id);
             $select->where->in('location_id', $source_ids);
         };
-        $rows = $this->select($callback)->toArray();
-        $cnt = count($rows);
-        for ($i = 0; $i < $cnt; ++$i) {
-            $this->update(['location_id' => $dest_id]);
-        }
+		$this->update(['location_id' => $dest_id], $callback);
     }
 
     public function deleteRecordByPub($pub_id)
@@ -92,10 +89,7 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
 
     public function findNoofWorks($id)
     {
-        //echo "entered";
-        //echo $id;
         $callback = function ($select) use ($id) {
-            //echo 'callback';
                 $select->columns(
                 [
                     'cnt' => new Expression(
@@ -109,16 +103,12 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         $rows = $this->select($callback)->toArray();
 
         return $rows;
-        //var_dump($rows);
-        //echo "done";
     }
 
     public function insertRecords($wk_id, $pub_id, $pub_locid, $pub_yr, $pub_yrEnd)
     {
         for ($i = 0; $i < count($pub_id); ++$i) {
-            //echo "<pre>"; echo $wk_id . ' ' . $pub_id[$i] . ' ' . $pub_locid[$i] . ' ' . $pub_yr[$i] . ' ' . $pub_yrEnd[$i]; echo "</pre>";
             if (empty($pub_locid[$i])) {
-                //echo 'id is ' . $pub_locid[$i];
                 $pub_locid[$i] = null;
             }
             $this->insert(
