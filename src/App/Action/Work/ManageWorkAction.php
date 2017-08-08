@@ -138,7 +138,7 @@ class ManageWorkAction
     {
         if (isset($post['submit_save'])) {
             if ($post['submit_save'] == 'Save') {
-                //echo "<pre>"; print_r($post); echo "</pre>"; //die();
+                //echo "<pre>"; print_r($post); echo "</pre>"; die();
                     //update General(work)
                     $table = new \App\Db\Table\Work($this->adapter);
                 $table->updateRecords($post['id'], $post['edit_work_type'], $post['edit_worktitle'], $post['edit_worksubtitle'],
@@ -175,7 +175,7 @@ class ManageWorkAction
                     if (isset($post['pub_id'])) {
                         if ($post['pub_id'][0] != null) {
                             //delete all publishers
-                        $table = new \App\Db\Table\WorkPublisher($this->adapter);
+							$table = new \App\Db\Table\WorkPublisher($this->adapter);
                             $table->deleteRecordByWorkId($post['id']);
 
                         //insert all publishers again

@@ -59,17 +59,10 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
     public function updatePublisherLocation($pub_id, $loc_ids)
     {
         $callback = function ($select) use ($pub_id, $loc_ids) {
-            //$select->columns(['id', 'work_id']);
-            $select->where->in('location_id', $loc_ids);
             $select->where->equalTo('publisher_id', $pub_id);
+            $select->where->in('location_id', $loc_ids);
         };
 		$this->update(['location_id' => null], $callback);
-		/*
-        $rows = $this->select($callback)->toArray();
-        $cnt = count($rows);
-        for ($i = 0; $i < $cnt; ++$i) {
-            $this->update(['location_id' => null]);
-        }*/
     }
 
     public function updatePublisherLocationId($pub_id, $source_ids, $dest_id)

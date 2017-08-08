@@ -319,6 +319,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
         });
         //agent
         bindAgentAutocomplete(document);
+		//add agent rows
         $("#agent_add").click(function() {
             var agent_row = $('<tr><td><input type="hidden" name="agent_id[]" id="agentId" value="">' +
                     '<select class="form-control agent_type" name="agent_type[]" id="agent_type">' +

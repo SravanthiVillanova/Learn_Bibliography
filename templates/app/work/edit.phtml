@@ -179,7 +179,7 @@ function bindWorkTypeAttributes(context)
 //Publisher autocomplete and location fetch
 function bindPublisherAutocomplete(context) {							
 	//publisher enable/disable fields
-	$("#pubLocation", context).prop("disabled", "disabled");
+	$(".pub_locations", context).prop("disabled", "disabled");
 	
 	//Publisher autocomplete
 	$(function() {
@@ -190,7 +190,7 @@ function bindPublisherAutocomplete(context) {
 			select: function(event, ui){
                 $('#pubName', context).val(ui.item.label);
                 $('#pubId', context).val(ui.item.id);
-				$("#pubLocation", context).prop("disabled", false);
+				$(".pub_locations", context).prop("disabled", false);
                 return false;
             }
 		});
@@ -210,11 +210,11 @@ function bindPublisherAutocomplete(context) {
         cache: false,
         success: function(data)
         {
-			$("#pubLocation", context).html('');
+			$(".pub_locations", context).html('');
 			$.each(data.publoc, function (key, val) {
 				//if(val.id !== null)
 				//{
-                $("#pubLocation", context).append('<option id="' + val.id + '" value="' + val.id + '">' + val.label + '</option>');
+                $(".pub_locations", context).append('<option id="' + val.id + '" value="' + val.id + '">' + val.label + '</option>');
 				$("#publoc_id", context).eq(i).val(val.id);
 				//}
 				//arr.push(val.id);
@@ -224,7 +224,7 @@ function bindPublisherAutocomplete(context) {
 			//$("#publoc_id", context) = arr;
 		},
 		error: function () { 
-            $("#pubLocation", context).html('<option id="-1">none available</option>');
+            $(".pub_locations", context).html('<option id="-1">none available</option>');
         }
         });
     });	
@@ -349,7 +349,12 @@ $(document).ready(function () {
 	});
 		
 	//Publisher
-	bindPublisherAutocomplete(document);
+	//change publisher
+	$("#pub_table").on('click','input[name="pub_name[]"]',function(){
+		var rw = $(this).closest("tr");
+		bindPublisherAutocomplete(rw);
+		return false;
+	});
 	
 	//add publisher rows
 	$("#pub_add").click(function(){
@@ -358,7 +363,7 @@ $(document).ready(function () {
 							'<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"/></td>'+
 							'<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" /></td>'+
 							'<input type="hidden" name="publoc_id[]" id="publoc_id" value="">'+
-							'<td><select class="form-control pub_locations" name="pub_location[]" id="pubLocation"><option value=""></option></select></td>'+
+							'<td><select class="form-control pub_locations" name="pub_location[]" disabled><option value=""></option></select></td>'+
 							'<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>'+
 							'</tr>');				
 							
@@ -374,7 +379,8 @@ $(document).ready(function () {
 	$("#pub_table").on('change','.pub_locations',function(){
 		var lc_chg = $(this).val();
 		var rw = $(this).closest("tr");
-		//rw.css('background-color','#8ec252');
+		
+		//rw.find('select').val(lc_chg);
 		rw.find('input[name="publoc_id[]"]').val(lc_chg);		
 		return false;
 	});
@@ -787,7 +793,7 @@ $(document).ready(function () {
 				<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" /></td>
 				<input type="hidden" name="publoc_id[]" id="publoc_id" value="">
 				<td>
-					<select class="form-control pub_locations" name="pub_location[]" id="pubLocation">
+					<select class="form-control pub_locations" name="pub_location[]" id="pubLocation" disabled>
 					<option value=""></option>				
 					</select>
 				</td>
