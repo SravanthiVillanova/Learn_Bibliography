@@ -67,9 +67,6 @@ class ManagePublisherAction
     
     protected function doMerge($post)
     {
-        //$table = new \App\Db\Table\Publisher($this->adapter);
-        //return $table->findRecords($post['source_publisher']);
-        //echo "<pre>"; print_r($post); echo "</pre>"; die();
         foreach ($post['src_loc'] as $source_locid => $action) :
             if ($action == 'move') {
                 //update workpub set pubid=destpubid where pubid=srcpubid and locid = $source_locid

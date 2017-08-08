@@ -167,17 +167,6 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
             ],
             ['publisher_id' => $pub_src_id, 'location_id' => $src_loc_id]
         );
-        
-        /*$callback = function ($select) use ($pub_src_id, $src_loc_id) {
-            $select->columns(['*']);
-            $select->where->equalTo('publisher_id', $pub_id);
-            $select->where->equalTo('location_id', $src_loc_id);
-        };
-        $rows = $this->select($callback)->toArray();
-        $cnt = count($rows);
-        for ($i = 0; $i < $cnt; ++$i) {
-            $this->update(['publisher_id' => $pub_dest_id]);
-        }*/
     }
     
     public function mergePublisher($pub_src_id, $pub_dest_id, $src_loc_id, $dest_loc_id)
