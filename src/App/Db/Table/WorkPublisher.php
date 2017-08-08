@@ -62,7 +62,7 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
             $select->where->equalTo('publisher_id', $pub_id);
             $select->where->in('location_id', $loc_ids);
         };
-		$this->update(['location_id' => null], $callback);
+        $this->update(['location_id' => null], $callback);
     }
 
     public function updatePublisherLocationId($pub_id, $source_ids, $dest_id)
@@ -71,7 +71,7 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
             $select->where->equalTo('publisher_id', $pub_id);
             $select->where->in('location_id', $source_ids);
         };
-		$this->update(['location_id' => $dest_id], $callback);
+        $this->update(['location_id' => $dest_id], $callback);
     }
 
     public function deleteRecordByPub($pub_id)
@@ -83,7 +83,7 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
     public function findNoofWorks($id)
     {
         $callback = function ($select) use ($id) {
-                $select->columns(
+            $select->columns(
                 [
                     'cnt' => new Expression(
                     'COUNT(DISTINCT(?))', ['work_id'],

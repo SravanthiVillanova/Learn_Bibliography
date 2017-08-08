@@ -22,22 +22,22 @@ class ManagePublisherLocationAction
         $this->adapter = $adapter;
     }
 
-    protected function doDelete($post,$query)
+    protected function doDelete($post, $query)
     {
         if ($post['submitt'] == 'Delete') {
             if (!is_null($post['id']) && ((count($post['locs'])) >= 0)) {
                 $table = new \App\Db\Table\WorkPublisher($this->adapter);
                 $table->updatePublisherLocation($query['id'], $post['locids']);
-				
+                
                 $table = new \App\Db\Table\PublisherLocation($this->adapter);
                 $table->deletePublisherRecord($post['id'], $post['locs']);
             }
         }
     }
     
-    protected function doMerge($post,$query)
+    protected function doMerge($post, $query)
     {
-		if ($post['submitt'] == 'Merge') {
+        if ($post['submitt'] == 'Merge') {
             if (!is_null($post['id'])) {
                 $table = new \App\Db\Table\WorkPublisher($this->adapter);
                 $table->updatePublisherLocationId($query['id'], $post['sourceids'], $post['destid']);
@@ -60,12 +60,12 @@ class ManagePublisherLocationAction
         
         //delete a location for a publisher
         if ($post['action'] == 'delete') {
-            $this->doDelete($post,$query);
+            $this->doDelete($post, $query);
         }
         
         //Merge publisher locations
         if ($post['action'] == 'merge') {
-            $this->doMerge($post,$query);
+            $this->doMerge($post, $query);
         }
     }
     

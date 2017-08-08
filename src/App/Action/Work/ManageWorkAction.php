@@ -87,7 +87,7 @@ class ManageWorkAction
                     //extract classification rows
                     foreach ($post['arr'] as $row):
                         $fl[] = explode(',', trim($row, ','));
-					endforeach;
+                endforeach;
 
                     //extract folder ids for each row
                     for ($i = 0; $i < count($fl); ++$i) {
@@ -175,7 +175,7 @@ class ManageWorkAction
                     if (isset($post['pub_id'])) {
                         if ($post['pub_id'][0] != null) {
                             //delete all publishers
-							$table = new \App\Db\Table\WorkPublisher($this->adapter);
+                            $table = new \App\Db\Table\WorkPublisher($this->adapter);
                             $table->deleteRecordByWorkId($post['id']);
 
                         //insert all publishers again
