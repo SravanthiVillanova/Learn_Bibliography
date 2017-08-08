@@ -1,10 +1,10 @@
 <?php
 /**
- * Table Definition for record.
+ * Table Definition for user.
  *
  * PHP version 5
  *
- * Copyright (C) Villanova University 2010.
+ * Copyright (C) Villanova University 2017.
  * Copyright (C) University of Freiburg 2014.
  * Copyright (C) The National Library of Finland 2015.
  *
@@ -21,30 +21,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @category VuFind
+ * @category VuBib
  *
- * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
- * @author   Ere Maijala <ere.maijala@helsinki.fi>
+ * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://vufind.org Main Site
+ * @link     https://
  */
-
 namespace App\Db\Table;
 
 use Zend\Db\Sql\Select;
 use Interop\Container\ContainerInterface;
 
 /**
- * Table Definition for record.
+ * Table Definition for user.
  *
- * @category VuFind
+ * @category VuBib
  *
- * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
- * @author   Ere Maijala <ere.maijala@helsinki.fi>
+ * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://vufind.org Main Site
+ * @link     https://
  */
 class User extends \Zend\Db\TableGateway\TableGateway
 {
@@ -63,21 +60,9 @@ class User extends \Zend\Db\TableGateway\TableGateway
      */
     public function __construct($adapter)
     {
-        parent::__construct('user', $adapter);
-
-        //var_dump($ses);
-        //ContainerInterface $container;
-        //$this->session = new \Zend\Session\Container('Bibliography');
+        parent::__construct('user', $adapter);        
     }
-     /**
-      * Update an existing entry in the record table or create a new one.
-      *
-      * @param string $id      Record ID
-      * @param string $source  Data source
-      * @param string $rawData Raw data from source
-      *
-      * @return Updated or newly added record
-      */
+     
      public function insertRecords($newuser_name, $new_username, $new_user_pwd, $access_level)
      {
          $this->insert(

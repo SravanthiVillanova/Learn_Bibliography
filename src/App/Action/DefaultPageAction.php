@@ -1,5 +1,30 @@
 <?php
-
+/**
+ * ISBN validation and conversion functionality
+ *
+ * PHP version 5
+ *
+ * Copyright (c) Falvey Library 2017.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * @category VuBib
+ * @package  Code
+ * @author   Falvey Library <demian.katz@villanova.edu>
+ * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ * @link     https:// Main Page
+ */
 namespace App\Action;
 
 use Psr\Http\Message\ResponseInterface;
@@ -9,6 +34,16 @@ use Zend\Expressive\Router;
 use Zend\Expressive\Template;
 use Zend\Db\Adapter\Adapter;
 
+/**
+ * Class Definition for DefaultPageAction.
+ *
+ * @category VuBib
+ *
+ * @author   Falvey Library <demian.katz@villanova.edu>
+ * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
+ * @link     https://
+ */
 class DefaultPageAction
 {
     private $router;
@@ -17,6 +52,13 @@ class DefaultPageAction
 
     private $adapter;
 
+	/**
+     * DefaultPageAction constructor.
+     *
+     * @param Router\RouterInterface                  $router
+     * @param Template\TemplateRendererInterface|null $template
+     * @param Adapter             					  $adapter
+     */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
         $this->router = $router;
@@ -24,21 +66,11 @@ class DefaultPageAction
         $this->adapter = $adapter;
     }
 
+	/**
+	* invokes required template
+	**/
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        /* $query = $request->getqueryParams();
-        $post = [];
-        if ($request->getMethod() == "POST") {
-                $post = $request->getParsedBody();
-        if($query['action'] == 'new'){
-        if ($post['submitt'] == "Save") {
-                        $table = new \App\Db\Table\UserTest($this->adapter);
-                        $table->insertRecords($post['user_name'], $post['user_pwd'], $post['role']);
-                    }
-        //return new HtmlResponse($this->template->render('app::default', $this));
-        }
-       } */
-       //var_dump("HELLO");
         return new HtmlResponse($this->template->render('app::default', ['request' => $request, 'adapter' => $this->adapter]));
     }
 }

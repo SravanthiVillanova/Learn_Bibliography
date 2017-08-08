@@ -26,7 +26,6 @@
  *
  * @link     https://vufind.org Main Site
  */
-
 namespace App\Db\Row;
 
 /**
