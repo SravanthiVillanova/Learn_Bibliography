@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Manage WorkType Action
  *
  * PHP version 5
  *
@@ -39,26 +39,41 @@ use Zend\Paginator\Paginator;
  * Class Definition for ManageWorkTypeAction.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class ManageWorkTypeAction
 {
-    private $router;
+    /**
+     * Router\RouterInterface
+     *
+     * @var $router
+     */
+    protected $router;
 
-    private $template;
+    /**
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
+     */
+    protected $template;
 
-    private $adapter;
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
+    protected $adapter;
 
-	/**
+    /**
      * ManageWorkTypeAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter             					  $adapter
+     * @param Router\RouterInterface             $router   for routes
+     * @param Template\TemplateRendererInterface $template for templates
+     * @param Adapter                            $adapter  for db connection
      */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
@@ -67,6 +82,13 @@ class ManageWorkTypeAction
         $this->adapter = $adapter;
     }
 
+    /**
+     * Adds worktype.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doAdd($post)
     {
         if ($post['submitt'] == 'Save') {
@@ -75,6 +97,13 @@ class ManageWorkTypeAction
         }
     }
     
+    /**
+     * Edits worktype.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doEdit($post)
     {
         if ($post['submitt'] == 'Save') {
@@ -85,6 +114,13 @@ class ManageWorkTypeAction
         }
     }
     
+    /**
+     * Deletes worktype.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doDelete($post)
     {
         if ($post['submitt'] == 'Delete') {
@@ -99,6 +135,13 @@ class ManageWorkTypeAction
         }
     }
     
+    /**
+     * Removes attributes from a worktype.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function removeAttribute($post)
     {
         $attrs_to_remove = [];
@@ -115,6 +158,13 @@ class ManageWorkTypeAction
         }
     }
     
+    /**
+     * Adds attributes to a worktype.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function addAttribute($post)
     {
         $attrs_to_add = [];
@@ -130,6 +180,14 @@ class ManageWorkTypeAction
             }
         }
     }
+    
+    /**
+     * Sort attributes of a worktype.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doAttributeSort($post)
     {
         if ($post['submitt'] == 'Save') {
@@ -145,6 +203,13 @@ class ManageWorkTypeAction
         }
     }
     
+    /**
+     * Action based on action parameter.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doAction($post)
     {
         //add a new work type
@@ -165,6 +230,13 @@ class ManageWorkTypeAction
         }
     }
     
+    /**
+     * Call aprropriate function for each action.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return Paginator                  $paginator
+     */
     protected function getPaginator($post)
     {
         //add, edit, delete actions on worktype
@@ -185,70 +257,59 @@ class ManageWorkTypeAction
         return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
     }
 
-	/**
-	* invokes required template
-	**/
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $query = $request->getqueryParams();
-        $post = [];
-        if ($request->getMethod() == 'POST') {
-            $post = $request->getParsedBody();
-        }
+        $simpleAction = new \App\Action\SimpleRenderAction('app::worktype::manage_worktype', $this->router, $this->template, $this->adapter);
+		list($query,$post) = $simpleAction->getQueryAndPost($request);
+		
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(7);
         //$allItems = $paginator->getTotalItemCount();
-        $countPages = $paginator->count();
 
-        $currentPage = isset($query['page']) ? $query['page'] : 1;
-        if ($currentPage < 1) {
-            $currentPage = 1;
-        }
-        $paginator->setCurrentPageNumber($currentPage);
-
-        if ($currentPage == $countPages) {
-            $next = $currentPage;
-            $previous = $currentPage - 1;
-        } elseif ($currentPage == 1) {
-            $next = $currentPage + 1;
-            $previous = 1;
-        } else {
-            $next = $currentPage + 1;
-            $previous = $currentPage - 1;
-        }
+        $simpleAction = new \App\Action\SimpleRenderAction('app::worktype::manage_worktype', $this->router, $this->template, $this->adapter);
+		$pgs = $simpleAction->getNextPrevious($paginator,$query);
 
         $searchParams = [];
 
         if (isset($post['action']) && $post['action'] == 'sortable' && $post['submitt'] == 'Save') {
             //if ($post['action'] == 'sortable' && $post['submitt'] == 'Save') {
                 return new HtmlResponse(
-            $this->template->render(
-                'app::worktype::manage_worktypeattribute',
-                [
-                    'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
-                    'request' => $request,
-                    'adapter' => $this->adapter,
-                     'searchParams' => implode('&', $searchParams),
-                ]
-            )
-        );
+                    $this->template->render(
+                        'app::worktype::manage_worktypeattribute',
+                        [
+                        'rows' => $paginator,
+                        'previous' => $pgs['prev'],
+                        'next' => $pgs['nxt'],
+                        'countp' => $pgs['cp'],
+                        'request' => $request,
+                        'adapter' => $this->adapter,
+                        'searchParams' => implode('&', $searchParams),
+                        ]
+                    )
+                );
             //}
         } else {
             return new HtmlResponse(
-            $this->template->render(
-                'app::worktype::manage_worktype',
-                [
+                $this->template->render(
+                    'app::worktype::manage_worktype',
+                    [
                     'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
+                    'previous' => $pgs['prev'],
+                    'next' => $pgs['nxt'],
+                    'countp' => $pgs['cp'],
                     'searchParams' => implode('&', $searchParams),
-                ]
-            )
-        );
+                    ]
+                )
+            );
         }
     }
 }

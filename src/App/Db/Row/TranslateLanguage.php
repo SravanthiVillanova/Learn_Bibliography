@@ -1,10 +1,12 @@
 <?php
 /**
- * Row Definition for record.
+ * Row Definition for translate_language record.
  *
  * PHP version 5
  *
- * Copyright (C) Villanova University 2010.
+ * Copyright (C) Villanova University 2017.
+ * Copyright (C) University of Freiburg 2014.
+ * Copyright (C) The National Library of Finland 2015.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -19,31 +21,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @category VuFind
- *
- * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
+ * @category VuBib
+ * @package  Code
+ * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://vufind.org Main Site
+ * @link https://
  */
 namespace App\Db\Row;
 
 /**
- * Row Definition for user.
+ * Row Definition for translate_language.
  *
- * @category VuFind
- *
- * @author   Markus Beh <markus.beh@ub.uni-freiburg.de>
+ * @category VuBib
+ * @package  Code
+ * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://vufind.org Main Site
+ * @link https://
  */
 class TranslateLanguage extends \Zend\Db\RowGateway\RowGateway
 {
     /**
-     * Constructor.
+     * TranslateLanguage constructor.
      *
-     * @param \Zend\Db\Adapter\Adapter $adapter Database adapter
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {

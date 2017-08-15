@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -34,22 +34,32 @@ namespace App\Db\Table;
  * Table Definition for folder_merge_history.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class Folder_Merge_History extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor.
+     * Folder_Merge_History constructor.
+     *
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {
         parent::__construct('folder_merge_history', $adapter);
     }
     
+    /**
+     * Update folder merge history record.
+     *
+     * @param Number $sid id of source folder
+     * @param Number $did id of destination folder
+     *
+     * @return empty
+     */
     public function mergeFlMgHistUpdate($sid, $did)
     {
         $this->update(
@@ -60,6 +70,14 @@ class Folder_Merge_History extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Insert folder merge history record.
+     *
+     * @param Number $sid id of source folder
+     * @param Number $did id of destination folder
+     *
+     * @return empty
+     */
     public function insertRecord($sid, $did)
     {
         $this->insert(

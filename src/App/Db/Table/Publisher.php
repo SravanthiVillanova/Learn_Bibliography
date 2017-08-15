@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -41,22 +41,31 @@ use Zend\Db\Sql\Expression;
  * Table Definition for publisher.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class Publisher extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor.
+     * Publisher constructor.
+     *
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {
         parent::__construct('publisher', $adapter);
     }
 
+    /**
+     * Insert publisher record.
+     *
+     * @param String $name publisher name
+     *
+     * @return empty
+     */
     public function insertRecords($name)
     {
         $this->insert(
@@ -66,6 +75,13 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Find publisher by name
+     *
+     * @param string $name publisher name
+     *
+     * @return Paginator $paginatorAdapter publisher record
+     */
     public function findRecords($name)
     {
         $select = $this->sql->select();
@@ -76,6 +92,13 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
         return new Paginator($paginatorAdapter);
     }
 
+    /**
+     * Find publisher by id
+     *
+     * @param Number $id publisher id
+     *
+     * @return Array $row publisher record
+     */
     public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));
@@ -84,6 +107,14 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
         return $row;
     }
 
+    /**
+     * Update publisher record.
+     *
+     * @param Number $id   publisher id
+     * @param String $name publisher name
+     *
+     * @return empty
+     */
     public function updateRecord($id, $name)
     {
         $this->update(
@@ -94,30 +125,49 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Delete publisher
+     *
+     * @param Number $id publisher id
+     *
+     * @return empty
+     */
     public function deleteRecord($id)
     {
         $this->delete(['id' => $id]);
         //$this->tableGateway->delete(['id' => $id]);
     }
 
+    /**
+     * Find distinct initial letters of publishers.
+     *
+     * @return Array
+     */
     public function findInitialLetter()
     {
         $callback = function ($select) {
             $select->columns(
-                    [
-                        'letter' => new Expression(
-                            'DISTINCT(substring(?, 1, 1))',
-                            ['name'],
-                            [Expression::TYPE_IDENTIFIER]
-                        ),
-                    ]
-                );
+                [
+                'letter' => new Expression(
+                    'DISTINCT(substring(?, 1, 1))',
+                    ['name'],
+                    [Expression::TYPE_IDENTIFIER]
+                ),
+                ]
+            );
             $select->order('name');
         };
 
         return $this->select($callback)->toArray();
     }
 
+    /**
+     * Get records with publisher name like given string
+     *
+     * @param string $letter starting letter of publisher name
+     *
+     * @return Paginator $paginatorAdapter publisher records
+     */
     public function displayRecordsByName($letter)
     {
         $select = $this->sql->select();
@@ -127,6 +177,13 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
         return new Paginator($paginatorAdapter);
     }
 
+    /**
+     * Publisher records with name like given string.
+     *
+     * @param string $name part of name of publisher
+     *
+     * @return Array $rows publisher records as array
+     */
     public function getLikeRecords($name)
     {
         $callback = function ($select) use ($name) {

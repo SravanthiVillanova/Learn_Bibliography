@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Simple Render Action
  *
  * PHP version 5
  *
@@ -38,26 +38,42 @@ use Zend\Db\Adapter\Adapter;
  * Class Definition for SimpleRenderAction.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class SimpleRenderAction
 {
-    private $router;
-    private $template;
-    private $templateName;
-    private $adapter;
+    /**
+     * Router\RouterInterface
+     *
+     * @var $router
+     */    
+    protected $router;
 
-	/**
+    /**
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
+     */
+    protected $template;
+
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
+    protected $adapter;
+
+    /**
      * SimpleRenderAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter             					  $adapter
-     * @param string                                  $templateName
+     * @param String                             $templateName Name of the template
+     * @param Router\RouterInterface             $router       for routes
+     * @param Template\TemplateRendererInterface $template     for templates
+     * @param Adapter                            $adapter      for db connection
      */
     public function __construct($templateName, Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
@@ -67,11 +83,71 @@ class SimpleRenderAction
         $this->adapter = $adapter;
     }
 
-	/**
-	* invokes required template
-	**/
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         return new HtmlResponse($this->template->render($this->templateName, ['request' => $request, 'adapter' => $this->adapter]));
+    }
+
+    /**
+     * Get query params and post values
+     *
+     * @param ServerRequestInterface $request server-side request.
+     *
+     * @return Array
+     */
+    public function getQueryAndPost(ServerRequestInterface $request)
+    {
+        $query = [];
+        $query = $request->getqueryParams();
+        $post = [];
+        if ($request->getMethod() == 'POST') {
+            $post = $request->getParsedBody();
+        }
+        return [$query, $post];
+    }
+
+    /**
+     * Get previous and next values for pagination
+     *
+     * @param Paginator $paginator paginator records
+     * @param Array     $query     query params
+     *
+     * @return Array $pgs
+     */
+    public function getNextPrevious($paginator,$query)
+    {
+        $countPages = $paginator->count();
+
+        $currentPage = isset($query['page']) ? $query['page'] : 1;
+        if ($currentPage < 1) {
+            $currentPage = 1;
+        }
+        $paginator->setCurrentPageNumber($currentPage);
+
+        if ($currentPage == $countPages) {
+            $next = $currentPage;
+            $previous = $currentPage - 1;
+        } elseif ($currentPage == 1) {
+            $next = $currentPage + 1;
+            $previous = 1;
+        } else {
+            $next = $currentPage + 1;
+            $previous = $currentPage - 1;
+        }
+
+        $pgs['cp'] = $countPages;
+        $pgs['prev'] = $previous;
+        $pgs['nxt'] = $next;
+
+        return $pgs;
     }
 }

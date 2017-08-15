@@ -5,7 +5,7 @@
 <property name="package"  value="${phing.project.name}" override="true" />
 <property name="builddir" value="${tmp}/build/${phing.project.name}" override="true" />
 <property name="srcdir"   value="${project.basedir}" override="true" />
-<property name="php-cs-fixers" value="no_blank_lines_before_namespaces,function_call_space,lowercase_keywords,encoding,parenthesis,php_closing_tag,visibility,duplicate_semicolon,extra_empty_lines,no_blank_lines_after_class_opening,no_empty_lines_after_phpdocs,operators_spaces,spaces_before_semicolon,ternary_spaces,phpdoc_no_access,eof_ending" />
+<property name="php-cs-fixers" value="no_blank_lines_before_namespaces,function_call_space,lowercase_keywords,encoding,parenthesis,php_closing_tag,visibility,extra_empty_lines,no_blank_lines_after_class_opening,operators_spaces,spaces_before_semicolon,ternary_spaces,eof_ending" />
 
 <!-- Main Target -->
   <target name="main" description="main target">
@@ -59,6 +59,11 @@
   </target>
   <target name="phpcs-console">
     <exec command="${srcdir}/vendor/bin/phpcs --standard=PEAR --ignore=tests/* --extensions=php ${srcdir}/src" escape="false" passthru="true" checkreturn="true" />
+  </target>
+  
+   <!-- PHP copy-and-paste detection -->
+  <target name="phpcpd">
+    <exec command="${srcdir}/vendor/bin/phpcpd --log-pmd ${builddir}/reports/pmd-cpd.xml --exclude tests ${srcdir}/src" />
   </target>
   
    <!-- php-cs-fixer (first task applies fixes, second task simply checks if they are needed) -->

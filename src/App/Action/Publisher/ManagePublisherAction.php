@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Manage Publisher Action
  *
  * PHP version 5
  *
@@ -39,29 +39,44 @@ use Zend\Paginator\Paginator;
  * Class Definition for ManagePublisherAction.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class ManagePublisherAction
 {
-    private $router;
+    /**
+     * Router\RouterInterface
+     *
+     * @var $router
+     */    
+    protected $router;
 
-    private $template;
+    /**
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
+     */
+    protected $template;
 
-    private $adapter;
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
+    protected $adapter;
 
     //private $dbh;
     //private $qstmt;
 
-	/**
+    /**
      * ManagePublisherAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter             					  $adapter
+     * @param Router\RouterInterface             $router   for routes
+     * @param Template\TemplateRendererInterface $template for templates
+     * @param Adapter                            $adapter  for db connection
      */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
@@ -70,7 +85,14 @@ class ManagePublisherAction
         $this->adapter = $adapter;
     }
 
-    protected function searchAgent($params)
+    /**
+     * Publisher > Search.
+     *
+     * @param Array $params url query parameters
+     *
+     * @return Array 
+     */
+    protected function searchPublisher($params)
     {
         // search by name
         if (!empty($params['name'])) {
@@ -91,7 +113,14 @@ class ManagePublisherAction
             return $table->displayRecordsByName($params['letter']);
         }
     }
-    
+
+    /**
+     * Delete publisher.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doDelete($post)
     {
         $locs = [];
@@ -106,7 +135,14 @@ class ManagePublisherAction
             $table->deleteRecord($post['id']);
         }
     }
-    
+
+    /**
+     * Merge publishers.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doMerge($post)
     {
         foreach ($post['src_loc'] as $source_locid => $action) :
@@ -128,12 +164,26 @@ class ManagePublisherAction
         endforeach;
     }
     
+    /**
+     * Add publisher.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doNew($post)
     {
         $table = new \App\Db\Table\Publisher($this->adapter);
         $table->insertRecords($post['name_publisher']);
     }
     
+    /**
+     * Edit publisher.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doEdit($post)
     {
         if (!is_null($post['id'])) {
@@ -142,26 +192,33 @@ class ManagePublisherAction
         }
     }
     
+    /**
+     * Action based on action parameter.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doAction($post)
     {
         //add a new publisher
-            if ($post['action'] == 'new') {
-                if ($post['submitt'] == 'Save') {
-                    $this->doNew($post);
-                }
+        if ($post['action'] == 'new') {
+            if ($post['submitt'] == 'Save') {
+                $this->doNew($post);
             }
-            //edit a publisher
-            if ($post['action'] == 'edit') {
-                if ($post['submitt'] == 'Save') {
-                    $this->doEdit($post);
-                }
+        }
+        //edit a publisher
+        if ($post['action'] == 'edit') {
+            if ($post['submitt'] == 'Save') {
+                $this->doEdit($post);
             }
-            //delete a publisher */
-            if ($post['action'] == 'delete') {
-                if ($post['submitt'] == 'Delete') {
-                    $this->doDelete($post);
-                }
+        }
+        //delete a publisher */
+        if ($post['action'] == 'delete') {
+            if ($post['submitt'] == 'Delete') {
+                $this->doDelete($post);
             }
+        }
         if ($post['action'] == 'merge_publisher') {
             if ($post['submitt'] == 'Save') {
                 $this->doMerge($post);
@@ -169,12 +226,20 @@ class ManagePublisherAction
         }
     }
     
+    /**
+     * Get records to display.
+     *
+     * @param Array $params url query parameters
+     * @param Array $post   contains posted elements of form
+     *
+     * @return Paginator                  $paginator
+     */
     protected function getPaginator($params, $post)
     {
         //search
         if (!empty($params)) {
             if (!empty($params['name']) || !empty($params['location']) || !empty($params['letter'])) {
-                return ($this->searchAgent($params));
+                return ($this->searchPublisher($params));
             }
         }
               
@@ -184,13 +249,11 @@ class ManagePublisherAction
                 $this->doAction($post);
             
             //Cancel edit\delete
-            //if (isset($post['submitt'])) {
-                if ($post['submitt'] == 'Cancel') {
-                    $table = new \App\Db\Table\Publisher($this->adapter);
+            if ($post['submitt'] == 'Cancel') {
+                $table = new \App\Db\Table\Publisher($this->adapter);
 
-                    return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
-                }
-            //}
+                return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+            }
         }
         
         // default: blank/missing search
@@ -199,6 +262,13 @@ class ManagePublisherAction
         return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
     }
 
+    /**
+     * Set search parameters for pagination.
+     *
+     * @param Array $query url query parameters
+     *
+     * @return Array                  $searchParams
+     */
     protected function getSearchParams($query)
     {
         $searchParams = [];
@@ -214,6 +284,11 @@ class ManagePublisherAction
         return $searchParams;
     }
     
+    /**
+     * Fetches distinct initial letters of publishers.
+     *
+     * @return empty
+     */
     protected function getLetters()
     {
         $table = new \App\Db\Table\Publisher($this->adapter);
@@ -221,38 +296,26 @@ class ManagePublisherAction
         return $characs;
     }
     
-	/**
-	* invokes required template
-	**/
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $characs = $this->getLetters();
         
-        $query = $request->getqueryParams();
-        $post = [];
-        if ($request->getMethod() == 'POST') {
-            $post = $request->getParsedBody();
-        }
+        $simpleAction = new \App\Action\SimpleRenderAction('app::publisher::manage_publisher', $this->router, $this->template, $this->adapter);
+        list($query,$post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(7);
-        $countPages = $paginator->count();
-        $currentPage = isset($query['page']) ? $query['page'] : 1;
-        if ($currentPage < 1) {
-            $currentPage = 1;
-        }
-        $paginator->setCurrentPageNumber($currentPage);
-
-        if ($currentPage == $countPages) {
-            $next = $currentPage;
-            $previous = $currentPage - 1;
-        } elseif ($currentPage == 1) {
-            $next = $currentPage + 1;
-            $previous = 1;
-        } else {
-            $next = $currentPage + 1;
-            $previous = $currentPage - 1;
-        }
+        $simpleAction = new \App\Action\SimpleRenderAction('app::publisher::manage_publisher', $this->router, $this->template, $this->adapter);
+        $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         $searchParams = $this->getSearchParams($query);
         
@@ -263,50 +326,33 @@ class ManagePublisherAction
         }
         
         if (isset($post['action']) && $post['action'] == 'merge_publisher') {
-            //if ($post['action'] == 'merge_publisher') {
-                return new HtmlResponse(
+            return new HtmlResponse(
                 $this->template->render(
-                'app::publisher::merge_publisher',
-                [
+                    'app::publisher::merge_publisher',
+                    [
                     'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
+                    'previous' => $pgs['prev'],
+                    'next' => $pgs['nxt'],
+                    'countp' => $pgs['cp'],
                     'searchParams' => $searchParams,
                     'adapter' => $this->adapter,
-                ]
-            )
-            );
-            //}
-            /*if ($post['action'] == 'new' || $post['action'] == 'edit' || $post['action'] == 'delete') {
-                return new HtmlResponse(
-                $this->template->render(
-                'app::publisher::manage_publisher',
-                [
-                    'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
-                    'searchParams' => $searchParams,
-                    'carat' => $characs,
-                ]
-            )
-            );
-            }*/
+                    ]
+                )
+            );         
         } else {
             return new HtmlResponse(
-            $this->template->render(
-                'app::publisher::manage_publisher',
-                [
+                $this->template->render(
+                    'app::publisher::manage_publisher',
+                    [
                     'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
+                    'previous' => $pgs['prev'],
+                    'next' => $pgs['nxt'],
+                    'countp' => $pgs['cp'],
                     'searchParams' => $searchParams,
                     'carat' => $characs,
-                ]
-            )
-        );
+                    ]
+                )
+            );
         }
     }
 }

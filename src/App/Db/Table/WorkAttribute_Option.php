@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -40,22 +40,31 @@ use Zend\Db\Sql\Sql;
  * Table Definition for workattribute_option.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor.
+     * WorkAttribute_Option constructor.
+     *
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {
         parent::__construct('workattribute_option', $adapter);
     }
 
+    /**
+     * Delete record
+     *
+     * @param Integer $wkat_id workattribute id
+     *
+     * @return empty
+     */
     public function deleteWorkAttributeOptions($wkat_id)
     {
         $callback = function ($select) use ($wkat_id) {
@@ -68,6 +77,13 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         }
     }
 
+    /**
+     * Fetch attribute options record
+     *
+     * @param Integer $wkat_id workattribute id
+     *
+     * @return Paginator $paginatorAdapter attribute options
+     */
     public function displayAttributeOptions($wkat_id)
     {
         $select = $this->sql->select();
@@ -77,6 +93,15 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         return new Paginator($paginatorAdapter);
     }
 
+    /**
+     * Add record
+     *
+     * @param Integer $wkat_id workattribute id
+     * @param string  $title   workattribute option title
+     * @param string  $val     workattribute option value
+     *
+     * @return empty
+     */
     public function addOption($wkat_id, $title, $val)
     {
         $this->insert(
@@ -88,6 +113,13 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Fetch record by option id
+     *
+     * @param Integer $id workattribute option id
+     *
+     * @return Array $row attribute option record
+     */
     public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));
@@ -96,6 +128,15 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         return $row;
     }
 
+    /**
+     * Update attribute option
+     *
+     * @param Integer $id    workattribute option id
+     * @param string  $title workattribute option title
+     * @param string  $val   workattribute option value
+     *
+     * @return empty
+     */
     public function updateOption($id, $title, $val)
     {
         $this->update(
@@ -107,6 +148,14 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Delete attribute option
+     *
+     * @param Integer $wkat_id workattribute id
+     * @param Integer $id      workattribute option id
+     *
+     * @return empty
+     */
     public function deleteOption($wkat_id, $id)
     {
         $this->delete(
@@ -117,6 +166,13 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Fetch duplicate options of an attribute
+     *
+     * @param Integer $wkat_id workattribute id
+     *
+     * @return Paginator $paginatorAdapter attribute duplicate options
+     */
     public function getDuplicateOptions($wkat_id)
     {
         $select = $this->sql->select();
@@ -129,6 +185,15 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         return new Paginator($paginatorAdapter);
     }
 
+    /**
+     * Fetch duplicate option records
+     *
+     * @param Integer $wkat_id          workattribute id
+     * @param string  $option_dup_title workattribute option title
+     * @param Integer $option_dup_id    workattribute option id
+     *
+     * @return Array $rows attribute duplicate option records
+     */
     public function getDuplicateOptionRecords($wkat_id, $option_dup_title, $option_dup_id)
     {
         $callback = function ($select) use ($wkat_id, $option_dup_title, $option_dup_id) {
@@ -137,11 +202,18 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
             $select->where->notEqualTo('id', $option_dup_id);
         };
         $rows = $this->select($callback)->toArray();
-        //echo "no od dup rows is" . count($rows);
-        //echo "<pre>"; print_r($rows); echo "</pre>";
+
         return $rows;
     }
 
+    /**
+     * Get options of an attribute
+     *
+     * @param string  $opt_title workattribute option title
+     * @param Integer $wkat_id   workattribute id
+     *
+     * @return Array $rows attribute options
+     */
     public function getAttributeOptions($opt_title, $wkat_id)
     {
         $callback = function ($select) use ($opt_title, $wkat_id) {
@@ -153,6 +225,14 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         return $rows;
     }
 
+    /**
+     * Get option ids of an attribute
+     *
+     * @param Integer $wkat_id   workattribute id
+     * @param string  $opt_title workattribute option title
+     *
+     * @return Array $rows attribute options
+     */
     public function getOptionIds($wkat_id, $opt_title)
     {
         $rows = [];
@@ -165,23 +245,24 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
             };
 
             $rows = $rows + $this->select($callback)->toArray() + $rows;
-            echo 'count is '.$i;
-            echo '<pre>';
-            print_r($rows);
-            echo '</pre>';
+
+            return $rows;
         }
-        //echo "<pre>";print_r($rows);echo "</pre>";
-        //$rows = $this->select($callback)->toArray();
-        //return $rows;
     }
 
+    /**
+     * Get a particular option
+     *
+     * @param Integer $id      workattribute option id
+     * @param Integer $wkat_id workattribute id
+     *
+     * @return Array $row attribute option
+     */
     public function getOptionTitle($id, $wkat_id)
     {
-        //echo "id is $id <br />";
-        //echo "wkat_id is $wkat_id <br />";
         $rowset = $this->select(array('id' => $id, 'workattribute_id' => $wkat_id));
         $row = $rowset->current();
-        //var_dump($row);
+
         return $row;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Manage AgentType Action
  *
  * PHP version 5
  *
@@ -39,29 +39,44 @@ use Zend\Paginator\Paginator;
  * Class Definition for ManageAgentTypeAction.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class ManageAgentTypeAction
 {
-    private $router;
+    /**
+     * Router\RouterInterface
+     *
+     * @var $router
+     */    
+    protected $router;
 
-    private $template;
+    /**
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
+     */
+    protected $template;
 
-    private $adapter;
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
+    protected $adapter;
 
     //private $dbh;
     //private $qstmt;
 
-		/**
-     * ManageAgentAction constructor.
+    /**
+     * ManageAgentTypeAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter             					  $adapter
+     * @param Router\RouterInterface             $router   for routes
+     * @param Template\TemplateRendererInterface $template for templates
+     * @param Adapter                            $adapter  for db connection
      */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
@@ -70,37 +85,52 @@ class ManageAgentTypeAction
         $this->adapter = $adapter;
     }
     
+    /**
+     * Action based on action parameter.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doAction($post)
     {
         //add a new agent type
-            if ($post['action'] == 'new') {
-                if ($post['submitt'] == 'Save') {
+        if ($post['action'] == 'new') {
+            if ($post['submitt'] == 'Save') {
+                $table = new \App\Db\Table\AgentType($this->adapter);
+                $table->insertRecords($post['new_agenttype']);
+            }
+        }
+        //edit an agent type
+        if ($post['action'] == 'edit') {
+            if ($post['submitt'] == 'Save') {
+                if (!is_null($post['id'])) {
                     $table = new \App\Db\Table\AgentType($this->adapter);
-                    $table->insertRecords($post['new_agenttype']);
+                    $table->updateRecord($post['id'], $post['edit_agenttype']);
                 }
             }
-            //edit an agent type
-            if ($post['action'] == 'edit') {
-                if ($post['submitt'] == 'Save') {
-                    if (!is_null($post['id'])) {
-                        $table = new \App\Db\Table\AgentType($this->adapter);
-                        $table->updateRecord($post['id'], $post['edit_agenttype']);
-                    }
+        }
+        //delete an agent type
+        if ($post['action'] == 'delete') {
+            if ($post['submitt'] == 'Delete') {
+                if (!is_null($post['id'])) {
+                    $table = new \App\Db\Table\WorkAgent($this->adapter);
+                    $table->deleteRecordByAgentTypeId($post['id']);
+
+                    $table = new \App\Db\Table\AgentType($this->adapter);
+                    $table->deleteRecord($post['id']);
                 }
             }
-            //delete an agent type
-            if ($post['action'] == 'delete') {
-                if ($post['submitt'] == 'Delete') {
-                    if (!is_null($post['id'])) {
-                        $table = new \App\Db\Table\WorkAgent($this->adapter);
-                        $table->deleteRecordByAgentTypeId($post['id']);
-                        $table = new \App\Db\Table\AgentType($this->adapter);
-                        $table->deleteRecord($post['id']);
-                    }
-                }
-            }
+        }
     }
-    
+ 
+    /**
+     * Get records to display.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return Paginator                  $paginator
+     */ 
     protected function getPaginator($post)
     {
         //edit, delete actions on agenttype
@@ -121,46 +151,35 @@ class ManageAgentTypeAction
         return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
     }
 
-	/**
-	* invokes required template
-	**/
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
-        $query = $request->getqueryParams();
-        $post = [];
-        if ($request->getMethod() == 'POST') {
-            $post = $request->getParsedBody();
-        }
+    {	
+        $simpleAction = new \App\Action\SimpleRenderAction('app::agenttype::manage_agenttype', $this->router, $this->template, $this->adapter);
+        list($query,$post) = $simpleAction->getQueryAndPost($request);
+
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(7);
         //$allItems = $paginator->getTotalItemCount();
-        $countPages = $paginator->count();
 
-        $currentPage = isset($query['page']) ? $query['page'] : 1;
-        if ($currentPage < 1) {
-            $currentPage = 1;
-        }
-        $paginator->setCurrentPageNumber($currentPage);
-
-        if ($currentPage == $countPages) {
-            $next = $currentPage;
-            $previous = $currentPage - 1;
-        } elseif ($currentPage == 1) {
-            $next = $currentPage + 1;
-            $previous = 1;
-        } else {
-            $next = $currentPage + 1;
-            $previous = $currentPage - 1;
-        }
+        $simpleAction = new \App\Action\SimpleRenderAction('app::agenttype::manage_agenttype', $this->router, $this->template, $this->adapter);
+        $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         return new HtmlResponse(
             $this->template->render(
                 'app::agenttype::manage_agenttype',
                 [
                     'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
+                    'previous' => $pgs['prev'],
+                    'next' => $pgs['nxt'],
+                    'countp' => $pgs['cp'],
                 ]
             )
         );

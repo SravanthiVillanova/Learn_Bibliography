@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -37,35 +37,56 @@ use Interop\Container\ContainerInterface;
  * Table Definition for user.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class User extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * @var \Zend\Session\Container
+     * Zend\Session
+     *
+     * @var $session 
      */
-    private $session;
+    protected $session;
 
-    public function _invoke(ContainerInterface $container)
+    /**
+     * Invokes session constructor.
+     *
+     * @param ContainerInterface $container for session
+     *
+     * @return empty
+     */
+    public function __invoke(ContainerInterface $container)
     {
         $this->session = $container->get(\Zend\Session\Container::class);
     }
 
     /**
-     * Constructor.
+     * User constructor.
+     *
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {
-        parent::__construct('user', $adapter);        
+        parent::__construct('user', $adapter);
     }
-     
-     public function insertRecords($newuser_name, $new_username, $new_user_pwd, $access_level)
-     {
-         $this->insert(
+
+    /**
+     * Insert user
+     *
+     * @param String  $newuser_name name of user
+     * @param String  $new_username user name of user
+     * @param String  $new_user_pwd password of user
+     * @param Integer $access_level user role
+     *
+     * @return empty
+     */
+    public function insertRecords($newuser_name, $new_username, $new_user_pwd, $access_level)
+    {
+        $this->insert(
             [
             'name' => $newuser_name,
             'username' => $new_username,
@@ -73,8 +94,15 @@ class User extends \Zend\Db\TableGateway\TableGateway
             'level' => $access_level,
             ]
         );
-     }
+    }
 
+    /**
+     * Find user
+     *
+     * @param Integer $id user id
+     *
+     * @return Array $row user details
+     */
     public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));
@@ -83,47 +111,67 @@ class User extends \Zend\Db\TableGateway\TableGateway
         return $row;
     }
 
+    /**
+     * Delete user
+     *
+     * @param Integer $id user id
+     *
+     * @return empty
+     */
     public function deleteRecord($id)
     {
         $this->delete(['id' => $id]);
     }
 
+    /**
+     * Update user
+     *
+     * @param Integer $id       user id
+     * @param String  $name     name of user
+     * @param String  $username user name of user
+     * @param String  $pwd      password of user
+     * @param Integer $level    user role
+     *
+     * @return empty
+     */
     public function updateRecord($id, $name, $username, $pwd, $level)
     {
         if ($level == 'NULL') {
             $level = null;
         }
-        //echo "pwd is " . $pwd;
+
         if (is_null($pwd)) {
-            //echo "if pwd is empty ".$pwd;
             $this->update(
-            [
+                [
                 'name' => $name,
                 'username' => $username,
                 'level' => $level,
-            ],
-            ['id' => $id]
+                ],
+                ['id' => $id]
             );
         } else {
-            //echo "else if pwd not empty ".$pwd;
             $this->update(
-            [
+                [
                 'name' => $name,
                 'username' => $username,
                 'password' => $pwd,
                 'level' => $level,
-            ],
-            ['id' => $id]
+                ],
+                ['id' => $id]
             );
         }
     }
 
+    /**
+     * Authenticate user
+     *
+     * @param string $username username
+     * @param string $pwd      password of user
+     *
+     * @return Array $row user details
+     */
     public function checkUserAuthentication($username, $pwd)
     {
-
-        /*$rowset = $this->select(array('username' => $username, 'password' => md5($pwd));
-        $row = $rowset->current();
-        return($row);*/
         $callback = function ($select) use ($username, $pwd) {
             $select->columns(['*']);
             $select->where->equalTo('username', $username);
@@ -131,15 +179,18 @@ class User extends \Zend\Db\TableGateway\TableGateway
         };
 
         $row = $this->select($callback)->toArray();
-        /*if(count($row) == 1) {
-            $row['status'] = 'authenticated';
-        }
-        else {
-            $row['status'] = 'not authenticated';
-        }*/
+
         return $row;
     }
     
+    /**
+     * Change password
+     *
+     * @param Integer $id  user id
+     * @param String  $pwd password of user
+     *
+     * @return empty
+     */
     public function changePassword($id, $pwd)
     {
         $this->update(
@@ -147,12 +198,6 @@ class User extends \Zend\Db\TableGateway\TableGateway
                 'password' => md5($pwd),
             ],
             ['id' => $id]
-            );
-    }
-    
-    public function isAdmin()
-    {
-        echo 'user is';
-        var_dump($this->session->id);
+        );
     }
 }

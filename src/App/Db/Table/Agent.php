@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -41,22 +41,34 @@ use Zend\Db\Sql\Expression;
  * Table Definition for agent.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class Agent extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor.
+     * Agent constructor.
+     *
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {
         parent::__construct('agent', $adapter);
     }
 
+    /**
+     * Insert agent record.
+     *
+     * @param String $fname   first name of agent
+     * @param String $lname   last name of agent
+     * @param String $altname alternate name of agent
+     * @param String $orgname organization name of agent
+     *
+     * @return empty
+     */
     public function insertRecords($fname, $lname, $altname, $orgname)
     {
         $this->insert(
@@ -69,6 +81,17 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Update agent record.
+     *
+     * @param Number $id      id of agent
+     * @param String $fname   first name of agent
+     * @param String $lname   last name of agent
+     * @param String $altname alternate name of agent
+     * @param String $orgname organization name of agent
+     *
+     * @return empty
+     */
     public function updateRecord($id, $fname, $lname, $altname, $orgname)
     {
         $this->update(
@@ -82,12 +105,26 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Delete agent record.
+     *
+     * @param Number $id id of agent
+     *
+     * @return empty
+     */
     public function deleteRecord($id)
     {
         //echo "id to del is " . $id . "<br />";
         $this->delete(['id' => $id]);
     }
 
+    /**
+     * Find agent record.
+     *
+     * @param Number $id id of agent
+     *
+     * @return Array $row agent record
+     */
     public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));
@@ -96,21 +133,25 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         return $row;
     }
 
+    /**
+     * Find distinct initial letters of agents.
+     *
+     * @return Array
+     */
     public function findInitialLetter()
     {
         $callback = function ($select) {
             $select->columns(
+                [
+                'letter' => new Expression(
+                    'DISTINCT(substring(?, 1, 1))',
+                    ['fname'],
                     [
-                        'letter' => new Expression(
-                            'DISTINCT(substring(?, 1, 1))',
-                            ['fname'],
-                            [
-                                Expression::TYPE_IDENTIFIER,
-
-                            ]
-                        ),
+                    Expression::TYPE_IDENTIFIER,
                     ]
-                );
+                ),
+                ]
+            );
             $select->order('fname');
             //('fname ASC');
         };
@@ -118,6 +159,13 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         return $this->select($callback)->toArray();
     }
 
+    /**
+     * Find agent record by name.
+     *
+     * @param String $letter first letter of agent first name
+     *
+     * @return Paginator $paginatorAdapter agent records as paginator
+     */
     public function displayRecordsByName($letter)
     {
         $select = $this->sql->select();
@@ -127,6 +175,14 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         return new Paginator($paginatorAdapter);
     }
 
+    /**
+     * Search for an agent.
+     *
+     * @param string $name name of agent
+     * @param string $type type of agent name
+     *
+     * @return Paginator $paginatorAdapter agent records as paginator
+     */
     public function findRecords($name, $type)
     {
         $select = $this->sql->select();
@@ -144,6 +200,13 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         return new Paginator($paginatorAdapter);
     }
 
+    /**
+     * Agent records with first name like given string.
+     *
+     * @param string $fname part of first name of agent
+     *
+     * @return Array $rows agent records as array
+     */
     public function getLikeRecords($fname)
     {
         $callback = function ($select) use ($fname) {
@@ -154,6 +217,13 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         return $rows;
     }
 
+    /**
+     * Agent records with last name starting with given string.
+     *
+     * @param string $name initial part of last name of agent
+     *
+     * @return Array $rows agent records as array
+     */
     public function getLastNameLikeRecords($name)
     {
         $callback = function ($select) use ($name) {

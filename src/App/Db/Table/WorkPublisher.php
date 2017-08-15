@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -37,22 +37,32 @@ use Zend\Db\Sql\Expression;
  * Table Definition for work_publisher.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor.
+     * WorkPublisher constructor.
+     *
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {
         parent::__construct('work_publisher', $adapter);
     }
 
+    /**
+     * Set publisher location null
+     *
+     * @param Integer $pub_id  publisher id
+     * @param Array   $loc_ids publisher location ids
+     *
+     * @return empty
+     */
     public function updatePublisherLocation($pub_id, $loc_ids)
     {
         $callback = function ($select) use ($pub_id, $loc_ids) {
@@ -62,6 +72,15 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         $this->update(['location_id' => null], $callback);
     }
 
+    /**
+     * Update publisher location id
+     *
+     * @param Integer $pub_id     publisher id
+     * @param Array   $source_ids publisher location ids
+     * @param Array   $dest_id    publisher location ids
+     *
+     * @return empty
+     */
     public function updatePublisherLocationId($pub_id, $source_ids, $dest_id)
     {
         $callback = function ($select) use ($pub_id, $source_ids) {
@@ -71,23 +90,37 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         $this->update(['location_id' => $dest_id], $callback);
     }
 
+    /**
+     * Delete record
+     *
+     * @param Integer $pub_id publisher id
+     *
+     * @return empty
+     */
     public function deleteRecordByPub($pub_id)
     {
         $this->delete(['publisher_id' => $pub_id]);
         //$this->tableGateway->delete(['id' => $id]);
     }
 
+    /**
+     * Find work publisher records
+     *
+     * @param Integer $id publisher id
+     *
+     * @return Array $rows array of work publisher records
+     */
     public function findNoofWorks($id)
     {
         $callback = function ($select) use ($id) {
             $select->columns(
                 [
-                    'cnt' => new Expression(
+                'cnt' => new Expression(
                     'COUNT(DISTINCT(?))', ['work_id'],
                     [Expression::TYPE_IDENTIFIER]
-                    ),
+                ),
                 ]
-                );
+            );
             $select->where->equalTo('publisher_id', $id);
         };
         $rows = $this->select($callback)->toArray();
@@ -95,6 +128,17 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         return $rows;
     }
 
+    /**
+     * Insert record
+     *
+     * @param Integer $wk_id     work id
+     * @param Integer $pub_id    publisher id
+     * @param Integer $pub_locid publisher location id
+     * @param Integer $pub_yr    publisher start year
+     * @param Integer $pub_yrEnd publisher end year
+     *
+     * @return empty
+     */
     public function insertRecords($wk_id, $pub_id, $pub_locid, $pub_yr, $pub_yrEnd)
     {
         for ($i = 0; $i < count($pub_id); ++$i) {
@@ -115,6 +159,13 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         }
     }
 
+    /**
+     * Find work publisher records using work id
+     *
+     * @param Integer $wk_id work id
+     *
+     * @return Array $rows array of work publisher records
+     */
     public function findRecordByWorkId($wk_id)
     {
         $callback = function ($select) use ($wk_id) {
@@ -128,11 +179,25 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         return $rows;
     }
 
+    /**
+     * Delete record
+     *
+     * @param Integer $id work id
+     *
+     * @return empty
+     */
     public function deleteRecordByWorkId($id)
     {
         $this->delete(['work_id' => $id]);
     }
     
+    /**
+     * Find work publisher records using publisher id
+     *
+     * @param Integer $pub_id publisher id
+     *
+     * @return Array $rows array of work publisher records
+     */
     public function findRecordByPublisherId($pub_id)
     {
         $callback = function ($select) use ($pub_id) {
@@ -144,6 +209,13 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         return $rows;
     }
     
+    /**
+     * Find work publisher records using publisher location id
+     *
+     * @param Integer $loc_id publisher location id
+     *
+     * @return Array $rows array of work publisher records
+     */
     public function findRecordByLocationId($loc_id)
     {
         $callback = function ($select) use ($loc_id) {
@@ -155,6 +227,15 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         return $rows;
     }
     
+    /**
+     * Move publisher
+     *
+     * @param Integer $pub_src_id  publisher id
+     * @param Integer $pub_dest_id publisher id
+     * @param Integer $src_loc_id  publisher location id
+     *
+     * @return empty
+     */
     public function movePublisher($pub_src_id, $pub_dest_id, $src_loc_id)
     {
         //update workpub set pubid=destpubid where pubid=srcpubid and locid = $source_locid
@@ -166,6 +247,16 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         );
     }
     
+    /**
+     * Merge publisher
+     *
+     * @param Integer $pub_src_id  publisher id
+     * @param Integer $pub_dest_id publisher id
+     * @param Integer $src_loc_id  publisher location id
+     * @param Integer $dest_loc_id publisher location id
+     *
+     * @return empty
+     */
     public function mergePublisher($pub_src_id, $pub_dest_id, $src_loc_id, $dest_loc_id)
     {
         //update workpub set pubid=destpubid and locid=mrgpublocid where pubid=srcpubid and locid=$source_locid

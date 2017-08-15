@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Default Page Action
  *
  * PHP version 5
  *
@@ -38,26 +38,41 @@ use Zend\Db\Adapter\Adapter;
  * Class Definition for DefaultPageAction.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class DefaultPageAction
 {
-    private $router;
+    /**
+     * Router\RouterInterface
+     *
+     * @var $router
+     */    
+    protected $router;
 
-    private $template;
+    /**
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
+     */
+    protected $template;
 
-    private $adapter;
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
+    protected $adapter;
 
-	/**
+    /**
      * DefaultPageAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter             					  $adapter
+     * @param Router\RouterInterface             $router   for routes
+     * @param Template\TemplateRendererInterface $template for templates
+     * @param Adapter                            $adapter  for db connection
      */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
@@ -66,9 +81,15 @@ class DefaultPageAction
         $this->adapter = $adapter;
     }
 
-	/**
-	* invokes required template
-	**/
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         return new HtmlResponse($this->template->render('app::default', ['request' => $request, 'adapter' => $this->adapter]));

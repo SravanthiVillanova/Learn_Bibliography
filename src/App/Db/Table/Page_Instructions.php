@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -36,22 +36,31 @@ use Zend\Db\Sql\Select;
  * Table Definition for page_instructions.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class Page_Instructions extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor.
+     * Page_Instructions constructor.
+     *
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {
         parent::__construct('page_instructions', $adapter);
     }
 
+    /**
+     * Find agent record by name.
+     *
+     * @param String $str page name
+     *
+     * @return Array $row page name and corresponding instructions
+     */
     public function findRecordByPageName($str)
     {
         $rowset = $this->select(array('page_name' => $str));
@@ -60,6 +69,14 @@ class Page_Instructions extends \Zend\Db\TableGateway\TableGateway
         return $row;
     }
 
+    /**
+     * Update record.
+     *
+     * @param Number $pg_id   id of page name record
+     * @param String $ins_str instructions for the page.
+     *
+     * @return empty
+     */
     public function updateRecord($pg_id, $ins_str)
     {
         $this->update(
@@ -70,6 +87,14 @@ class Page_Instructions extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Insert record.
+     *
+     * @param String $pg_nm   name of the page
+     * @param String $ins_str instructions for the page.
+     *
+     * @return empty
+     */
     public function insertRecord($pg_nm, $ins_str)
     {
         $this->insert(

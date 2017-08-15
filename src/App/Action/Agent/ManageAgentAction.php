@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Manage Agent Action
  *
  * PHP version 5
  *
@@ -39,26 +39,41 @@ use Zend\Paginator\Paginator;
  * Class Definition for ManageAgentAction.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class ManageAgentAction
 {
-    private $router;
+    /**
+     * Router\RouterInterface
+     *
+     * @var $router
+     */    
+    protected $router;
 
-    private $template;
+    /**
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
+     */
+    protected $template;
 
-    private $adapter;
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
+    protected $adapter;
 
-	/**
+    /**
      * ManageAgentAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter             					  $adapter
+     * @param Router\RouterInterface             $router   for routes
+     * @param Template\TemplateRendererInterface $template for templates
+     * @param Adapter                            $adapter  for db connection
      */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
@@ -67,6 +82,13 @@ class ManageAgentAction
         $this->adapter = $adapter;
     }
 
+    /**
+     * Agent > Search.
+     *
+     * @param Array $params url query parameters
+     *
+     * @return Array 
+     */
     protected function searchAgent($params)
     {
         // search by letter
@@ -101,6 +123,13 @@ class ManageAgentAction
         }
     }
     
+    /**
+     * Merge agents.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doMerge($post)
     {
         // Switch Agent
@@ -111,38 +140,56 @@ class ManageAgentAction
         $table->deleteRecord($post['mrg_dest_id']);
     }
     
+    /**
+     * Action based on action parameter.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doAction($post)
     {
         //add a new agent
-            if ($post['action'] == 'new') {
-                if ($post['submitt'] == 'Save') {
+        if ($post['action'] == 'new') {
+            if ($post['submitt'] == 'Save') {
+                $table = new \App\Db\Table\Agent($this->adapter);
+                $table->insertRecords(
+                    $post['new_agentfirstname'], $post['new_agentlastname'],
+                    $post['new_agentaltname'], $post['new_agentorgname']
+                );
+            }
+        }
+        //edit an agent
+        if ($post['action'] == 'edit') {
+            if ($post['submitt'] == 'Save') {
+                if (!is_null($post['id'])) {
                     $table = new \App\Db\Table\Agent($this->adapter);
-                    $table->insertRecords($post['new_agentfirstname'], $post['new_agentlastname'],
-                                              $post['new_agentaltname'], $post['new_agentorgname']);
+                    $table->updateRecord(
+                        $post['id'], $post['edit_agentfirstname'], $post['edit_agentlastname'],
+                        $post['edit_agentaltname'], $post['edit_agentorgname']
+                    );
                 }
             }
-            //edit an agent
-            if ($post['action'] == 'edit') {
-                if ($post['submitt'] == 'Save') {
-                    if (!is_null($post['id'])) {
-                        $table = new \App\Db\Table\Agent($this->adapter);
-                        $table->updateRecord($post['id'], $post['edit_agentfirstname'], $post['edit_agentlastname'],
-                                            $post['edit_agentaltname'], $post['edit_agentorgname']);
-                    }
-                }
+        }
+        //delete an agent
+        if ($post['action'] == 'delete') {
+            if ($post['submitt'] == 'Delete') {
+                $this->doDelete($post);
             }
-            //delete an agent
-            if ($post['action'] == 'delete') {
-                if ($post['submitt'] == 'Delete') {
-                    $this->doDelete($post);
-                }
-            }
-            //merge agents
-            if ($post['action'] == 'merge') {
-                $this->doMerge($post);
-            }
+        }
+        //merge agents
+        if ($post['action'] == 'merge') {
+            $this->doMerge($post);
+        }
     }
     
+    /**
+     * Delete agent.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doDelete($post)
     {
         if (!is_null($post['id'])) {
@@ -152,12 +199,22 @@ class ManageAgentAction
             $table->deleteRecord($post['id']);
         }
     }
+
+    /**
+     * Get records to display.
+     *
+     * @param Array $params url query parameters
+     * @param Array $post   contains posted elements of form
+     *
+     * @return Paginator $paginator
+     */
     protected function getPaginator($params, $post)
     {
         //search
         if (!empty($params)) {
             if (!empty($params['letter']) || !empty($params['find_agentfname']) || !empty($params['find_agentlname'])
-                || !empty($params['find_agentaltname']) || !empty($params['find_agentorgname'])) {
+                || !empty($params['find_agentaltname']) || !empty($params['find_agentorgname'])
+            ) {
                 return ($this->searchAgent($params));
             }
         }
@@ -180,6 +237,13 @@ class ManageAgentAction
         return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
     }
 
+    /**
+     * Set search parameters for pagination.
+     *
+     * @param Array $query url query parameters
+     *
+     * @return Array $searchParams
+     */
     protected function getSearchParams($query)
     {
         $searchParams = [];
@@ -201,39 +265,28 @@ class ManageAgentAction
         return $searchParams;
     }
     
-	/**
-	* invokes required template
-	**/
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $table = new \App\Db\Table\Agent($this->adapter);
         $characs = $table->findInitialLetter();
 
-        $query = $request->getqueryParams();
-        $post = [];
-        if ($request->getMethod() == 'POST') {
-            $post = $request->getParsedBody();
-        }
+        $simpleAction = new \App\Action\SimpleRenderAction('app::agent::manage_agent', $this->router, $this->template, $this->adapter);
+        list($query,$post) = $simpleAction->getQueryAndPost($request);
+
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(7);
-        $countPages = $paginator->count();
 
-        $currentPage = isset($query['page']) ? $query['page'] : 1;
-        if ($currentPage < 1) {
-            $currentPage = 1;
-        }
-        $paginator->setCurrentPageNumber($currentPage);
-
-        if ($currentPage == $countPages) {
-            $next = $currentPage;
-            $previous = $currentPage - 1;
-        } elseif ($currentPage == 1) {
-            $next = $currentPage + 1;
-            $previous = 1;
-        } else {
-            $next = $currentPage + 1;
-            $previous = $currentPage - 1;
-        }
+        $simpleAction = new \App\Action\SimpleRenderAction('app::agent::manage_agent', $this->router, $this->template, $this->adapter);
+        $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         $searchParams = $this->getSearchParams($query);
         
@@ -248,9 +301,9 @@ class ManageAgentAction
                 'app::agent::manage_agent',
                 [
                     'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
+                    'previous' => $pgs['prev'],
+                    'next' => $pgs['nxt'],
+                    'countp' => $pgs['cp'],
                     'searchParams' => $searchParams,
                     'carat' => $characs,
                 ]

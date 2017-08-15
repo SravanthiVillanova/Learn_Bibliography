@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Home Page Factory
  *
  * PHP version 5
  *
@@ -35,17 +35,21 @@ use Zend\Expressive\Template\TemplateRendererInterface;
  * Class Definition for HomePageFactory.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class HomePageFactory
 {
-	/**
-	* invokes required template
-	**/
+    /**
+     * Invokes required template
+     *
+     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ContainerInterface $container)
     {
         $router = $container->get(RouterInterface::class);

@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -40,22 +40,31 @@ use Zend\Db\Sql\Sql;
  * Table Definition for worktype.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class WorkType extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor.
+     * WorkType constructor.
+     *
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {
         parent::__construct('worktype', $adapter);
     }
 
+    /**
+     * Insert record
+     *
+     * @param string $type work type
+     *
+     * @return empty
+     */
     public function insertRecords($type)
     {
         $this->insert(
@@ -65,6 +74,13 @@ class WorkType extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Get records using worktype id
+     *
+     * @param Integer $id worktype id
+     *
+     * @return Array $row worktype record
+     */
     public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));
@@ -73,6 +89,14 @@ class WorkType extends \Zend\Db\TableGateway\TableGateway
         return $row;
     }
 
+    /**
+     * Update record
+     *
+     * @param Integer $id   worktype id
+     * @param string  $type worktype
+     *
+     * @return empty
+     */
     public function updateRecord($id, $type)
     {
         $this->update(
@@ -83,11 +107,23 @@ class WorkType extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Delete record
+     *
+     * @param Integer $id worktype id
+     *
+     * @return empty
+     */
     public function deleteRecord($id)
     {
         $this->delete(['id' => $id]);
     }
 
+    /**
+     * Get all records
+     *
+     * @return Paginator $paginatorAdapter all worktype records
+     */
     public function fetchAllWorkTypes()
     {
         $select = $this->sql->select();

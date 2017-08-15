@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Login Page Action
  *
  * PHP version 5
  *
@@ -40,58 +40,68 @@ use Zend\Form\Form;
 use Zend\Db\Adapter\Adapter;
 
 /**
- * Class LoginPageAction.
+ * Class Definition for LoginPageAction.
+ *
+ * @category VuBib
+ * @package  Code
+ * @author   Falvey Library <demian.katz@villanova.edu>
+ * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
+ * @link https://
  */
 class LoginPageAction
 {
     /**
-     * @var string
+     * String
+     *
+     * @var $PAGE_TEMPLATE
      */
     const PAGE_TEMPLATE = 'app::login-page';
 
     /**
-     * @var Router\RouterInterface
+     * Router\RouterInterface
+     *
+     * @var $router
      */
-    private $router;
+    protected $router;
 
     /**
-     * @var Template\TemplateRendererInterface
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
      */
-    private $template;
+    protected $template;
 
     /**
-     * @var UserAuthenticationInterface
+     * UserAuthenticationInterface
+     *
+     * @var $userAuthenticationService
      */
-    private $userAuthenticationService;
+    protected $userAuthenticationService;
 
     /**
-     * @var Form
+     * String
+     *
+     * @var $defaultRedirectUri
      */
-    //private $form;
+    protected $defaultRedirectUri;
 
     /**
-     * @var AuthUserInterface
+     * Zend\Session\Container
+     *
+     * @var $session
      */
-    //private $authEntity;
-
-    /**
-     * @var string
-     */
-    private $defaultRedirectUri;
-
-    /**
-     * @var \Zend\Session\Container
-     */
-    private $session;
+    protected $session;
 
     /**
      * LoginPageAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param UserAuthenticationInterface             $userAuthenticationService
-     * @param AuthUserInterface                       $authenticationEntity
-     * @param string                                  $defaultRedirectUri
+     * @param Router\RouterInterface                  $router                    for routes
+     * @param Template\TemplateRendererInterface|null $template                  for templates
+     * @param UserAuthenticationInterface             $userAuthenticationService to authenticate username, password
+     * @param string                                  $defaultRedirectUri        to url to redirect to
+     * @param Adapter                                 $adapter                   for db connection
+     * @param Session                                 $session                   session variable
      */
     public function __construct(
         Router\RouterInterface $router,
@@ -107,6 +117,13 @@ class LoginPageAction
         $this->session = $session;
     }
 
+    /**
+     * Authenticate and login user.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return Array $user1
+     */
     protected function doLogin($post)
     {
         $user1 = [];
@@ -118,6 +135,13 @@ class LoginPageAction
         return $user1;
     }
     
+    /**
+     * Set access as per user level.
+     *
+     * @param Array $user1 contains user details
+     *
+     * @return empty
+     */
     protected function setModuleAccess($user1)
     {
         $this->session->id = $user1['id'];
@@ -137,10 +161,16 @@ class LoginPageAction
         endforeach;
         $this->session->modules_access = $mods;
     }
-	
-	/**
-	* invokes required template
-	**/
+    
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         if ($request->getMethod() == 'POST') {
@@ -182,12 +212,18 @@ class LoginPageAction
      *
      * Provide the functionality required to let a user authenticate, based on using an HTML form.
      *
+     * @param ResquestInterface $request server-side request
+     *
      * @return HtmlResponse
      */
-    private function renderLoginFormResponse($request)
+    protected function renderLoginFormResponse($request)
     {
-        return new HtmlResponse($this->template->render(self::PAGE_TEMPLATE, ['request' => $request,
-                    'adapter' => $this->adapter, ]));
+        return new HtmlResponse(
+            $this->template->render(
+                self::PAGE_TEMPLATE, ['request' => $request,
+                'adapter' => $this->adapter, ]
+            )
+        );
     }
 
     /**
@@ -197,11 +233,11 @@ class LoginPageAction
      * taken place. The intent is to avoid the user being redirected to a generic route after
      * login, requiring them to have to specify where they want to navigate to.
      *
-     * @param ServerRequestInterface $request
+     * @param ServerRequestInterface $request server-side request.
      *
      * @return string
      */
-    private function getRedirectUri(ServerRequestInterface $request)
+    protected function getRedirectUri(ServerRequestInterface $request)
     {
         if (array_key_exists('logout', $request->getQueryParams())) {
             $reqParams = $request->getServerParams();

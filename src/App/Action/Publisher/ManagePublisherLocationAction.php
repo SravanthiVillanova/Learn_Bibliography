@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Manage Publisher Location Action
  *
  * PHP version 5
  *
@@ -38,24 +38,41 @@ use Zend\Db\Adapter\Adapter;
  * Class Definition for ManagePublisherLocationAction.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class ManagePublisherLocationAction
 {
-    private $router;
-    private $template;
-    private $adapter;
+    /**
+     * Router\RouterInterface
+     *
+     * @var $router
+     */ 
+    protected $router;
 
-	/**
+    /**
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
+     */
+    protected $template;
+
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
+    protected $adapter;
+
+    /**
      * ManagePublisherLocationAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter             					  $adapter
+     * @param Router\RouterInterface             $router   for routes
+     * @param Template\TemplateRendererInterface $template for templates
+     * @param Adapter                            $adapter  for db connection
      */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
@@ -64,6 +81,14 @@ class ManagePublisherLocationAction
         $this->adapter = $adapter;
     }
 
+    /**
+     * Delete publisher location.
+     *
+     * @param Array $post  contains posted elements of form
+     * @param Array $query url query parameters
+     *
+     * @return empty
+     */
     protected function doDelete($post, $query)
     {
         if ($post['submitt'] == 'Delete') {
@@ -76,7 +101,15 @@ class ManagePublisherLocationAction
             }
         }
     }
-    
+
+    /**
+     * Merge publisher locations.
+     *
+     * @param Array $post  contains posted elements of form
+     * @param Array $query url query parameters
+     *
+     * @return empty
+     */
     protected function doMerge($post, $query)
     {
         if ($post['submitt'] == 'Merge') {
@@ -89,7 +122,15 @@ class ManagePublisherLocationAction
             }
         }
     }
-    
+
+    /**
+     * Action based on action parameter.
+     *
+     * @param Array $post  contains posted elements of form
+     * @param Array $query url query parameters
+     *
+     * @return empty
+     */  
     protected function doAction($post, $query)
     {
         //add a new publisher
@@ -111,6 +152,14 @@ class ManagePublisherLocationAction
         }
     }
     
+    /**
+     * Get records to display.
+     *
+     * @param Array $query url query parameters
+     * @param Array $post  contains posted elements of form
+     *
+     * @return Paginator                  $paginator
+     */
     protected function getPaginator($query, $post)
     {
         //add location based on action query parameter
@@ -131,9 +180,15 @@ class ManagePublisherLocationAction
         return $paginator;
     }
 
-	/**
-	* invokes required template
-	**/
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $query = $request->getqueryParams();

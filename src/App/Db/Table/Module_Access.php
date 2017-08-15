@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -37,18 +37,20 @@ use Interop\Container\ContainerInterface;
  * Table Definition for module_access.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class Module_Access extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * @var \Zend\Session\Container
+     * Zend\Session\Container
+     *
+     * @var $session
      */
-    private $session;
+    protected $session;
 
     /*public function _invoke(ContainerInterface $container) {
 
@@ -56,7 +58,9 @@ class Module_Access extends \Zend\Db\TableGateway\TableGateway
     }*/
 
     /**
-     * Constructor.
+     * Module_Access constructor.
+     *
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {
@@ -65,25 +69,35 @@ class Module_Access extends \Zend\Db\TableGateway\TableGateway
         //ContainerInterface $container;
         $this->session = new \Zend\Session\Container('Bibliography');
     }
-     
+
+    /**
+     * Get modules for a role.
+     *
+     * @param string $role role of user
+     *
+     * @return Array $rows authorized modules
+     */
     public function getModules($role)
     {
         $v_role = $role;
-        //if($role == 'role_a') {
-            $callback = function ($select) use ($v_role) {
-                $select->columns(['module']);
-                $select->where->equalTo($v_role, 1);
-            };
+        $callback = function ($select) use ($v_role) {
+            $select->columns(['module']);
+            $select->where->equalTo($v_role, 1);
+        };
         $row = $this->select($callback)->toArray();
         return $row;
-        //}
     }
     
+    /**
+     * Set modules to access for a role.
+     *
+     * @param string $module module name
+     * @param string $role   role of user
+     *
+     * @return empty
+     */
     public function setModuleAccess($module, $role)
     {
-        /*echo "module is $module <br />";
-        echo "role is $role <br />";
-        echo "val is $val <br />";*/
         if ($role == 'Super User') {
             $role = 'role_su';
         } elseif ($role == 'User') {
@@ -94,9 +108,17 @@ class Module_Access extends \Zend\Db\TableGateway\TableGateway
                 $role => 1,
             ],
             ['module' => $module]
-            );
+        );
     }
     
+    /**
+     * UnSet access to module(s) for a role.
+     *
+     * @param string $module module name
+     * @param string $role   role of user
+     *
+     * @return empty
+     */
     public function unsetModuleAccess($module, $role)
     {
         if ($role == 'Super User') {
@@ -112,6 +134,11 @@ class Module_Access extends \Zend\Db\TableGateway\TableGateway
         );
     }
     
+    /**
+     * Get all the modules
+     *
+     * @return Array $mod_rows array of modules
+     */
     public function getAllModules()
     {
         $callback = function ($select) {

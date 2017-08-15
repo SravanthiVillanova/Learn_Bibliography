@@ -1,21 +1,76 @@
 <?php
-
+/**
+ * IsUser
+ *
+ * PHP version 5
+ *
+ * Copyright (c) Falvey Library 2017.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * @category VuBib
+ * @package  Code
+ * @author   Falvey Library <demian.katz@villanova.edu>
+ * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ * @link     https:// Main Page
+ */
 namespace App\View\Helper;
 
 use Interop\Container\ContainerInterface;
-
+/**
+ * Class Definition for IsUser
+ *
+ * @category VuBib
+ * @package  Code
+ * @author   Falvey Library <demian.katz@villanova.edu>
+ * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
+ * @link https://
+ */
 class IsUser extends \Zend\View\Helper\AbstractHelper
 {
+    /**
+     * Zend\Session\Container
+     *
+     * @var $session
+     */
     private $session;
 
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
     private $adapter;
 
+    /**
+     * ManageAgentAction constructor.
+     *
+     * @param Zend\Db\Adapter\Adapter $adapter for db connection
+     * @param Zend\Session\Container  $session for zend session
+     */
     public function __construct(\Zend\Db\Adapter\Adapter $adapter, $session)
     {
         $this->adapter = $adapter;
         $this->session = $session;
     }
 
+    /**
+     * Start session
+     *
+     * @return Object $this
+     */
     public function __invoke()
     {
         //test_cnt(ContainerInterface $container);
@@ -28,11 +83,21 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
          //return $this->session->modules_access;
     }
 
+    /**
+     * Check if user has access to a module
+     *
+     * @return bool $this->session->modules_access
+     */
     public function hasPermission()
     {
         return $this->session->modules_access;
     }
 
+    /**
+     * Check if user is logged in
+     *
+     * @return bool
+     */
     public function isLogged()
     {
         if ($this->session->id != null) {
@@ -42,6 +107,11 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
         return false;
     }
 
+    /**
+     * Get user id
+     *
+     * @return null|Integer
+     */
     public function getUser()
     {
         if ($this->session->id != null) {
@@ -51,6 +121,13 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
         return null;
     }
 
+    /**
+     * Check instructions for the page
+     *
+     * @param string $str page name
+     *
+     * @return string $ins
+     */
     public function isInsSet($str)
     {
         //fetch instructions
@@ -60,6 +137,11 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
         return $ins;
     }
 
+    /**
+     * Check user access level
+     *
+     * @return string $usr
+     */
     public function getUserType()
     {
         // $usr_typ = '';
@@ -80,6 +162,11 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
         return $usr;
     }
 
+    /**
+     * Get pending review works count
+     *
+     * @return Integer $cnt
+     */
     public function getRvwCount()
     {
         $table = new \App\Db\Table\Work($this->adapter);

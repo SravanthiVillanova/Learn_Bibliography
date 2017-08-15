@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -40,22 +40,31 @@ use Zend\Db\Sql\Sql;
  * Table Definition for agenttype.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class AgentType extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor.
-     */
+     * AgentType constructor.
+     *
+     * @param Adapter $adapter for db connection
+     */ 
     public function __construct($adapter)
     {
         parent::__construct('agenttype', $adapter);
     }
 
+    /**
+     * Insert agenttype record.
+     *
+     * @param String $type type of agent
+     *
+     * @return empty
+     */
     public function insertRecords($type)
     {
         $this->insert(
@@ -65,6 +74,14 @@ class AgentType extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Update agenttype record.
+     *
+     * @param Number $id   id of agenttype
+     * @param String $type type of agent
+     *
+     * @return empty
+     */
     public function updateRecord($id, $type)
     {
         $this->update(
@@ -75,11 +92,25 @@ class AgentType extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Delete agent record.
+     *
+     * @param Number $id id of agenttype
+     *
+     * @return empty
+     */
     public function deleteRecord($id)
     {
         $this->delete(['id' => $id]);
     }
 
+    /**
+     * Find agenttype record.
+     *
+     * @param Number $id id of agenttype
+     *
+     * @return Array $row agenttype record
+     */
     public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));
@@ -88,6 +119,11 @@ class AgentType extends \Zend\Db\TableGateway\TableGateway
         return $row;
     }
 
+    /**
+     * Fetch all agenttype records.
+     *
+     * @return Paginator $paginatorAdapter agent type records
+     */
     public function fetchAgentTypes()
     {
         $select = $this->sql->select();

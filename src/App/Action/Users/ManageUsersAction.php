@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Manage Users Action
  *
  * PHP version 5
  *
@@ -39,29 +39,44 @@ use Zend\Paginator\Paginator;
  * Class Definition for ManageUsersAction.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class ManageUsersAction
 {
-    private $router;
+    /**
+     * Router\RouterInterface
+     *
+     * @var $router
+     */
+    protected $router;
 
-    private $template;
+    /**
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
+     */
+    protected $template;
 
-    private $adapter;
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
+    protected $adapter;
 
     //private $dbh;
     //private $qstmt;
 
-	/**
+    /**
      * ManageUsersAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter             					  $adapter
+     * @param Router\RouterInterface             $router   for routes
+     * @param Template\TemplateRendererInterface $template for templates
+     * @param Adapter                            $adapter  for db connection
      */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
@@ -70,6 +85,13 @@ class ManageUsersAction
         $this->adapter = $adapter;
     }
 
+    /**
+     * Adds new user.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doAdd($post)
     {
         if ($post['submitt'] == 'Save') {
@@ -78,7 +100,14 @@ class ManageUsersAction
             $table->insertRecords($post['newuser_name'], $post['new_username'], md5($post['new_user_pwd']), $post['access_level']);
         }
     }
-    
+ 
+    /**
+     * Edit user.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */ 
     protected function doEdit($post)
     {
         if ($post['submitt'] == 'Save') {
@@ -89,12 +118,21 @@ class ManageUsersAction
                     $pwd = md5($post['edit_user_pwd']);
                 }
                 $table = new \App\Db\Table\User($this->adapter);
-                $table->updateRecord($post['id'], $post['edituser_name'], $post['edit_username'], $pwd,
-                                    $post['access_level']);
+                $table->updateRecord(
+                    $post['id'], $post['edituser_name'], $post['edit_username'], $pwd,
+                    $post['access_level']
+                );
             }
         }
     }
     
+    /**
+     * Delete user.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doDelete($post)
     {
         if ($post['submitt'] == 'Delete') {
@@ -106,6 +144,13 @@ class ManageUsersAction
         }
     }
     
+    /**
+     * Action based on action parameter.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doAction($post)
     {
         //add new user
@@ -153,12 +198,19 @@ class ManageUsersAction
             endforeach;
         }
     }
-    
+ 
+    /**
+     * Get records to display.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return Paginator                  $paginator
+     */
     protected function getPaginator($post)
     {
         //add, edit, delete actions on user
-       if (!empty($post['action'])) {
-           //add edit delete users
+        if (!empty($post['action'])) {
+            //add edit delete users
             $this->doAction($post);
           
             //Cancel add\edit\delete
@@ -167,44 +219,33 @@ class ManageUsersAction
 
                 return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
             }
-       }
+        }
         // default: blank for listing in manage
         $table = new \App\Db\Table\User($this->adapter);
 
         return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
     }
 
-	/**
-	* invokes required template
-	**/
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $query = $request->getqueryParams();
-        $post = [];
-        if ($request->getMethod() == 'POST') {
-            $post = $request->getParsedBody();
-        }
+        $simpleAction = new \App\Action\SimpleRenderAction('app::users::manage_users', $this->router, $this->template, $this->adapter);
+		list($query,$post) = $simpleAction->getQueryAndPost($request);
+
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(7);
         //$allItems = $paginator->getTotalItemCount();
-        $countPages = $paginator->count();
 
-        $currentPage = isset($query['page']) ? $query['page'] : 1;
-        if ($currentPage < 1) {
-            $currentPage = 1;
-        }
-        $paginator->setCurrentPageNumber($currentPage);
-
-        if ($currentPage == $countPages) {
-            $next = $currentPage;
-            $previous = $currentPage - 1;
-        } elseif ($currentPage == 1) {
-            $next = $currentPage + 1;
-            $previous = 1;
-        } else {
-            $next = $currentPage + 1;
-            $previous = $currentPage - 1;
-        }
+		$simpleAction = new \App\Action\SimpleRenderAction('app::users::manage_users', $this->router, $this->template, $this->adapter);
+		$pgs = $simpleAction->getNextPrevious($paginator,$query);
 
         $searchParams = [];
 
@@ -213,9 +254,9 @@ class ManageUsersAction
                 'app::users::manage_users',
                 [
                     'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
+                    'previous' => $pgs['prev'],
+                    'next' => $pgs['nxt'],
+                    'countp' => $pgs['cp'],
                     'searchParams' => implode('&', $searchParams),
                 ]
             )

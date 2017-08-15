@@ -1,5 +1,30 @@
 <?php
-
+/**
+ * Authentication Middleware
+ *
+ * PHP version 5
+ *
+ * Copyright (c) Falvey Library 2017.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * @category VuBib
+ * @package  Code
+ * @author   Falvey Library <demian.katz@villanova.edu>
+ * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ * @link     https:// Main Page
+ */
 namespace App\Middleware;
 
 use Psr\Http\Message\UriInterface;
@@ -10,34 +35,55 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
-
+/**
+ * Class Definition for Authentication Middleware.
+ *
+ * @category VuBib
+ * @package  Code
+ * @author   Falvey Library <demian.katz@villanova.edu>
+ * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ *
+ * @link https://
+ */
 class AuthenticationMiddleware
 {
     /**
-     * @var Router\RouterInterface
-     */
+     * Router\RouterInterface
+     *
+     * @var $router
+     */ 
     private $router;
 
     /**
-     * @var null|Template\TemplateRendererInterface
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
      */
     private $template;
 
     /**
-     * @var string
+     * String
+     *
+     * @var basePath
      */
     private $basePath;
 
     /**
-     * @var \Zend\Session\Container
+     * Zend\Session\Container
+     *
+     * @var $session
      */
     private $session;
 
     /**
      * AuthenticationMiddleware constructor.
      *
-     * @param Router\RouterInterface             $router
-     * @param Template\TemplateRendererInterface $template
+     * @param Router\RouterInterface             $router   for routes
+     * @param Template\TemplateRendererInterface $template for templates
+     * @param string                             $basePath base url path
+     * @param Zend\Session\Container             $session  zend session
+     *
+     * @return empty
      */
     public function __construct(
         Router\RouterInterface $router,
@@ -51,11 +97,11 @@ class AuthenticationMiddleware
     }
 
     /**
-     * Handle the authentication of a user.
+     * Invokes required template
      *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param callable               $next
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
      *
      * @return RedirectResponse|HtmlResponse
      */
@@ -74,9 +120,20 @@ class AuthenticationMiddleware
         return $next($request, $response);
     }
 
+    /**
+     * Get the current request uri
+     *
+     * @param ServerRequestInterface $request server-side request.
+     *
+     * @return string
+     */
     private function getCurrentRequest(ServerRequestInterface $request)
     {
-        /** @var UriInterface $uri */
+        /**
+         * Uri
+         *
+         * @var UriInterface $uri
+         */
         $uri = $request->getUri();
 
         $redirectTo = $this->basePath.$uri->getPath();

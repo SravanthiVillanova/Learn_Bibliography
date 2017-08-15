@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Default Page Factory
  *
  * PHP version 5
  *
@@ -36,17 +36,21 @@ use Zend\Db\Adapter\Adapter;
  * Class Definition for DefaultPageFactory.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class DefaultPageFactory
 {
-	/**
-	* invokes required template
-	**/
+    /**
+     * Invokes required template
+     *
+     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ContainerInterface $container)
     {
         $router = $container->get(RouterInterface::class);

@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -40,22 +40,31 @@ use Zend\Db\Sql\Sql;
  * Table Definition for work_workattribute.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor.
+     * Work_WorkAttribute constructor.
+     *
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {
         parent::__construct('work_workattribute', $adapter);
     }
-   
+
+    /**
+     * Delete record by work attribute id
+     *
+     * @param Integer $wkat_id work attribute id
+     *
+     * @return empty
+     */
     public function deleteWorkAttributeFromWork($wkat_id)
     {
         $callback = function ($select) use ($wkat_id) {
@@ -68,6 +77,14 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         }
     }
 
+    /**
+     * Find record by workattribute id and their options
+     *
+     * @param Integer $wkat_id work attribute id
+     * @param Integer $id      work attribute option id
+     *
+     * @return Paginator $paginatorAdapter array of work folder records
+     */
     public function countRecordsByAttributeOption($wkat_id, $id)
     {
         $select = $this->sql->select()->where(['workattribute_id' => $wkat_id, 'value' => $id]);
@@ -76,11 +93,28 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         return new Paginator($paginatorAdapter);
     }
 
+    /**
+     * Delete record by work attribute id and value
+     *
+     * @param Integer $wkat_id work attribute id
+     * @param Integer $val     value of work attribute
+     *
+     * @return empty
+     */
     public function deleteRecordByValue($wkat_id, $val)
     {
         $this->delete(['workattribute_id' => $wkat_id, 'value' => $val]);
     }
 
+    /**
+     * Update record
+     *
+     * @param Integer $wkat_id         work attribute id
+     * @param Integer $option_first_id new option value
+     * @param Integer $val             value of work attribute
+     *
+     * @return empty
+     */
     public function updateWork_WorkAttributeValue($wkat_id, $option_first_id, $val)
     {
         $callback = function ($select) use ($wkat_id, $val) {
@@ -98,6 +132,15 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         }
     }
 
+    /**
+     * Insert record
+     *
+     * @param Integer $wk_id      work attribute id
+     * @param Integer $wkat_id    new option value
+     * @param Integer $wkaopt_val work attribute option
+     *
+     * @return empty
+     */
     public function insertRecords($wk_id, $wkat_id, $wkaopt_val)
     {
         for ($i = 0; $i < count($wkat_id); ++$i) {
@@ -113,11 +156,25 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         }
     }
 
+    /**
+     * Delete record by work id
+     *
+     * @param Integer $id work id
+     *
+     * @return empty
+     */
     public function deleteRecordByWorkId($id)
     {
         $this->delete(['work_id' => $id]);
     }
 
+    /**
+     * Find record by work id
+     *
+     * @param Integer $wk_id work id
+     *
+     * @return Array $rows array of work folder records
+     */
     public function findRecordByWorkId($wk_id)
     {
         $callback = function ($select) use ($wk_id) {
@@ -129,6 +186,13 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         return $rows;
     }
 
+    /**
+     * Find work attribute name and type
+     *
+     * @param Integer $wk_id work id
+     *
+     * @return String $output json list of workattributes and their types
+     */
     public function findWorkAttributeTypesByWorkId($wk_id)
     {
         $select = $this->sql->select();

@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -34,22 +34,36 @@ namespace App\Db\Table;
  * Table Definition for translate_language.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class TranslateLanguage extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor.
+     * TranslateLanguage constructor.
+     *
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {
         parent::__construct('translate_language', $adapter);
     }
     
+    /**
+     * Insert record.
+     *
+     * @param String $de1 language term in german
+     * @param String $en1 language term in english
+     * @param String $es1 language term in spanish
+     * @param String $fr1 language term in french
+     * @param String $it1 language term in italian
+     * @param String $nl1 language term in dutch
+     *
+     * @return empty
+     */
     public function insertRecords($de1, $en1, $es1, $fr1, $it1, $nl1)
     {
         $this->insert(
@@ -64,6 +78,19 @@ class TranslateLanguage extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Update record.
+     *
+     * @param Number $id  id of record
+     * @param String $de1 language term in german
+     * @param String $en1 language term in english
+     * @param String $es1 language term in spanish
+     * @param String $fr1 language term in french
+     * @param String $it1 language term in italian
+     * @param String $nl1 language term in dutch
+     *
+     * @return empty
+     */
     public function updateRecord($id, $de1, $en1, $es1, $fr1, $it1, $nl1)
     {
         $this->update(
@@ -78,13 +105,26 @@ class TranslateLanguage extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Delete record.
+     *
+     * @param Number $id id of record
+     *
+     * @return empty
+     */
     public function deleteRecord($id)
     {
-        //echo $id;
         $this->delete(['id' => $id]);
         //$this->tableGateway->delete(['id' => $id]);
     }
 
+    /**
+     * Find record.
+     *
+     * @param Number $id id of record
+     *
+     * @return Array $row record
+     */
     public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));

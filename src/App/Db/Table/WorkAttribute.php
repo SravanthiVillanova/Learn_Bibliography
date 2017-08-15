@@ -22,11 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 namespace App\Db\Table;
 
@@ -40,22 +40,29 @@ use Zend\Db\Sql\Sql;
  * Table Definition for workattribute.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 {
     /**
-     * Constructor.
+     * WorkAttribute constructor.
+     *
+     * @param Adapter $adapter for db connection
      */
     public function __construct($adapter)
     {
         parent::__construct('workattribute', $adapter);
     }
 
+    /**
+     * Fetch workattributes
+     *
+     * @return Paginator $paginatorAdapter workattributes
+     */
     public function displayAttributes()
     {
         $select = $this->sql->select();
@@ -64,6 +71,13 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         return new Paginator($paginatorAdapter);
     }
 
+    /**
+     * Fetch worktype and their workattributes
+     *
+     * @param Integer $id work type id
+     *
+     * @return Array $rows worktype and their attributes
+     */
     public function displayAttributes1($id)
     {
         $wtwa = new WorkType_WorkAttribute($this->adapter);
@@ -78,6 +92,14 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         return $rows;
     }
 
+    /**
+     * Add attribute
+     *
+     * @param string $field work attribute name
+     * @param string $type  work attribute type
+     *
+     * @return empty
+     */
     public function addAttribute($field, $type)
     {
         $this->insert(
@@ -88,6 +110,13 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Find record using workattribute id
+     *
+     * @param Integer $id workattribute id
+     *
+     * @return Array $row workattributes
+     */
     public function findRecordById($id)
     {
         $rowset = $this->select(array('id' => $id));
@@ -96,6 +125,14 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         return $row;
     }
 
+    /**
+     * Update record
+     *
+     * @param Integer $id    workattribute id
+     * @param string  $field workattribute name
+     *
+     * @return empty
+     */
     public function updateRecord($id, $field)
     {
         $this->update(
@@ -106,11 +143,25 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+    /**
+     * Delete record
+     *
+     * @param Integer $id workattribute id
+     *
+     * @return empty
+     */
     public function deleteRecord($id)
     {
         $this->delete(['id' => $id]);
     }
 
+    /**
+     * Get attributes of a worktype
+     *
+     * @param Integer $id worktype id
+     *
+     * @return Paginator $paginatorAdapter workattributes
+     */
     public function getAttributesForWorkType($id)
     {
         $subselect = $this->sql->select();

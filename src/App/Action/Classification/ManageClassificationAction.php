@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Manage Classification Action
  *
  * PHP version 5
  *
@@ -39,29 +39,44 @@ use Zend\Paginator\Paginator;
  * Class Definition for ManageClassificationAction.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class ManageClassificationAction
 {
-    private $router;
+    /**
+     * Router\RouterInterface
+     *
+     * @var $router
+     */    
+    protected $router;
 
-    private $template;
+    /**
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
+     */
+    protected $template;
 
-    private $adapter;
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
+    protected $adapter;
 
     //private $dbh;
     //private $qstmt;
 
-	/**
+    /**
      * ManageClassificationAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter             					  $adapter
+     * @param Router\RouterInterface             $router   for routes
+     * @param Template\TemplateRendererInterface $template for templates
+     * @param Adapter                            $adapter  for db connection
      */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
@@ -70,42 +85,60 @@ class ManageClassificationAction
         $this->adapter = $adapter;
     }
 
+    /**
+     * Action based on action parameter.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doAction($post)
     {
         //add folder
-            if ($post['action'] == 'new') {
-                if ($post['submit'] == 'Save') {
+        if ($post['action'] == 'new') {
+            if ($post['submit'] == 'Save') {
+                //echo "<pre>";print_r($post);echo "</pre>"; die();
+                $table = new \App\Db\Table\Folder($this->adapter);
+                $table->insertRecords(
+                    $post['parent_id'], $post['new_classif_engtitle'], $post['new_classif_frenchtitle'],
+                    $post['new_classif_germantitle'], $post['new_classif_dutchtitle'], $post['new_classif_spanishtitle'],
+                    $post['new_classif_italiantitle'], $post['new_classif_sortorder']
+                );
+            }
+        }
+        //edit folder
+        if ($post['action'] == 'edit') {
+            if ($post['submit'] == 'Save') {
+                if (!is_null($post['id'])) {
                     //echo "<pre>";print_r($post);echo "</pre>"; die();
                     $table = new \App\Db\Table\Folder($this->adapter);
-                    $table->insertRecords($post['parent_id'], $post['new_classif_engtitle'], $post['new_classif_frenchtitle'],
-                                $post['new_classif_germantitle'], $post['new_classif_dutchtitle'], $post['new_classif_spanishtitle'],
-                                $post['new_classif_italiantitle'], $post['new_classif_sortorder']);
+                    $table->updateRecord(
+                        $post['id'], $post['edit_texten'], $post['edit_textfr'],
+                        $post['edit_textde'], $post['edit_textnl'], $post['edit_textes'],
+                        $post['edit_textit'], $post['edit_sortorder']
+                    );
                 }
             }
-            //edit folder
-            if ($post['action'] == 'edit') {
-                if ($post['submit'] == 'Save') {
-                    if (!is_null($post['id'])) {
-                        //echo "<pre>";print_r($post);echo "</pre>"; die();
-                        $table = new \App\Db\Table\Folder($this->adapter);
-                        $table->updateRecord($post['id'], $post['edit_texten'], $post['edit_textfr'],
-                                            $post['edit_textde'], $post['edit_textnl'], $post['edit_textes'],
-                                            $post['edit_textit'], $post['edit_sortorder']);
-                    }
-                }
+        }
+        //move folder
+        if ($post['action'] == 'move') {
+            if (isset($post['submit_save'])) {
+                $this->doMove($post);
             }
-            //move folder
-            if ($post['action'] == 'move') {
-                if (isset($post['submit_save'])) {
-                    $this->doMove($post);
-                }
-            }
-            //merge folder
-            if ($post['action'] == 'merge_classification') {
-                $this->doMerge($post);
-            }
+        }
+        //merge folder
+        if ($post['action'] == 'merge_classification') {
+            $this->doMerge($post);
+        }
     }
-    
+
+    /**
+     * Move folder.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */   
     protected function doMove($post)
     {
         if ($post['submit_save'] == 'Save') {
@@ -121,10 +154,16 @@ class ManageClassificationAction
         }
     }
     
+    /**
+     * Merge folders.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doMerge($post)
     {
-        //if ($post['submit_save'] == 'Save') {
-                    $src_cnt = count($post['select_source_fl']);
+        $src_cnt = count($post['select_source_fl']);
         $dst_cnt = count($post['select_dest_fl']);
 
         if ($post['select_source_fl'][$src_cnt - 1] == '') {
@@ -138,32 +177,39 @@ class ManageClassificationAction
         } else {
             $dest_id = $post['select_dest_fl'][$dst_cnt - 1];
         }
-                    // Move children
-                    $table = new \App\Db\Table\Folder($this->adapter);
+        // Move children
+        $table = new \App\Db\Table\Folder($this->adapter);
         $table->mergeFolder($source_id, $dest_id);
     
-                    //first delete potential duplicates to avoid key violation
-                    $table = new \App\Db\Table\Work_Folder($this->adapter);
+        //first delete potential duplicates to avoid key violation
+        $table = new \App\Db\Table\Work_Folder($this->adapter);
         $table->mergeWkFlDelete($source_id, $dest_id);
 
-                    // Move works
-                    $table = new \App\Db\Table\Work_Folder($this->adapter);
+        // Move works
+        $table = new \App\Db\Table\Work_Folder($this->adapter);
         $table->mergeWkFlUpdate($source_id, $dest_id);
 
-                    // Track merge history -- update any previous history, then add the current merge:
-                    $table = new \App\Db\Table\Folder_Merge_History($this->adapter);
+        // Track merge history -- update any previous history, then add the current merge:
+        $table = new \App\Db\Table\Folder_Merge_History($this->adapter);
         $table->mergeFlMgHistUpdate($source_id, $dest_id);
 
-                    // Track merge history -- update any previous history, then add the current merge:
-                    $table = new \App\Db\Table\Folder_Merge_History($this->adapter);
+        // Track merge history -- update any previous history, then add the current merge:
+        $table = new \App\Db\Table\Folder_Merge_History($this->adapter);
         $table->insertRecord($source_id, $dest_id);
 
-                    // Purge
-                    $table = new \App\Db\Table\Folder($this->adapter);
+        // Purge
+        $table = new \App\Db\Table\Folder($this->adapter);
         $table->mergeDelete($source_id);
-                //}
     }
     
+    /**
+     * Get records to display.
+     *
+     * @param Array $query url query parameters
+     * @param Array $post  contains posted elements of form
+     *
+     * @return Paginator                  $paginator
+     */
     protected function getPaginator($query, $post)
     {
         if (!empty($query['action'])) {
@@ -204,6 +250,13 @@ class ManageClassificationAction
         return $paginator;
     }
 
+    /**
+     * Get trail to display as breadcrumb.
+     *
+     * @param Array $query url query parameters
+     *
+     * @return string                  $ts
+     */
     protected function getFolderNameForViewLinks($query)
     {
         $ts = [];
@@ -218,18 +271,32 @@ class ManageClassificationAction
         }
         return $ts;
     }
-    
+
+    /**
+     * Set search parameters for pagination.
+     *
+     * @param Array $query url query parameters
+     *
+     * @return Array                  $searchParams
+     */ 
     protected function getSearchParams($query)
     {
         $searchParams = [];
         if (!empty($query['id']) && !empty($query['fl']) && $query['action'] == 'get_children') {
             $searchParams[] = 'id='.urlencode($query['id']).'&fl='.urlencode($query['fl']).'&action=get_children';
         }
+        return $searchParams;
     }
     
-	/**
-	* invokes required template
-	**/
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $query = $request->getqueryParams();

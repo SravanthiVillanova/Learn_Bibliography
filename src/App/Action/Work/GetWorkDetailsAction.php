@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Get Work Details Action
  *
  * PHP version 5
  *
@@ -38,26 +38,41 @@ use Zend\Db\Adapter\Adapter;
  * Class Definition for GetWorkDetailsAction.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class GetWorkDetailsAction
 {
-    private $router;
-
-    private $template;
-
-    private $adapter;
-
-	/**
-     * GetWorkDetailsAction constructor.
+    /**
+     * Router\RouterInterface
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter             					  $adapter
+     * @var $router
+     */    
+    protected $router;
+
+    /**
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
+     */
+    protected $template;
+
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
+    protected $adapter;
+
+    /**
+     * AttributesWorkTypeAction constructor.
+     *
+     * @param Router\RouterInterface             $router   for routes
+     * @param Template\TemplateRendererInterface $template for templates
+     * @param Adapter                            $adapter  for db connection
      */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
@@ -66,6 +81,13 @@ class GetWorkDetailsAction
         $this->adapter = $adapter;
     }
 
+    /**
+     * Fetches publisher details.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
     protected function pubName($post)
     {
         $no_of_wks = [];
@@ -76,10 +98,10 @@ class GetWorkDetailsAction
                 $pub_row[] = $row;
         endforeach;
         foreach ($pub_row as $row) :
-                $table = new \App\Db\Table\WorkPublisher($this->adapter);
-        $wks = $table->findRecordByPublisherId($row['id']);
-        $no_wks = count($wks);
-        $no_of_wks[] = $no_wks;
+            $table = new \App\Db\Table\WorkPublisher($this->adapter);
+            $wks = $table->findRecordByPublisherId($row['id']);
+            $no_wks = count($wks);
+            $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_row[$i]['works'] = $no_of_wks[$i];
@@ -88,7 +110,14 @@ class GetWorkDetailsAction
         echo json_encode($output);
         exit;
     }
-    
+
+    /**
+     * Fetches publisher location details.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */    
     protected function publisherIdLocs($post)
     {
         $pub_id = $post['publisher_Id_locs'];
@@ -100,10 +129,10 @@ class GetWorkDetailsAction
             $pub_loc_rows[$i]['id'] = $row['id'];
         }
         foreach ($pub_loc_rows as $row) :
-                $table = new \App\Db\Table\WorkPublisher($this->adapter);
-        $wks = $table->findRecordByLocationId($row['id']);
-        $no_wks = count($wks);
-        $no_of_wks[] = $no_wks;
+            $table = new \App\Db\Table\WorkPublisher($this->adapter);
+            $wks = $table->findRecordByLocationId($row['id']);
+            $no_wks = count($wks);
+            $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_loc_rows[$i]['works'] = $no_of_wks[$i];
@@ -112,7 +141,14 @@ class GetWorkDetailsAction
         echo json_encode($output);
         exit;
     }
-    
+
+    /**
+     * Fetches agent details.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */    
     protected function agName($post)
     {
         $no_of_wks = [];
@@ -120,10 +156,10 @@ class GetWorkDetailsAction
         $table = new \App\Db\Table\Agent($this->adapter);
         $ag_row = $table->getLastNameLikeRecords($name);
         foreach ($ag_row as $row) :
-                $table = new \App\Db\Table\WorkAgent($this->adapter);
-        $wks = $table->findRecordByAgentId($row['id']);
-        $no_wks = count($wks);
-        $no_of_wks[] = $no_wks;
+            $table = new \App\Db\Table\WorkAgent($this->adapter);
+            $wks = $table->findRecordByAgentId($row['id']);
+            $no_wks = count($wks);
+            $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $ag_row[$i]['works'] = $no_of_wks[$i];
@@ -133,6 +169,13 @@ class GetWorkDetailsAction
         exit;
     }
     
+    /**
+     * Add/Edit instructions.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function insText($post)
     {
         $ins_str = $post['ins_text'];
@@ -148,6 +191,13 @@ class GetWorkDetailsAction
         exit;
     }
     
+    /**
+     * Fetches classification details.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
     protected function folderId($post)
     {
         $fl_id = $post['folder_Id'];
@@ -158,6 +208,13 @@ class GetWorkDetailsAction
         exit;
     }
     
+    /**
+     * Fetches classification parent trail.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
     protected function flId($post)
     {
         $fl_id = $post['fl_id'];
@@ -167,7 +224,14 @@ class GetWorkDetailsAction
         echo json_encode($output);
         exit;
     }
-    
+ 
+    /**
+     * Fetches Attribute options.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
     protected function option($post)
     {
         $opt_title = $post['option'];
@@ -180,6 +244,13 @@ class GetWorkDetailsAction
         exit;
     }
     
+    /**
+     * Fetches workattribute options.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
     protected function worktypeId($post)
     {
         $wkt_id = $post['worktype_Id'];
@@ -196,6 +267,13 @@ class GetWorkDetailsAction
         exit;
     }
     
+    /**
+     * Fetches publisher and location details.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
     protected function publisherId($post)
     {
         $pub_id = $post['publisher_Id'];
@@ -210,7 +288,14 @@ class GetWorkDetailsAction
         echo json_encode($output);
         exit;
     }
-    
+   
+    /**
+     * Fetches agent and no of works for each.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */ 
     protected function agId($post)
     {
         $ag_id = $post['ag_id'];
@@ -221,6 +306,14 @@ class GetWorkDetailsAction
         exit;
     }
     
+    /**
+     * Autosuggest
+     *
+     * @param Array $autofor     entity for which autosuggest is required
+     * @param Array $search_term auto search text
+     *
+     * @return Array $rows
+     */
     protected function getAutoSuggest($autofor, $search_term)
     {
         if ($autofor == 'publisher') {
@@ -247,6 +340,13 @@ class GetWorkDetailsAction
         }
     }
     
+    /**
+     * Action based on post parameter set.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     public function doPost($post)
     {
         if (isset($post['publisher_Id'])) {
@@ -280,10 +380,16 @@ class GetWorkDetailsAction
             $this->insText($post);
         }
     }
-	
-	/**
-	* invokes required template
-	**/
+    
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         if (isset($_GET['autofor'])) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Attribute Manage Options Action
  *
  * PHP version 5
  *
@@ -38,24 +38,41 @@ use Zend\Db\Adapter\Adapter;
  * Class Definition for AttributeManageOptionsAction.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class AttributeManageOptionsAction
 {
-    private $router;
-    private $template;
-    private $adapter;
+    /**
+     * Router\RouterInterface
+     *
+     * @var $router
+     */
+    protected $router;
+    
+    /**
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
+     */
+    protected $template;
+    
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
+    protected $adapter;
 
-	/**
+    /**
      * AttributeManageOptionsAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter             					  $adapter
+     * @param Router\RouterInterface             $router   for routes
+     * @param Template\TemplateRendererInterface $template for templates
+     * @param Adapter                            $adapter  for db connection
      */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
@@ -64,6 +81,13 @@ class AttributeManageOptionsAction
         $this->adapter = $adapter;
     }
     
+    /**
+     * Adds attribute options.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doAdd($post)
     {
         if ($post['submitt'] == 'Save') {
@@ -72,6 +96,13 @@ class AttributeManageOptionsAction
         }
     }
     
+    /**
+     * Edits attribute options.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doEdit($post)
     {
         if ($post['submitt'] == 'Save') {
@@ -82,6 +113,14 @@ class AttributeManageOptionsAction
         }
     }
     
+    /**
+     * Deletes attribute options.
+     *
+     * @param Array $post  contains posted elements of form
+     * @param Array $query url query parameters
+     *
+     * @return empty
+     */
     protected function doDelete($post, $query)
     {
         if ($post['submitt'] == 'Delete') {
@@ -94,6 +133,13 @@ class AttributeManageOptionsAction
         }
     }
     
+    /**
+     * Merges attribute options.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doMerge($post)
     {
         if ($post['submitt'] == 'Merge') {
@@ -114,6 +160,14 @@ class AttributeManageOptionsAction
         }
     }
     
+    /**
+     * Action based on action parameter.
+     *
+     * @param Array $post  contains posted elements of form
+     * @param Array $query url query parameters
+     *
+     * @return empty
+     */
     protected function doAction($post, $query)
     {
         //add new option
@@ -134,6 +188,14 @@ class AttributeManageOptionsAction
         }
     }
     
+    /**
+     * Call aprropriate function for each action.
+     *
+     * @param Array $query url query parameters
+     * @param Array $post  contains posted elements of form
+     *
+     * @return Paginator                  $paginator
+     */
     protected function getPaginator($query, $post)
     {
         if (!empty($post['action'])) {
@@ -155,9 +217,15 @@ class AttributeManageOptionsAction
         return $paginator;
     }
 
-	/**
-	* invokes required template
-	**/
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $countPages = 0;

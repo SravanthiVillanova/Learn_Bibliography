@@ -1,6 +1,6 @@
 <?php
 /**
- * ISBN validation and conversion functionality
+ * Manage Work Action
  *
  * PHP version 5
  *
@@ -39,26 +39,41 @@ use Zend\Paginator\Paginator;
  * Class Definition for ManageWorkAction.
  *
  * @category VuBib
- *
+ * @package  Code
  * @author   Falvey Library <demian.katz@villanova.edu>
  * @license  http://opensource.org/licenses/gpl-2.0.php GNU General Public License
  *
- * @link     https://
+ * @link https://
  */
 class ManageWorkAction
 {
-    private $router;
+    /**
+     * Router\RouterInterface
+     *
+     * @var $router
+     */    
+    protected $router;
 
-    private $template;
+    /**
+     * Template\TemplateRendererInterface
+     *
+     * @var $template
+     */
+    protected $template;
 
-    private $adapter;
+    /**
+     * Zend\Db\Adapter\Adapter
+     *
+     * @var $adapter
+     */
+    protected $adapter;
 
-	/**
+    /**
      * ManageWorkAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * @param Template\TemplateRendererInterface|null $template
-     * @param Adapter             					  $adapter
+     * @param Router\RouterInterface             $router   for routes
+     * @param Template\TemplateRendererInterface $template for templates
+     * @param Adapter                            $adapter  for db connection
      */
     public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
     {
@@ -67,28 +82,41 @@ class ManageWorkAction
         $this->adapter = $adapter;
     }
 
+    /**
+     * Fetches distinct initial letters of each work.
+     *
+     * @param Array $params url query parameters
+     *
+     * @return Array
+     */
     protected function workLetters($params)
     {
-        //review records
-            if (isset($params['action'])) {
-                if ($params['action'] == 'review') {
-                    $table = new \App\Db\Table\Work($this->adapter);
+        if (isset($params['action'])) {
+            //review records
+            if ($params['action'] == 'review') {
+                $table = new \App\Db\Table\Work($this->adapter);
 
-                    return $table->displayReviewRecordsByLetter($params['letter']);
-                }
-            //classify records
-            elseif ($params['action'] == 'classify') {
+                return $table->displayReviewRecordsByLetter($params['letter']);
+            } elseif ($params['action'] == 'classify') {
+                //classify records
                 $table = new \App\Db\Table\Work($this->adapter);
 
                 return $table->displayClassifyRecordsByLetter($params['letter']);
             }
-            } else {
-                $table = new \App\Db\Table\Work($this->adapter);
+        } else {
+            $table = new \App\Db\Table\Work($this->adapter);
 
-                return $table->displayRecordsByName($params['letter']);
-            }
+            return $table->displayRecordsByName($params['letter']);
+        }
     }
 
+    /**
+     * Work > Search.
+     *
+     * @param Array $params url query parameters
+     *
+     * @return paginator $paginator
+     */
     protected function findWork($params)
     {
         $table = new \App\Db\Table\Work($this->adapter);
@@ -97,66 +125,82 @@ class ManageWorkAction
         return $paginator;
     }
     
+    /**
+     * Fetch works to be reviewed and classified.
+     *
+     * @param Array $params url query parameters
+     *
+     * @return paginator $paginator
+     */
     protected function workReviewClassify($params)
     {
         //Display works which need review
-            if ($params['action'] == 'review') {
-                $table = new \App\Db\Table\Work($this->adapter);
-                $paginator = $table->fetchReviewRecords();
+        if ($params['action'] == 'review') {
+            $table = new \App\Db\Table\Work($this->adapter);
+            $paginator = $table->fetchReviewRecords();
 
-                return $paginator;
-            }
-            //Display works which are to be classified under folders
-            if ($params['action'] == 'classify') {
-                $table = new \App\Db\Table\Work($this->adapter);
-                $paginator = $table->fetchClassifyRecords();
+            return $paginator;
+        }
+        //Display works which are to be classified under folders
+        if ($params['action'] == 'classify') {
+            $table = new \App\Db\Table\Work($this->adapter);
+            $paginator = $table->fetchClassifyRecords();
 
-                return $paginator;
-            }
+            return $paginator;
+        }
     }
-    
+
+    /**
+     * Adds new work.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doAdd($post)
     {
         if (isset($post['submit_save'])) {
             if ($post['submit_save'] == 'Save') {
                 //echo "<pre>";print_r($post);echo "</pre>"; //die();
-                    //insert General(work)
-                    $table = new \App\Db\Table\Work($this->adapter);
-                $wk_id = $table->insertRecords($post['work_type'], $post['new_worktitle'], $post['new_worksubtitle'],
-                                    $post['new_workparalleltitle'], $post['description'], date('Y-m-d H:i:s'),
-                                    $post['user'], $post['select_workstatus'], $post['pub_yrFrom']);
+                //insert General(work)
+                $table = new \App\Db\Table\Work($this->adapter);
+                $wk_id = $table->insertRecords(
+                    $post['work_type'], $post['new_worktitle'], $post['new_worksubtitle'],
+                    $post['new_workparalleltitle'], $post['description'], date('Y-m-d H:i:s'),
+                    $post['user'], $post['select_workstatus'], $post['pub_yrFrom']
+                );
                                     
-                    //extract classification rows
-                    foreach ($post['arr'] as $row):
-                        $fl[] = explode(',', trim($row, ','));
+                //extract classification rows
+                foreach ($post['arr'] as $row):
+                    $fl[] = explode(',', trim($row, ','));
                 endforeach;
 
-                    //extract folder ids for each row
-                    for ($i = 0; $i < count($fl); ++$i) {
+                //extract folder ids for each row
+                for ($i = 0; $i < count($fl); ++$i) {
                         $folder[$i] = $fl[$i][count($fl[$i]) - 1];
-                    }
+                }
 
-                     //insert classification(work_folder)
-                    if ($folder[0] != null) {
+                //insert classification(work_folder)
+                if ($folder[0] != null) {
                         $table = new \App\Db\Table\Work_Folder($this->adapter);
                         $table->insertWorkFolderRecords($wk_id, $folder);
-                    }
+                }
                     
-                    //insert Publisher(work_publisher)
-                    if ($post['pub_id'][0] != null) {
+                //insert Publisher(work_publisher)
+                if ($post['pub_id'][0] != null) {
                         $table = new \App\Db\Table\WorkPublisher($this->adapter);
                         $table->insertRecords($wk_id, $post['pub_id'], $post['pub_location'], $post['pub_yrFrom'], $post['pub_yrTo']);
                         //$table->insertRecords($wk_id,$post['pub_id'],$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
-                    }
+                }
                     
-                    //insert Agent(work_agent)
-                    if ($post['agent_id'][0] != null) {
+                //insert Agent(work_agent)
+                if ($post['agent_id'][0] != null) {
                         $table = new \App\Db\Table\WorkAgent($this->adapter);
                         $table->insertRecords($wk_id, $post['agent_id'], $post['agent_type']);
-                    }
+                }
                     
-                    //map work to citation(work_workattribute)
-                    $wkat_id = [];
+                //map work to citation(work_workattribute)
+                $wkat_id = [];
                 foreach ($post as $key => $value) {
                     if ((preg_match("/^[a-z]+\,\d+[a-z]+\,\d+$/", $key)) && ($value != null)) {
                         $keys = preg_split("/[a-z]+\,/", $key);
@@ -175,23 +219,32 @@ class ManageWorkAction
             }
         }
     }
-    
+
+    /**
+     * Edits work.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doEdit($post)
     {
         if (isset($post['submit_save'])) {
             if ($post['submit_save'] == 'Save') {
                 //echo "<pre>"; print_r($post); echo "</pre>"; die();
-                    //update General(work)
-                    $table = new \App\Db\Table\Work($this->adapter);
-                $table->updateRecords($post['id'], $post['edit_work_type'], $post['edit_worktitle'], $post['edit_worksubtitle'],
-                                        $post['edit_workparalleltitle'], $post['description'], date('Y-m-d H:i:s'),
-                                        $post['user'], $post['edit_workstatus'], $post['pub_yrFrom']);
+                //update General(work)
+                $table = new \App\Db\Table\Work($this->adapter);
+                $table->updateRecords(
+                    $post['id'], $post['edit_work_type'], $post['edit_worktitle'], $post['edit_worksubtitle'],
+                    $post['edit_workparalleltitle'], $post['description'], date('Y-m-d H:i:s'),
+                    $post['user'], $post['edit_workstatus'], $post['pub_yrFrom']
+                );
                     
-                    //extract classification rows
-                    if (isset($post['arr'])) {
-                        foreach ($post['arr'] as $row):
+                //extract classification rows
+                if (isset($post['arr'])) {
+                    foreach ($post['arr'] as $row):
                         $fl[] = explode(',', trim($row, ','));
-                        endforeach;
+                    endforeach;
                     //extract folder ids for each row
                     for ($i = 0; $i < count($fl); ++$i) {
                         $folder[$i] = $fl[$i][count($fl[$i]) - 1];
@@ -207,49 +260,49 @@ class ManageWorkAction
                         $table = new \App\Db\Table\Work_Folder($this->adapter);
                         $table->insertWorkFolderRecords($post['id'], $folder);
                     }
-                    } else {
+                } else {
                         //delete all workfolders
                         $table = new \App\Db\Table\Work_Folder($this->adapter);
                         $table->deleteRecordByWorkId($post['id']);
-                    }
+                }
                     
-                    //update Publisher(work_publisher)
-                    if (isset($post['pub_id'])) {
-                        if ($post['pub_id'][0] != null) {
-                            //delete all publishers
-                            $table = new \App\Db\Table\WorkPublisher($this->adapter);
-                            $table->deleteRecordByWorkId($post['id']);
-
-                        //insert all publishers again
-                        $table = new \App\Db\Table\WorkPublisher($this->adapter);
-                            $table->insertRecords($post['id'], $post['pub_id'], $post['pub_location'], $post['pub_yrFrom'], $post['pub_yrTo']);
-                        //$table->insertRecords($post['id'], $post['pub_id'], $post['publoc_id'], $post['pub_yrFrom'], $post['pub_yrTo']);
-                        }
-                    } else {
+                //update Publisher(work_publisher)
+                if (isset($post['pub_id'])) {
+                    if ($post['pub_id'][0] != null) {
                         //delete all publishers
                         $table = new \App\Db\Table\WorkPublisher($this->adapter);
                         $table->deleteRecordByWorkId($post['id']);
-                    }
-                    
-                    //update Agent(work_agent)
-                    if (isset($post['agent_id'])) {
-                        if ($post['agent_id'][0] != null) {
-                            //delete all agents
-                        $table = new \App\Db\Table\WorkAgent($this->adapter);
-                            $table->deleteRecordByWorkId($post['id']);
 
-                        //insert Agents again
-                        $table = new \App\Db\Table\WorkAgent($this->adapter);
-                            $table->insertRecords($post['id'], $post['agent_id'], $post['agent_type']);
-                        }
-                    } else {
+                        //insert all publishers again
+                        $table = new \App\Db\Table\WorkPublisher($this->adapter);
+                        $table->insertRecords($post['id'], $post['pub_id'], $post['pub_location'], $post['pub_yrFrom'], $post['pub_yrTo']);
+                        //$table->insertRecords($post['id'], $post['pub_id'], $post['publoc_id'], $post['pub_yrFrom'], $post['pub_yrTo']);
+                    }
+                } else {
+                    //delete all publishers
+                    $table = new \App\Db\Table\WorkPublisher($this->adapter);
+                    $table->deleteRecordByWorkId($post['id']);
+                }
+                    
+                //update Agent(work_agent)
+                if (isset($post['agent_id'])) {
+                    if ($post['agent_id'][0] != null) {
                         //delete all agents
                         $table = new \App\Db\Table\WorkAgent($this->adapter);
                         $table->deleteRecordByWorkId($post['id']);
+
+                        //insert Agents again
+                        $table = new \App\Db\Table\WorkAgent($this->adapter);
+                        $table->insertRecords($post['id'], $post['agent_id'], $post['agent_type']);
                     }
+                } else {
+                    //delete all agents
+                    $table = new \App\Db\Table\WorkAgent($this->adapter);
+                    $table->deleteRecordByWorkId($post['id']);
+                }
                     
-                    //map work to citation(work_workattribute)
-                    $wkat_id = [];
+                //map work to citation(work_workattribute)
+                $wkat_id = [];
                 foreach ($post as $key => $value) {
                     if ((preg_match("/^[a-z]+\,\d+[a-z]+\,\d+$/", $key)) && ($value != null)) {
                         $keys = preg_split("/[a-z]+\,/", $key);
@@ -263,11 +316,11 @@ class ManageWorkAction
                 }
                 if ($wkat_id[0] != null) {
                     //delete workattribute records
-                        $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
+                    $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
                     $table->deleteRecordByWorkId($post['id']);
 
-                        //insert workattributes again
-                        $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
+                    //insert workattributes again
+                    $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
                     $table->insertRecords($post['id'], $wkat_id, $wkopt_id);
                 } else {
                     //delete workattribute records
@@ -278,6 +331,13 @@ class ManageWorkAction
         }
     }
     
+    /**
+     * Deletes work.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doDelete($post)
     {
         if (isset($post['submitt'])) {
@@ -297,13 +357,20 @@ class ManageWorkAction
             }
         }
     }
-    
+  
+    /**
+     * Action based on action parameter.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
     protected function doAction($post)
     {
         //add a new work type
-            if ($post['action'] == 'work_new') {
-                $this->doAdd($post);
-            }
+        if ($post['action'] == 'work_new') {
+            $this->doAdd($post);
+        }
         if ($post['action'] == 'work_edit') {
             $this->doEdit($post);
         }
@@ -311,7 +378,15 @@ class ManageWorkAction
             $this->doDelete($post);
         }
     }
-    
+
+    /**
+     * Get records to display.
+     *
+     * @param Array $params url query parameters
+     * @param Array $post   contains posted elements of form
+     *
+     * @return Paginator                  $paginator
+     */  
     protected function getPaginator($params, $post)
     {
         // search by letter
@@ -345,6 +420,13 @@ class ManageWorkAction
         return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
     }
 
+    /**
+     * Set search parameters for pagination.
+     *
+     * @param Array $query url query parameters
+     *
+     * @return Paginator                  $paginator
+     */
     protected function getSearchParams($query)
     {
         $searchParams = [];
@@ -372,10 +454,16 @@ class ManageWorkAction
         }
         return $searchParams;
     }
-	
-	/**
-	* invokes required template
-	**/
+    
+    /**
+     * Invokes required template
+     *
+     * @param ServerRequestInterface $request  server-side request.
+     * @param ResponseInterface      $response response to client side.
+     * @param callable               $next     CallBack Handler.
+     *
+     * @return HtmlResponse
+     */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $post = [];
@@ -389,14 +477,14 @@ class ManageWorkAction
             $rows = $table->getChild($post['get_parent']);
 
             return new HtmlResponse(
-            $this->template->render(
-                'app::work::get_work_details',
-                [
+                $this->template->render(
+                    'app::work::get_work_details',
+                    [
                     'rows' => $rows,
                     'request' => $request,
                     'adapter' => $this->adapter,
-                ]
-            )
+                    ]
+                )
             );
         }
 
@@ -446,46 +534,46 @@ class ManageWorkAction
         if (isset($query['action'])) {
             if ($query['action'] == 'review') {
                 //echo "entered if";
-            return new HtmlResponse(
-            $this->template->render(
-                'app::work::review_work',
-                [
-                    'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
-                    'searchParams' => $searchParams,
-                    'carat' => $characs,
-                    'request' => $request,
-                    'adapter' => $this->adapter,
-                ]
-            )
-            );
+                return new HtmlResponse(
+                    $this->template->render(
+                        'app::work::review_work',
+                        [
+                        'rows' => $paginator,
+                        'previous' => $previous,
+                        'next' => $next,
+                        'countp' => $countPages,
+                        'searchParams' => $searchParams,
+                        'carat' => $characs,
+                        'request' => $request,
+                        'adapter' => $this->adapter,
+                        ]
+                    )
+                );
             }
             if ($query['action'] == 'classify') {
                 //echo "entered else if";
-            return new HtmlResponse(
-            $this->template->render(
-                'app::work::classify_work',
-                [
-                    'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
-                    'searchParams' => $searchParams,
-                    'carat' => $characs,
-                    'request' => $request,
-                    'adapter' => $this->adapter,
-                ]
-            )
-            );
+                return new HtmlResponse(
+                    $this->template->render(
+                        'app::work::classify_work',
+                        [
+                        'rows' => $paginator,
+                        'previous' => $previous,
+                        'next' => $next,
+                        'countp' => $countPages,
+                        'searchParams' => $searchParams,
+                        'carat' => $characs,
+                        'request' => $request,
+                        'adapter' => $this->adapter,
+                        ]
+                    )
+                );
             }
         } else {
             //echo "entered else";
             return new HtmlResponse(
-            $this->template->render(
-                'app::work::manage_work',
-                [
+                $this->template->render(
+                    'app::work::manage_work',
+                    [
                     'rows' => $paginator,
                     'previous' => $previous,
                     'next' => $next,
@@ -494,8 +582,8 @@ class ManageWorkAction
                     'carat' => $characs,
                     'request' => $request,
                     'adapter' => $this->adapter,
-                ]
-            )
+                    ]
+                )
             );
         }
     }
