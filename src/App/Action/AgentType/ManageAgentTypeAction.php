@@ -161,7 +161,7 @@ class ManageAgentTypeAction
      * @return HtmlResponse
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {	
+    {
         $simpleAction = new \App\Action\SimpleRenderAction('app::agenttype::manage_agenttype', $this->router, $this->template, $this->adapter);
         list($query,$post) = $simpleAction->getQueryAndPost($request);
 

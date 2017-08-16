@@ -173,7 +173,7 @@ class ManageLanguageAction
 
         $simpleAction = new \App\Action\SimpleRenderAction('app::language::manage_language', $this->router, $this->template, $this->adapter);
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
-		
+
         //$allItems = $paginator->getTotalItemCount();
 
         return new HtmlResponse(

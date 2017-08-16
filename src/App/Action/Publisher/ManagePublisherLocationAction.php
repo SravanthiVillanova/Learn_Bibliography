@@ -193,7 +193,7 @@ class ManagePublisherLocationAction
     {
         $simpleAction = new \App\Action\SimpleRenderAction('app::publisher::manage_publisherlocation', $this->router, $this->template, $this->adapter);
         list($query,$post) = $simpleAction->getQueryAndPost($request);
-		
+
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(7);
         //$allItems = $paginator->getTotalItemCount();

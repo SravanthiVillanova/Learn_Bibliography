@@ -161,7 +161,6 @@ class ManageWorkAction
     {
         if (isset($post['submit_save'])) {
             if ($post['submit_save'] == 'Save') {
-                //echo "<pre>";print_r($post);echo "</pre>"; //die();
                 //insert General(work)
                 $table = new \App\Db\Table\Work($this->adapter);
                 $wk_id = $table->insertRecords(
@@ -231,7 +230,6 @@ class ManageWorkAction
     {
         if (isset($post['submit_save'])) {
             if ($post['submit_save'] == 'Save') {
-                //echo "<pre>"; print_r($post); echo "</pre>"; die();
                 //update General(work)
                 $table = new \App\Db\Table\Work($this->adapter);
                 $table->updateRecords(
@@ -466,29 +464,9 @@ class ManageWorkAction
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $post = [];
-        if ($request->getMethod() == 'POST') {
-            $post = $request->getParsedBody();
-        }
+        $simpleAction = new \App\Action\SimpleRenderAction('app::agent::manage_agent', $this->router, $this->template, $this->adapter);
+        list($query,$post) = $simpleAction->getQueryAndPost($request);
 
-        if (isset($post['get_parent'])) {
-            echo 'get parent';
-            $table = new \App\Db\Table\Folder($this->adapter);
-            $rows = $table->getChild($post['get_parent']);
-
-            return new HtmlResponse(
-                $this->template->render(
-                    'app::work::get_work_details',
-                    [
-                    'rows' => $rows,
-                    'request' => $request,
-                    'adapter' => $this->adapter,
-                    ]
-                )
-            );
-        }
-
-        $query = $request->getqueryParams();
         if (isset($query['action'])) {
             if ($query['action'] == 'review') {
                 $table = new \App\Db\Table\Work($this->adapter);
@@ -504,24 +482,9 @@ class ManageWorkAction
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(20);
-        $countPages = $paginator->count();
 
-        $currentPage = isset($query['page']) ? $query['page'] : 1;
-        if ($currentPage < 1) {
-            $currentPage = 1;
-        }
-        $paginator->setCurrentPageNumber($currentPage);
-
-        if ($currentPage == $countPages) {
-            $next = $currentPage;
-            $previous = $currentPage - 1;
-        } elseif ($currentPage == 1) {
-            $next = $currentPage + 1;
-            $previous = 1;
-        } else {
-            $next = $currentPage + 1;
-            $previous = $currentPage - 1;
-        }
+        $simpleAction = new \App\Action\SimpleRenderAction('app::agent::manage_agent', $this->router, $this->template, $this->adapter);
+        $pgs = $simpleAction->getNextPrevious($paginator, $query);
         
         $searchParams = $this->getSearchParams($query);
         
@@ -539,9 +502,9 @@ class ManageWorkAction
                         'app::work::review_work',
                         [
                         'rows' => $paginator,
-                        'previous' => $previous,
-                        'next' => $next,
-                        'countp' => $countPages,
+                        'previous' => $pgs['prev'],
+                        'next' => $pgs['nxt'],
+                        'countp' => $pgs['cp'],
                         'searchParams' => $searchParams,
                         'carat' => $characs,
                         'request' => $request,
@@ -557,9 +520,9 @@ class ManageWorkAction
                         'app::work::classify_work',
                         [
                         'rows' => $paginator,
-                        'previous' => $previous,
-                        'next' => $next,
-                        'countp' => $countPages,
+                        'previous' => $pgs['prev'],
+                        'next' => $pgs['nxt'],
+                        'countp' => $pgs['cp'],
                         'searchParams' => $searchParams,
                         'carat' => $characs,
                         'request' => $request,
@@ -575,9 +538,9 @@ class ManageWorkAction
                     'app::work::manage_work',
                     [
                     'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
+                    'previous' => $pgs['prev'],
+                    'next' => $pgs['nxt'],
+                    'countp' => $pgs['cp'],
                     'searchParams' => $searchParams,
                     'carat' => $characs,
                     'request' => $request,

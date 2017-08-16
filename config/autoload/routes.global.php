@@ -48,12 +48,6 @@ return [
 			App\Action\Classification\EditClassificationAction::class => App\Action\Classification\EditClassificationFactory::class,
             App\Action\Classification\MoveClassificationAction::class => App\Action\Classification\MoveClassificationFactory::class,
             
-			/*App\Action\SimpleRenderAction::class => App\Action\Agent\NewAgentFactory::class,
-			App\Action\SimpleRenderAction::class => App\Action\Agent\FindAgentFactory::class,			
-            App\Action\SimpleRenderAction::class => App\Action\Agent\EditAgentFactory::class,
-            App\Action\SimpleRenderAction::class => App\Action\Agent\DeleteAgentFactory::class,
-			App\Action\SimpleRenderAction::class => App\Action\Agent\MergeAgentFactory::class,
-			App\Action\Agent\ManageAgentAction::class => App\Action\Agent\ManageAgentFactory::class,	*/		
 			App\Action\Agent\NewAgentAction::class => App\Action\Agent\NewAgentFactory::class,
 			App\Action\Agent\FindAgentAction::class => App\Action\Agent\FindAgentFactory::class,
 			App\Action\Agent\ManageAgentAction::class => App\Action\Agent\ManageAgentFactory::class,
