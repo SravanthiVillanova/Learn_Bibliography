@@ -32,7 +32,7 @@ if ($request->getqueryParams('id') !== null) {
         //fetch agent types
         $table            = new \App\Db\Table\AgentType($this->adapter);
         $paginator_agtype = $table->fetchAgentTypes();
-        $itemsCount       = $paginator->getTotalItemCount();
+        $itemsCount       = $paginator_agtype->getTotalItemCount();
         $paginator_agtype->setItemCountPerPage($itemsCount);
         
         //fetch worktype values
