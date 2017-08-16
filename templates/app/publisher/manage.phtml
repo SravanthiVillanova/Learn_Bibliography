@@ -25,13 +25,16 @@
                     <td>            
                         <?php
                         $output = (array) $row;
-                        $params = implode(', ', $output);
-                        $cnt = count($row);
-                        /* echo "params is \n";
-                          var_dump($params);
-                          echo "count of row is \n".$cnt; */
+						if (!isset($row['publisher_id'])) {
                         ?>        
-                        <a href="<?= $this->url('manage_publisherlocation') ?><?= '?id=' . $row['id'] . '&count=' . $cnt ?>">Manage Locations</a>              
+                            <a href="<?= $this->url('manage_publisherlocation') ?><?= '?id=' . $row['id'] ?>">Manage Locations</a>  
+						<?php
+						} else {
+							?>
+							<a href="<?= $this->url('manage_publisherlocation') ?><?= '?id=' . $row['publisher_id'] ?>">Manage Locations</a>
+						<?php
+						}
+						?>
                     </td>
                     <td>                   
                         <a href="<?= $this->url('edit_publisher') ?><?= '?id=' . $row['id'] . '&action=edit' ?>">Edit</a>        

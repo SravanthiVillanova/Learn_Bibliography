@@ -34,6 +34,7 @@ use Zend\Db\Sql\Select;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
+use Zend\Db\Sql\Expression;
 
 /**
  * Table Definition for publisher_location.
@@ -68,7 +69,11 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         // $select->columns(array('location'));
-        $select->join('publisher', 'publisher_location.publisher_id = publisher.id', array('name'), 'inner');
+        $select->join(
+            'publisher', 'publisher_location.publisher_id = publisher.id', 
+            array('name'), 'inner'
+        );
+        //$select->where->like('location', $location.'%');
         $select->where(['location' => $location]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 

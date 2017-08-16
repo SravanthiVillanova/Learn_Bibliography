@@ -314,6 +314,7 @@ class ManagePublisherAction
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(7);
+
         $simpleAction = new \App\Action\SimpleRenderAction('app::publisher::manage_publisher', $this->router, $this->template, $this->adapter);
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 

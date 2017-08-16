@@ -191,57 +191,24 @@ class ManagePublisherLocationAction
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $query = $request->getqueryParams();
-
-        if (isset($query['count'])) {
-            if ($query['count'] == 4) {
-                $table = new \App\Db\Table\PublisherLocation($this->adapter);
-                $row = $table->findPublisherId($query['id']);
-                $query['id'] = $row['publisher_id'];
-            }
-        }
-        $post = [];
-        if ($request->getMethod() == 'POST') {
-            $post = $request->getParsedBody();
-        }
+        $simpleAction = new \App\Action\SimpleRenderAction('app::publisher::manage_publisherlocation', $this->router, $this->template, $this->adapter);
+        list($query,$post) = $simpleAction->getQueryAndPost($request);
+		
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(7);
         //$allItems = $paginator->getTotalItemCount();
-        $countPages = $paginator->count();
 
-        $currentPage = isset($query['page']) ? $query['page'] : 1;
-        if ($currentPage < 1) {
-            $currentPage = 1;
-        }
-        $paginator->setCurrentPageNumber($currentPage);
-
-        if ($currentPage == $countPages) {
-            $next = $currentPage;
-            $previous = $currentPage - 1;
-        } elseif ($currentPage == 1) {
-            $next = $currentPage + 1;
-            $previous = 1;
-        } else {
-            $next = $currentPage + 1;
-            $previous = $currentPage - 1;
-        }
-
-        /*$searchParams = [];
-        if (!empty($query['name'])) {
-            $searchParams[] = 'name=' . urlencode($query['name']);
-        }
-        if (!empty($query['location'])) {
-            $searchParams[] = 'location=' . urlencode($query['location']);
-        } */
+        $simpleAction = new \App\Action\SimpleRenderAction('app::publisher::manage_publisherlocation', $this->router, $this->template, $this->adapter);
+        $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         return new HtmlResponse(
             $this->template->render(
                 'app::publisher::manage_publisherlocation',
                 [
                     'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
+                    'previous' => $pgs['prev'],
+                    'next' => $pgs['nxt'],
+                    'countp' => $pgs['cp'],
                     //'searchParams' => implode('&', $searchParams),
                     'request' => $request,
                     'adapter' => $this->adapter,
