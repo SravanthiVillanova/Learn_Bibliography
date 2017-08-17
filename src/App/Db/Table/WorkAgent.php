@@ -200,9 +200,9 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
     {
         $this->update(
             [
-                'agent_id' => $src_ag_id,
+                'agent_id' => $dst_ag_id,
             ],
-            ['agent_id' => $dst_ag_id]
+            ['agent_id' => $src_ag_id]
         );
     }
 

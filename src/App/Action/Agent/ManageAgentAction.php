@@ -137,7 +137,7 @@ class ManageAgentAction
         $table->updateRecordByAgentId($post['mrg_src_id'], $post['mrg_dest_id']);
         // Purge
         $table = new \App\Db\Table\Agent($this->adapter);
-        $table->deleteRecord($post['mrg_dest_id']);
+        $table->deleteRecord($post['mrg_src_id']);
     }
     
     /**
