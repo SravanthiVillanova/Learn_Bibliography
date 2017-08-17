@@ -51,7 +51,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
             cache: false,
             success: function (data)
             {
-                $('.outer_div_fl').eq(no_of_fl_parent - 1).css('background', '#8ec252');
+                //$('.outer_div_fl').eq(no_of_fl_parent - 1).css('background', '#8ec252');
 
                 if (data.folder_children.length > 0)
                 {
@@ -135,7 +135,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                     cache: false,
                     success: function (data)
                     {
-                        $('.outer_div_fl').eq(no_of_fl_parent - 1).css('background', '#8ec252');
+                        //$('.outer_div_fl').eq(no_of_fl_parent - 1).css('background', '#8ec252');
 
                         $('.outer_div_fl').eq(no_of_fl_parent - 1).after('<div class="form-group outer_div_fl" name="outer_div_fl" />');
                         $('.outer_div_fl').eq(no_of_fl_parent).append('<label class="col-xs-2 control-label label_fl" name="label_fl">Subject Tree: </label>');
