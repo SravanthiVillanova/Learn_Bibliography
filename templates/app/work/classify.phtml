@@ -41,12 +41,12 @@
 		</td>
 		<td>
 			<?php
-					if ($row['status'] == 0 || $row['status'] == 2): ?>
-						<img src="../images/images_admin/review.gif" alt="Needs Review" title="Needs Review">
+					if (is_null($row['status'])): ?>
+						<img src="../images/images_admin/inactive.gif" alt="In progress" title="Inactive">						
 			<?php	elseif ($row['status'] == 1): ?>
 						<img src="../images/images_admin/active.gif" alt="Complete" title="Active">					
-			<?php	else: ?>
-						<img src="../images/images_admin/inactive.gif" alt="In progress" title="Inactive">
+			<?php	elseif ($row['status'] == 0 || $row['status'] == 2): ?>
+						<img src="../images/images_admin/review.gif" alt="Needs Review" title="Needs Review">
 			<?php	endif;
 					//echo $row['status'];
 			?>
@@ -61,11 +61,15 @@
 		</td>
 		<td>
 			<?php	
+			    if($row['modify_user_id'] != '')
+				{
 					//fetch modified username based on modify_user_id
 					$table = new \App\Db\Table\User($adapter);
 					$muser = $table->findRecordById($row['modify_user_id']);
 					$m_user = $muser['username'];
-					echo $m_user . " " . date("M d, y", strtotime($row['modify_date']));?>
+					echo $m_user . " " . date("M d, y", strtotime($row['modify_date']));
+                }
+		   ?>
 		</td>
 		<td>
 			<a href="<?=$this->url('edit_work')?><?='?id='. $row['id']. '&action=edit'?>">Edit</a>        
