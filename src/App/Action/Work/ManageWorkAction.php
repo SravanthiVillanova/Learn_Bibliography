@@ -102,11 +102,11 @@ class ManageWorkAction
                 $table = new \App\Db\Table\Work($this->adapter);
 
                 return $table->displayClassifyRecordsByLetter($params['letter']);
-            }
-        } else {
-            $table = new \App\Db\Table\Work($this->adapter);
+            } else {
+                $table = new \App\Db\Table\Work($this->adapter);
 
-            return $table->displayRecordsByName($params['letter']);
+                return $table->displayRecordsByName($params['letter']);
+            }
         }
     }
 
@@ -383,7 +383,7 @@ class ManageWorkAction
      * @param Array $params url query parameters
      * @param Array $post   contains posted elements of form
      *
-     * @return Paginator                  $paginator
+     * @return Paginator $paginator
      */  
     protected function getPaginator($params, $post)
     {
@@ -394,7 +394,6 @@ class ManageWorkAction
         // Work Lookup
         if (!empty($params['find_worktitle'])) {
             return($this->findWork($params));
-            //echo "name is " . $params['find_worktitle'];
         }
         if (!empty($params['action'])) {
             return($this->workReviewClassify($params));
@@ -474,6 +473,9 @@ class ManageWorkAction
             } elseif ($query['action'] == 'classify') {
                 $table = new \App\Db\Table\Work($this->adapter);
                 $characs = $table->findInitialLetterClassify();
+            } elseif ($query['action'] == 'alphasearch') {
+                $table = new \App\Db\Table\Work($this->adapter);
+                $characs = $table->findInitialLetter();
             }
         } else {
             $table = new \App\Db\Table\Work($this->adapter);
@@ -518,6 +520,24 @@ class ManageWorkAction
                 return new HtmlResponse(
                     $this->template->render(
                         'app::work::classify_work',
+                        [
+                        'rows' => $paginator,
+                        'previous' => $pgs['prev'],
+                        'next' => $pgs['nxt'],
+                        'countp' => $pgs['cp'],
+                        'searchParams' => $searchParams,
+                        'carat' => $characs,
+                        'request' => $request,
+                        'adapter' => $this->adapter,
+                        ]
+                    )
+                );
+            }
+            if ($query['action'] == 'alphasearch') {
+                //echo "entered else if";
+                return new HtmlResponse(
+                    $this->template->render(
+                        'app::work::manage_work',
                         [
                         'rows' => $paginator,
                         'previous' => $pgs['prev'],
