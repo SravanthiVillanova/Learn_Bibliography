@@ -35,6 +35,7 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Expression;
 
 /**
  * Table Definition for folder.
@@ -142,6 +143,9 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         $callback = function ($select) use ($parent) {
             $select->columns(['*']);
             $select->where->equalTo('parent_id', $parent);
+            //$select->order(new Expression('case when sort_order is null then 1 else 0 end, sort_order'),'text_fr');
+            $select->order('sort_order');
+            $select->order('text_fr');
         };
         $rows = $this->select($callback)->toArray();
         return $rows;
