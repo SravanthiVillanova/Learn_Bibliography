@@ -20,7 +20,7 @@ if ($request->getqueryParams('id') !== null) {
     $orgname = $row['organization_name'];
 }
 ?>
-
+<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
     <form class="form-horizontal" method="post" action="<?= $this->url('manage_agent') ?>">
         <input type="hidden" name="action" value="<?= trim($action) ?>">
@@ -28,25 +28,25 @@ if ($request->getqueryParams('id') !== null) {
         <div class="form-group">
             <label class="col-xs-4 control-label">First Name: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_agentfirstname" id="editagentfirstname" value="<?= trim($fname) ?>" />
+                <input type="text" class="form-control" name="edit_agentfirstname" id="editagentfirstname" value="<?= $escaper->escapeHtml(trim($fname)) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-4 control-label">Last Name: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_agentlastname" id="editagentlastname" value="<?= trim($lname) ?>" />
+                <input type="text" class="form-control" name="edit_agentlastname" id="editagentlastname" value="<?= $escaper->escapeHtml(trim($lname)) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-4 control-label">Alternate Name: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_agentaltname" id="editagentaltname" value="<?= trim($altname) ?>" />
+                <input type="text" class="form-control" name="edit_agentaltname" id="editagentaltname" value="<?= $escaper->escapeHtml(trim($altname)) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-4 control-label">Organization Name: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_agentorgname" id="editagentorgname" value="<?= trim($orgname) ?>" />
+                <input type="text" class="form-control" name="edit_agentorgname" id="editagentorgname" value="<?= $escaper->escapeHtml(trim($orgname)) ?>" />
             </div>
         </div>
         <div class="form-group">

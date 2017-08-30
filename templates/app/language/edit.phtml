@@ -15,6 +15,7 @@ if ($request->getqueryParams('id') !== null) {
     $name = $row['text_en'];
 }
 ?>
+<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
     <form class="form-horizontal" method="post" action="<?= $this->url('manage_language') ?>">
         <input type="hidden" name="action" value="<?= trim($action) ?>">
@@ -22,37 +23,37 @@ if ($request->getqueryParams('id') !== null) {
         <div class="form-group">   
             <label class="col-xs-2 control-label">de: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="de_newlang" id="denewlang" value="<?= trim($row['text_de']) ?>" />
+                <input type="text" class="form-control" name="de_newlang" id="denewlang" value="<?= $escaper->escapeHtml(trim($row['text_de'])) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-2 control-label">en: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="en_newlang" id="ennewlang" value="<?= trim($row['text_en']) ?>" />
+                <input type="text" class="form-control" name="en_newlang" id="ennewlang" value="<?= $escaper->escapeHtml(trim($row['text_en'])) ?>" />
             </div>
         </div> 
         <div class="form-group">
             <label class="col-xs-2 control-label">es: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="es_newlang" id="esnewlang" value="<?= trim($row['text_es']) ?>" />
+                <input type="text" class="form-control" name="es_newlang" id="esnewlang" value="<?= $escaper->escapeHtml(trim($row['text_es'])) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-2 control-label">fr: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="fr_newlang" id="frnewlang" value="<?= trim($row['text_fr']) ?>" />
+                <input type="text" class="form-control" name="fr_newlang" id="frnewlang" value="<?= $escaper->escapeHtml(trim($row['text_fr'])) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-2 control-label">it: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="it_newlang" id="itnewlang" value="<?= trim($row['text_it']) ?>" />
+                <input type="text" class="form-control" name="it_newlang" id="itnewlang" value="<?= $escaper->escapeHtml(trim($row['text_it'])) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-2 control-label">nl: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="nl_newlang" id="nlnewlang" value="<?= trim($row['text_nl']) ?>" />
+                <input type="text" class="form-control" name="nl_newlang" id="nlnewlang" value="<?= $escaper->escapeHtml(trim($row['text_nl'])) ?>" />
             </div>
         </div>
         <div class="form-group">

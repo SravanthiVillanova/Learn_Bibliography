@@ -15,6 +15,7 @@ if ($request->getqueryParams('id') !== null) {
     $field  = $row['field'];
 }
 ?>
+<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
 <form class="form-horizontal" method="post" action="<?=$this->url('attributes_worktype')?>">
 	<input type="hidden" name="action" value="<?=trim($action)?>">
@@ -22,7 +23,7 @@ if ($request->getqueryParams('id') !== null) {
 	<div class="form-group">   
 		<label class="col-xs-3 control-label">Attribute: </label>
 		<div class="col-xs-7">
-			<input type="text" class="form-control" name="edit_attribute" id="editattribute" value="<?=trim($field)?>" />
+			<input type="text" class="form-control" name="edit_attribute" id="editattribute" value="<?=$escaper->escapeHtml(trim($field))?>" />
 		</div>
 	</div>
 	<div class="form-group">

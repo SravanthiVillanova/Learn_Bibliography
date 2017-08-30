@@ -15,6 +15,7 @@ if ($request->getqueryParams('id') !== null) {
     $name = $row['name'];
 }
 ?>
+<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
     <form class="form-horizontal" method="post" action="<?= $this->url('manage_publisher') ?>">
         <input type="hidden" name="action" value="<?php echo $action; ?>">
@@ -22,7 +23,7 @@ if ($request->getqueryParams('id') !== null) {
         <div class="form-group">   
             <label class="col-xs-2 control-label">Name: </label>
             <div class="col-xs-7">    
-                <input type="text" class="form-control" name="publisher_newname" id="newpublishername" value="<?= $name ?>" />
+                <input type="text" class="form-control" name="publisher_newname" id="newpublishername" value="<?= $escaper->escapeHtml($name) ?>" />
             </div>
         </div>
         <div class="form-group">

@@ -16,6 +16,7 @@ if ($request->getqueryParams('id') !== null) {
     $type = $row['type'];
 }
 ?>
+<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
     <form class="form-horizontal" method="post" action="<?= $this->url('manage_agenttype') ?>">
         <input type="hidden" name="action" value="<?= trim($action) ?>">
@@ -23,7 +24,7 @@ if ($request->getqueryParams('id') !== null) {
         <div class="form-group">   
             <label class="col-xs-2 control-label">Type: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_agenttype" id="editagenttype" value="<?= trim($type) ?>" />
+                <input type="text" class="form-control" name="edit_agenttype" id="editagenttype" value="<?= $escaper->escapeHtml(trim($type)) ?>" />
             </div>
         </div>
         <div class="form-group">

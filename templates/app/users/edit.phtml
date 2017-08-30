@@ -38,6 +38,7 @@ if ($request->getqueryParams('id') !== null) {
         $level = "User";
 }
 ?>
+<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
     <form class="form-horizontal" method="post" action="<?= $this->url('manage_users') ?>">
         <input type="hidden" name="action" value="<?= trim($action) ?>">
@@ -45,7 +46,7 @@ if ($request->getqueryParams('id') !== null) {
         <div class="form-group">
             <label class="col-xs-4 control-label">Name: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edituser_name" id="username" value="<?= $name ?>"/>
+                <input type="text" class="form-control" name="edituser_name" id="username" value="<?= $escaper->escapeHtml($name) ?>"/>
             </div>
         </div>
         <div class="form-group">  
@@ -67,7 +68,7 @@ if ($request->getqueryParams('id') !== null) {
         <div class="form-group">
             <label class="col-xs-4 control-label">Username: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_username" id="edit_username" required="true" value="<?= $username ?>"/>
+                <input type="text" class="form-control" name="edit_username" id="edit_username" required="true" value="<?= $escaper->escapeHtml($username) ?>"/>
             </div>
         </div>
         <div class="form-group">

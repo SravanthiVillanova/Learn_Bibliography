@@ -17,6 +17,7 @@ if ($request->getqueryParams('id') !== null) {
     $val     = $row['value'];
 }
 ?>
+<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
 <form class="form-horizontal" method="post" action="<?=$this->url('manage_attribute_options')?><?= '?id=' . $wkat_id ?>">
 	<input type="hidden" name="action" value="<?=trim($action)?>">
@@ -24,12 +25,12 @@ if ($request->getqueryParams('id') !== null) {
 	<div class="form-group">   
 		<label class="col-xs-2 control-label">Option: </label>
 		<div class="col-xs-7">
-			<input type="text" class="form-control" name="edit_option" id="editoption" value="<?=$title?>" />
+			<input type="text" class="form-control" name="edit_option" id="editoption" value="<?=$escaper->escapeHtml($title)?>" />
 		</div>
 		<br /> <br />
 		<label class="col-xs-2 control-label">Type: </label>
 		<div class="col-xs-7">
-			<input type="text" class="form-control" name="edit_value" id="editvalue" value="<?=$val?>" />
+			<input type="text" class="form-control" name="edit_value" id="editvalue" value="<?=$escaper->escapeHtml($val)?>" />
 		</div>
 	</div>
 	<div class="form-group">

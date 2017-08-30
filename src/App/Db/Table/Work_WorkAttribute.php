@@ -214,4 +214,20 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 
         return $output;
     }
+
+    /**
+     * Find work attribute record for work
+     *
+     * @param Integer $wk_id   work id
+     * @param Integer $wkat_id work id
+     *
+     * @return Array $row
+     */
+	public function getRecord($wk_id,$wkat_id)
+	{
+        $rowset = $this->select(array('work_id' => $wk_id,'workattribute_id' => $wkat_id));
+        $row = $rowset->current();
+
+        return $row;
+	}
 }

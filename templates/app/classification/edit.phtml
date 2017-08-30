@@ -22,7 +22,7 @@ if ($request->getqueryParams('id') !== null) {
     $text_it = $row['text_it'];
 }
 ?>
-
+<?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
     <form class="form-horizontal" method="post" action="<?= $this->url('manage_classification') ?>">
         <input type="hidden" name="action" value="<?= trim($action) ?>">
@@ -30,43 +30,43 @@ if ($request->getqueryParams('id') !== null) {
         <div class="form-group">
             <label class="col-xs-4 control-label">Sort Order: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_sortorder" id="editsortorder" value="<?= trim($sort_order) ?>" />
+                <input type="text" class="form-control" name="edit_sortorder" id="editsortorder" value="<?= $escaper->escapeHtml(trim($sort_order)) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-4 control-label">English Title: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_texten" id="edittexten" value="<?= trim($text_en) ?>" />
+                <input type="text" class="form-control" name="edit_texten" id="edittexten" value="<?= $escaper->escapeHtml(trim($text_en)) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-4 control-label">French Title: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_textfr" id="edittextfr" value="<?= trim($text_fr) ?>" />
+                <input type="text" class="form-control" name="edit_textfr" id="edittextfr" value="<?= $escaper->escapeHtml(trim($text_fr)) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-4 control-label">German Title: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_textde" id="edittextde" value="<?= trim($text_de) ?>" />
+                <input type="text" class="form-control" name="edit_textde" id="edittextde" value="<?= $escaper->escapeHtml(trim($text_de)) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-4 control-label">Dutch Title: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_textnl" id="edittextnl" value="<?= trim($text_nl) ?>" />
+                <input type="text" class="form-control" name="edit_textnl" id="edittextnl" value="<?= $escaper->escapeHtml(trim($text_nl)) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-4 control-label">Spanish Title: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_textes" id="edittextes" value="<?= trim($text_es) ?>" />
+                <input type="text" class="form-control" name="edit_textes" id="edittextes" value="<?= $escaper->escapeHtml(trim($text_es)) ?>" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-xs-4 control-label">Italian Title: </label>
             <div class="col-xs-7">
-                <input type="text" class="form-control" name="edit_textit" id="edittextit" value="<?= trim($text_it) ?>" />
+                <input type="text" class="form-control" name="edit_textit" id="edittextit" value="<?= $escaper->escapeHtml(trim($text_it)) ?>" />
             </div>
         </div>
         <div class="form-group">

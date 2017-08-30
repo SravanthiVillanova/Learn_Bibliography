@@ -16,8 +16,7 @@ if ($request->getqueryParams('id') !== null) {
     $wk_row  = $table->findRecordById($id);
     $type_id = $wk_row['type_id'];
     $status  = $wk_row['status'];      
-
-    if ($status != 1) {
+    //if ($status != 1) {
         //fetch worktype based on id
         $table    = new \App\Db\Table\WorkType($adapter);
         $wk_types = $table->findRecordById($type_id);
@@ -45,7 +44,14 @@ if ($request->getqueryParams('id') !== null) {
         $table    = new \App\Db\Table\Work_Folder($this->adapter);
         $wkfl_row = $table->findRecordsByWorkId($id);    
 
-    }
+        //fetch publishers attached to work
+        $table = new \App\Db\Table\WorkPublisher($this->adapter);
+        $pub_rows = $table->findRecordByWorkId($id);
+
+		//fetch agents attached to work
+		$table = new \App\Db\Table\WorkAgent($this->adapter);
+		$ag_rows = $table->findRecordByWorkId($id);
+    //}
 }
 $url_components = parse_url($this->serverUrl());
 $url_host = $url_components['scheme'] . '://' . $url_components['host'];
@@ -275,7 +281,6 @@ function bindSourceClassification(that,context)
 	var to_add_row = $(that).closest("tr");
 	//to_add_row.children('td',context).children('select',context).eq(0).css('background-color','#8ec252');
 	fl_changed = $(that).val();
-
 	var no_of_fl_parent = to_add_row.find('.select_source_fl',context).length;
 	for(var i = 0;i < no_of_fl_parent; i++)
 	{
@@ -299,7 +304,6 @@ function bindSourceClassification(that,context)
 	
 	//no_of_fl_parent = $('.select_source_fl',context).length;
 	no_of_fl_parent = to_add_row.find('.select_source_fl',context).length;
-
 	$.ajax({
 		method: 'post',
 		//url: 'http://localhost<?=$this->url('get_work_details')?>',
@@ -466,7 +470,6 @@ $(document).ready(function () {
 			
 			//no_of_fl_parent = $('.select_source_fl').length;
 			no_of_fl_parent = to_add_row.find('.select_source_fl').length;
-
 			$.ajax({
 				method: 'post',
 				//url: 'http://localhost<?=$this->url('get_work_details')?>',
@@ -532,7 +535,168 @@ $(document).ready(function () {
 });
 </script>
 <?php
-	if($status != 1)
+    $usr = $this->isUser()->getUserType();
+	$escaper = new Zend\Escaper\Escaper('utf-8');
+    if (($status == 1) && ($usr['level'] == 'User')) {
+        echo 'This work has been completed, you do not have access to edit this.';
+	?>
+	    	    <div style="float: left; margin: 20px 5px 0px 5px;">
+        <table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">
+            <tr>
+            <th align="right">Title: </th>
+            <td><?php echo $escaper->escapeHtml($wk_row['title']); ?></td>
+            </tr>
+            <tr>
+            <th align="right">SubTitle: </th>
+            <td><?php echo $escaper->escapeHtml($wk_row['subtitle']); ?></td>
+            </tr>
+            <tr>
+            <th align="right">Parallel Title: </th>
+            <td><?php echo $escaper->escapeHtml($wk_row['paralleltitle']); ?></td>
+            </tr>
+            <tr>
+            <th align="right">Description: </th>
+            <td><?php echo $escaper->escapeHtml($wk_row['description']); ?></textarea></td>
+            </tr>
+            <tr>
+            <th align="right" valign="top">Agent: </th>
+            <td>
+                <table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">
+                <tr bgcolor="#CCCCCC" align="left">
+                <th>Agent Type</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Alternate Name</th>
+                <th>Organization Name</th>
+                </tr>
+                <?php
+                //fetch agents attached to work
+                //$table = new \App\Db\Table\WorkAgent($this->adapter);
+                //$ag_rows = $table->findRecordByWorkId($id);
+                if(count($ag_rows) > 0)
+                {
+                    for($i = 0;$i < count($ag_rows);$i++)
+                    {
+				?>
+                        <tr>
+                        <td width="100" style="border-bottom: solid 1px #CCCCCC;"><?php echo $escaper->escapeHtml($ag_rows[$i]['type']); ?></td>
+                        <td width="110" style="border-bottom: solid 1px #CCCCCC;"><?php echo $escaper->escapeHtml($ag_rows[$i]['fname']); ?></td>
+                        <td width="110" style="border-bottom: solid 1px #CCCCCC;"><?php echo $escaper->escapeHtml($ag_rows[$i]['lname']); ?></td>
+                        <td width="130" style="border-bottom: solid 1px #CCCCCC;"><?php echo $escaper->escapeHtml($ag_rows[$i]['alternate_name']); ?></td>
+                        <td width="150" style="border-bottom: solid 1px #CCCCCC;"><?php echo $escaper->escapeHtml($ag_rows[$i]['organization_name']); ?></td>
+                        </tr>
+			   <?php
+					}
+				}
+				?>
+               </table>
+           </td>
+           </tr>
+            <tr>
+            <th align="right" valign="top">Publisher: </th>
+            <td>
+                <table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">
+                <tr bgcolor="#CCCCCC" align="left">
+                <th>Publisher</th>
+                <th>Year From</th>
+                <th>Year To</th>          
+                <th>Location</th>
+                </tr>
+                <?php
+		        if(count($pub_rows) != 0)
+		        {
+			        for($i = 0;$i < count($pub_rows);$i++)
+			        {
+		?>
+                        <tr>
+                        <td width="100" style="border-bottom: solid 1px #CCCCCC;"><?php echo $escaper->escapeHtml($pub_rows[$i]['name']); ?></td>
+                        <td width="110" style="border-bottom: solid 1px #CCCCCC;"><?php echo $escaper->escapeHtml($pub_rows[$i]['publish_year']); ?></td>
+                        <td width="110" style="border-bottom: solid 1px #CCCCCC;"><?php echo $escaper->escapeHtml($pub_rows[$i]['publish_year_end']); ?></td>
+                        <td width="130" style="border-bottom: solid 1px #CCCCCC;"><?php echo $escaper->escapeHtml($pub_rows[$i]['location']); ?></td>
+                        </tr>
+			   <?php
+					}
+				}
+				?>
+                </table>
+            </td>
+            </tr>
+            <tr>
+            <th align="right" valign="top">Subject Tree: </th>
+			<td>
+                <table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">
+            <?php
+				if(count($wkfl_row) >= 1)
+				{
+					$wkfl_row = array_reverse($wkfl_row);
+					foreach($wkfl_row as $row):
+				?>
+				        <tr>
+						<td>
+				<?php
+						$table = new \App\Db\Table\Folder($this->adapter);
+						$arr_fl = $table->getParentChain($row['folder_id']);
+						for($i = 0; $i < count($arr_fl); $i++)
+						{
+							$table = new \App\Db\Table\Folder($this->adapter);
+							$fl = $table->findRecordById($arr_fl[$i]);
+							echo $fl['text_fr'] . '>';
+						}
+				?>
+                        </td>
+				        </tr>
+				<?php
+					endforeach;
+				}
+            ?>
+                </table>
+			</td>
+			</tr>
+            <tr>
+            <th align="right">Type: </th>
+            <td><?php echo $wk_type; ?></td>
+            </tr>
+			<tr>
+			<?php
+			   $table = new \App\Db\Table\WorkAttribute($this->adapter);
+               $pg_wkt = $table->getAttributesForWorkType($type_id);
+               $itemsCount = $pg_wkt->getTotalItemCount();
+               $pg_wkt->setItemCountPerPage($itemsCount);
+               foreach ($pg_wkt as $row) :
+		   ?>
+		           <tr>
+				   <th align="right"><?php echo $row['field'] . ':'; ?></th>
+				   <?php
+				   $table = new \App\Db\Table\Work_WorkAttribute($this->adapter);
+				   $rec = $table->getRecord($id,$row['id']);
+				   if(count($rec) >= 1)
+				   {
+					   if($row['type'] == 'Select')
+					   {
+						  $table = new \App\Db\Table\WorkAttribute_Option($this->adapter);
+				          $rc = $table->findRecordById($rec['value']); 
+				   ?>
+				          <td><?php echo $rc['title']; ?></td>
+				   <?php
+					   }
+					   else
+					   {
+				   ?>
+				       <td><?php echo $rec['value']; ?></td>
+				   <?php
+				       }
+				   }
+				   ?>
+				   </tr>
+	       <?php
+               endforeach;
+			?>
+			</tr>
+        </table>
+		</div>
+	<?php
+	}
+	else
 	{
 ?>
 <div class="col-md-7">
@@ -567,38 +731,38 @@ $(document).ready(function () {
 		<div class="form-group required">
 			<label class="col-xs-2 control-label">Title: </label>
 			<div class="col-xs-10">
-				<input type="text" class="form-control" name="edit_worktitle" id="editworktitle" required="true" value="<?=$wk_row['title']?>"/>
+				<input type="text" class="form-control" name="edit_worktitle" id="editworktitle" required="true" value="<?=$escaper->escapeHtml($wk_row['title'])?>"/>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-xs-2 control-label">Sub Title: </label>
 			<div class="col-xs-10">
-				<input type="text" class="form-control" name="edit_worksubtitle" id="editworksubtitle" value="<?=$wk_row['subtitle']?>"/>
+				<input type="text" class="form-control" name="edit_worksubtitle" id="editworksubtitle" value="<?=$escaper->escapeHtml($wk_row['subtitle'])?>"/>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-xs-2 control-label">Parallel Title: </label>
 			<div class="col-xs-10">
-				<input type="text" class="form-control" name="edit_workparalleltitle" id="editworkparalleltitle" value="<?=$wk_row['paralleltitle']?>"/>
+				<input type="text" class="form-control" name="edit_workparalleltitle" id="editworkparalleltitle" value="<?=$escaper->escapeHtml($wk_row['paralleltitle'])?>"/>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-xs-2 control-label">Description: </label>
 			<div class="col-xs-10">
-				<textarea class="form-control" placeholder="Message" name="description" id="description"><?php echo $wk_row['description']; ?></textarea>
+				<textarea class="form-control" placeholder="Message" name="description" id="description"><?php echo $escaper->escapeHtml($wk_row['description']); ?></textarea>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-xs-2 control-label">Type: </label>
 			<div class="col-xs-10">
 				<select class="form-control" name="edit_work_type" id="edit_work_type" required="true">
-				<option value="<?=$wk_row['type_id']?>"><?php echo $wk_type; ?></option>					
+				<option value="<?=$wk_row['type_id']?>"><?php echo $escaper->escapeHtml($wk_type); ?></option>					
 				<?php
 				foreach($paginator as $row) :
 					if($row['type'] != $wk_type)
 					{
 				?>
-						<option value="<?=$row['id']?>"><?php echo $row['type']; ?></option>							
+						<option value="<?=$row['id']?>"><?php echo $escaper->escapeHtml($row['type']); ?></option>							
 				<?php 
 					}
 				endforeach; 
@@ -619,7 +783,9 @@ $(document).ready(function () {
 					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="00" <?php echo (is_null($status))?'checked':'' ?>>In Progress</label>
 					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="0" <?php echo ($status === 0)?'checked':'' ?>>Pending Review</label>
 					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="2" <?php echo ($status == 2)?'checked':'' ?>>Unseen Source Doc</label>
+                    <?php if ($usr['level'] != 'User') { ?>
 					<label class="radio"><input type="radio" id="editworkstatus" name="edit_workstatus" value="1" <?php echo ($status == 1)?'checked':'' ?>>Complete</label>
+					<?php } ?>
 				</div>
 			</div>
 		</div>		 
@@ -728,11 +894,6 @@ $(document).ready(function () {
 		</thead>
 		<tbody>
 		<?php
-		//fetch publishers attached to work
-		$table = new \App\Db\Table\WorkPublisher($this->adapter);
-		$pub_rows = $table->findRecordByWorkId($id);
-		//$pub_rows = $table->findWorkPubRecords($id);
-
 		if(count($pub_rows) != 0)
 		{
 			for($i = 0;$i < count($pub_rows);$i++)
@@ -818,12 +979,8 @@ $(document).ready(function () {
 		  <th>Organization Name</th>
           <th>Remove</th>
 		</thead>
-		<tbody>
-		
+		<tbody>	
 		<?php
-		//fetch agents attached to work
-		$table = new \App\Db\Table\WorkAgent($this->adapter);
-		$ag_rows = $table->findRecordByWorkId($id);
 		if(count($ag_rows) > 0)
 		{
 			for($i = 0;$i < count($ag_rows);$i++)
@@ -992,38 +1149,29 @@ $(document).ready(function () {
 		{
 			var title = "";
 			<?php
-			//fetch worktype values
-			/*$table = new \App\Db\Table\Work_WorkAttribute($adapter);
-			$attrs = $table->findWorkAttributeTypesByWorkId($id);
-			$wktyp_attrs = json_decode($attrs, true);*/
 			for($i = 0; $i < count($wktyp_attrs); $i++)
 			{
 			?>				
 			<?php
-				if($wktyp_attrs[$i]['type'] == 'Select')
+				if(strtolower($wktyp_attrs[$i]['type']) == strtolower('select'))
 				{
-					//if(preg_match('/(?<name>[A-Za-z]+)\:(?<digit>\d)/',$wktyp_attrs[$i]['field'] . ":" . $wktyp_attrs[$i]['workattribute_id'],$matches))
-					//{
 						$table = new \App\Db\Table\WorkAttribute_Option($adapter);
-						$wkopt = $table->getOptionTitle($wktyp_attrs[$i]['value'], $wktyp_attrs[$i]['workattribute_id']);
+						//$wkopt = (array)$table->getOptionTitle($wktyp_attrs[$i]['value'], $wktyp_attrs[$i]['workattribute_id']);
+						$wkopt = $table->findRecordById($wktyp_attrs[$i]['value']); 
 			?>
 						title = <?php echo json_encode($wkopt['title']); ?>;
 						opt_id = <?php echo json_encode($wkopt['id']); ?>;
-
 						var opt = <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['workattribute_id']); ?>;
 						sel_opt = $('input[name="' + opt + '"]');
 						$('input[name="' + opt + '"]').attr('name', sel_opt.attr('name') + 'optid,' + opt_id);
 						sel_opt.val(title);
-
 			<?php
-					//}
 				}
 				else if($wktyp_attrs[$i]['type'] == 'Textarea')
 				{
 				?>
-					title =  <?php echo json_encode($wktyp_attrs[$i]['value']); ?>;
+					title =  <?php echo json_encode($escaper->escapeHtml($wktyp_attrs[$i]['value'])); ?>;
 					$('textarea[name="' + <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').val(title);
-
 				<?php					
 				}
 				else if($wktyp_attrs[$i]['type'] == 'RadioButton')
@@ -1039,9 +1187,6 @@ $(document).ready(function () {
 						//$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').css("background","#8ec252");
 						$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').prop("checked",true);
 					}
-					//if(title == true)
-						
-					//$('textarea[name="' + <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['field']); ?> + '"]').val(title);
 				<?php
 				}
 				else
@@ -1171,10 +1316,8 @@ $(document).ready(function () {
 				},
 				error: function (data) { 
 					$("#Citation", document).html('<p>No Options</p>');
-					//alert('error');
 				}
 			});
-			//setValues(document);
 			return false;
 		});
 		</script>
@@ -1190,9 +1333,5 @@ $(document).ready(function () {
 </form>
 </div>
 <?php
-	}
-	else
-	{
-		echo "Completed works cannot be edited.";
 	}
 ?>
