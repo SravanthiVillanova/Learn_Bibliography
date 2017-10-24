@@ -89,23 +89,23 @@ class ManageWorkAction
      *
      * @return Array
      */
-    protected function workLetters($params)
+    protected function workLetters($params,$order)
     {
         if (isset($params['action'])) {
             //review records
             if ($params['action'] == 'review') {
                 $table = new \App\Db\Table\Work($this->adapter);
 
-                return $table->displayReviewRecordsByLetter($params['letter']);
+                return $table->displayReviewRecordsByLetter($params['letter'],$order);
             } elseif ($params['action'] == 'classify') {
                 //classify records
                 $table = new \App\Db\Table\Work($this->adapter);
 
-                return $table->displayClassifyRecordsByLetter($params['letter']);
+                return $table->displayClassifyRecordsByLetter($params['letter'],$order);
             } else {
                 $table = new \App\Db\Table\Work($this->adapter);
 
-                return $table->displayRecordsByName($params['letter']);
+                return $table->displayRecordsByName($params['letter'],$order);
             }
         }
     }
@@ -132,19 +132,19 @@ class ManageWorkAction
      *
      * @return paginator $paginator
      */
-    protected function workReviewClassify($params)
+    protected function workReviewClassify($params,$order)
     {
         //Display works which need review
         if ($params['action'] == 'review') {
             $table = new \App\Db\Table\Work($this->adapter);
-            $paginator = $table->fetchReviewRecords();
+            $paginator = $table->fetchReviewRecords($order);
 
             return $paginator;
         }
         //Display works which are to be classified under folders
         if ($params['action'] == 'classify') {
             $table = new \App\Db\Table\Work($this->adapter);
-            $paginator = $table->fetchClassifyRecords();
+            $paginator = $table->fetchClassifyRecords($order);
 
             return $paginator;
         }
@@ -387,16 +387,40 @@ class ManageWorkAction
      */  
     protected function getPaginator($params, $post)
     {
+		$order = "";
+		//order by columns
+		if (!empty($params['orderBy'])) {
+			/*$isAsc = isset($params['sort_ord'])? (bool) $params['sort_ord']: 1;
+			echo "iasAsc is " . $isAsc;
+			//$isAsc = isset($params['sort_ord'])? "ASC":"DESC";
+			if ($isAsc) {
+			    $sort_ord = "ASC";
+			} else {
+				$sort_ord = "DESC";
+			}*/
+			$sort_ord = $params['sort_ord'];
+			$ord_by = $params['orderBy'];
+			
+			if($ord_by == "type") {
+				$ord_by = "type_id";
+			} elseif($ord_by == "created") {
+				$ord_by = "create_date";
+			} elseif($ord_by == "modified") {
+				$ord_by = "modify_date";
+			}
+			
+			$order = $ord_by . " " . $sort_ord;
+		}
         // search by letter
         if (!empty($params['letter'])) {
-            return ($this->workLetters($params));
+            return ($this->workLetters($params,$order));
         }
         // Work Lookup
         if (!empty($params['find_worktitle'])) {
             return($this->findWork($params));
         }
         if (!empty($params['action'])) {
-            return($this->workReviewClassify($params));
+            return($this->workReviewClassify($params,$order));
         }
         if (!empty($post['action'])) {
             //add edit delete work
@@ -411,9 +435,14 @@ class ManageWorkAction
                 return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
             }
         }
+		
+		//order by columns
+		if (isset($order) && $order !== '') {
+			$table = new \App\Db\Table\Work($this->adapter);
+            return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table, null, $order, null, null));
+		}
         // default: blank/missing search
         $table = new \App\Db\Table\Work($this->adapter);
-
         return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
     }
 
@@ -427,28 +456,41 @@ class ManageWorkAction
     protected function getSearchParams($query)
     {
         $searchParams = [];
+		$ord = "";
+		if (isset($query['orderBy'])) {
+		    $ord = 'orderBy=' . urlencode($query['orderBy']) . '&sort_ord=' . urlencode($query['sort_ord']);
+		}
         if (!empty($query['find_worktitle'])) {
             $searchParams[] = 'find_worktitle='.urlencode($query['find_worktitle']);
         }
         if (!empty($query['letter']) && $query['action'] == 'alphasearch') {
-            $searchParams[] = 'letter='.urlencode($query['letter']);
+			$searchParams[] = 'letter='.urlencode($query['letter']).'&action='.urlencode($query['action']). '&' . $ord;
+			/*if (isset($query['orderBy'])) {
+				$searchParams[] = 'letter='.urlencode($query['letter']).'&action='.urlencode($query['action']).'&orderBy='.urlencode($query['orderBy']).'&sort_ord='.urlencode($query['sort_ord']);
+			} else {
+                $searchParams[] = 'letter='.urlencode($query['letter']).'&action='.urlencode($query['action']);
+			}*/
         }
         if (isset($query['action'])) {
             if ($query['action'] == 'review') {
                 if (!empty($query['letter'])) {
-                    $searchParams[] = 'action='.urlencode($query['action']).'&letter='.urlencode($query['letter']);
+                    $searchParams[] = 'action='.urlencode($query['action']).'&letter='.urlencode($query['letter']). '&' . $ord;
                 } else {
-                    $searchParams[] = 'action='.urlencode($query['action']);
+                    $searchParams[] = 'action='.urlencode($query['action']). '&' . $ord;
                 }
             }
             if ($query['action'] == 'classify') {
                 if (!empty($query['letter'])) {
-                    $searchParams[] = 'action='.urlencode($query['action']).'&letter='.urlencode($query['letter']);
+                    $searchParams[] = 'action='.urlencode($query['action']).'&letter='.urlencode($query['letter']). '&' . $ord;
                 } else {
-                    $searchParams[] = 'action='.urlencode($query['action']);
+                    $searchParams[] = 'action='.urlencode($query['action']). '&' . $ord;
                 }
             }
         }
+		if (isset($query['orderBy']) && !isset($query['action'])) {
+			$searchParams[] = $ord;
+			//'orderBy=' . urlencode($query['orderBy']) . '&sort_ord=' . urlencode($query['sort_ord']);
+		}
         return $searchParams;
     }
     
@@ -463,7 +505,7 @@ class ManageWorkAction
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
-        $simpleAction = new \App\Action\SimpleRenderAction('app::agent::manage_agent', $this->router, $this->template, $this->adapter);
+        $simpleAction = new \App\Action\SimpleRenderAction('app::work::manage_work', $this->router, $this->template, $this->adapter);
         list($query,$post) = $simpleAction->getQueryAndPost($request);
 
         if (isset($query['action'])) {
@@ -485,7 +527,7 @@ class ManageWorkAction
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(20);
 
-        $simpleAction = new \App\Action\SimpleRenderAction('app::agent::manage_agent', $this->router, $this->template, $this->adapter);
+        $simpleAction = new \App\Action\SimpleRenderAction('app::work::manage_work', $this->router, $this->template, $this->adapter);
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
         
         $searchParams = $this->getSearchParams($query);
@@ -534,7 +576,7 @@ class ManageWorkAction
                 );
             }
             if ($query['action'] == 'alphasearch') {
-                //echo "entered else if";
+                //echo "entered else if-alpha";
                 return new HtmlResponse(
                     $this->template->render(
                         'app::work::manage_work',

@@ -69,7 +69,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function insertRecords($fname, $lname, $altname, $orgname)
+    public function insertRecords($fname, $lname, $altname, $orgname, $mail)
     {
         $this->insert(
             [
@@ -77,6 +77,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
             'lname' => $lname,
             'alternate_name' => $altname,
             'organization_name' => $orgname,
+			'email' => $mail,
             ]
         );
     }
@@ -92,7 +93,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function updateRecord($id, $fname, $lname, $altname, $orgname)
+    public function updateRecord($id, $fname, $lname, $altname, $orgname, $mail)
     {
         $this->update(
             [
@@ -100,6 +101,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
                 'lname' => $lname,
                 'alternate_name' => $altname,
                 'organization_name' => $orgname,
+				'email' => $mail,
             ],
             ['id' => $id]
         );

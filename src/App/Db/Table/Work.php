@@ -172,10 +172,14 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Paginator $paginatorAdapter work records
      */
-    public function displayRecordsByName($letter)
+    public function displayRecordsByName($letter,$order)
     {
         $select = $this->sql->select();
         $select->where->like('title', $letter.'%');
+		if (isset($order) && $order !== '') {
+		    $select->order($order);
+		}
+		
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -188,11 +192,15 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Paginator $paginatorAdapter work records
      */
-    public function displayReviewRecordsByLetter($letter)
+    public function displayReviewRecordsByLetter($letter,$order)
     {
         $select = $this->sql->select();
         $select->where->like('title', $letter.'%');
         $select->where->equalTo('status', 0);
+		if (isset($order) && $order !== '') {
+		    $select->order($order);
+		}
+		
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -205,7 +213,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Paginator $paginatorAdapter work records
      */
-    public function displayClassifyRecordsByLetter($letter)
+    public function displayClassifyRecordsByLetter($letter,$order)
     {
         $wid = new Work_Folder($this->adapter);
         $subselect = $wid->getWorkFolder();
@@ -213,7 +221,10 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         $select = $this->sql->select();
         $select->where->notIn('id', $subselect);
         $select->where->like('title', $letter.'%');
-
+        if (isset($order) && $order !== '') {
+		    $select->order($order);
+		}
+		
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -224,9 +235,14 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Paginator $paginatorAdapter work records
      */
-    public function fetchReviewRecords()
+    public function fetchReviewRecords($order)
     {
         $select = $this->sql->select()->where(['status' => 0]);
+
+		if (isset($order) && $order !== '') {
+		    $select->order($order);
+		}
+
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -237,13 +253,17 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Paginator $paginatorAdapter work records
      */
-    public function fetchClassifyRecords()
+    public function fetchClassifyRecords($order)
     {
         $wid = new Work_Folder($this->adapter);
         $subselect = $wid->getWorkFolder();
 
         $select = $this->sql->select();
         $select->where->notIn('id', $subselect);
+
+		if (isset($order) && $order !== '') {
+		    $select->order($order);
+		}
 
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 

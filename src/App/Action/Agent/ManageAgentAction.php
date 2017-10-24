@@ -155,7 +155,7 @@ class ManageAgentAction
                 $table = new \App\Db\Table\Agent($this->adapter);
                 $table->insertRecords(
                     $post['new_agentfirstname'], $post['new_agentlastname'],
-                    $post['new_agentaltname'], $post['new_agentorgname']
+                    $post['new_agentaltname'], $post['new_agentorgname'], $post['new_agentemail']
                 );
             }
         }
@@ -166,7 +166,7 @@ class ManageAgentAction
                     $table = new \App\Db\Table\Agent($this->adapter);
                     $table->updateRecord(
                         $post['id'], $post['edit_agentfirstname'], $post['edit_agentlastname'],
-                        $post['edit_agentaltname'], $post['edit_agentorgname']
+                        $post['edit_agentaltname'], $post['edit_agentorgname'], $post['edit_agentemail']
                     );
                 }
             }
