@@ -26,6 +26,7 @@
  * @link     https:// Main Page
  */
 namespace App\Entity;
+
 /**
  * Interface Definition for AuthUserInterface.
  *

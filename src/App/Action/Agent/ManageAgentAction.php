@@ -51,7 +51,7 @@ class ManageAgentAction
      * Router\RouterInterface
      *
      * @var $router
-     */    
+     */
     protected $router;
 
     /**
@@ -87,7 +87,7 @@ class ManageAgentAction
      *
      * @param Array $params url query parameters
      *
-     * @return Array 
+     * @return Array
      */
     protected function searchAgent($params)
     {
@@ -280,7 +280,7 @@ class ManageAgentAction
         $characs = $table->findInitialLetter();
 
         $simpleAction = new \App\Action\SimpleRenderAction('app::agent::manage_agent', $this->router, $this->template, $this->adapter);
-        list($query,$post) = $simpleAction->getQueryAndPost($request);
+        list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(7);

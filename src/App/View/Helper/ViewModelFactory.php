@@ -28,6 +28,7 @@
 namespace App\View\Helper;
 
 use Zend\View\Helper\ViewModel;
+
 /**
  * Class Definition for View Model Factory.
  *

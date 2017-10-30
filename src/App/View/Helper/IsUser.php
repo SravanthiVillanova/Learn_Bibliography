@@ -28,6 +28,7 @@
 namespace App\View\Helper;
 
 use Interop\Container\ContainerInterface;
+
 /**
  * Class Definition for IsUser
  *

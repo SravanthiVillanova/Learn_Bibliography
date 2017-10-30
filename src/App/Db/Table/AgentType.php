@@ -52,7 +52,7 @@ class AgentType extends \Zend\Db\TableGateway\TableGateway
      * AgentType constructor.
      *
      * @param Adapter $adapter for db connection
-     */ 
+     */
     public function __construct($adapter)
     {
         parent::__construct('agenttype', $adapter);

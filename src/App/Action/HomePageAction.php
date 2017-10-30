@@ -49,7 +49,7 @@ class HomePageAction
      * Router\RouterInterface
      *
      * @var $router
-     */    
+     */
     protected $router;
 
     /**

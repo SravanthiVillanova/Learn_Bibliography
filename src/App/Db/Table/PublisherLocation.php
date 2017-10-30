@@ -70,7 +70,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
         $select = $this->sql->select();
         // $select->columns(array('location'));
         $select->join(
-            'publisher', 'publisher_location.publisher_id = publisher.id', 
+            'publisher', 'publisher_location.publisher_id = publisher.id',
             array('name'), 'inner'
         );
         //$select->where->like('location', $location.'%');

@@ -28,6 +28,7 @@
 namespace App;
 
 use Zend\View\HelperPluginManager;
+
 /**
  * Class Definition for Form Helpers Middleware Factory.
  *

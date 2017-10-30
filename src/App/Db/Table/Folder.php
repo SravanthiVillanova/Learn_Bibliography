@@ -93,8 +93,8 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         fputs($file, $bom = (chr(0xEF).chr(0xBB).chr(0xBF)));
         foreach ($row as $t):
             $content = $t['id'].' '.$escaper->escapeHtml($t['text_fr']).' ';
-            fputcsv($file, array($content));
-            $fl->getDepth($t['id'], $file, $content);
+        fputcsv($file, array($content));
+        $fl->getDepth($t['id'], $file, $content);
         endforeach;
         fflush($file);
         fclose($file);

@@ -35,6 +35,7 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
+
 /**
  * Class Definition for Authentication Middleware.
  *
@@ -51,7 +52,7 @@ class AuthenticationMiddleware
      * Router\RouterInterface
      *
      * @var $router
-     */ 
+     */
     private $router;
 
     /**

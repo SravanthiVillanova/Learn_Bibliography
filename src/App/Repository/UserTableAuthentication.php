@@ -26,6 +26,7 @@
  * @link     https:// Main Page
  */
 namespace App\Repository;
+
 /**
  * Class Definition for User Table Authentication
  *

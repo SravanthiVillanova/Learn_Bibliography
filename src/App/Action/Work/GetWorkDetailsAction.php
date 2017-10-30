@@ -50,7 +50,7 @@ class GetWorkDetailsAction
      * Router\RouterInterface
      *
      * @var $router
-     */    
+     */
     protected $router;
 
     /**
@@ -99,9 +99,9 @@ class GetWorkDetailsAction
         endforeach;
         foreach ($pub_row as $row) :
             $table = new \App\Db\Table\WorkPublisher($this->adapter);
-            $wks = $table->findRecordByPublisherId($row['id']);
-            $no_wks = count($wks);
-            $no_of_wks[] = $no_wks;
+        $wks = $table->findRecordByPublisherId($row['id']);
+        $no_wks = count($wks);
+        $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_row[$i]['works'] = $no_of_wks[$i];
@@ -117,7 +117,7 @@ class GetWorkDetailsAction
      * @param Array $post contains posted elements of form
      *
      * @return string $output
-     */    
+     */
     protected function publisherIdLocs($post)
     {
         $pub_id = $post['publisher_Id_locs'];
@@ -130,9 +130,9 @@ class GetWorkDetailsAction
         }
         foreach ($pub_loc_rows as $row) :
             $table = new \App\Db\Table\WorkPublisher($this->adapter);
-            $wks = $table->findRecordByLocationId($row['id']);
-            $no_wks = count($wks);
-            $no_of_wks[] = $no_wks;
+        $wks = $table->findRecordByLocationId($row['id']);
+        $no_wks = count($wks);
+        $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_loc_rows[$i]['works'] = $no_of_wks[$i];
@@ -148,7 +148,7 @@ class GetWorkDetailsAction
      * @param Array $post contains posted elements of form
      *
      * @return string $output
-     */    
+     */
     protected function agName($post)
     {
         $no_of_wks = [];
@@ -157,9 +157,9 @@ class GetWorkDetailsAction
         $ag_row = $table->getLastNameLikeRecords($name);
         foreach ($ag_row as $row) :
             $table = new \App\Db\Table\WorkAgent($this->adapter);
-            $wks = $table->findRecordByAgentId($row['id']);
-            $no_wks = count($wks);
-            $no_of_wks[] = $no_wks;
+        $wks = $table->findRecordByAgentId($row['id']);
+        $no_wks = count($wks);
+        $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $ag_row[$i]['works'] = $no_of_wks[$i];
@@ -295,7 +295,7 @@ class GetWorkDetailsAction
      * @param Array $post contains posted elements of form
      *
      * @return string $output
-     */ 
+     */
     protected function agId($post)
     {
         $ag_id = $post['ag_id'];
@@ -339,6 +339,28 @@ class GetWorkDetailsAction
             return $rows;
         }
     }
+
+    /**
+     * Fetches work title
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
+    public function getParentLookup($post)
+    {
+        $lookup_title = $post['lookup_title'];
+        $table = new \App\Db\Table\Work($this->adapter);
+        $rows = $table->fetchParentLookup($lookup_title);
+        foreach ($rows as $i => $row) {
+            $rows[$i]['id'] = $row['id'];
+            $rows[$i]['label'] = $row['title'];
+            $rows[$i]['type'] = $row['type'];
+        }
+        $output = array('prnt_lookup' => $rows);
+        echo json_encode($output);
+        exit;
+    }
     
     /**
      * Action based on post parameter set.
@@ -378,6 +400,9 @@ class GetWorkDetailsAction
         }
         if (isset($post['ins_text'])) {
             $this->insText($post);
+        }
+        if (isset($post['lookup_title'])) {
+            $this->getParentLookup($post);
         }
     }
     

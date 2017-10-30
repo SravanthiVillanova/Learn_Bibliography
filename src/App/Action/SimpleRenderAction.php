@@ -50,7 +50,7 @@ class SimpleRenderAction
      * Router\RouterInterface
      *
      * @var $router
-     */    
+     */
     protected $router;
 
     /**
@@ -123,7 +123,7 @@ class SimpleRenderAction
      *
      * @return Array $pgs
      */
-    public function getNextPrevious($paginator,$query)
+    public function getNextPrevious($paginator, $query)
     {
         $countPages = $paginator->count();
 

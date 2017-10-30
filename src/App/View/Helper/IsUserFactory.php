@@ -26,6 +26,7 @@
  * @link     https:// Main Page
  */
 namespace App\View\Helper;
+
 /**
  * Class Definition for IsUser Factory
  *

@@ -51,7 +51,7 @@ class ManageClassificationAction
      * Router\RouterInterface
      *
      * @var $router
-     */    
+     */
     protected $router;
 
     /**
@@ -138,7 +138,7 @@ class ManageClassificationAction
      * @param Array $post contains posted elements of form
      *
      * @return empty
-     */   
+     */
     protected function doMove($post)
     {
         if ($post['submit_save'] == 'Save') {
@@ -278,7 +278,7 @@ class ManageClassificationAction
      * @param Array $query url query parameters
      *
      * @return Array                  $searchParams
-     */ 
+     */
     protected function getSearchParams($query)
     {
         $searchParams = [];

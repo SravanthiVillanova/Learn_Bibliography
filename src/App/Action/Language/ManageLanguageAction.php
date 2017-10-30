@@ -51,7 +51,7 @@ class ManageLanguageAction
      * Router\RouterInterface
      *
      * @var $router
-     */    
+     */
     protected $router;
 
     /**
@@ -166,7 +166,7 @@ class ManageLanguageAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $simpleAction = new \App\Action\SimpleRenderAction('app::language::manage_language', $this->router, $this->template, $this->adapter);
-        list($query,$post) = $simpleAction->getQueryAndPost($request);
+        list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(7);

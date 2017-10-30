@@ -28,6 +28,7 @@
 namespace App;
 
 use Slim\Flash\Messages;
+
 /**
  * Class Definition for Slim FlashMiddleware Factory.
  *

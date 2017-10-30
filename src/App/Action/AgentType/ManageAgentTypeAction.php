@@ -51,7 +51,7 @@ class ManageAgentTypeAction
      * Router\RouterInterface
      *
      * @var $router
-     */    
+     */
     protected $router;
 
     /**
@@ -130,7 +130,7 @@ class ManageAgentTypeAction
      * @param Array $post contains posted elements of form
      *
      * @return Paginator                  $paginator
-     */ 
+     */
     protected function getPaginator($post)
     {
         //edit, delete actions on agenttype
@@ -163,7 +163,7 @@ class ManageAgentTypeAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $simpleAction = new \App\Action\SimpleRenderAction('app::agenttype::manage_agenttype', $this->router, $this->template, $this->adapter);
-        list($query,$post) = $simpleAction->getQueryAndPost($request);
+        list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(7);

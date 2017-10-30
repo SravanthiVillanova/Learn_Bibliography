@@ -22,6 +22,8 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 ?>
 <script>
 	var ur = <?php echo json_encode($url_host); ?>;
+	//var ur = HOSTURL();
+	//console.log("ur is " + ur);
     function bindPublisherAutocomplete(context) {
         //publisher enable/disable fields
         $("#pubLocation", context).prop("disabled", "disabled");
@@ -179,11 +181,10 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 					$('#optionsLookup').on('shown.bs.modal', function() {
 						$('#lookupOption').focus()
 						$('.option_search').on('click', function(e) {
-							//console.log(attr_option_lookup);
+							console.log(attr_option_lookup);
 							//var attribute_Id = $(lookupBtn).prev().attr('id');
 							var attribute_Id = attr_option_lookup.attr('id');
 							var option = $('#lookupOption').val();
-							//console.log(attribute_Id);
 							$.ajax({
 								method: 'post',
 								//url: 'http://localhost<?= $this->url('get_work_details') ?>',
@@ -294,6 +295,68 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
         });
         return false;
     }
+
+	function bindParentWork(context)
+	{
+		$('.pr_work_results').html('');
+		$('#parent_title',context).focus()
+		   //.css('background', '#8ec252')
+		   $('.parent_lookup_search',context).on('click', function(e) {	
+		       //alert("parent lookup");
+			   var lookup_title = $('#parent_title',context).val();
+			   if (lookup_title != "") {
+			       //alert("value is " + lookup_title);
+				   $.ajax({
+                       method: 'post',
+                       //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+					   url: ur + '<?=$this->url('get_work_details')?>',
+                       data: {
+                           lookup_title: lookup_title
+                       },
+                       dataType: "json",
+                       cache: false,
+                       success: function(data) {
+					       if ((data.prnt_lookup.length) > 0) {
+                               $('#parent_title').val('');
+                               var prworks_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="prworks_result_table">' +
+                                                          '<tr><th>Work Title</th><th>Type</th></tr>';
+                               $.each(data.prnt_lookup, function (key, val) {
+                                   prworks_result_table += '<tr><input type="hidden" name="parent_work_id" id="parent_work_id" value="">' +
+                                                           '<td><a name="' + val.id + '" href="" class="prwork_link" value="' + val.title + '">' + 
+														   val.title + '</a></td><td>' + val.type + '</td></tr>';
+                               });
+                               prworks_result_table += '</table>';
+							   $('.pr_work_results').append(prworks_result_table);
+                           } else {
+                                 $('#parent_title',context).val('');
+								 $('.pr_work_results').append('<p>No records found</p>');
+                           }
+                        
+                       },
+                       error: function(data) {
+
+                       }
+                   });
+				   //$(context).off('click', 'prwork_link');
+				   $(context).on("click", ".prwork_link", function(e) {
+				       var pr_linkval = $(this).attr('name');
+					   var pr_labelval = $(this).attr('value');
+					   $('.pr_work_div', context).text(pr_labelval);
+					   $('#pr_work_lookup_id',context).val(pr_linkval);
+					   $('.pr_work_div', context).append('<button type="button" class="btn btn-default parent_Chng_Btn" name="parent_changeBtn" id="parent_changeBtn" ' +
+					                                     'data-toggle="modal" data-target="#parentLookup_modal">Change</button>')
+                       $('.pr_work_div', context).append('<button type="button" class="btn btn-default parent_Rmv_Btn" name="parent_removeBtn" ' + 
+					                                      'id="parent_removeBtn">Remove</button>')
+					   $('.pr_work_results').html('');
+					   $('.option_lookup_close').trigger('click');
+					       return false;
+			       });
+			   }
+			   return false;
+           });
+		   return false;
+	}
+	
     $(document).ready(function() {
         //Publisher
         bindPublisherAutocomplete(document);
@@ -444,17 +507,21 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
         });
        
 	   //Parent Lookup
-	  /* $(".parent_lookup").on('click', function(e) {
-	       //$("#parentLookup_modal").modal('show');
-           $('#parentLookup_modal').on('shown.bs.modal', function() {
-           });
-		   $("#parentLookup_modal").modal('show');
-		    //$('#parent_title').css('background', '#8ec252')
-		   $('.parent_lookup_search').on('click', function(e) {	
-		       alert("parent lookup");
-           });
-       });	*/	   
-
+       $('#parentLookup_modal').on('shown.bs.modal', function() {
+		   bindParentWork(document);
+		   return false;
+       });   
+       
+	   //Remove Parent Lookup
+	   $('.pr_work_div').on('click', '#parent_removeBtn', function() {
+		   alert("remove");
+           $('#pr_work_lookup_id').val('');
+		   $('.pr_work_div').html('');
+		   $('.pr_work_div').append('<button type="button" class="btn btn-default parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" ' +
+					                'data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>');
+		   return false;
+	   });
+	   
         $('#submit_save').on('click', function() {
            var no_of_rows = $('table[name="source_fl_table"]').find("tr").length;
             var arr = [];
@@ -544,7 +611,8 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 			</div>
 			<div class="form-group">
                 <label class="col-xs-2 control-label">Parent Work: </label>
-                <div class="col-xs-10">
+				<input type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="">
+                <div class="col-xs-10 pr_work_div">
                     <button type="button" class="btn btn-default parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" 
 					        data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>
                 </div>
@@ -568,7 +636,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                                     <button type="button" class="btn btn-primary ig parent_lookup_search" id="parentLookup_search">Search</button>
                                 </div>
                             </div>
-                            <div class="option_results ig">
+                            <div class="pr_work_results ig">
                             </div>
 						</div>
 						<div class="modal-footer ignore ig">
@@ -723,7 +791,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                              <div class="form-group ig">
                                 <label class="col-xs-2 control-label ig">Title: </label>
                                 <div class="col-xs-10 ig">
-                                    <input type="text" class="form-control ig parentTitleLookup" name="parent_title_Lookup" id="parentTitleLookup" />
+                                    <input type="text" class="form-control ig" name="lookup_Option" id="lookupOption" />
                                 </div>
                             </div>
                             <div class="form-group ig">

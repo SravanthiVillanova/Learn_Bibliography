@@ -209,7 +209,7 @@ class AttributesWorkTypeAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $simpleAction = new \App\Action\SimpleRenderAction('app::worktype::attributes_worktype', $this->router, $this->template, $this->adapter);
-        list($query,$post) = $simpleAction->getQueryAndPost($request);
+        list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(7);

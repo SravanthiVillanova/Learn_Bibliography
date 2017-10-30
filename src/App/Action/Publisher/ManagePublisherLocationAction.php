@@ -50,7 +50,7 @@ class ManagePublisherLocationAction
      * Router\RouterInterface
      *
      * @var $router
-     */ 
+     */
     protected $router;
 
     /**
@@ -130,7 +130,7 @@ class ManagePublisherLocationAction
      * @param Array $query url query parameters
      *
      * @return empty
-     */  
+     */
     protected function doAction($post, $query)
     {
         //add a new publisher
@@ -192,7 +192,7 @@ class ManagePublisherLocationAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
     {
         $simpleAction = new \App\Action\SimpleRenderAction('app::publisher::manage_publisherlocation', $this->router, $this->template, $this->adapter);
-        list($query,$post) = $simpleAction->getQueryAndPost($request);
+        list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(7);

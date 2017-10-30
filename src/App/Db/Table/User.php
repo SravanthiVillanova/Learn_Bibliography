@@ -48,7 +48,7 @@ class User extends \Zend\Db\TableGateway\TableGateway
     /**
      * Zend\Session
      *
-     * @var $session 
+     * @var $session
      */
     protected $session;
 

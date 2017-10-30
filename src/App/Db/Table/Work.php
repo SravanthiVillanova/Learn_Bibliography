@@ -172,14 +172,14 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Paginator $paginatorAdapter work records
      */
-    public function displayRecordsByName($letter,$order)
+    public function displayRecordsByName($letter, $order)
     {
         $select = $this->sql->select();
         $select->where->like('title', $letter.'%');
-		if (isset($order) && $order !== '') {
-		    $select->order($order);
-		}
-		
+        if (isset($order) && $order !== '') {
+            $select->order($order);
+        }
+        
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -192,15 +192,15 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Paginator $paginatorAdapter work records
      */
-    public function displayReviewRecordsByLetter($letter,$order)
+    public function displayReviewRecordsByLetter($letter, $order)
     {
         $select = $this->sql->select();
         $select->where->like('title', $letter.'%');
         $select->where->equalTo('status', 0);
-		if (isset($order) && $order !== '') {
-		    $select->order($order);
-		}
-		
+        if (isset($order) && $order !== '') {
+            $select->order($order);
+        }
+        
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -213,7 +213,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Paginator $paginatorAdapter work records
      */
-    public function displayClassifyRecordsByLetter($letter,$order)
+    public function displayClassifyRecordsByLetter($letter, $order)
     {
         $wid = new Work_Folder($this->adapter);
         $subselect = $wid->getWorkFolder();
@@ -222,9 +222,9 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         $select->where->notIn('id', $subselect);
         $select->where->like('title', $letter.'%');
         if (isset($order) && $order !== '') {
-		    $select->order($order);
-		}
-		
+            $select->order($order);
+        }
+        
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -239,9 +239,9 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select()->where(['status' => 0]);
 
-		if (isset($order) && $order !== '') {
-		    $select->order($order);
-		}
+        if (isset($order) && $order !== '') {
+            $select->order($order);
+        }
 
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
@@ -261,9 +261,9 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         $select = $this->sql->select();
         $select->where->notIn('id', $subselect);
 
-		if (isset($order) && $order !== '') {
-		    $select->order($order);
-		}
+        if (isset($order) && $order !== '') {
+            $select->order($order);
+        }
 
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
@@ -317,12 +317,31 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function insertRecords($type_id, $title, $subtitle, $paralleltitle, $description, $create_date, $create_user_id, $status, $pub_yrFrom)
+    public function insertRecords($pr_workid, $type_id, $title, $subtitle, $paralleltitle, $description, $create_date, $create_user_id, $status, $pub_yrFrom)
     {
         if ($status === '00') {
             $status = null;
         }
-        $this->insert(
+        if ($pr_workid !== -1) {
+            $this->insert(
+            [
+            'work_id' => $pr_workid,
+            'type_id' => $type_id,
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'paralleltitle' => $paralleltitle,
+            'description' => $description,
+            'create_date' => $create_date,
+            'create_user_id' => $create_user_id,
+            'modify_date' => '0000-00-00 00:00:00',
+            'modify_user_id' => null,
+            'status' => $status,
+            'publish_year' => $pub_yrFrom,
+            'publish_month' => null,
+            ]
+            );
+        } else {
+            $this->insert(
             [
             'work_id' => null,
             'type_id' => $type_id,
@@ -339,6 +358,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             'publish_month' => null,
             ]
         );
+        }
         $id = $this->getLastInsertValue();
 
         return $id;
@@ -347,7 +367,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     /**
      * Delete work
      *
-     * @param Integer $id work id 
+     * @param Integer $id work id
      *
      * @return empty
      */
@@ -372,12 +392,30 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function updateRecords($id, $type_id, $title, $subtitle, $paralleltitle, $desc, $modify_date, $modify_user, $status, $pub_yrFrom)
+    public function updateRecords($pr_workid, $id, $type_id, $title, $subtitle, $paralleltitle, $desc, $modify_date, $modify_user, $status, $pub_yrFrom)
     {
         if ($status === '00') {
             $status = null;
         }
-        $this->update(
+        if ($pr_workid !== -1) {
+            $this->update(
+            [
+            'work_id' => $pr_workid,
+            'type_id' => $type_id,
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'paralleltitle' => $paralleltitle,
+            'description' => $desc,
+            'modify_date' => $modify_date,
+            'modify_user_id' => $modify_user,
+            'status' => $status,
+            'publish_year' => $pub_yrFrom,
+            'publish_month' => null,
+            ],
+            ['id' => $id]
+            );
+        } else {
+            $this->update(
             [
             'work_id' => null,
             'type_id' => $type_id,
@@ -392,7 +430,8 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             'publish_month' => null,
             ],
             ['id' => $id]
-        );
+            );
+        }
     }
 
     /**
@@ -416,5 +455,34 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         };
 
         return $this->select($callback)->toArray();
+    }
+
+    /**
+     * Works with title like given string.
+     *
+     * @param string $title part of title of work
+     *
+     * @return Array $rows work records as array
+     */
+    public function fetchParentLookup($title)
+    {
+        /*$callback = function ($select) use ($title) {
+            $select->where->like('title', $title.'%');
+        };
+        $rows = $this->select($callback)->toArray();
+
+        return $rows;*/
+        
+        $callback = function ($select) use ($title) {
+            $select->columns(['*']);
+            $select->join(
+                ['b' => 'worktype'], 'work.type_id = b.id',
+                ['type']
+            );
+            $select->where->like('title', $title.'%');
+        };
+        $rows = $this->select($callback)->toArray();
+
+        return $rows;
     }
 }

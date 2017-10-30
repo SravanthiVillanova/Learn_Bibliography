@@ -50,7 +50,7 @@ class DefaultPageAction
      * Router\RouterInterface
      *
      * @var $router
-     */    
+     */
     protected $router;
 
     /**

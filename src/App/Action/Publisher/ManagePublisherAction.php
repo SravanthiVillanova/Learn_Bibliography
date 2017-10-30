@@ -51,7 +51,7 @@ class ManagePublisherAction
      * Router\RouterInterface
      *
      * @var $router
-     */    
+     */
     protected $router;
 
     /**
@@ -90,7 +90,7 @@ class ManagePublisherAction
      *
      * @param Array $params url query parameters
      *
-     * @return Array 
+     * @return Array
      */
     protected function searchPublisher($params)
     {
@@ -310,7 +310,7 @@ class ManagePublisherAction
         $characs = $this->getLetters();
         
         $simpleAction = new \App\Action\SimpleRenderAction('app::publisher::manage_publisher', $this->router, $this->template, $this->adapter);
-        list($query,$post) = $simpleAction->getQueryAndPost($request);
+        list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(7);
@@ -339,7 +339,7 @@ class ManagePublisherAction
                     'adapter' => $this->adapter,
                     ]
                 )
-            );         
+            );
         } else {
             return new HtmlResponse(
                 $this->template->render(

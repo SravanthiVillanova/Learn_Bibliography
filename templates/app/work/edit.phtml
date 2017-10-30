@@ -15,8 +15,17 @@ if ($request->getqueryParams('id') !== null) {
     $table   = new \App\Db\Table\Work($adapter);
     $wk_row  = $table->findRecordById($id);
     $type_id = $wk_row['type_id'];
-    $status  = $wk_row['status'];      
+    $status  = $wk_row['status'];    	
     //if ($status != 1) {
+		//fetch parent work
+		$pr_wrk = "";
+		if (!is_null($wk_row['work_id'])) {
+            //fetch name based on id
+            $table   = new \App\Db\Table\Work($adapter);
+            $pr_wrk_row  = $table->findRecordById($wk_row['work_id']);
+            $pr_wrk = $pr_wrk_row['title'];	
+            $pr_wrk_id = $pr_wrk_row['id'];			
+		}
         //fetch worktype based on id
         $table    = new \App\Db\Table\WorkType($adapter);
         $wk_types = $table->findRecordById($type_id);
@@ -346,6 +355,66 @@ function bindSourceClassification(that,context)
 	});	
 	return false;	
 }
+function bindParentWork(context)
+{
+	$('.pr_work_results').html('');
+	$('#parent_title',context).focus()
+	   //.css('background', '#8ec252')
+	   $('.parent_lookup_search',context).on('click', function(e) {	
+	       //alert("parent lookup");
+		   var lookup_title = $('#parent_title',context).val();
+		   if (lookup_title != "") {
+		       //alert("value is " + lookup_title);
+			   $.ajax({
+                   method: 'post',
+                   //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+				   url: ur + '<?=$this->url('get_work_details')?>',
+                   data: {
+                       lookup_title: lookup_title
+                   },
+                   dataType: "json",
+                   cache: false,
+                   success: function(data) {
+				       if ((data.prnt_lookup.length) > 0) {
+                           $('#parent_title').val('');
+                           var prworks_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="prworks_result_table">' +
+                                                      '<tr><th>Work Title</th><th>Type</th></tr>';
+                           $.each(data.prnt_lookup, function (key, val) {
+                               prworks_result_table += '<tr><input type="hidden" name="parent_work_id" id="parent_work_id" value="">' +
+                                                       '<td><a name="' + val.id + '" href="" class="prwork_link" value="' + val.title + '">' + 
+													   val.title + '</a></td><td>' + val.type + '</td></tr>';
+                           });
+                           prworks_result_table += '</table>';
+						   $('.pr_work_results').append(prworks_result_table);
+                       } else {
+                             $('#parent_title',context).val('');
+							 $('.pr_work_results').append('<p>No records found</p>');
+                       }
+                    
+                   },
+                   error: function(data) {
+
+                   }
+               });
+			   //$(context).off('click', 'prwork_link');
+			   $(context).on("click", ".prwork_link", function(e) {
+			       var pr_linkval = $(this).attr('name');
+				   var pr_labelval = $(this).attr('value');
+				   $('.pr_work_div', context).text(pr_labelval);
+				   $('#pr_work_lookup_id',context).val(pr_linkval);
+				   $('.pr_work_div', context).append('<button type="button" class="btn btn-default parent_Chng_Btn" name="parent_changeBtn" id="parent_changeBtn" ' +
+				                                     'data-toggle="modal" data-target="#parentLookup_modal">Change</button>')
+                   $('.pr_work_div', context).append('<button type="button" class="btn btn-default parent_Rmv_Btn" name="parent_removeBtn" ' + 
+				                                      'id="parent_removeBtn">Remove</button>')
+				   $('.pr_work_results').html('');
+				   $('.option_lookup_close').trigger('click');
+				       return false;
+		       });
+		   }
+		   return false;
+       });
+	   return false;
+}
 $(document).ready(function () {	
 	//get attributes for selected worktypes
 	$('#edit_work_type',document).on('change', function() {	
@@ -512,6 +581,21 @@ $(document).ready(function () {
 			return false;
 		}
 	});
+	//Parent Lookup
+    $('#parentLookup_modal').on('shown.bs.modal', function() {
+	    bindParentWork(document);
+		return false;
+    });   
+       
+	//Remove Parent Lookup
+	$('.pr_work_div').on('click', '#parent_removeBtn', function() {
+	   alert("remove");
+       $('#pr_work_lookup_id').val('');
+	   $('.pr_work_div').html('');
+	   $('.pr_work_div').append('<button type="button" class="btn btn-default parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" ' +
+				                'data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>');
+	   return false;
+	});	
 	//save
 	$('#submit_save').on('click', function(){
 		//var no_of_rows = $('table[name="source_fl_table"]').find("tr").length;
@@ -557,6 +641,14 @@ $(document).ready(function () {
             <tr>
             <th align="right">Description: </th>
             <td><?php echo $escaper->escapeHtml($wk_row['description']); ?></textarea></td>
+            </tr>
+            <th align="right">Parent Work: </th>
+            <td>
+			<?php 
+			     //echo $escaper->escapeHtml($wk_row['description']); 
+				 echo $escaper->escapeHtml($pr_wrk);
+			?></textarea>
+		    </td>
             </tr>
             <tr>
             <th align="right" valign="top">Agent: </th>
@@ -770,12 +862,53 @@ $(document).ready(function () {
 				</select>
 			</div>
 		</div>
-		<!--<div class="form-group">
-			<label class="col-xs-2 control-label">Parent Work: </label>
-			<div class="col-xs-10">
-				<button type="submit" class="btn btn-default" name="lookup_parent" value="parent_lookup">Lookup</button>
-			</div>
-		</div>	-->	
+		<div class="form-group">
+            <label class="col-xs-2 control-label">Parent Work: </label>
+			    <input type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="<?=isset($pr_wrk_id)?$pr_wrk_id:""?>">
+                <div class="col-xs-10 pr_work_div">
+				    <?php
+					if ($pr_wrk !== "") {
+						echo $pr_wrk; ?>
+                        <button type="button" class="btn btn-default parent_Chng_Btn" name="parent_changeBtn" id="parent_changeBtn"
+					            data-toggle="modal" data-target="#parentLookup_modal">Change</button> 
+                       <button type="button" class="btn btn-default parent_Rmv_Btn" name="parent_removeBtn"
+					           id="parent_removeBtn">Remove</button>
+					<?php
+					} else {?>
+                    <button type="button" class="btn btn-default parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" 
+					        data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>
+					<?php } ?>
+                </div>
+				<!-- Parent work Lookup -->
+                <div class="modal fade ig" id="parentLookup_modal" role="dialog">
+                <div class="modal-dialog ig">
+                    <div class="modal-content ig">
+                        <div class="modal-header ig">
+                            <button type="button" class="close ig" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title ig" id="parentLookup_modalLabel">Lookup</h4>
+                        </div>
+                        <div class="modal-body ig">
+                             <div class="form-group ig">
+                                <label class="col-xs-2 control-label ig">Title: </label>
+                                <div class="col-xs-10 ig">
+                                    <input type="text" class="form-control ig parent_title" name="parent_title" id="parent_title" />
+                                </div>
+                            </div>
+                            <div class="form-group ig">
+                                <div class="col-sm-offset-2 col-sm-10 ig">
+                                    <button type="button" class="btn btn-primary ig parent_lookup_search" id="parentLookup_search">Search</button>
+                                </div>
+                            </div>
+                            <div class="pr_work_results ig">
+                            </div>
+						</div>
+						<div class="modal-footer ignore ig">
+                            <button type="button" class="btn btn-default option_lookup_close ig" data-dismiss="modal">Close</button>
+                        </div>
+					</div>
+                </div>
+                </div>
+		</div>
 		<div class="form-group">
 			<label class="col-xs-2 control-label">Status: </label>
 			<div class="col-xs-10">

@@ -30,6 +30,7 @@ namespace App\Middleware;
 use Interop\Container\ContainerInterface;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
+
 /**
  * Class Definition for Authentication Middleware Factory.
  *

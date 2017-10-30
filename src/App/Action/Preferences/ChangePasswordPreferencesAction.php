@@ -50,7 +50,7 @@ class ChangePasswordPreferencesAction
      * Router\RouterInterface
      *
      * @var $router
-     */    
+     */
     protected $router;
 
     /**

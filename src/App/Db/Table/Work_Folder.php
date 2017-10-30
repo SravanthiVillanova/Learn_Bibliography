@@ -169,8 +169,8 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
 
         if (count($rows) >= 1) {
             $callback = function ($select) use ($did, $rows) {
-                    $select->where->in('work_id', $rows);
-                    $select->where->equalTo('folder_id', $did);
+                $select->where->in('work_id', $rows);
+                $select->where->equalTo('folder_id', $did);
             };
             $this->delete($callback);
         }
