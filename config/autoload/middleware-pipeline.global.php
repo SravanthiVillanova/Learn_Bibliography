@@ -10,8 +10,8 @@ return [
 		
             Helper\ServerUrlMiddleware::class => Helper\ServerUrlMiddlewareFactory::class,
             Helper\UrlHelperMiddleware::class => Helper\UrlHelperMiddlewareFactory::class,
-            'App\SlimFlashMiddleware' => App\SlimFlashMiddlewareFactory::class,
-			App\FormHelpersMiddleware::class => App\FormHelpersMiddlewareFactory::class
+            'VuBib\SlimFlashMiddleware' => VuBib\SlimFlashMiddlewareFactory::class,
+			VuBib\FormHelpersMiddleware::class => VuBib\FormHelpersMiddlewareFactory::class
         ],
     ],
     // This can be used to seed pre- and/or post-routing middleware
@@ -47,7 +47,7 @@ return [
                 Helper\ServerUrlMiddleware::class,
 				//new
 				Blast\BaseUrl\BaseUrlMiddleware::class,
-                'App\SlimFlashMiddleware',
+                'VuBib\SlimFlashMiddleware',
             ],
             'priority' => 10000,
         ],

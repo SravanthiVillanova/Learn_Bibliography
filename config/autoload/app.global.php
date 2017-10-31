@@ -7,6 +7,6 @@
  * about ConfigProvider classes, check out:
  * http://www.masterzendframework.com/configproviders-classes/.
  */
-use App\ConfigProvider;
+use VuBib\ConfigProvider;
 
 return (new ConfigProvider())->__invoke();
