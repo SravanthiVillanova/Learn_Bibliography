@@ -8,7 +8,8 @@ $url_components = parse_url($this->serverUrl());
 $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 ?>
 <script>
-	var ur = <?php echo json_encode($url_host); ?>;
+	//var ur = <?php echo json_encode($url_host); ?>;
+	var ur = "";
     function addMergeButton(context) {
         if (($('#mrg_src_id', context).val().length != 0) && ($('#mrg_dest_id', context).val().length != 0)) {
             $('#submit_clear', context).before('<button type="submit" class="btn btn-default" name="submitt" id="submit_save" value="Save">Merge</button>');

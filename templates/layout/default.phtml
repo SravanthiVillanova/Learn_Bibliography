@@ -276,7 +276,8 @@ $(document).ready(function () {
         </main>
 		<script>
 		$(document).ready(function () {
-			var ur = <?php echo json_encode($url_host); ?>;
+			//var ur = <?php echo json_encode($url_host); ?>;
+			var ur = "";
 			$('#ins_submit').on('click', function(){
 				//console.log('ins save clicked');
 				var ins_text = $('#instructions').val();

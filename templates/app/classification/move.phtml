@@ -14,7 +14,8 @@ $url_components = parse_url($this->serverUrl());
 $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 ?>
 <script>
-	var ur = <?php echo json_encode($url_host); ?>;
+	//var ur = <?php echo json_encode($url_host); ?>;
+	var ur = "";
     _select = '';
     function bindClassificationFolder(context)
     {
