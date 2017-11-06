@@ -21,7 +21,8 @@ $url_components = parse_url($this->serverUrl());
 $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 ?>
 <script>
-	var ur = <?php echo json_encode($url_host); ?>;
+	//var ur = <?php echo json_encode($url_host); ?>;
+	var ur = "";
 	//var ur = HOSTURL();
 	//console.log("ur is " + ur);
     function bindPublisherAutocomplete(context) {
