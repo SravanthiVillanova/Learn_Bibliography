@@ -302,7 +302,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 		$('.pr_work_results').html('');
 		$('#parent_title',context).focus()
 		   //.css('background', '#8ec252')
-		   $('.parent_lookup_search',context).on('click', function(e) {	
+		   $('.parent_lookup_search',context).off('click').on('click', function(e) {	
 		       //alert("parent lookup");
 			   var lookup_title = $('#parent_title',context).val();
 			   if (lookup_title != "") {
@@ -338,7 +338,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                           alert("No results");
                        }
                    });
-				   //$(context).off('click', 'prwork_link');
+				   //$(context).off('click', '.prwork_link');
 				   $(context).on("click", ".prwork_link", function(e) {
 				       var pr_linkval = $(this).attr('name');
 					   var pr_labelval = $(this).attr('value');
@@ -515,7 +515,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
        
 	   //Remove Parent Lookup
 	   $('.pr_work_div').on('click', '#parent_removeBtn', function() {
-		   alert("remove");
+		   //alert("remove");
            $('#pr_work_lookup_id').val('');
 		   $('.pr_work_div').html('');
 		   $('.pr_work_div').append('<button type="button" class="btn btn-default parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" ' +
