@@ -302,7 +302,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 		$('.pr_work_results').html('');
 		$('#parent_title',context).focus()
 		   //.css('background', '#8ec252')
-		   $('.parent_lookup_search',context).on('click', function(e) {	
+		   $('.parent_lookup_search',context).off('click').on('click', function(e) {	
 		       //alert("parent lookup");
 			   var lookup_title = $('#parent_title',context).val();
 			   if (lookup_title != "") {
