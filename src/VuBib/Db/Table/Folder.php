@@ -262,7 +262,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Array $parentList parent hierarchy of a folder
      */
-    public function getParentChainRecord($id)
+    public function getParentChainRecord($id, $reverse = false)
     {
 		$parentList = array();
         $fl = new self($this->adapter);
@@ -279,7 +279,9 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
             $current = $row['parent_id'];
         }
 
-        $parentList = array_reverse($parentList);
+		if ($reverse) {
+            $parentList = array_reverse($parentList);
+		}
 
         return $parentList;
     }	
