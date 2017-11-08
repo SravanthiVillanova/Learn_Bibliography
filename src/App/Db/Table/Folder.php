@@ -28,7 +28,7 @@
  *
  * @link https://
  */
-namespace VuBib\Db\Table;
+namespace App\Db\Table;
 
 use Zend\Db\Sql\Select;
 use Zend\Paginator\Adapter\DbSelect;
@@ -262,7 +262,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Array $parentList parent hierarchy of a folder
      */
-    public function getParentChainRecord($id)
+    public function getParentChainRecord($id, $reverse = false)
     {
 		$parentList = array();
         $fl = new self($this->adapter);
@@ -275,11 +275,13 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
             $row = $fl->getParent($current);
 
             $encounteredIds[] = $row['id'];
-			$parentList = $row;
+			$parentList[] = $row;
             $current = $row['parent_id'];
         }
 
-        $parentList = array_reverse($parentList);
+		if ($reverse) {
+            $parentList = array_reverse($parentList);
+		}
 
         return $parentList;
     }	
