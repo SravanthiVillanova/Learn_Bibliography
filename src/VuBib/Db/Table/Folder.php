@@ -256,11 +256,11 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     }
 
     /**
-     * Get the hierarchial parent chain for a folder.
+     * Get the hierarchial parent chain record for a folder.
      *
      * @param Number $id id of the folder
      *
-     * @return Array $encounteredIds parent hierarchy of a folder
+     * @return Array $parentList parent hierarchy of a folder
      */
     public function getParentChainRecord($id)
     {
