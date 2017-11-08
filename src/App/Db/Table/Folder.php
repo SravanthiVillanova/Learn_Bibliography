@@ -28,7 +28,7 @@
  *
  * @link https://
  */
-namespace App\Db\Table;
+namespace VuBib\Db\Table;
 
 use Zend\Db\Sql\Select;
 use Zend\Paginator\Adapter\DbSelect;
@@ -254,6 +254,35 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 
         return $encounteredIds;
     }
+
+    /**
+     * Get the hierarchial parent chain record for a folder.
+     *
+     * @param Number $id id of the folder
+     *
+     * @return Array $parentList parent hierarchy of a folder
+     */
+    public function getParentChainRecord($id)
+    {
+		$parentList = array();
+        $fl = new self($this->adapter);
+        $row = $fl->getParent($id);
+
+        $encounteredIds = array($row['id']);
+        $current = $row['parent_id'];
+
+        while ($current != null && !in_array($current, $encounteredIds)) {
+            $row = $fl->getParent($current);
+
+            $encounteredIds[] = $row['id'];
+			$parentList = $row;
+            $current = $row['parent_id'];
+        }
+
+        $parentList = array_reverse($parentList);
+
+        return $parentList;
+    }	
 
     /**
      * Insert folder record.
