@@ -275,7 +275,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
             $row = $fl->getParent($current);
 
             $encounteredIds[] = $row['id'];
-			$parentList = $row;
+			$parentList[] = $row;
             $current = $row['parent_id'];
         }
 
