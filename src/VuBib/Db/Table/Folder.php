@@ -256,6 +256,35 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     }
 
     /**
+     * Get the hierarchial parent chain for a folder.
+     *
+     * @param Number $id id of the folder
+     *
+     * @return Array $encounteredIds parent hierarchy of a folder
+     */
+    public function getParentChainRecord($id)
+    {
+		$parentList = array();
+        $fl = new self($this->adapter);
+        $row = $fl->getParent($id);
+
+        $encounteredIds = array($row['id']);
+        $current = $row['parent_id'];
+
+        while ($current != null && !in_array($current, $encounteredIds)) {
+            $row = $fl->getParent($current);
+
+            $encounteredIds[] = $row['id'];
+			$parentList = $row;
+            $current = $row['parent_id'];
+        }
+
+        $parentList = array_reverse($parentList);
+
+        return $parentList;
+    }	
+
+    /**
      * Insert folder record.
      *
      * @param Number $parent_id  id of parent of folder
