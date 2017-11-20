@@ -173,4 +173,19 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 
         return new Paginator($paginatorAdapter);
     }
+
+    /**
+     * Find record using workattribute field
+     *
+     * @param String $attribute workattribute field
+     *
+     * @return Array $row workattributes
+     */
+    public function getAttributeRecord($attribute)
+    {
+        $rowset = $this->select(array('field' => $attribute));
+        $row = $rowset->current();
+
+        return $row;
+    }
 }

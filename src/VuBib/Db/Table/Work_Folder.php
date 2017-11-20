@@ -265,11 +265,11 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
 
         $paginatorAdapter = new Paginator(new DbSelect($subselect, $this->adapter));
         $cnt = $paginatorAdapter->getTotalItemCount();
-
+		
         $paginatorAdapter->setDefaultItemCountPerPage($cnt);
         $flRows = [];
         foreach ($paginatorAdapter as $row) :
-                $flRows[] = $row[];
+                $flRows[] = $row;
         endforeach;
 
         return $flRows;
