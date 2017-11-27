@@ -464,22 +464,22 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Array $rows work records as array
      */
-    public function fetchParentLookup($title)
+     public function fetchParentLookup($title)
     {
         /*$callback = function ($select) use ($title) {
             $select->where->like('title', $title.'%');
         };
         $rows = $this->select($callback)->toArray();
-
         return $rows;*/
-        
+
         $callback = function ($select) use ($title) {
             $select->columns(['*']);
             $select->join(
                 ['b' => 'worktype'], 'work.type_id = b.id',
                 ['type']
             );
-            $select->where->like('title', $title.'%');
+            //$select->where->like('title', $title.'%');
+			$select->where->expression('LOWER(title) LIKE ?', strtolower($title).'%');
         };
         $rows = $this->select($callback)->toArray();
 
