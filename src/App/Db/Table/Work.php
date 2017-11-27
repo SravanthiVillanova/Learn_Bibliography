@@ -472,14 +472,14 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         $rows = $this->select($callback)->toArray();
 
         return $rows;*/
-        
+        $title = strtolower($title);
         $callback = function ($select) use ($title) {
             $select->columns(['*']);
             $select->join(
                 ['b' => 'worktype'], 'work.type_id = b.id',
                 ['type']
             );
-            $select->where->like('title', $title.'%');
+            $select->where->like('LOWER(title)', $title.'%');
         };
         $rows = $this->select($callback)->toArray();
 
