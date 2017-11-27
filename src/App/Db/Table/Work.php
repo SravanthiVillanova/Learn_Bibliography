@@ -470,16 +470,16 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             $select->where->like('title', $title.'%');
         };
         $rows = $this->select($callback)->toArray();
-
         return $rows;*/
-        $title = strtolower($title);
+
         $callback = function ($select) use ($title) {
             $select->columns(['*']);
             $select->join(
                 ['b' => 'worktype'], 'work.type_id = b.id',
                 ['type']
             );
-            $select->where->like('LOWER(title)', $title.'%');
+            //$select->where->like('title', $title.'%');
+			$select->where->expression('LOWER(title) LIKE ?', strtolower($title).'%');
         };
         $rows = $this->select($callback)->toArray();
 
