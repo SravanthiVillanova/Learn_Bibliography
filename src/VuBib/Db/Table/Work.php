@@ -34,6 +34,7 @@ use Zend\Db\Sql\Select;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
+use Zend\Paginator\Adapter\ArrayAdapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 
@@ -484,5 +485,27 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         $rows = $this->select($callback)->toArray();
 
         return $rows;
+    }
+
+    /**
+     * Find agent records by limit,offset.
+     *
+     * @param integer $limit  limit the number of records to be fectched
+     * @param integer $offset specify the offset to start fetching records
+     *
+     * @return Paginator $paginatorAdapter agent records as paginator
+     */
+    public function getWorkRecordsByLimitOffset($limit, $offset)
+    {
+		$callback = function ($select) use ($limit, $offset) {
+            $select->limit($limit)->offset($offset);
+        };
+        $rows = $this->select($callback)->toArray();
+		
+		$arrayAdapter = new ArrayAdapter($rows);
+
+        $paginator = new Paginator($arrayAdapter);
+		
+        return $paginator;
     }
 }
