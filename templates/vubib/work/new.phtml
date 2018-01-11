@@ -1,0 +1,822 @@
+<?php $this->headTitle('New Work'); ?>
+<?php 
+	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_work') . '" style="float:left;color:white;"> Work > </a>' 
+	                                . ' New';
+ ?>
+<?php
+//fetch worktypes
+$table = new \VuBib\Db\Table\WorkType($this->adapter);
+$paginator = $table->fetchAllWorkTypes();
+$itemsCount = $paginator->getTotalItemCount();
+$paginator->setItemCountPerPage($itemsCount);
+
+//fetch agent types
+$table = new \VuBib\Db\Table\AgentType($this->adapter);
+$paginator_agtype = $table->fetchAgentTypes();
+$itemsCount_ag = $paginator_agtype->getTotalItemCount();
+$paginator_agtype->setItemCountPerPage($itemsCount_ag);
+
+//get url host
+$url_components = parse_url($this->serverUrl());
+$url_host = $url_components['scheme'] . '://' . $url_components['host'];
+?>
+<script>
+	//var ur = <?php echo json_encode($url_host); ?>;
+	var ur = "";
+	//var ur = HOSTURL();
+	//console.log("ur is " + ur);
+    function bindPublisherAutocomplete(context) {
+        //publisher enable/disable fields
+        $("#pubLocation", context).prop("disabled", "disabled");
+
+        //Publisher autocomplete
+        $(function() {
+            $("#pubName", context).autocomplete({
+                //source: 'http://localhost<?= $this->url('get_work_details') ?>?autofor=publisher',
+				source: ur + '<?=$this->url('get_work_details')?>?autofor=publisher',
+                autoFocus: true,
+                select: function(event, ui) {
+                    $('#pubName', context).val(ui.item.label);
+                    $('#pubId', context).val(ui.item.id);
+                    $("#pubLocation", context).prop("disabled", false);
+                    return false;
+                }
+            });
+        });
+        $('#pubName', context).on('autocompleteselect', function(e, ui) {
+            var publisher_Id = ui.item.id;
+            i = 0;
+            //arr = [];
+            $.ajax({
+                method: 'post',
+                //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+				url: ur + '<?=$this->url('get_work_details')?>',
+                data: {
+                    publisher_Id: publisher_Id
+                },
+                dataType: "json",
+                cache: false,
+                success: function(data) {
+                    $("#pubLocation", context).html('');
+                    $.each(data.publoc, function(key, val) {
+                        $("#pubLocation", context).append('<option id="' + val.id + '" value="' + val.id + '">' + val.label + '</option>');
+                        $("#publoc_id", context).eq(i).val(val.id);
+                        //arr.push(val.id);
+                        i++;
+                    })
+                    //console.log(arr);
+                    //$("#publoc_id", context) = arr;
+                },
+                error: function() {
+                    $("#pubLocation", context).html('<option id="-1">none available</option>');
+                }
+            });
+        });
+    }
+    //Agent Autocomplete
+    function bindAgentAutocomplete(context) {
+		//agent enable/disable fields
+        $("#agent_FirstName", context).prop("disabled", "disabled");
+        $("#agent_LastName", context).prop("disabled", "disabled");
+        $("#agent_AlternateName", context).prop("disabled", "disabled");
+        $("#agent_OrganizationName", context).prop("disabled", "disabled");
+
+        $('#agent_type', context).on('change', function() {
+            $("#agent_FirstName", context).prop("disabled", false);
+            //agent first name autocomplete
+            $(function() {
+                $("#agent_FirstName", context).autocomplete({
+                    source: 'http://localhost<?= $this->url('get_work_details') ?>?autofor=agent',
+					source: ur + '<?=$this->url('get_work_details')?>?autofor=agent',
+                    autoFocus: true,
+                    select: function(event, ui) {
+                        $('#agent_FirstName', context).val(ui.item.label);
+                        $('#agentId', context).val(ui.item.id);
+                        return false;
+                    }
+                });
+            });
+        });
+        $('#agent_FirstName', context).on('autocompleteselect', function(e, ui) {
+            if (ui.item.lname != '') {
+                $("#agent_LastName", context).prop("disabled", false);
+                $("#agent_LastName", context).val(ui.item.lname);
+            }
+            if (ui.item.alternate_name != '') {
+                $("#agent_AlternateName", context).prop("disabled", false);
+                $("#agent_AlternateName", context).val(ui.item.alternate_name);
+            }
+            if (ui.item.organization_name != '') {
+                $("#agent_OrganizationName", context).prop("disabled", false);
+                $("#agent_OrganizationName", context).val(ui.item.organization_name);
+            }
+        });
+    }
+    //WorkType Autocomplete
+    function bindWorkTypeAttributes(context) {
+        $('#Citation *').not('.ig').remove();
+        //$(".content_box a").not(".button")
+        var worktype_Id = $('#work_type').val();
+        $.ajax({
+            method: 'post',
+            //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+			url: ur + '<?=$this->url('get_work_details')?>',
+            data: {
+                worktype_Id: worktype_Id
+            },
+            dataType: "json",
+            cache: false,
+            success: function(data) {
+                $.each(data.worktype_attribute, function(key, val) {
+					$("<div />").attr("class", "form-group optiondiv").attr("id", "optiondiv").appendTo("#Citation");
+					$("<label />").attr("class", "col-xs-2 control-label").text(val.field).appendTo("#Citation");
+					//$("</label>").appendTo("#divforoptions");
+					$("<div />").attr("id", "optionfieldsdiv").appendTo("#Citation");
+					// append input control at end of form
+					if (val.type == 'Textarea') {
+						$("<textarea />")
+                        .attr("class", "form-control")
+                        .attr("id", val.field)
+                        .attr("name", 'wkatid,' + val.id)
+                        .appendTo("#Citation");
+						//$("</textarea>").appendTo("#divforoptions");
+					}
+					if (val.type == 'Text') {
+						$("<input />")
+						.attr("type", "text")
+                        .attr("class", "form-control")
+                        .attr("id", val.field)
+                        .attr("name", 'wkatid,' + val.id)
+                        .appendTo("#Citation");
+					}
+					if (val.type == 'RadioButton') {
+						$('<div class="radio">' +
+                        '<label class="radio"><input type="radio" name="wkatid,' + val.id + '" value="true" />True</label>' +
+                        '<label class="radio"><input type="radio" name="wkatid,' + val.id + '" value="false" />False</label>' +
+                        '</div>').appendTo("#Citation");
+					}
+					if (val.type == 'Select') {
+						var container = $('<div/>');
+						$("<input />")
+                        .attr("type", "text")
+                        .attr("class", "form-control Attributeoption")
+                        .attr("id", val.field + ':' + val.id)
+                        .attr("name", 'wkatid,' + val.id)
+                        .appendTo(container);
+						$("<button data-toggle='modal' data-target='#pubLookup'/>")
+                        .attr("class", "btn btn-default optionLookupBtn")
+                        .attr("id", "optionLookupBtn")
+                        .attr("data-toggle", "modal")
+                        .attr("data-target", "optionsLookup")
+                        .attr("value", "Lookup")
+                        .text("Lookup")
+                        .appendTo(container);
+						container.appendTo('#Citation');
+					}
+				})
+				$(".optionLookupBtn").on('click', function(e) {
+					// show Modal
+					var lookupBtn = this;
+					attr_option_lookup = $(lookupBtn).prev();
+					$("#optionsLookup").modal('show');
+					$('#optionsLookup').on('shown.bs.modal', function() {
+						$('#lookupOption').focus()
+						$('.option_search').on('click', function(e) {
+							console.log(attr_option_lookup);
+							//var attribute_Id = $(lookupBtn).prev().attr('id');
+							var attribute_Id = attr_option_lookup.attr('id');
+							var option = $('#lookupOption').val();
+							$.ajax({
+								method: 'post',
+								//url: 'http://localhost<?= $this->url('get_work_details') ?>',
+								url: ur + '<?=$this->url('get_work_details')?>',
+								data: {
+									option: option,
+									attribute_Id: attribute_Id
+								},
+								dataType: "json",
+								cache: false,
+								success: function(data) {
+									$(".option_results", context).html('');
+									$(".option_results", context).append('<p>Search Results</p>');
+									$.each(data.attribute_options, function(key, val) {
+										$(".option_results", context).append('<p><a name="' + val.id + '" href="' + val.title + '" class="link_options">' + val.title + '</a></p>');
+									})
+								},
+								error: function() {
+									$(".option_results", context).append('<p>None available</p>');
+								}
+							});
+							$(context).off('click', '.link_options');
+							$(context).on("click", ".link_options", function(e) {
+								var linkval = $(this).attr('href');
+								attr_option_lookup.val(linkval);
+								attr_option_lookup.attr('name', attr_option_lookup.attr('name') + 'optid,' + $(this).attr('name'));
+								//console.log(attr_option_lookup.attr('name'));
+								$('#lookupOption').val('');
+								$(".option_results", context).html('');
+								$('.option_lookup_close').trigger('click');
+								return false;
+							});
+						});
+					});
+					return false;
+				});
+                },
+                error: function(data) {
+                    $("#Citation", context).html('<p>No Options</p>');
+                    //alert('error');
+                }
+        });
+        return false;
+    }
+    _select = '';
+
+    function bindSourceClassification(that, context) {
+        var to_add_row = $(that).closest("tr");
+        //to_add_row.children('td', context).children('select', context).eq(0).css('background-color', '#8ec252');
+        fl_changed = $(that).val();
+
+        var no_of_fl_parent = to_add_row.find('.select_source_fl', context).length;
+        for (var i = 0; i < no_of_fl_parent; i++) {
+            if (to_add_row.find('.select_source_fl', context).eq(i).val() === fl_changed) {
+                change_idx = i;
+                folder_Id = to_add_row.find('.select_source_fl', context).eq(i).val();
+                break;
+            }
+        }
+
+        if (folder_Id === "") {
+            to_add_row.find('.source_fl_col', context).eq(0).nextAll('.source_fl_col', context).remove();
+            to_add_row.find('.select_source_fl', context).eq(0).val('');
+        } else {
+            to_add_row.find('.source_fl_col', context).eq(change_idx).nextAll('.source_fl_col', context).remove();
+        }
+
+        //no_of_fl_parent = $('.select_source_fl',context).length;
+        no_of_fl_parent = to_add_row.find('.select_source_fl', context).length;
+
+        $.ajax({
+            method: 'post',
+            //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+			url: ur + '<?=$this->url('get_work_details')?>',
+            data: {
+                folder_Id: folder_Id
+            },
+            dataType: "json",
+            cache: false,
+            success: function(data) {
+                if (data.folder_children.length > 0) {
+                    //$('.source_fl_col',context).eq(no_of_fl_parent-1).css('background','#8ec252');		
+                    //$('.source_fl_col',context).eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
+                    //to_add_row.children('td',context).children('.source_fl_col',context).eq(no_of_fl_parent-1).css('background-color','#8ec252');
+                    to_add_row.find('.source_fl_col', context).eq(no_of_fl_parent - 1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
+
+                    _select = $('<select class="form-control select_source_fl" name="select_source_fl[]">');
+                    to_append = $('<option value=""></option>');
+                    $.each(data.folder_children, function(key, val) {
+                        to_append += '<option value="' + val.id + '">' + val.text_fr + '</option>';
+                    });
+                    _select.append($('<option />'));
+                    _select.append(to_append);
+                    //$('.source_fl_col',context).eq(no_of_fl_parent).append(_select);
+                    to_add_row.find('.source_fl_col', context).eq(no_of_fl_parent).append(_select);
+                    //$('.source_fl_col',context).eq(no_of_fl_parent).append('</select>');
+                    to_add_row.find('.source_fl_col', context).eq(no_of_fl_parent).append('</select>');
+
+                    _select.on('change', function() {
+                        bindSourceClassification(this, document);
+                        return false;
+                    });
+                }
+            },
+            error: function(data) {
+                //$("#Classification", context).html('<p>No Options</p>');
+            }
+        });
+        return false;
+    }
+
+	function bindParentWork(context)
+	{
+		$('.pr_work_results').html('');
+		$('#parent_title',context).focus()
+		   //.css('background', '#8ec252')
+		   $('.parent_lookup_search',context).off('click').on('click', function(e) {	
+		       //alert("parent lookup");
+			   var lookup_title = $('#parent_title',context).val();
+			   if (lookup_title != "") {
+			       //alert("value is " + lookup_title);
+				   $.ajax({
+                       method: 'post',
+                       //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+					   url: ur + '<?=$this->url('get_work_details')?>',
+                       data: {
+                           lookup_title: lookup_title
+                       },
+                       dataType: "json",
+                       cache: false,
+                       success: function(data) {
+					       if ((data.prnt_lookup.length) > 0) {
+                               $('#parent_title').val('');
+                               var prworks_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="prworks_result_table">' +
+                                                          '<tr><th>Work Title</th><th>Type</th></tr>';
+                               $.each(data.prnt_lookup, function (key, val) {
+                                   prworks_result_table += '<tr><input type="hidden" name="parent_work_id" id="parent_work_id" value="">' +
+                                                           '<td><a name="' + val.id + '" href="" class="prwork_link" value="' + val.title + '">' + 
+														   val.title + '</a></td><td>' + val.type + '</td></tr>';
+                               });
+                               prworks_result_table += '</table>';
+							   $('.pr_work_results').append(prworks_result_table);
+                           } else {
+                                 $('#parent_title',context).val('');
+								 $('.pr_work_results').append('<p>No records found</p>');
+                           }
+                        
+                       },
+                       error: function(data) {
+                          alert("No results");
+                       }
+                   });
+				   //$(context).off('click', '.prwork_link');
+				   $(context).on("click", ".prwork_link", function(e) {
+				       var pr_linkval = $(this).attr('name');
+					   var pr_labelval = $(this).attr('value');
+					   $('.pr_work_div', context).text(pr_labelval);
+					   $('#pr_work_lookup_id',context).val(pr_linkval);
+					   $('.pr_work_div', context).append('<button type="button" class="btn btn-default parent_Chng_Btn" name="parent_changeBtn" id="parent_changeBtn" ' +
+					                                     'data-toggle="modal" data-target="#parentLookup_modal">Change</button>')
+                       $('.pr_work_div', context).append('<button type="button" class="btn btn-default parent_Rmv_Btn" name="parent_removeBtn" ' + 
+					                                      'id="parent_removeBtn">Remove</button>')
+					   $('.pr_work_results').html('');
+					   $('.option_lookup_close').trigger('click');
+					       return false;
+			       });
+			   }
+			   return false;
+           });
+		   return false;
+	}
+	
+    $(document).ready(function() {
+        //Publisher
+        bindPublisherAutocomplete(document);
+        //add publisher rows
+        $("#pub_add").click(function() {
+            var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="">' +
+                '<td><input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" /></td>' +
+                '<td><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"/></td>' +
+                '<td><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" /></td>' +
+                '<!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->' +
+                '<input type="hidden" name="publoc_id[]" id="publoc_id" value="">' +
+                '<td><select class="form-control pub_locations" name="pub_location[]" id="pubLocation"><option value=""></option></select></td>' +
+                '<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>' +
+                '</tr>');
+
+            $("#pub_table").append(pub_row);
+            bindPublisherAutocomplete(pub_row);
+            return false;
+        });
+        //remove publisher rows
+        $("#pub_table").on('click', '#pub_remove', function() {
+            $(this).parent().parent().remove();
+        });
+        //agent
+        bindAgentAutocomplete(document);
+		//add agent rows
+        $("#agent_add").click(function() {
+            var agent_row = $('<tr><td><input type="hidden" name="agent_id[]" id="agentId" value="">' +
+                    '<select class="form-control agent_type" name="agent_type[]" id="agent_type">' +
+                    '<option value=""></option>' +
+                    <?php
+					foreach ($paginator_agtype as $ag_row) :
+					//print_r($row);
+					?>
+						'<option value="<?= $ag_row['id'] ?>"><?php echo $ag_row['type']; ?></option>' +
+                    <?php endforeach; ?>
+                    '</select>' +
+                    '</td>' +
+                    '<td><input type="text" class="form-control" name="agent_FirstName[]" id="agent_FirstName" /></td>' +
+                    '<td><input type="text" class="form-control" name="agent_LastName[]" id="agent_LastName" /></td>' +
+                    '<td><input type="text" class="form-control" name="agent_AlternateName[]" id="agent_AlternateName" /></td>' +
+                    '<td><input type="text" class="form-control" name="agent_OrganizationName[]" id="agent_OrganizationName" /></td>' +
+                    '<td><button type="submit" class="btn btn-default" name="agent_remove" id="agent_remove" value="Remove">Remove</button></td>' +
+                    '</tr>');
+
+            $("#agent_table").append(agent_row);
+            bindAgentAutocomplete(agent_row);
+            return false;
+        });
+        //remove agent rows
+        $("#agent_table").on('click', '#agent_remove', function() {
+            $(this).parent().parent().remove();
+        });
+        //get attributes for selected worktypes
+        $('#work_type', document).on('change', function() {
+            bindWorkTypeAttributes(document);
+        });
+        //classification
+        //add classification rows
+        $("#fl_add").on('click', function() {
+            var fl_row = $('<tr name="source_fl_row[]">' +
+                    '<b>Subject Tree</b><br>' +
+                    '<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;">' +
+                    '<select class="form-control select_source_fl" name="select_source_fl[]">' +
+                    '<option value=""></option>' +
+                    <?php
+					$table = new \VuBib\Db\Table\Folder($this->adapter);
+					$fl_siblings = $table->getFoldersWithNullParent();
+					foreach ($fl_siblings as $row) :
+					?>
+						'<option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>' +
+                    <?php endforeach; ?>
+                    '</select>' +
+                    '</td>' +
+                    '<td><button type="submit" class="btn btn-default" name="fl_remove" id="fl_remove" value="Remove">Remove</button></td>' +
+                    '</tr>');
+            $("#source_fl_table").append(fl_row);
+            //bindSourceClassification(this,document);
+            return false;
+        });
+        //remove classification rows
+        $("#source_fl_table").on('click', '#fl_remove', function() {
+            $(this).parent().parent().remove();
+        });
+        $('table[name="source_fl_table"]').on('change', ".select_source_fl", function() {
+            var to_add_row = $(this).closest("tr");
+            //to_add_row.children('td').children('select').eq(0).css('background-color', '#8ec252');
+
+            if ($(this).val() == "") {
+                to_add_row.find('.source_fl_col').eq(0).nextAll('.source_fl_col').remove();
+                to_add_row.find('.source_fl_col').eq(0).val('');
+                return false;
+            } else {
+                fl_changed = $(this).val();
+                //alert("changed value is " + fl_changed);
+                var no_of_fl_parent = to_add_row.find('.select_source_fl').length;
+                //alert("select length is " + no_of_fl_parent);
+                for (var i = 0; i < no_of_fl_parent; i++) {
+                    if (to_add_row.find('.select_source_fl').eq(i).val() === fl_changed) {
+                        change_idx = i;
+                        folder_Id = to_add_row.find('.select_source_fl').eq(i).val();
+                        break;
+                    }
+                }
+                to_add_row.find('.source_fl_col').eq(change_idx).nextAll('.source_fl_col').remove();
+                //alert("folder id is " + folder_Id);
+
+                //no_of_fl_parent = $('.select_source_fl').length;
+                no_of_fl_parent = to_add_row.find('.select_source_fl').length;
+
+                $.ajax({
+                    method: 'post',
+                    //url: 'http://localhost<?= $this->url('get_work_details') ?>',
+					url: ur + '<?=$this->url('get_work_details')?>',
+                    data: {
+                        folder_Id: folder_Id
+                    },
+                    dataType: "json",
+                    cache: false,
+                    success: function(data) {
+                        //$('.source_fl_col').eq(no_of_fl_parent-1).css('background','#8ec252');		
+                        //$('.source_fl_col').eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
+                        to_add_row.find('.source_fl_col').eq(no_of_fl_parent - 1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
+
+                        _select = $('<select class="form-control select_source_fl" name="select_source_fl[]">');
+                        to_append = $('<option value=""></option>');
+                        $.each(data.folder_children, function(key, val) {
+                            to_append += '<option value="' + val.id + '">' + val.text_fr + '</option>';
+                        });
+                        _select.append($('<option />'));
+                        _select.append(to_append);
+                        //$('.source_fl_col').eq(no_of_fl_parent).append(_select);
+                        //$('.source_fl_col').eq(no_of_fl_parent).append('</select>');
+                        to_add_row.find('.source_fl_col').eq(no_of_fl_parent).append(_select);
+                        to_add_row.find('.source_fl_col').eq(no_of_fl_parent).append('</select>');
+
+                        _select.on('change', function() {
+                            bindSourceClassification(this, document);
+                            return false;
+                        });
+                    },
+                    error: function(data) {
+                        $("#Classification", context).html('<p>No Options</p>');
+                    }
+                });
+                return false;
+            }
+        });
+       
+	   //Parent Lookup
+       $('#parentLookup_modal').on('shown.bs.modal', function() {
+		   bindParentWork(document);
+		   return false;
+       });   
+       
+	   //Remove Parent Lookup
+	   $('.pr_work_div').on('click', '#parent_removeBtn', function() {
+		   //alert("remove");
+           $('#pr_work_lookup_id').val('');
+		   $('.pr_work_div').html('');
+		   $('.pr_work_div').append('<button type="button" class="btn btn-default parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" ' +
+					                'data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>');
+		   return false;
+	   });
+	   
+        $('#submit_save').on('click', function() {
+           var no_of_rows = $('table[name="source_fl_table"]').find("tr").length;
+            var arr = [];
+            var values;
+            $('table[name="source_fl_table"]').each(function() {
+                $(this).find('tr').each(function() {
+                    values = [];
+                    $(this).find('td').find('.select_source_fl').each(function() {
+                        //$(this).find('.select_source_fl').each(function(){
+                        values.push($(this).val());
+                            //});						
+                    });
+                    var newInput = $('<input type="hidden" name="arr[]" value="">');
+                    newInput.val(values);
+                    $("#new-work-data").append(newInput);
+                });
+            });
+            return true;
+        });
+    });
+ </script>
+<div class="col-md-7">
+    <form id="new-work-data" class="form-horizontal" method="POST" action="<?= $this->url('manage_work') ?>">
+        <input type="hidden" name="action" value="work_new">
+        <!--<input type="hidden" name="arr[]" id="arrs" value="frm jquery">-->
+        <?php
+		//get user
+		$user = $this->isUser()->getUser();
+		?>
+        <input type="hidden" name="user" id="user" value="<?= $user ?>">
+        <div class="tabbable">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#General" data-toggle="tab">General</a>
+                </li>
+                <li>
+                    <a href="#Classification" data-toggle="tab">Classification</a>
+                </li>
+                <li>
+                    <a href="#Publisher" data-toggle="tab">Publisher</a>
+                </li>
+                <li>
+                    <a href="#Agents" data-toggle="tab">Agents</a>
+                </li>
+                <li>
+                    <a href="#Citation" data-toggle="tab">Citation</a>
+                </li>
+            </ul>
+        <div class="tab-content">
+        <div class="tab-pane active" id="General">
+			<div class="form-group required">
+				<label class="col-xs-2 control-label">Title: </label>
+                <div class="col-xs-10">
+                    <input type="text" class="form-control" name="new_worktitle" id="newworktitle" required="true" />
+                </div>
+			</div>
+			<div class="form-group">
+                <label class="col-xs-2 control-label">Sub Title: </label>
+                <div class="col-xs-10">
+                    <input type="text" class="form-control" name="new_worksubtitle" id="newworksubtitle" />
+                </div>
+			</div>
+			<div class="form-group">
+                <label class="col-xs-2 control-label">Parallel Title: </label>
+                <div class="col-xs-10">
+                    <input type="text" class="form-control" name="new_workparalleltitle" id="newworkparalleltitle" />
+                </div>
+			</div>
+			<div class="form-group">
+                <label class="col-xs-2 control-label">Description: </label>
+                <div class="col-xs-10">
+                    <textarea class="form-control" placeholder="Message" name="description" id="description"></textarea>
+                </div>
+			</div>
+			<div class="form-group">
+                <label class="col-xs-2 control-label">Type: </label>
+                <div class="col-xs-10">
+                    <select class="form-control" name="work_type" id="work_type" required="true">
+                        <option value="">Choose Work Type</option>
+                        <?php
+						foreach ($paginator as $row) :
+						?>
+                            <option value="<?= $row['id'] ?>"><?php echo $row['type']; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+			</div>
+			<div class="form-group">
+                <label class="col-xs-2 control-label">Parent Work: </label>
+				<input type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="">
+                <div class="col-xs-10 pr_work_div">
+                    <button type="button" class="btn btn-default parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" 
+					        data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>
+                </div>
+				<!-- Parent work Lookup -->
+                <div class="modal fade ig" id="parentLookup_modal" role="dialog">
+                <div class="modal-dialog ig">
+                    <div class="modal-content ig">
+                        <div class="modal-header ig">
+                            <button type="button" class="close ig" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title ig" id="parentLookup_modalLabel">Lookup</h4>
+                        </div>
+                        <div class="modal-body ig">
+                             <div class="form-group ig">
+                                <label class="col-xs-2 control-label ig">Title: </label>
+                                <div class="col-xs-10 ig">
+                                    <input type="text" class="form-control ig parent_title" name="parent_title" id="parent_title" />
+                                </div>
+                            </div>
+                            <div class="form-group ig">
+                                <div class="col-sm-offset-2 col-sm-10 ig">
+                                    <button type="button" class="btn btn-primary ig parent_lookup_search" id="parentLookup_search">Search</button>
+                                </div>
+                            </div>
+                            <div class="pr_work_results ig">
+                            </div>
+						</div>
+						<div class="modal-footer ignore ig">
+                            <button type="button" class="btn btn-default option_lookup_close ig" data-dismiss="modal">Close</button>
+                        </div>
+					</div>
+                </div>
+                </div>
+			</div>
+			<div class="form-group">
+				<label class="col-xs-2 control-label">Status: </label>
+				<div class="col-xs-10">
+					<div class="radio">
+						<label class="radio">
+							<input checked type="radio" id="selectworkstatus" name="select_workstatus" value="00">In Progress</label>
+						<label class="radio">
+							<input type="radio" id="selectworkstatus" name="select_workstatus" value="0">Pending Review</label>
+						<label class="radio">
+							<input type="radio" id="selectworkstatus" name="select_workstatus" value="2">Unseen Source Doc</label>
+						<label class="radio">
+							<input type="radio" id="selectworkstatus" name="select_workstatus" value="1">Complete</label>
+					</div>
+				</div>
+			</div>
+        </div>
+        <div class="tab-pane" id="Classification">
+			<div class="form-group" id="class_grp">
+                <table name="source_fl_table" id="source_fl_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">
+                <tbody>
+                    <tr name="source_fl_row[]">
+                        <b>Subject Tree</b>
+                        <br>
+                        <td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;">
+							<select class="form-control select_source_fl" name="select_source_fl[]">
+								<option value=""></option>
+								<?php
+								$table = new \VuBib\Db\Table\Folder($this->adapter);
+								$fl_siblings = $table->getFoldersWithNullParent();
+								foreach ($fl_siblings as $row) :
+								?>
+									<option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>
+								<?php endforeach; ?>
+							</select>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-default" name="fl_remove" id="fl_remove" value="Remove">Remove</button>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+                 <button type="submit" class="btn btn-default" name="fl_add" id="fl_add" value="Add">Add</button>
+			</div>
+		</div>
+        <div class="tab-pane" id="Publisher">
+            <div class="form-group">
+                <table class="table table-striped table-condensed" name="pub_table" style="font-size:10pt;" id="pub_table">
+                <thead>
+                    <th>Publisher</th>
+                    <th>Year From</th>
+                    <th>Year To</th>
+                    <th>Location</th>
+                    <th>Remove</th>
+                </thead>
+                <tbody>
+                    <tr name="pub_row[]">
+                        <input type="hidden" name="pub_id[]" id="pubId" value="">
+                        <td>
+                            <input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" />
+                        </td>
+                        <!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->
+                        <input type="hidden" name="publoc_id[]" id="publoc_id" value="">
+                        <td>
+                            <select class="form-control pub_locations" name="pub_location[]" id="pubLocation">
+                                <option value=""></option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+                <button type="submit" class="btn btn-default" name="pub_add" id="pub_add" value="Add">Add</button>
+            </div>
+        </div>
+        <div class="tab-pane" id="Agents">
+            <div class="form-group">
+                <table class="table table-striped table-condensed" style="font-size:10pt;" id="agent_table">
+                <thead>
+                    <th>Agent Type</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Alternate Name</th>
+                    <th>Organization Name</th>
+                    <th>Remove</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="hidden" name="agent_id[]" id="agentId" value="">
+                            <select class="form-control agent_type" name="agent_type[]" id="agent_type">
+                                <option value=""></option>
+                                <?php
+								//fetch agenttypes
+								//$table = new \VuBib\Db\Table\AgentType($this->adapter);
+								//$paginator = $table->fetchAgentTypes();
+								foreach ($paginator_agtype as $row) :
+								?>
+                                <option value="<?= $row['id'] ?>"><?php echo $row['type']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="agent_FirstName[]" id="agent_FirstName" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="agent_LastName[]" id="agent_LastName" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="agent_AlternateName[]" id="agent_AlternateName" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="agent_OrganizationName[]" id="agent_OrganizationName" />
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-default" name="agent_remove" id="agent_remove" value="Remove">Remove</button>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+                <button type="submit" class="btn btn-default" name="agent_add" id="agent_add" value="Add">Add</button>
+            </div>
+        </div>
+        <div class="tab-pane" id="Citation">
+            <!--<div class="form-group" id="divforoptions">
+            </div>-->
+            <!-- Work Type Attribute Options Lookup -->
+            <div class="modal fade ig" id="optionsLookup" role="dialog">
+                <div class="modal-dialog ig">
+                    <div class="modal-content ig">
+                        <div class="modal-header ig">
+                            <button type="button" class="close ig" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title ig" id="myModalLabel">Lookup</h4>
+                        </div>
+                        <div class="modal-body ig">
+                             <div class="form-group ig">
+                                <label class="col-xs-2 control-label ig">Title: </label>
+                                <div class="col-xs-10 ig">
+                                    <input type="text" class="form-control ig" name="lookup_Option" id="lookupOption" />
+                                </div>
+                            </div>
+                            <div class="form-group ig">
+                                <div class="col-sm-offset-2 col-sm-10 ig">
+                                    <button type="button" class="btn btn-primary option_search ig" id="option_search">Search</button>
+                                </div>
+                            </div>
+                            <div class="option_results ig">
+                            </div>
+						</div>
+						<div class="modal-footer ignore ig">
+                            <button type="button" class="btn btn-default option_lookup_close ig" data-dismiss="modal">Close</button>
+                        </div>
+					</div>
+                </div>
+            </div>
+        </div>
+		</div>
+		</div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Save</button>
+                <button type="submit" class="btn btn-default" name="submit_cancel" value="Cancel" formnovalidate>Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

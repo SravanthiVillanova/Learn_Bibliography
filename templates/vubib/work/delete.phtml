@@ -1,0 +1,31 @@
+<?php $this->headTitle('Delete Work'); ?>
+<?php 
+	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_work') . '" style="float:left;color:white;"> Work > </a>' 
+	                                . ' Delete';
+ ?>
+<div class="col-xs-4">
+       <form method="post" action="<?=$this->url('manage_work')?>">
+        <p>Are you sure you want to delete this?</p>        
+        <?php                                       
+                $id;
+                if ($request->getqueryParams('id') !== null) 
+                {   
+                    $params = $request->getqueryParams();
+                    $action = $params['action'];
+                    $id = $params['id'];
+					//echo $id;
+                    //fetch name based on id
+                    $table = new \VuBib\Db\Table\Work($adapter);
+                    $row = $table->findRecordById($id);
+                    $title = $row['title'];
+                    echo "<p>$title</p>";
+                } 
+            ?>
+        <ul>
+		<input type="hidden" name="work_id" value="<?=$id?>">
+        <input type="hidden" name="action" value="<?=$action?>">
+        </ul>
+        <input type="submit" name="submitt" value="Delete"> 
+        <input type="submit" name="submitt" value="Cancel">
+       </form>
+</div>

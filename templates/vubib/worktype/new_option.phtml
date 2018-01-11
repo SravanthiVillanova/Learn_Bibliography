@@ -1,0 +1,36 @@
+<?php $this->headTitle('New Option'); ?>
+<?php //$this->layout()->instructions = ""; ?>
+<?php
+if ($request->getqueryParams('action') !== null) {
+    $params  = $request->getqueryParams();
+    $action  = $params['action'];
+    $wkat_id = $params['id'];
+	$this->layout()->breadcrumbs .= '<a href="' .  $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' .   
+	            '<a href="' .  $this->url('manage_attribute_options') . '?id=' . $wkat_id . '" style="float:left;color:white;"> Attribute Options > </a>' 
+				. ' New';
+}
+?>
+<div class="col-md-4">
+    <form class="form-horizontal" method="post" action="<?=$this->url('manage_attribute_options')?><?= '?id=' . $wkat_id ?>">
+        <input type="hidden" name="action" value="<?=$action?>">
+        <input type="hidden" name="id" value="<?=$wkat_id?>">
+        <div class="form-group">
+
+            <label class="col-xs-2 control-label">Option: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="new_option" id="newoption" />
+            </div>
+            <br /> <br />
+            <label class="col-xs-2 control-label">Type: </label>
+            <div class="col-xs-7">
+                <input type="text" class="form-control" name="option_value" id="optionvalue" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button>
+                <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

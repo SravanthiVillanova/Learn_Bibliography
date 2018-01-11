@@ -1,0 +1,23 @@
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+
+INSERT INTO module_access (id, module, role_a, role_su, role_u) VALUES
+(1, 'Work', 1, 1, 1),
+(2, 'Agent', 1, 1, 1),
+(3, 'Publisher', 1, 1, 1),
+(4, 'Preferences', 1, 1, 1),
+(5, 'Classification', 1, 1, 0),
+(6, 'Work Type', 1, 0, 0),
+(7, 'Agent Type', 1, 0, 0),
+(8, 'Language', 1, 0, 0),
+(9, 'Users', 1, 0, 0);
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
