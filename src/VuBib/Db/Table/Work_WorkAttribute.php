@@ -250,7 +250,7 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 		if ($wa_row['type'] == 'Select') {
 			if (isset($wk_wkat_row['value']) && $wk_wkat_row['value'] != '') {
 		        $wa_opt = new WorkAttribute_Option($this->adapter);
-                $wa_opt_row = $wa->findRecordById($wk_wkat_row['value']);
+                $wa_opt_row = $wa_opt->findRecordById($wk_wkat_row['value']);
 				return $wa_opt_row['title'];
 			}
 		}
