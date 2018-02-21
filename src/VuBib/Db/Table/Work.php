@@ -323,43 +323,23 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         if ($status === '00') {
             $status = null;
         }
-        if ($pr_workid !== -1) {
-            $this->insert(
-            [
-            'work_id' => $pr_workid,
-            'type_id' => $type_id,
-            'title' => $title,
-            'subtitle' => $subtitle,
-            'paralleltitle' => $paralleltitle,
-            'description' => $description,
-            'create_date' => $create_date,
-            'create_user_id' => $create_user_id,
-            'modify_date' => '0000-00-00 00:00:00',
-            'modify_user_id' => null,
-            'status' => $status,
-            'publish_year' => $pub_yrFrom,
-            'publish_month' => null,
-            ]
-            );
-        } else {
-            $this->insert(
-            [
-            'work_id' => null,
-            'type_id' => $type_id,
-            'title' => $title,
-            'subtitle' => $subtitle,
-            'paralleltitle' => $paralleltitle,
-            'description' => $description,
-            'create_date' => $create_date,
-            'create_user_id' => $create_user_id,
-            'modify_date' => '0000-00-00 00:00:00',
-            'modify_user_id' => null,
-            'status' => $status,
-            'publish_year' => $pub_yrFrom,
-            'publish_month' => null,
-            ]
-        );
-        }
+		$this->insert(
+		[
+		'work_id' => ($pr_workid !== -1) ? $pr_workid : null,
+		'type_id' => $type_id,
+		'title' => $title,
+		'subtitle' => $subtitle,
+		'paralleltitle' => $paralleltitle,
+		'description' => $description,
+		'create_date' => $create_date,
+		'create_user_id' => $create_user_id,
+		'modify_date' => '0000-00-00 00:00:00',
+		'modify_user_id' => null,
+		'status' => $status,
+		'publish_month' => null,
+		'publish_year' => $pub_yrFrom[0],
+		]
+		);
         $id = $this->getLastInsertValue();
 
         return $id;
@@ -398,10 +378,9 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         if ($status === '00') {
             $status = null;
         }
-        if ($pr_workid !== -1) {
-            $this->update(
+        $this->update(
             [
-            'work_id' => $pr_workid,
+            'work_id' => ($pr_workid !== -1) ? $pr_workid : null,
             'type_id' => $type_id,
             'title' => $title,
             'subtitle' => $subtitle,
@@ -410,29 +389,11 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             'modify_date' => $modify_date,
             'modify_user_id' => $modify_user,
             'status' => $status,
-            'publish_year' => $pub_yrFrom,
-            'publish_month' => null,
+			'publish_month' => null,
+            'publish_year' => $pub_yrFrom[0],
             ],
             ['id' => $id]
-            );
-        } else {
-            $this->update(
-            [
-            'work_id' => null,
-            'type_id' => $type_id,
-            'title' => $title,
-            'subtitle' => $subtitle,
-            'paralleltitle' => $paralleltitle,
-            'description' => $desc,
-            'modify_date' => $modify_date,
-            'modify_user_id' => $modify_user,
-            'status' => $status,
-            'publish_year' => $pub_yrFrom,
-            'publish_month' => null,
-            ],
-            ['id' => $id]
-            );
-        }
+        );
     }
 
     /**

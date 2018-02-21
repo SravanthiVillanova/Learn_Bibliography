@@ -210,10 +210,11 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Array $rows agent records as array
      */
-    public function getLikeRecords($fname)
+    public function getLikeRecords($name)
     {
-        $callback = function ($select) use ($fname) {
-            $select->where->like('fname', '%'.$fname.'%');
+        $callback = function ($select) use ($name) {
+            $select->where->like('fname', '%'.$name.'%');
+			$select->where->or->like('lname',  '%'.$name.'%');
         };
         $rows = $this->select($callback)->toArray();
 

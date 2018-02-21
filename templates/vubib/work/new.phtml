@@ -20,6 +20,21 @@ $paginator_agtype->setItemCountPerPage($itemsCount_ag);
 $url_components = parse_url($this->serverUrl());
 $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 ?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.full.js"></script>
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.css">-->
+<style>
+.select2.narrow {
+    width: 200px;
+}
+.wrap.select2-selection--single {
+    height: 100%;
+}
+.select2-container .wrap.select2-selection--single .select2-selection__rendered {
+    word-wrap: break-word;
+    text-overflow: inherit;
+    white-space: normal;
+}
+</style>
 <script>
 	//var ur = <?php echo json_encode($url_host); ?>;
 	var ur = "";
@@ -90,6 +105,8 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 					source: ur + '<?=$this->url('get_work_details')?>?autofor=agent',
                     autoFocus: true,
                     select: function(event, ui) {
+						var arr = ui.item.label.split(' LN: ');
+						ui.item.label = arr[0]
                         $('#agent_FirstName', context).val(ui.item.label);
                         $('#agentId', context).val(ui.item.id);
                         return false;
@@ -233,6 +250,10 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
     _select = '';
 
     function bindSourceClassification(that, context) {
+		var $select2 = $('.select2').select2({
+			containerCssClass: "wrap"
+		})
+			
         var to_add_row = $(that).closest("tr");
         //to_add_row.children('td', context).children('select', context).eq(0).css('background-color', '#8ec252');
         fl_changed = $(that).val();
@@ -272,7 +293,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                     //to_add_row.children('td',context).children('.source_fl_col',context).eq(no_of_fl_parent-1).css('background-color','#8ec252');
                     to_add_row.find('.source_fl_col', context).eq(no_of_fl_parent - 1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
 
-                    _select = $('<select class="form-control select_source_fl" name="select_source_fl[]">');
+                    _select = $('<select class="form-control select_source_fl select2" name="select_source_fl[]">');
                     to_append = $('<option value=""></option>');
                     $.each(data.folder_children, function(key, val) {
                         to_append += '<option value="' + val.id + '">' + val.text_fr + '</option>';
@@ -418,10 +439,10 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
         //classification
         //add classification rows
         $("#fl_add").on('click', function() {
-            var fl_row = $('<tr name="source_fl_row[]">' +
+            var fl_row = $('<tr name="source_fl_row[]" style="vertical-align: top;">' +
                     '<b>Subject Tree</b><br>' +
-                    '<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;">' +
-                    '<select class="form-control select_source_fl" name="select_source_fl[]">' +
+                    '<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="vertical-align: top; border-spacing: 10px;">' +
+                    '<select class="form-control select_source_fl select2" name="select_source_fl[]">' +
                     '<option value=""></option>' +
                     <?php
 					$table = new \VuBib\Db\Table\Folder($this->adapter);
@@ -442,7 +463,12 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
         $("#source_fl_table").on('click', '#fl_remove', function() {
             $(this).parent().parent().remove();
         });
+
         $('table[name="source_fl_table"]').on('change', ".select_source_fl", function() {
+			var $select2 = $('.select2').select2({
+				containerCssClass: "wrap"
+			})
+			
             var to_add_row = $(this).closest("tr");
             //to_add_row.children('td').children('select').eq(0).css('background-color', '#8ec252');
 
@@ -482,7 +508,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                         //$('.source_fl_col').eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
                         to_add_row.find('.source_fl_col').eq(no_of_fl_parent - 1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;"/>');
 
-                        _select = $('<select class="form-control select_source_fl" name="select_source_fl[]">');
+                        _select = $('<select class="form-control select_source_fl select2" name="select_source_fl[]">');
                         to_append = $('<option value=""></option>');
                         $.each(data.folder_children, function(key, val) {
                             to_append += '<option value="' + val.id + '">' + val.text_fr + '</option>';
@@ -544,7 +570,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
         });
     });
  </script>
-<div class="col-md-7">
+<div class="col-md-10">
     <form id="new-work-data" class="form-horizontal" method="POST" action="<?= $this->url('manage_work') ?>">
         <input type="hidden" name="action" value="work_new">
         <!--<input type="hidden" name="arr[]" id="arrs" value="frm jquery">-->
@@ -667,11 +693,11 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 			<div class="form-group" id="class_grp">
                 <table name="source_fl_table" id="source_fl_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">
                 <tbody>
-                    <tr name="source_fl_row[]">
+                    <tr name="source_fl_row[]" style="vertical-align: top;">
                         <b>Subject Tree</b>
                         <br>
-                        <td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px;">
-							<select class="form-control select_source_fl" name="select_source_fl[]">
+                        <td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="vertical-align: top; border-spacing: 10px;">
+							<select class="form-control select_source_fl select2" name="select_source_fl[]">
 								<option value=""></option>
 								<?php
 								$table = new \VuBib\Db\Table\Folder($this->adapter);

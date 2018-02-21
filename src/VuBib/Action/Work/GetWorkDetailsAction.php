@@ -331,7 +331,7 @@ class GetWorkDetailsAction
             $rows = $table->getLikeRecords($search_term);
             foreach ($rows as $i => $row) {
                 $rows[$i]['id'] = $row['id'];
-                $rows[$i]['label'] = $row['fname'];
+                $rows[$i]['label'] = $row['fname'] . " LN: " . $row['lname'];
                 $rows[$i]['lname'] = $row['lname'];
                 $rows[$i]['alternate_name'] = $row['alternate_name'];
                 $rows[$i]['organization_name'] = $row['organization_name'];
