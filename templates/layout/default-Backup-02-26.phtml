@@ -29,8 +29,6 @@
 	}
   ?>
   <a href="<?=$this->url('login')?><?='?logout=y'?>" style="float:right;color:white;">Logout</a>
-    <!--<a href="#" style="float:right;color:yellow;">&nbspInstructions&nbsp</a>-->
-	<a href="#instructionsLookup" data-toggle="modal" style="vertical-align: top;float:right;color:yellow;">&nbspInstructions&nbsp</a>
 </div>
 
 <!-- Fixed navbar -->
@@ -153,16 +151,17 @@
     <!-- Placed at the end of the document so the pages load faster -->
 
 <div class="app-content" width="100%">
- <div>
+ <div style="width: 80%">
     <?php 
 		echo $this->content;
 	?>
- </div>
+ </div> 
+
  <?php
 	$url_components = parse_url($this->serverUrl());
 	$url_host = $url_components['scheme'] . '://' . $url_components['host'];
 	
-	$str = $this->layout()->page;
+	$str = "";
     $page = "";
 	
 	$returnValue = preg_replace('/index.php/','',$_SERVER['PHP_SELF']);
@@ -172,7 +171,18 @@
 		$page = "public";
 		$str = $page . "/";
 	}
-	
+	else
+	{
+		$str = str_replace($returnValue,'',parse_url($this->url())['path']);
+		if(isset($_SERVER['QUERY_STRING']))
+		{
+			if(preg_match('/action=(?<action_name>[A-Za-z]+)/', $_SERVER['QUERY_STRING'], $matches))
+			{
+				$str .= "?action=" . $matches['action_name'];
+			}
+		}
+	}
+			
 	$ins = $this->isUser()->isInsSet($str);
 
 	if(isset($ins['instructions']))
@@ -203,6 +213,7 @@
 		</script>
 	<?php
 	}
+	
 	$usr = $this->isUser()->getUserType();
 
 	if($usr['level'] == "Administrator")
@@ -250,61 +261,51 @@ $(document).ready(function () {
 	}
 });
 </script>
-<div class="modal fade ig" id="instructionsLookup" role="dialog">
-<div class="modal-dialog ig">
-	<div class="modal-content ig">
-		<div class="modal-header ig">
-			<button type="button" class="close ig" data-dismiss="modal">&times;</button>
-			<h4 class="modal-title ig" id="instrModalLabel">Instructions</h4>
-		</div>
-		<div class="modal-body ig">
-			 <div class="form-group ig">
+        <main class="container">
+				<div style="float: right; width: 20%;">
+				<div class="tipbox">
+				<div>Instructions</div>
+				<form method="post" name="ins_box">
 				<input type="hidden" name="page_id" id="page_id" value="">
 				<input type="hidden" name="page_name" id="page_name" value="">
-					<textarea class="form-control rounded-0" id="instructions" rows="5"><?php echo $this->layout()->instructions; ?></textarea>
-					<!--<textarea name="instructions" id="instructions"><?php //echo $this->layout()->instructions; ?></textarea><br>	-->
-			</div>		
-		</div>
-		<div class="modal-footer ignore ig">
-			<!--<input type="submit" name="ins_submit" id="ins_submit" value="Save">-->
-			<input type="submit" class="btn btn-primary ins_submit ig" name="ins_submit" id="ins_submit" value="Save"></button>
-			<button type="button" class="btn btn-default instr_lookup_close ig" data-dismiss="modal">Close</button>
-		</div>
-	</div>
-</div>
-</div>
-<script>
-$(document).ready(function () {
-	//var ur = <?php echo json_encode($url_host); ?>;
-	var ur = "";
-	$('#ins_submit').on('click', function(){
-		//console.log('ins save clicked');
-		var ins_text = $('#instructions').val();
-		var pg_id = $('#page_id').val();
-		var pg_nm = $('#page_name').val();				
-		//alert(ins_text);
-		$.ajax({
-			method: 'post',
-			//url: 'http://localhost<?=$this->url('get_work_details')?>',
-			url: ur + '<?=$this->url('get_work_details')?>',
-			data: {
-				ins_text: ins_text,
-				pg_id: pg_id,
-				pg_nm: pg_nm
-			},
-			dataType: "json", 
-			cache: false,
-			success: function(data)
-			{	
-			},
-			error: function (data) { 
-			//$("#Classification", context).html('<p>No Options</p>');
-			}
-		});					
-		return false;
-	});
-});
-</script>
+				<textarea name="instructions" id="instructions" rows="5" cols="22"><?php echo $this->layout()->instructions; ?></textarea><br>
+				<input type="submit" name="ins_submit" id="ins_submit" value="Save">
+				</form>
+				</div>
+			   </div>	
+        </main>
+		<script>
+		$(document).ready(function () {
+			//var ur = <?php echo json_encode($url_host); ?>;
+			var ur = "";
+			$('#ins_submit').on('click', function(){
+				//console.log('ins save clicked');
+				var ins_text = $('#instructions').val();
+				var pg_id = $('#page_id').val();
+				var pg_nm = $('#page_name').val();				
+				//alert(ins_text);
+				$.ajax({
+					method: 'post',
+					//url: 'http://localhost<?=$this->url('get_work_details')?>',
+					url: ur + '<?=$this->url('get_work_details')?>',
+					data: {
+						ins_text: ins_text,
+						pg_id: pg_id,
+						pg_nm: pg_nm
+					},
+					dataType: "json", 
+					cache: false,
+					success: function(data)
+					{	
+					},
+					error: function (data) { 
+					//$("#Classification", context).html('<p>No Options</p>');
+					}
+				});					
+				return false;
+			});
+		});
+		</script>
 </div>
 
 </body>
