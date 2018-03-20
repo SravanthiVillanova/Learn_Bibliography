@@ -103,7 +103,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             $select->columns(
                 [
                 'letter' => new Expression(
-                    'DISTINCT(substring(?, 1, 1))',
+                    'DISTINCT(substring(UPPER(?), 1, 1))',
                     ['title'],
                     [Expression::TYPE_IDENTIFIER]
                 ),
@@ -126,7 +126,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             $select->columns(
                 [
                 'letter' => new Expression(
-                    'DISTINCT(substring(?, 1, 1))',
+                    'DISTINCT(substring(UPPER(?), 1, 1))',
                     ['title'],
                     [Expression::TYPE_IDENTIFIER]
                 ),
@@ -153,7 +153,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             $select->columns(
                 [
                 'letter' => new Expression(
-                    'DISTINCT(substring(?, 1, 1))',
+                    'DISTINCT(substring(UPPER(?), 1, 1))',
                     ['title'],
                     [Expression::TYPE_IDENTIFIER]
                 ),
@@ -176,7 +176,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     public function displayRecordsByName($letter, $order)
     {
         $select = $this->sql->select();
-        $select->where->like('title', $letter.'%');
+        $select->where->like('title', $letter.'%')->or->like('title', strtolower($letter).'%');
         if (isset($order) && $order !== '') {
             $select->order($order);
         }
@@ -196,7 +196,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     public function displayReviewRecordsByLetter($letter, $order)
     {
         $select = $this->sql->select();
-        $select->where->like('title', $letter.'%');
+        $select->where->like('title', $letter.'%')->or->like('title', strtolower($letter).'%');
         $select->where->equalTo('status', 0);
         if (isset($order) && $order !== '') {
             $select->order($order);
@@ -221,7 +221,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
 
         $select = $this->sql->select();
         $select->where->notIn('id', $subselect);
-        $select->where->like('title', $letter.'%');
+        $select->where->like('title', $letter.'%')->or->like('title', strtolower($letter).'%');
         if (isset($order) && $order !== '') {
             $select->order($order);
         }

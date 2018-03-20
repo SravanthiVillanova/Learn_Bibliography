@@ -36,6 +36,9 @@ td[name="source_fl_col"] {
 	border-spacing: 10px;
 	display: inline-block;
 }
+td[name="pubNameCol"], td[name="agLnCol"], td[name="agFnCol"] {
+	width: auto;
+}
 .yrFrom, .yrTo {
 	min-width: 80px;
 	max-width: 80px;
@@ -56,13 +59,13 @@ $(document).ready(function() {
 	//add publisher rows
 	$("#pub_add").click(function() {
 		var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="">' +
-			'<td><input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" /></td>' +
+			'<td name="pubNameCol"><input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" /></td>' +
 			'<!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->' +
 			'<input type="hidden" name="publoc_id[]" id="publoc_id" value="">' +
 			'<td><select class="form-control pub_locations" name="pub_location[]" id="pubLocation"><option value=""></option></select></td>' +
 			'<td class="yrFrom"><input type="text" class="form-control" name="pub_yrFrom[]" id="pubyrFrom"/></td>' +
 			'<td class="yrTo"><input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" /></td>' +
-			'<td><button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>' +
+			'<td><button type="submit" class="btn btn-secondary" name="pub_remove" id="pub_remove" value="Remove">Remove</button></td>' +
 			'</tr>');
 
 		$("#pub_table").append(pub_row);
@@ -73,6 +76,7 @@ $(document).ready(function() {
 	$("#pub_table").on('click', '#pub_remove', function() {
 		$(this).parent().parent().remove();
 	});
+	
 	//agent
 	bindAgentAutocomplete(document, workURL);
 	//add agent rows
@@ -88,11 +92,11 @@ $(document).ready(function() {
 				<?php endforeach; ?>
 				'</select>' +
 				'</td>' +
-				'<td><input type="text" class="form-control" name="agent_FirstName[]" id="agent_FirstName" /></td>' +
-				'<td><input type="text" class="form-control" name="agent_LastName[]" id="agent_LastName" /></td>' +
+				'<td name="agLnCol"><input type="text" class="form-control" name="agent_LastName[]" id="agent_LastName" /></td>' +
+				'<td name="agFnCol"><input type="text" class="form-control" name="agent_FirstName[]" id="agent_FirstName" /></td>' +
 				'<td><input type="text" class="form-control" name="agent_AlternateName[]" id="agent_AlternateName" /></td>' +
 				'<td><input type="text" class="form-control" name="agent_OrganizationName[]" id="agent_OrganizationName" /></td>' +
-				'<td><button type="submit" class="btn btn-default" name="agent_remove" id="agent_remove" value="Remove">Remove</button></td>' +
+				'<td><button type="submit" class="btn btn-secondary" name="agent_remove" id="agent_remove" value="Remove">Remove</button></td>' +
 				'</tr>');
 
 		$("#agent_table").append(agent_row);
@@ -123,7 +127,7 @@ $(document).ready(function() {
 				<?php endforeach; ?>
 				'</select>' +
 				'</td>' +
-				'<td style="display: inline-block;"><button type="submit" class="btn btn-default" name="fl_remove" id="fl_remove" value="Remove">Remove</button></td>' +
+				'<td style="display: inline-block;"><button type="submit" class="btn btn-secondary" name="fl_remove" id="fl_remove" value="Remove">Remove</button></td>' +
 				'</tr>');
 		$("#source_fl_table").append(fl_row);
 		//bindSourceClassification(this,document);
@@ -229,7 +233,7 @@ $(document).ready(function() {
 	});
 });
  </script>
-<div class="col-md-10">
+<div class="col-md-12">
     <form id="new-work-data" class="form-horizontal" method="POST" action="<?= $this->url('manage_work') ?>">
         <input type="hidden" name="action" value="work_new">
         <!--<input type="hidden" name="arr[]" id="arrs" value="frm jquery">-->
@@ -259,32 +263,32 @@ $(document).ready(function() {
         <div class="tab-content">
         <div class="tab-pane active" id="General">
 			<div class="form-group required">
-				<label class="col-xs-2 control-label">Title: </label>
-                <div class="col-xs-10">
+				<label class="col-xs-1 control-label">Title: </label>
+                <div class="col-xs-6">
                     <input type="text" class="form-control" name="new_worktitle" id="newworktitle" required="true" />
                 </div>
 			</div>
 			<div class="form-group">
-                <label class="col-xs-2 control-label">Sub Title: </label>
-                <div class="col-xs-10">
+                <label class="col-xs-1 control-label">Sub Title: </label>
+                <div class="col-xs-6">
                     <input type="text" class="form-control" name="new_worksubtitle" id="newworksubtitle" />
                 </div>
 			</div>
 			<div class="form-group">
-                <label class="col-xs-2 control-label">Parallel Title: </label>
-                <div class="col-xs-10">
+                <label class="col-xs-1 control-label">Parallel Title: </label>
+                <div class="col-xs-6">
                     <input type="text" class="form-control" name="new_workparalleltitle" id="newworkparalleltitle" />
                 </div>
 			</div>
 			<div class="form-group">
-                <label class="col-xs-2 control-label">Description: </label>
-                <div class="col-xs-10">
+                <label class="col-xs-1 control-label">Description: </label>
+                <div class="col-xs-4">
                     <textarea class="form-control" placeholder="Message" name="description" id="description"></textarea>
                 </div>
 			</div>
 			<div class="form-group">
-                <label class="col-xs-2 control-label">Type: </label>
-                <div class="col-xs-10">
+                <label class="col-xs-1 control-label">Type: </label>
+                <div class="col-xs-2">
                     <select class="form-control" name="work_type" id="work_type" required="true">
                         <option value="">Choose Work Type</option>
                         <?php
@@ -296,9 +300,9 @@ $(document).ready(function() {
                 </div>
 			</div>
 			<div class="form-group">
-                <label class="col-xs-2 control-label">Parent Work: </label>
+                <label class="col-xs-1 control-label">Parent Work: </label>
 				<input type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="">
-                <div class="col-xs-10 pr_work_div">
+                <div class="col-xs-6 pr_work_div">
                     <button type="button" class="btn btn-default parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" 
 					        data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>
                 </div>
@@ -333,8 +337,8 @@ $(document).ready(function() {
                 </div>
 			</div>
 			<div class="form-group">
-				<label class="col-xs-2 control-label">Status: </label>
-				<div class="col-xs-10">
+				<label class="col-xs-1 control-label">Status: </label>
+				<div class="col-xs-5">
 					<div class="radio">
 						<label class="radio">
 							<input checked type="radio" id="selectworkstatus" name="select_workstatus" value="00">In Progress</label>
@@ -368,17 +372,17 @@ $(document).ready(function() {
 							</select>
                         </td>
                         <td style="display: inline-block;">
-                            <button type="submit" class="btn btn-default" name="fl_remove" id="fl_remove" value="Remove">Remove</button>
+                            <button type="submit" class="btn btn-secondary" name="fl_remove" id="fl_remove" value="Remove">Remove</button>
                         </td>
                     </tr>
                 </tbody>
                 </table>
-                 <button type="submit" class="btn btn-default" name="fl_add" id="fl_add" value="Add">Add</button>
+                 <button type="submit" class="btn btn-secondary" name="fl_add" id="fl_add" value="Add">Add</button>
 			</div>
 		</div>
         <div class="tab-pane" id="Publisher">
             <div class="form-group">
-                <table class="table table-striped table-condensed" name="pub_table" style="font-size:10pt;" id="pub_table">
+                <table class="table table-striped table-condensed" name="pub_table" style="font-size:10pt; width:100%;" id="pub_table">
                 <thead>
                     <th>Publisher</th>
                     <th>Location</th>
@@ -389,7 +393,7 @@ $(document).ready(function() {
                 <tbody>
                     <tr name="pub_row[]">
                         <input type="hidden" name="pub_id[]" id="pubId" value="">
-                        <td>
+                        <td name="pubNameCol">
                             <input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" />
                         </td>
 						<!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->
@@ -406,12 +410,12 @@ $(document).ready(function() {
                             <input type="text" class="form-control" name="pub_yrTo[]" id="pubyrTo" />
                         </td>
                         <td>
-                            <button type="submit" class="btn btn-default" name="pub_remove" id="pub_remove" value="Remove">Remove</button>
+                            <button type="submit" class="btn btn-secondary" name="pub_remove" id="pub_remove" value="Remove">Remove</button>
                         </td>
                     </tr>
                 </tbody>
                 </table>
-                <button type="submit" class="btn btn-default" name="pub_add" id="pub_add" value="Add">Add</button>
+                <button type="submit" class="btn btn-secondary" name="pub_add" id="pub_add" value="Add">Add</button>
             </div>
         </div>
         <div class="tab-pane" id="Agents">
@@ -419,8 +423,8 @@ $(document).ready(function() {
                 <table class="table table-striped table-condensed" style="font-size:10pt;" id="agent_table">
                 <thead>
                     <th>Agent Type</th>
-                    <th>First Name</th>
                     <th>Last Name</th>
+                    <th>First Name</th>
                     <th>Alternate Name</th>
                     <th>Organization Name</th>
                     <th>Remove</th>
@@ -441,11 +445,11 @@ $(document).ready(function() {
                                 <?php endforeach; ?>
                             </select>
                         </td>
-                        <td>
-                            <input type="text" class="form-control" name="agent_FirstName[]" id="agent_FirstName" />
-                        </td>
-                        <td>
+                        <td name="agLnCol">
                             <input type="text" class="form-control" name="agent_LastName[]" id="agent_LastName" />
+                        </td>
+                        <td name="agFnCol">
+                            <input type="text" class="form-control" name="agent_FirstName[]" id="agent_FirstName" />
                         </td>
                         <td>
                             <input type="text" class="form-control" name="agent_AlternateName[]" id="agent_AlternateName" />
@@ -454,12 +458,12 @@ $(document).ready(function() {
                             <input type="text" class="form-control" name="agent_OrganizationName[]" id="agent_OrganizationName" />
                         </td>
                         <td>
-                            <button type="submit" class="btn btn-default" name="agent_remove" id="agent_remove" value="Remove">Remove</button>
+                            <button type="submit" class="btn btn-secondary" name="agent_remove" id="agent_remove" value="Remove">Remove</button>
                         </td>
                     </tr>
                 </tbody>
                 </table>
-                <button type="submit" class="btn btn-default" name="agent_add" id="agent_add" value="Add">Add</button>
+                <button type="submit" class="btn btn-secondary" name="agent_add" id="agent_add" value="Add">Add</button>
             </div>
         </div>
         <div class="tab-pane" id="Citation">
@@ -499,7 +503,7 @@ $(document).ready(function() {
 		</div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Save</button>
+                <button type="submit" class="btn btn-primary" name="submit_save" id="submit_save" value="Save">Save</button>
                 <button type="submit" class="btn btn-default" name="submit_cancel" value="Cancel" formnovalidate>Cancel</button>
             </div>
         </div>

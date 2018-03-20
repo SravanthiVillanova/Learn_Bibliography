@@ -213,8 +213,8 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     public function getLikeRecords($name)
     {
         $callback = function ($select) use ($name) {
-            $select->where->like('fname', '%'.$name.'%');
-			$select->where->or->like('lname',  '%'.$name.'%');
+            $select->where->like('lname', '%'.$name.'%');
+			//$select->where->or->like('lname',  '%'.$name.'%');
         };
         $rows = $this->select($callback)->toArray();
 

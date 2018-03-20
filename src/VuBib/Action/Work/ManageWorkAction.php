@@ -537,6 +537,7 @@ class ManageWorkAction
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(20);
+		//$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::work::manage_work', $this->router, $this->template, $this->adapter);
         $pgs = $simpleAction->getNextPrevious($paginator, $query);

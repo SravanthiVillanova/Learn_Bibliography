@@ -153,26 +153,36 @@
     <!-- Placed at the end of the document so the pages load faster -->
 
 <div class="app-content" width="100%">
- <div>
     <?php 
 		echo $this->content;
 	?>
- </div>
+</div>
  <?php
 	$url_components = parse_url($this->serverUrl());
 	$url_host = $url_components['scheme'] . '://' . $url_components['host'];
 	
 	$str = $this->layout()->page;
     $page = "";
-	
+
 	$returnValue = preg_replace('/index.php/','',$_SERVER['PHP_SELF']);
-	
+
 	if($returnValue == $_SERVER['REQUEST_URI'])
 	{
 		$page = "public";
 		$str = $page . "/";
 	}
-	
+	else
+	{
+		$str = str_replace($returnValue,'',parse_url($this->url())['path']);
+		if(isset($_SERVER['QUERY_STRING']))
+		{
+			if(preg_match('/action=(?<action_name>[A-Za-z]+)/', $_SERVER['QUERY_STRING'], $matches))
+			{
+				$str .= "?action=" . $matches['action_name'];
+			}
+		}
+	}
+
 	$ins = $this->isUser()->isInsSet($str);
 
 	if(isset($ins['instructions']))
@@ -305,6 +315,4 @@ $(document).ready(function () {
 	});
 });
 </script>
-</div>
-
 </body>
