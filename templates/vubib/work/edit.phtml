@@ -65,8 +65,8 @@ if ($request->getqueryParams('id') !== null) {
 }
 $url_components = parse_url($this->serverUrl());
 $url_host = $url_components['scheme'] . '://' . $url_components['host'];
+$this->headScript()->appendFile($this->url('home') . 'js/work.js');
 ?>
-<script type="text/javascript" src="<?=$this->url('home')?>js/work.js" ></script>
 <style>
 table[name="source_fl_table"] {
 	font-size:10pt;
@@ -93,18 +93,81 @@ input[name="pub_yrFrom"], input[name="pub_yrTo"] {
 }
 </style>
 <script>
-//var ur = <?php echo json_encode($url_host); ?>;
-var ur = "";
 var workURL = '<?=$this->url('get_work_details')?>';
+var actual_WkType = "<?php echo $wk_type; ?>";
+var current_WkType = "";
+var attrTab = true;
 $.fn.getTextWidth = function(text, font) {
 						if (!$.fn.getTextWidth.fakeEl) $.fn.getTextWidth.fakeEl = $('<span>').hide().appendTo(document.body);
 						$.fn.getTextWidth.fakeEl.text(text || this.val() || this.text()).css('font', font || this.css('font'));					
 						return $.fn.getTextWidth.fakeEl.width();
 					};
+					
+function setValues(context)
+{
+	var title = "";
+	<?php
+	for($i = 0; $i < count($wktyp_attrs); $i++)
+	{
+	?>				
+	<?php
+		if(strtolower($wktyp_attrs[$i]['type']) == strtolower('select'))
+		{
+				$table = new \VuBib\Db\Table\WorkAttribute_Option($adapter);
+				//$wkopt = (array)$table->getOptionTitle($wktyp_attrs[$i]['value'], $wktyp_attrs[$i]['workattribute_id']);
+				$wkopt = $table->findRecordById($wktyp_attrs[$i]['value']); 
+	?>
+				title = <?php echo json_encode($wkopt['title']); ?>;
+				opt_id = <?php echo json_encode($wkopt['id']); ?>;
+				var opt = <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['workattribute_id']); ?>;
+				sel_opt = $('input[name="' + opt + '"]');
+				$('input[name="' + opt + '"]',context).attr('name', sel_opt.attr('name') + 'optid,' + opt_id);
+				sel_opt.val(title);
+	<?php
+		}
+		else if($wktyp_attrs[$i]['type'] == 'Textarea')
+		{
+		?>
+			title =  <?php echo json_encode($wktyp_attrs[$i]['value']); ?>;
+			$('textarea[name="' + <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]',context).val(title);
+		<?php					
+		}
+		else if($wktyp_attrs[$i]['type'] == 'RadioButton')
+		{
+		?>
+			title =  <?php echo json_encode($wktyp_attrs[$i]['value']); ?>;
+			if(title == "true")
+			{
+				$('input[id="' + <?php echo json_encode("t:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]',context).prop("checked",true);
+			}
+			if(title == "false")
+			{
+				//$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').css("background","#8ec252");
+				$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]',context).prop("checked",true);
+			}
+		<?php
+		}
+		else
+		{
+			
+		?>
+			title =  <?php echo json_encode($wktyp_attrs[$i]['value']); ?>;
+			$('input[name="' + <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]',context).val(title);
+		<?php
+		}
+	}
+	?>
+	return false;
+}
+			
 $(document).ready(function () {	
 	//get attributes for selected worktypes
 	$('#work_type',document).on('change', function() {	
-		bindWorkTypeAttributes(document,workURL);		
+		bindWorkTypeAttributes(document,workURL);	
+		if(actual_WkType === current_WkType) {
+			setValues(document);
+			attrTab = true;
+		}
 	});
 		
 	//Publisher
@@ -186,7 +249,7 @@ $(document).ready(function () {
 		var fl_row = $('<tr name="source_fl_row[]">' +
 						'<td><b>Subject Tree</b></td>' + 
 						'<td class="source_fl_col" name="source_fl_col" id="source_fl_col">' +				
-						'<select class="form-control select_source_fl select2" name="select_source_fl[]">' + 
+						'<select class="form-control select_source_fl" name="select_source_fl[]">' + 
 						'<option value=""></option>' + 
 						<?php
 						$table = new \VuBib\Db\Table\Folder($this->adapter);
@@ -248,7 +311,7 @@ $(document).ready(function () {
 					{
 					to_add_row.find('.source_fl_col').eq(no_of_fl_parent-1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col"/>');
 					
-					_select = $('<select class="form-control select_source_fl select2" name="select_source_fl[]">');
+					_select = $('<select class="form-control select_source_fl" name="select_source_fl[]">');
 					to_append = $('<option value=""></option>');
 					$.each(data.folder_children, function (key, val) {
 						to_append += '<option value="'+val.id+'">'+val.text_fr+'</option>';
@@ -525,7 +588,7 @@ $(document).ready(function () {
 			<a href="#Agents" data-toggle="tab">Agents</a>
 		</li>
 		<li>
-			<a href="#Citation" data-toggle="tab">Citation</a>
+			<a href="#Citation" data-toggle="tab" id="attributesTab">Citation</a>
 		</li>
 	</ul>
 	<div class="tab-content">
@@ -655,7 +718,7 @@ $(document).ready(function () {
 							$fl = $table->findRecordById($arr_fl[$i]);
 						?>
 							<td class="source_fl_col" name="source_fl_col" id="source_fl_col">
-							<select class="form-control select_source_fl select2" name="select_source_fl[]">
+							<select class="form-control select_source_fl" name="select_source_fl[]">
 							<option value="<?=$fl['id']?>" selected><?php echo $fl['text_fr']; ?></option>
 							<?php
 							$table = new \VuBib\Db\Table\Folder($this->adapter);
@@ -670,6 +733,18 @@ $(document).ready(function () {
 							endforeach;
 							?>
 							</select>
+							<script>
+							var fl_selected_text = "<?php echo $fl['text_fr'] ?>";
+							var $test = $("<span>").html(fl_selected_text);
+
+							// add to body, get width, and get out
+							$test.appendTo('body');
+							var txt_width = $test.width() + 70;
+							$test.remove();
+
+							// set select width
+							$(".select_source_fl:last").width(txt_width + 'px');
+							</script>
 							</td>
 							<?php
 							if($i == (count($arr_fl)-1))
@@ -680,7 +755,7 @@ $(document).ready(function () {
 								{
 							?>
 									<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="vertical-align: top; border-spacing: 10px;">
-									<select class="form-control select_source_fl select2" name="select_source_fl[]">
+									<select class="form-control select_source_fl" name="select_source_fl[]">
 									<option value=""></option>
 									<?php
 									foreach($chl_rows as $row) :
@@ -703,7 +778,7 @@ $(document).ready(function () {
 					<tr name="source_fl_row[]">
 						<b>Subject Tree</b><br>
 						<td class="source_fl_col" name="source_fl_col" id="source_fl_col">				
-							<select class="form-control select_source_fl select2" name="select_source_fl[]">
+							<select class="form-control select_source_fl" name="select_source_fl[]">
 							<option value=""></option>
 							<?php
 							$table = new \VuBib\Db\Table\Folder($this->adapter);
@@ -986,187 +1061,19 @@ $(document).ready(function () {
 		</div>
 		</div>
 		</div>
-
 		<script>
-		//var ur = <?php echo json_encode($url_host); ?>;
-		var ur = "";
-		function setValues(context)
-		{
-			var title = "";
-			<?php
-			for($i = 0; $i < count($wktyp_attrs); $i++)
-			{
-			?>				
-			<?php
-				if(strtolower($wktyp_attrs[$i]['type']) == strtolower('select'))
-				{
-						$table = new \VuBib\Db\Table\WorkAttribute_Option($adapter);
-						//$wkopt = (array)$table->getOptionTitle($wktyp_attrs[$i]['value'], $wktyp_attrs[$i]['workattribute_id']);
-						$wkopt = $table->findRecordById($wktyp_attrs[$i]['value']); 
-			?>
-						title = <?php echo json_encode($wkopt['title']); ?>;
-						opt_id = <?php echo json_encode($wkopt['id']); ?>;
-						var opt = <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['workattribute_id']); ?>;
-						sel_opt = $('input[name="' + opt + '"]');
-						$('input[name="' + opt + '"]').attr('name', sel_opt.attr('name') + 'optid,' + opt_id);
-						sel_opt.val(title);
-			<?php
-				}
-				else if($wktyp_attrs[$i]['type'] == 'Textarea')
-				{
-				?>
-					title =  <?php echo json_encode($escaper->escapeHtml($wktyp_attrs[$i]['value'])); ?>;
-					$('textarea[name="' + <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').val(title);
-				<?php					
-				}
-				else if($wktyp_attrs[$i]['type'] == 'RadioButton')
-				{
-				?>
-					title =  <?php echo json_encode($wktyp_attrs[$i]['value']); ?>;
-					if(title == "true")
-					{
-						$('input[id="' + <?php echo json_encode("t:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').prop("checked",true);
-					}
-					if(title == "false")
-					{
-						//$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').css("background","#8ec252");
-						$('input[id="' + <?php echo json_encode("f:" . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').prop("checked",true);
-					}
-				<?php
-				}
-				else
-				{
-				?>
-					title =  <?php echo json_encode($wktyp_attrs[$i]['value']); ?>;
-					$('input[name="' + <?php echo json_encode("wkatid," . $wktyp_attrs[$i]['workattribute_id']); ?> + '"]').val(title);
-				<?php
-				}
-			}
-			?>
-			return false;
-		}
 		$(document).ready(function () {
-			var worktype_Id = $('#work_type').val();
-			$.ajax({
-				method: 'post',
-				//url: 'http://localhost<?=$this->url('get_work_details')?>',
-				url: ur + workURL,
-				data: {
-					worktype_Id: worktype_Id
-				},
-				dataType: "json", 
-				cache: false,
-				success: function(data)
-				{
-					$.each(data.worktype_attribute, function (key, val) {				
-					$("<div />").attr("class","form-group optiondiv").attr("id","optiondiv").appendTo("#Citation");
-					$("<label />").attr("class","col-xs-2 control-label").text(val.field).appendTo("#Citation");
-					//$("</label>").appendTo("#divforoptions");
-					$("<div />").attr("id","optionfieldsdiv").appendTo("#Citation");
-					// append input control at end of form
-					if(val.type == 'Textarea')
-					{
-						$("<textarea />")
-							.attr("class","form-control")
-							.attr("id", val.field)
-							.attr("name", 'wkatid,' + val.id)
-							.appendTo("#Citation");
-						//$("</textarea>").appendTo("#divforoptions");
-					}
-					if(val.type == 'Text')
-					{
-						$("<input />")
-							.attr("type","text")
-							.attr("class","form-control")
-							.attr("id", val.field)
-							.attr("name", 'wkatid,' + val.id)
-							.appendTo("#Citation");
-					}	
-					if(val.type == 'RadioButton')
-					{
-						$('<div class="radio">' +
-							'<label class="radio"><input type="radio" id="t:' + val.id + '" name="wkatid,' + val.id + '" value="true" />True</label>' + 
-							'<label class="radio"><input type="radio" id="f:' + val.id + '" name="wkatid,' + val.id + '" value="false" />False</label>' + 
-							'</div>').appendTo("#Citation");
-					}
-					if(val.type == 'Select')
-					{
-						var container = $('<div/>');
-						$("<input />")
-							.attr("type","text")
-							.attr("class","form-control Attributeoption")
-							.attr("id", val.field + ':' + val.id)
-							.attr("name", 'wkatid,' + val.id)
-							.appendTo(container);
-						$("<button data-toggle='modal' data-target='#pubLookup'/>")
-							.attr("class","btn btn-default optionLookupBtn")
-							.attr("id","optionLookupBtn")
-							.attr("data-toggle","modal")
-							.attr("data-target","optionsLookup")
-							.attr("value","Lookup")
-							.text("Lookup")
-							.appendTo(container);	
-						container.appendTo('#Citation');
-					}	
-					})			
-					$(".optionLookupBtn").on('click', function(e){
-						// show Modal
-						var lookupBtn = this;
-						attr_option_lookup = $(lookupBtn).prev();
-						$("#optionsLookup").modal('show');
-						$('#optionsLookup').on('shown.bs.modal', function () {
-							$('#lookupOption').focus()
-							$('.option_search').on('click', function(e) {					
-								//var attribute_Id = $(lookupBtn).prev().attr('id');
-								var attribute_Id = attr_option_lookup.attr('id');
-								var option = $('#lookupOption').val();
-								$.ajax({
-									method: 'post',
-									//url: 'http://localhost<?=$this->url('get_work_details')?>',
-									url: ur + '<?=$this->url('get_work_details')?>',
-									data: {
-										option: option,
-										attribute_Id: attribute_Id
-									},
-									dataType: "json", 
-									cache: false,
-									success: function(data)
-									{
-										$(".option_results",document).html('');
-										$(".option_results",document).append('<p>Search Results</p>');
-										$.each(data.attribute_options, function (key, val) {
-											$(".option_results",document).append('<p><a name="'+val.id+'" href="'+ val.title +'" class="link_options">' + val.title + '</a></p>');
-										})
-									},
-									error: function () { 
-										$(".option_results",document).append('<p>None available</p>');
-									}
-								});	
-								$(document).off('click', '.link_options');
-								$(document).on("click", ".link_options", function(e) {
-									var linkval = $(this).attr('href');
-									attr_option_lookup.val(linkval);
-									attr_option_lookup.attr('name', attr_option_lookup.attr('name') + 'optid,' + $(this).attr('name'));
-									console.log(attr_option_lookup.attr('name'));
-									$('#lookupOption').val('');
-									$(".option_results",document).html('');	
-									$('.option_lookup_close').trigger('click');																
-									return false;
-								});
-							});
-						});
-						return false;
-					});
+			bindWorkTypeAttributes(document, workURL);
+			$('#attributesTab').on('shown.bs.tab', function() {
+				current_WkType = $('#work_type option:selected').text();
+				if(actual_WkType === current_WkType && attrTab) {
 					setValues(document);
-				},
-				error: function (data) { 
-					$("#Citation", document).html('<p>No Options</p>');
+					attrTab = false;
 				}
-			});
+			});					
 			return false;
 		});
-		</script>
-		
+		</script>	
 	</div>
 </div>
 <div class="form-group">

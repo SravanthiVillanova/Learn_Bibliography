@@ -3,7 +3,7 @@ $.fn.textWidth = function(text, font) {
 					if (!$.fn.textWidth.fakeEl) $.fn.textWidth.fakeEl = $('<span>').hide().appendTo(document.body);
 					$.fn.textWidth.fakeEl.text(text || this.val() || this.text()).css('font', font || this.css('font'));					
 					return $.fn.textWidth.fakeEl.width();
-				};
+};
 //Publisher autocomplete and location fetch
 function bindPublisherAutocomplete(context, workURL) {
 	//publisher enable/disable fields
@@ -168,7 +168,7 @@ function bindWorkTypeAttributes(context, workURL) {
 				$('#optionsLookup').on('shown.bs.modal', function() {
 					$('#lookupOption').focus()
 					$('.option_search').on('click', function(e) {
-						console.log(attr_option_lookup);
+						//console.log(attr_option_lookup);
 						//var attribute_Id = $(lookupBtn).prev().attr('id');
 						var attribute_Id = attr_option_lookup.attr('id');
 						var option = $('#lookupOption').val();
