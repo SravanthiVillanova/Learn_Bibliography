@@ -12,25 +12,31 @@
         if ($request->getqueryParams('id') !== null) {
             $params = $request->getqueryParams();
             $action = $params['action'];
-            $id = $params['id'];
-            //fetch name based on id
-            $table = new \VuBib\Db\Table\AgentType($adapter);
-            $row = $table->findRecordById($id);
-            $type = $row['type'];
-            echo "<p>$type</p>";
-            //fetch no of works associated
-            $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-            $paginator = $table->countRecordsByAgentType($id);
-            $cnt = $paginator->getTotalItemCount();
-            echo "<p><b>There are $cnt works associated with it.</b></p>";
-        }
+		}
+						
+		if ($request->getMethod() == 'POST') {
+			$post = $request->getParsedBody();
+		}
+		$agType = [];
+		if(count($post['selectAgentType']) > 0) {
+			foreach($post['selectAgentType'] as $agentType):
+				$agType['id'] = $agentType;
+						
+				//fetch name based on id
+				$table = new \VuBib\Db\Table\AgentType($adapter);
+				$row = $table->findRecordById($agType['id']);
+				$type = $row['type'];
+				echo "<li>$type</li>";
+		?>
+		<ul>
+		<input type="hidden" name="agType_id[]" value="<?=$agType['id']?>">						
+		<input type="hidden" name="action" value="<?=$action?>">
+		</ul>						
+		<?php
+			endforeach;
+		}
         ?>
-        <ul>
-            <input type="hidden" name="id" value="<?= $id ?>">
-            <input type="hidden" name="action" value="<?= $action ?>">
-        </ul>
         <input type="submit" name="submitt" value="Delete"> 
         <input type="submit" name="submitt" value="Cancel">
     </form>
 </div>
-

@@ -97,11 +97,6 @@ var workURL = '<?=$this->url('get_work_details')?>';
 var actual_WkType = "<?php echo $wk_type; ?>";
 var current_WkType = "";
 var attrTab = true;
-$.fn.getTextWidth = function(text, font) {
-						if (!$.fn.getTextWidth.fakeEl) $.fn.getTextWidth.fakeEl = $('<span>').hide().appendTo(document.body);
-						$.fn.getTextWidth.fakeEl.text(text || this.val() || this.text()).css('font', font || this.css('font'));					
-						return $.fn.getTextWidth.fakeEl.width();
-					};
 					
 function setValues(context)
 {
@@ -354,7 +349,7 @@ $(document).ready(function () {
 	$('#pub_table > tbody  > tr').each(function() {
 		var txt = $(this).find('#pubName').val();
 		//Resizing text field to make selected publisher visible
-		var pubLen = $(this).find('#pubName').getTextWidth(txt) + 35;
+		var pubLen = $(this).find('#pubName').textWidth(txt) + 35;
 		$(this).find('#pubName').css('width',pubLen + 'px');		
 	});
 	
@@ -363,8 +358,8 @@ $(document).ready(function () {
 		var ln_txt = $(this).find('#agent_LastName').val();
 		var fn_txt = $(this).find('#agent_FirstName').val();
 		//Resizing text field to make selected publisher visible
-		var agLnamLen = $(this).find('#agent_LastName').getTextWidth(ln_txt) + 35;
-		var agFnamLen = $(this).find('#agent_FirstName').getTextWidth(fn_txt) + 35;
+		var agLnamLen = $(this).find('#agent_LastName').textWidth(ln_txt) + 35;
+		var agFnamLen = $(this).find('#agent_FirstName').textWidth(fn_txt) + 35;
 		$(this).find('#agent_LastName').css('width',agLnamLen + 'px');	
 		$(this).find('#agent_FirstName').css('width',agFnamLen + 'px');	
 	});
@@ -868,7 +863,9 @@ $(document).ready(function () {
 		?>		
 			<tr name="pub_row[]">
 				<input type="hidden" name="pub_id[]" id="pubId" value="">
-				<td name="pubNameCol"><input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" /></td>
+				<td name="pubNameCol">
+				<input type="text" class="form-control" name="pub_name[]" id="pubName" placeholder="none" style="max-width: 100%; min-width: 100%;"/>
+				</td>
 				<input type="hidden" name="publoc_id[]" id="publoc_id" value="">
 				<td>
 					<select class="form-control pub_locations" name="pub_location[]" id="pubLocation" disabled>

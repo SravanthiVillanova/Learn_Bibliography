@@ -4,6 +4,7 @@ $.fn.textWidth = function(text, font) {
 					$.fn.textWidth.fakeEl.text(text || this.val() || this.text()).css('font', font || this.css('font'));					
 					return $.fn.textWidth.fakeEl.width();
 };
+
 //Publisher autocomplete and location fetch
 function bindPublisherAutocomplete(context, workURL) {
 	//publisher enable/disable fields
@@ -21,7 +22,8 @@ function bindPublisherAutocomplete(context, workURL) {
 				var pbLen = $(this).textWidth(ui.item.label) + 35;
 				$('#pubName', context).css('width',pbLen + 'px');				
 				$('#pubId', context).val(ui.item.id);
-				$("#pubLocation", context).prop("disabled", false);
+				//$("#pubLocation", context).prop("disabled", false);
+				$(".pub_locations", context).prop("disabled", false);
 				return false;
 			}
 		});
@@ -39,13 +41,14 @@ function bindPublisherAutocomplete(context, workURL) {
 			dataType: "json",
 			cache: false,
 			success: function(data) {
-				$("#pubLocation", context).html('');
+				$(".pub_locations", context).html('');
 				$.each(data.publoc, function(key, val) {
-					$("#pubLocation", context).append('<option id="' + val.id + '" value="' + val.id + '">' + val.label + '</option>');
+					$(".pub_locations", context).append('<option id="' + val.id + '" value="' + val.id + '">' + val.label + '</option>');
 					$("#publoc_id", context).eq(i).val(val.id);
+					
 					//Setting select to auto width to make selected publisher location visible
-					$("#pubLocation", context).css('width', 'auto');
-					//arr.push(val.id);
+					$(this).closest(".pub_locations", context).css('width', 'auto');
+
 					i++;
 				})
 			},

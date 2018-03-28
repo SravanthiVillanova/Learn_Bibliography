@@ -36,6 +36,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                 cache: false,
                 success: function (data) {
                     if ((data.ag_row.length) > 0) {
+						$('#find_src_agent').val('');
                         $('#src_find_outer_div').after('<div class="form-group" id="src_select_div">');
                         var src_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="src_result_table">' +
                                 '<tr><th>Select</th><th>First Name</th><th>Last Name</th><th>Works</th></tr>';
@@ -88,6 +89,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                 cache: false,
                 success: function (data) {
                     if ((data.ag_row.length) > 0) {
+						$('#find_dest_agent').val('');
                         $('#dest_find_outer_div').after('<div class="form-group" id="dest_select_div">');
                         var dest_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="dest_result_table">' +
                                 '<tr><th>Select</th><th>First Name</th><th>Last Name</th><th>Works</th></tr>';

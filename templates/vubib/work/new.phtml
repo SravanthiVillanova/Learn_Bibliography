@@ -20,8 +20,8 @@ $paginator_agtype->setItemCountPerPage($itemsCount_ag);
 //get url host
 $url_components = parse_url($this->serverUrl());
 $url_host = $url_components['scheme'] . '://' . $url_components['host'];
+$this->headScript()->appendFile($this->url('home') . 'js/work.js');
 ?>
-<script type="text/javascript" src="<?=$this->url('home')?>js/work.js" ></script>
 <style>
 table[name="source_fl_table"] {
 	font-size:10pt;

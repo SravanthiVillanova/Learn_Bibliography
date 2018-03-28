@@ -74,6 +74,7 @@ return [
             'vubib::publisher::delete_publisher' => 'templates/vubib/publisher/delete.phtml',
             'vubib::publisher::find_publisher' => 'templates/vubib/publisher/find.phtml',
             'vubib::publisher::add_publisher_location' => 'templates/vubib/publisher/new_location.phtml',
+			'vubib::publisher::edit_publisher_location' => 'templates/vubib/publisher/edit_location.phtml',
             'vubib::publisher::delete_merge_publisher_location' => 'templates/vubib/publisher/delete_merge_location.phtml',
             'vubib::publisher::manage_publisherlocation' => 'templates/vubib/publisher/manage_location.phtml',
             'vubib::publisher::merge_publisher' => 'templates/vubib/publisher/merge.phtml',

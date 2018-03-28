@@ -24,7 +24,6 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
             var find_srcpub = $('#find_src_pub').val();
             $.ajax({
                 method: 'post',
-                //url: 'http://localhost<?= $this->url("get_work_details") ?>',
 				url: ur + '<?=$this->url('get_work_details')?>',
                 data: {
                     pub_name: find_srcpub
@@ -33,6 +32,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                 cache: false,
                 success: function (data) {
                     if ((data.pub_row.length) > 0) {
+						$('#find_src_pub').val('');
                         $('#src_find_outer_div').after('<div class="form-group" id="src_select_div">');
                         var src_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="src_result_table">' +
                                 '<tr><th>Select</th><th>Publisher Name</th><th>Works</th></tr>';
@@ -56,15 +56,11 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
         $(document).on('click', '#btn_select_src', function () {
             var src = $('input[name="src_select"]:checked').val();
             if (src !== null) {               
-                //alert("selected src is " + src);
-                //alert("name is " + fn);
                 $("#find_dest_pub").prop("disabled", false);
                 $("#dest_pub_find_bt").prop("disabled", false);              
                 $('#mrg_src_id').val(src);
-                //alert("hidden src " + $('#mrg_src_id').val());
 				$.ajax({
 					method: 'post',
-                    //url: 'http://localhost<?= $this->url("get_work_details") ?>',
 				    url: ur + '<?=$this->url('get_work_details')?>',
 					data: {
 						publisher_Id_locs: src
@@ -118,6 +114,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                 cache: false,
                 success: function (data) {
                     if ((data.pub_row.length) > 0) {
+						$('#find_dest_pub').val('');
                         $('#dest_find_outer_div').after('<div class="form-group" id="dest_select_div">');
                         var dest_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="dest_result_table">' +
                                 '<tr><th>Select</th><th>Publisher Name</th><th>Works</th></tr>';

@@ -43,7 +43,8 @@
                         <td>
                             <div class="checkbox">
                                 <label><input type="checkbox" id='select' name="selectchk1[]" value=<?= $escaper->escapeHtml($row['location']) ?>>
-								<?php echo $escaper->escapeHtml($row['location']); ?>
+								<a href="<?= $this->url('edit_publisher_location') ?><?= '?pub_id=' . $id . '&loc_id=' . $row1['id'] . '&action=edit' ?>">
+								<?php echo $escaper->escapeHtml($row['location']); ?></a>
                                 </label>
                             </div>
                         </td>

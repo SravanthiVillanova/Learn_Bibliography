@@ -2,79 +2,8 @@ body {
     font-family: "Bitstream Vera Sans", Verdana, Arial, Sans-Serif;
     font-size: 10pt;
 }
-
-div.page {
-    width: 760;
-    border: solid 1px #666666;
-    padding: 8px;
-    background-color: #FFFFFF;
-    text-align: left;
-}
-
-h1 {
-    font-size: 16pt;
-}
-    
-h2 {
-    font-size: 12pt;
-}
-
-table.tree {
-    font-size: 9pt;
-}
-  
-table.tree a {
-    text-decoration: none;
-}
-
-table.tree a:hover {
-    text-decoration: underline;
-}
-  
-table.tree a.root {
-    font-weight: bold;
-    font-size: 11pt;
-}
-
-.search {
-    font-size: 8pt;
-    font-weight: bold;
-}
-
-.label {
-    font-size: 10pt;
-    font-weight: bold;
-    text-align: right;
-}
-
-.okay {
-    color: #00CC00;
-    font-family: Courier New, Courier;
-    font-size: 10pt;
-}
-
-.error {
-    color: #CC0000;
-    font-family: Courier New, Courier;
-    font-size: 10pt;
-}
-
-.datagrid {
-    font-size: 10pt;
-}
-
-.datagrid a:visited {
-    color: #999999;
-}
-
-.datagrid th a {
-    text-decoration:none;
-}
-
-.datagrid th a:hover {
-    text-decoration: underline;
-}
-
-.datagrid th a:visited {
-    color: #0000FF;
+td.addEle {
+	float:left;
+	padding-left: 15px;
+	text-decoration: underline;
 }

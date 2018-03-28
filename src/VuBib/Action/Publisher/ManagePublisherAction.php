@@ -124,15 +124,17 @@ class ManagePublisherAction
     protected function doDelete($post)
     {
         $locs = [];
-        if (!is_null($post['id'])) {
-            $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-            $table->deleteRecordByPub($post['id']);
+        if (!is_null($post['pub_id'])) {
+			foreach($post['pub_id'] as $pubId):
+				$table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
+				$table->deleteRecordByPub($pubId);
 
-            $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
-            $table->deletePublisherRecord($post['id'], $locs);
+				$table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
+				$table->deletePublisherRecord($pubId, $locs);
 
-            $table = new \VuBib\Db\Table\Publisher($this->adapter);
-            $table->deleteRecord($post['id']);
+				$table = new \VuBib\Db\Table\Publisher($this->adapter);
+				$table->deleteRecord($pubId);
+			endforeach;
         }
     }
 
@@ -313,7 +315,7 @@ class ManagePublisherAction
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($query, $post);
-        $paginator->setDefaultItemCountPerPage(7);
+        $paginator->setDefaultItemCountPerPage(20);
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::publisher::manage_publisher', $this->router, $this->template, $this->adapter);
         $pgs = $simpleAction->getNextPrevious($paginator, $query);

@@ -149,7 +149,7 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
             $select->columns(
                 [
                 'letter' => new Expression(
-                    'DISTINCT(substring(?, 1, 1))',
+                    'DISTINCT(substring(UPPER(?), 1, 1))',
                     ['name'],
                     [Expression::TYPE_IDENTIFIER]
                 ),

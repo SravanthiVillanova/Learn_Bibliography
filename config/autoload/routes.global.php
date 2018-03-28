@@ -64,6 +64,7 @@ return [
 			VuBib\Action\Publisher\FindPublisherAction::class => VuBib\Action\Publisher\FindPublisherFactory::class,
 			VuBib\Action\Publisher\ManagePublisherAction::class => VuBib\Action\Publisher\ManagePublisherFactory::class,
             VuBib\Action\Publisher\AddPublisherLocationAction::class => VuBib\Action\Publisher\AddPublisherLocationFactory::class,
+			VuBib\Action\Publisher\EditPublisherLocationAction::class => VuBib\Action\Publisher\EditPublisherLocationFactory::class,
             VuBib\Action\Publisher\DeleteMergePublisherLocationAction::class => VuBib\Action\Publisher\DeleteMergePublisherLocationFactory::class,
             VuBib\Action\Publisher\ManagePublisherLocationAction::class => VuBib\Action\Publisher\ManagePublisherLocationFactory::class,
             VuBib\Action\Publisher\EditPublisherAction::class => VuBib\Action\Publisher\EditPublisherFactory::class,
@@ -565,6 +566,17 @@ return [
                 //BodyParamsMiddleware::class,
 				\VuBib\Middleware\AuthenticationMiddleware::class,
                 VuBib\Action\Publisher\AddPublisherLocationAction::class,
+            ],                
+            'allowed_methods' => ['GET','POST'],
+        ],
+		
+		[
+            'name' => 'edit_publisher_location',
+		    'path' => '/Publisher/edit_location',
+            'middleware' => [
+                //BodyParamsMiddleware::class,
+				\VuBib\Middleware\AuthenticationMiddleware::class,
+                VuBib\Action\Publisher\EditPublisherLocationAction::class,
             ],                
             'allowed_methods' => ['GET','POST'],
         ],

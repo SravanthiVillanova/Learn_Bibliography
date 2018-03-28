@@ -1,13 +1,13 @@
 body {
-    padding: 0px;
+	padding: 0px;
     margin: 0px;
 }
 
 div.banner {
-    background-image: URL('../images/banner-back.gif');
-    background-repeat: repeat-x;
-    background-color: #6699CC;
-    height: 67px;
+	background-image: URL('../images/banner-back.gif');
+	background-repeat: repeat-x;
+	background-color: #6699CC;
+	height: 67px;
 }
 
 h1 {
@@ -16,48 +16,4 @@ h1 {
 	color: #FFFFFF;
     height: 30px;
 	font-size: 24px;
-}
-
-div.breadcrumb {
-    background-image: URL('../images/banner-back.gif');
-    background-repeat: repeat-x;
-    background-color: #6699CC;
-    line-height: 25px;
-    height: 25px;
-    padding: 0px 10px 0px 10px;   
-}
-
-div.breadcrumb a {
-    color: #003366;
-}
-
-div.breadcrumb a:visited {
-    color: #003366;
-}
-
-div.tipbox {
-    width: 200px;
-    border: solid 1px;
-    background-color: #FFFFEE;
-    font-size: 8pt;
-    margin: 20px;
-}
-
-div.tipbox div {
-    font-weight: bold;
-    text-align: center;
-    background-color: #CCCC99;
-}
-
-div.tipbox p {
-    padding: 5px;
-}
-
-table.form th {
-    text-align: right;
-}
-
-.nopadding {
-    padding: 0;
-   margin: 0;
 }

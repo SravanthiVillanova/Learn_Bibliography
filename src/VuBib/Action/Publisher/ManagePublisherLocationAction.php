@@ -141,6 +141,14 @@ class ManagePublisherLocationAction
             }
         }
         
+		//add a new publisher
+        if ($post['action'] == 'edit') {
+            if ($post['submitt'] == 'Save') {
+                $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
+                $table->updatePublisherLocation($post['location_id'], $post['location_newname']);
+            }
+        }
+		
         //delete a location for a publisher
         if ($post['action'] == 'delete') {
             $this->doDelete($post, $query);

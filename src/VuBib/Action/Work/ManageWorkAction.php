@@ -351,18 +351,20 @@ class ManageWorkAction
     {
         if (isset($post['submitt'])) {
             if ($post['submitt'] == 'Delete') {
-                if (!is_null($post['work_id'])) {
-                    $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-                    $table->deleteRecordByWorkId($post['work_id']);
-                    $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
-                    $table->deleteRecordByWorkId($post['work_id']);
-                    $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-                    $table->deleteRecordByWorkId($post['work_id']);
-                    $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-                    $table->deleteRecordByWorkId($post['work_id']);
-                    $table = new \VuBib\Db\Table\Work($this->adapter);
-                    $table->deleteRecordByWorkId($post['work_id']);
-                }
+				if (!is_null($post['work_id'])) {
+					foreach($post['work_id'] as $workId):
+						$table = new \VuBib\Db\Table\WorkAgent($this->adapter);
+						$table->deleteRecordByWorkId($workId);
+						$table = new \VuBib\Db\Table\Work_Folder($this->adapter);
+						$table->deleteRecordByWorkId($workId);
+						$table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
+						$table->deleteRecordByWorkId($workId);
+						$table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+						$table->deleteRecordByWorkId($workId);
+						$table = new \VuBib\Db\Table\Work($this->adapter);
+						$table->deleteRecordByWorkId($workId);
+					endforeach;
+				}
             }
         }
     }

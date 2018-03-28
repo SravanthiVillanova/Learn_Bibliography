@@ -99,9 +99,9 @@ class GetWorkDetailsAction
         endforeach;
         foreach ($pub_row as $row) :
             $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-        $wks = $table->findRecordByPublisherId($row['id']);
-        $no_wks = count($wks);
-        $no_of_wks[] = $no_wks;
+			$wks = $table->findRecordByPublisherId($row['id']);
+			$no_wks = count($wks);
+			$no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_row[$i]['works'] = $no_of_wks[$i];

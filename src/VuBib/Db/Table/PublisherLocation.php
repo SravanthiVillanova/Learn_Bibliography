@@ -143,6 +143,24 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
+	/**
+     * Update publisher location record.
+     *
+     * @param Number $id   publisher id
+     * @param String $name publisher name
+     *
+     * @return empty
+     */
+    public function updatePublisherLocation($loc_id, $location)
+    {
+        $this->update(
+            [
+                'location' => $location,
+            ],
+            ['id' => $loc_id]
+        );
+    }
+	
     /**
      * Find publisher location
      *
@@ -237,5 +255,20 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
     public function mergePublisher($src_loc_id)
     {
         $this->delete(['id' => $src_loc_id]);
+    }
+	
+	/**
+     * Find publisher location by id
+     *
+     * @param Number $id publisher location id
+     *
+     * @return Array $row publisher location record
+     */
+    public function findRecordById($loc_id)
+    {
+        $rowset = $this->select(array('id' => $loc_id));
+        $row = $rowset->current();
+
+        return $row;
     }
 }
