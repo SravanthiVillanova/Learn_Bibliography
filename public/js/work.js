@@ -26,6 +26,12 @@ function bindPublisherAutocomplete(context, workURL) {
 				$(".pub_locations", context).prop("disabled", false);
 				return false;
 			}
+			response: function(event, ui) {
+				if (!ui.content.length) {
+					var noResult = { value:"",label:"No results found" };
+					ui.content.push(noResult);
+				}
+			}
 		});
 	});
 	$('#pubName', context).on('autocompleteselect', function(e, ui) {
@@ -221,9 +227,10 @@ function bindWorkTypeAttributes(context, workURL) {
 
 //Add classification hierarchy
 _select = '';
-function bindSourceClassification(that, context, workURL) {
+function bindClassification(that, context, workURL, for_str) {
 	var to_add_row = $(that).closest("tr");
 	//to_add_row.children('td', context).children('select', context).eq(0).css('background-color', '#8ec252');
+	
 	//folder id of selected option
 	fl_changed = $(that).val();
 
@@ -233,24 +240,24 @@ function bindSourceClassification(that, context, workURL) {
 	fl_len = fl_selected_text.length + 5;
 	$(that).css('width', fl_len + 'ch');
 	//
-	var no_of_fl_parent = to_add_row.find('.select_source_fl', context).length;
+	var no_of_fl_parent = to_add_row.find('.select_' + for_str + '_fl', context).length;
 	for (var i = 0; i < no_of_fl_parent; i++) {
-		if (to_add_row.find('.select_source_fl', context).eq(i).val() === fl_changed) {
+		if (to_add_row.find('.select_' + for_str + '_fl', context).eq(i).val() === fl_changed) {
 			change_idx = i;
-			folder_Id = to_add_row.find('.select_source_fl', context).eq(i).val();
+			folder_Id = to_add_row.find('.select_' + for_str + '_fl', context).eq(i).val();
 			break;
 		}
 	}
 
 	if (folder_Id === "") {
-		to_add_row.find('.source_fl_col', context).eq(0).nextAll('.source_fl_col', context).remove();
-		to_add_row.find('.select_source_fl', context).eq(0).val('');
+		to_add_row.find('.' + for_str + '_fl_col', context).eq(0).nextAll('.' + for_str + '_fl_col', context).remove();
+		to_add_row.find('.select_' + for_str + '_fl', context).eq(0).val('');
 	} else {
-		to_add_row.find('.source_fl_col', context).eq(change_idx).nextAll('.source_fl_col', context).remove();
+		to_add_row.find('.' + for_str + '_fl_col', context).eq(change_idx).nextAll('.' + for_str + '_fl_col', context).remove();
 	}
 
 	//no_of_fl_parent = $('.select_source_fl',context).length;
-	no_of_fl_parent = to_add_row.find('.select_source_fl', context).length;
+	no_of_fl_parent = to_add_row.find('.select_' + for_str + '_fl', context).length;
 
 	$.ajax({
 		method: 'post',
@@ -262,9 +269,12 @@ function bindSourceClassification(that, context, workURL) {
 		cache: false,
 		success: function(data) {
 			if (data.folder_children.length > 0) {
-				to_add_row.find('.source_fl_col', context).eq(no_of_fl_parent - 1).after('<td class="source_fl_col" name="source_fl_col" id="source_fl_col" style="border-spacing: 10px; display: inline-block;"/>');
+				to_add_row.find('.' + for_str + '_fl_col', context).eq(no_of_fl_parent - 1).after('<td class="' + for_str + '_fl_col" ' + 
+				                                                                                  'name="' + for_str + '_fl_col" ' +
+																								  'id="' + for_str + '_fl_col" ' +
+																								  'style="border-spacing: 10px; display: inline-block;"/>');
 
-				_select = $('<select class="form-control select_source_fl select2" name="select_source_fl[]">');
+				_select = $('<select class="form-control select_' + for_str + '_fl select2" name="select_' + for_str + '_fl[]">');
 				to_append = $('<option value=""></option>');
 				$.each(data.folder_children, function(key, val) {
 					to_append += '<option value="' + val.id + '">' + val.text_fr + '</option>';
@@ -272,11 +282,11 @@ function bindSourceClassification(that, context, workURL) {
 				_select.append($('<option />'));
 				_select.append(to_append);
 
-				to_add_row.find('.source_fl_col', context).eq(no_of_fl_parent).append(_select);
-				to_add_row.find('.source_fl_col', context).eq(no_of_fl_parent).append('</select>');
+				to_add_row.find('.' + for_str + '_fl_col', context).eq(no_of_fl_parent).append(_select);
+				to_add_row.find('.' + for_str + '_fl_col', context).eq(no_of_fl_parent).append('</select>');
 
 				_select.on('change', function() {
-					bindSourceClassification(this, document, workURL);
+					bindClassification(this, document, workURL, for_str);
 					return false;
 				});
 			}
@@ -344,4 +354,64 @@ function bindParentWork(context,workURL)
 		   return false;
 	   });
 	   return false;
+}
+
+function mergeClassification(that, context, workURL, for_str)
+{
+	if ($(that).val() == "") {
+		$('.' + for_str + '_fl_col').eq(0).nextAll('.source_fl_col').remove();
+		$('.' + for_str + '_fl_col').eq(0).val('');
+	} else
+	{
+		fl_changed = $(that).val();
+		var no_of_fl_parent = $('.select_' + for_str + '_fl').length;
+
+		for (var i = 0; i < no_of_fl_parent; i++)
+		{
+			if ($('.select_' + for_str + '_fl').eq(i).val() === fl_changed)
+			{
+				change_idx = i;
+				folder_Id = $('.select_' + for_str + '_fl').eq(i).val();
+				break;
+			}
+		}
+		$('.' + for_str + '_fl_col').eq(change_idx).nextAll('.' + for_str + '_fl_col').remove();
+
+		no_of_fl_parent = $('.select_' + for_str + '_fl').length;
+
+		$.ajax({
+			method: 'post',
+			//url: 'http://localhost<?= $this->url('get_work_details') ?>',
+			url: ur + workURL,
+			data: {
+				folder_Id: folder_Id
+			},
+			dataType: "json",
+			cache: false,
+			success: function (data)
+			{
+				$('.' + for_str + '_fl_col').eq(no_of_fl_parent - 1).after('<td class="' + for_str + '_fl_col" ' + 
+				                                                           'name="' + for_str + '_fl_col" ' + 
+																		   'id="' + for_str + '_fl_col" style="border-spacing: 10px;"/>');
+
+				_select = $('<select class="form-control select_' + for_str + '_fl" name="select_' + for_str + '_fl[]">');
+				to_append = $('<option value=""></option>');
+				$.each(data.folder_children, function (key, val) {
+					to_append += '<option value="' + val.id + '">' + val.text_fr + '</option>';
+				});
+				_select.append($('<option />'));
+				_select.append(to_append);
+				$('.' + for_str + '_fl_col').eq(no_of_fl_parent).append(_select);
+				$('.' + for_str + '_fl_col').eq(no_of_fl_parent).append('</select>');
+
+				_select.on('change', function () {
+					bindClassification(this, document, workURL, for_str);
+				});
+			},
+			error: function (data) {
+				//$("#Classification", context).html('<p>No Options</p>');
+			}
+		});
+		}
+	return false;
 }

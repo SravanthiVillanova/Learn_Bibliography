@@ -123,16 +123,20 @@ class ManageWorkTypeAction
      */
     protected function doDelete($post)
     {
-        if ($post['submitt'] == 'Delete') {
-            if (!is_null($post['id'])) {
-                $table = new \VuBib\Db\Table\Work($this->adapter);
-                $table->updateWorkTypeId($post['id']);
-                $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
-                $table->deleteRecordByWorkType($post['id']);
-                $table = new \VuBib\Db\Table\WorkType($this->adapter);
-                $table->deleteRecord($post['id']);
-            }
-        }
+		if (isset($post['submitt'])) {
+			if ($post['submitt'] == 'Delete') {
+				if (!is_null($post['worktype_id'])) {
+					foreach($post['worktype_id'] as $worktype_Id):
+						$table = new \VuBib\Db\Table\Work($this->adapter);
+						$table->updateWorkTypeId($worktype_Id);
+						$table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
+						$table->deleteRecordByWorkType($worktype_Id);
+						$table = new \VuBib\Db\Table\WorkType($this->adapter);
+						$table->deleteRecord($worktype_Id);
+					endforeach;
+				}
+			}
+		}
     }
     
     /**
@@ -272,7 +276,7 @@ class ManageWorkTypeAction
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($post);
-        $paginator->setDefaultItemCountPerPage(7);
+        $paginator->setDefaultItemCountPerPage(15);
         //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::worktype::manage_worktype', $this->router, $this->template, $this->adapter);

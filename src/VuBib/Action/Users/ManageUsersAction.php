@@ -241,7 +241,7 @@ class ManageUsersAction
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($post);
-        $paginator->setDefaultItemCountPerPage(7);
+        $paginator->setDefaultItemCountPerPage(15);
         //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::users::manage_users', $this->router, $this->template, $this->adapter);

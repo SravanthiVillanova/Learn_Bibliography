@@ -258,7 +258,7 @@ $(document).ready(function () {
 						'<td style="display: inline-block;"><button type="submit" class="btn btn-secondary" name="fl_remove" id="fl_remove" value="Remove">Remove</button></td>' + 
 						'</tr>');
 		$("#source_fl_table").append(fl_row);
-		//bindSourceClassification(this,document,workURL);
+		//bindClassification(this,document,workURL,'source');
 		return false;
     });
 	//remove classification rows
@@ -318,7 +318,7 @@ $(document).ready(function () {
 					to_add_row.find('.source_fl_col').eq(no_of_fl_parent).append('</select>');
 					
 					_select.on('change',function(){
-						bindSourceClassification(this,document,workURL);
+						bindClassification(this,document,workURL,'source');
 						return false;
 					});	
 					}

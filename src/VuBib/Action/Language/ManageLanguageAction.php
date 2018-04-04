@@ -169,7 +169,7 @@ class ManageLanguageAction
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($post);
-        $paginator->setDefaultItemCountPerPage(7);
+        $paginator->setDefaultItemCountPerPage(10);
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::language::manage_language', $this->router, $this->template, $this->adapter);
         $pgs = $simpleAction->getNextPrevious($paginator, $query);

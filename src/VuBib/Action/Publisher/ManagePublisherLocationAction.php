@@ -203,7 +203,7 @@ class ManagePublisherLocationAction
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($query, $post);
-        $paginator->setDefaultItemCountPerPage(7);
+        $paginator->setDefaultItemCountPerPage(15);
         //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::publisher::manage_publisherlocation', $this->router, $this->template, $this->adapter);

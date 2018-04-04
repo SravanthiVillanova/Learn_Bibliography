@@ -29,13 +29,12 @@ td.modified {
 $(document).ready(function () {
 	//Check if records are selected for delete
 	$("#delWork").on('click', function () {
-		console.log("clicked");
 		if ($("#workListTable input:checkbox:checked").length > 0) {
 			// any one is checked
 			return true;
 		} else {
 			// none is checked
-			alert("No works selected, Please select works to delete.");
+			alert("No work(s) selected, Please select work(s) to delete.");
 			return false;
 		}
 	});

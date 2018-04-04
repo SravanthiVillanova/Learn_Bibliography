@@ -123,14 +123,18 @@ class AttributeManageOptionsAction
      */
     protected function doDelete($post, $query)
     {
-        if ($post['submitt'] == 'Delete') {
-            if (!is_null($post['id'])) {
-                $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-                $table->deleteRecordByValue($query['id'], $post['id']);
-                $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-                $table->deleteOption($query['id'], $post['id']);
-            }
-        }
+		if (isset($post['submitt'])) {
+			if ($post['submitt'] == 'Delete') {
+				if (!is_null($post['workattropt_id'])) {
+					foreach($post['workattropt_id'] as $workattropt_Id):
+						$table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+						$table->deleteRecordByValue($query['id'], $workattropt_Id);
+						$table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+						$table->deleteOption($query['id'], $workattropt_Id);
+					endforeach;
+				}
+			}
+		}
     }
     
     /**
@@ -238,7 +242,7 @@ class AttributeManageOptionsAction
             $post = $request->getParsedBody();
         }
         $paginator = $this->getPaginator($query, $post);
-        $paginator->setDefaultItemCountPerPage(10);
+        $paginator->setDefaultItemCountPerPage(15);
         //$allItems = $paginator->getTotalItemCount();
         $countPages = $paginator->count();
 

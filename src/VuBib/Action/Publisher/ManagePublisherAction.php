@@ -315,7 +315,7 @@ class ManagePublisherAction
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($query, $post);
-        $paginator->setDefaultItemCountPerPage(20);
+        $paginator->setDefaultItemCountPerPage(15);
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::publisher::manage_publisher', $this->router, $this->template, $this->adapter);
         $pgs = $simpleAction->getNextPrevious($paginator, $query);

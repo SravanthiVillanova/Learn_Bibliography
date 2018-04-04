@@ -11,15 +11,30 @@ if ($request->getqueryParams('action') !== null) {
     $id     = $params['id'];
 }
 ?>
+<script type='text/javascript'>
+$(document).ready(function () {
+	//Check if records are selected for delete
+	$("#delWorkAttrOpt").on('click', function () {
+		if ($("#workAttrOptListTable input:checkbox:checked").length > 0) {
+			// any one is checked
+			return true;
+		} else {
+			// none is checked
+			alert("No attribute option(s) selected, Please select attribute option(s) to delete.");
+			return false;
+		}
+	});
+});
+</script>
 <div class="col-md-9">
-	<a href="<?=$this->url('new_option')?><?='?id=' . $id . '&action=new'?>">Add Option</a>
-	<?php //echo "page is $this->countp <br />"; ?>
-	<table class="table table-striped table-condensed" style="font-size:10pt;">
+	<a href="<?=$this->url('new_option')?><?='?id=' . $id . '&action=new'?>"><b style="text-decoration: underline;">Add Option</b></a>
+	<form action="<?=$this->url('delete_option')?><?='?wkat_id=' . $id . '&action=delete'?>" method="post">
+	<table class="table table-striped table-condensed" id="workAttrOptListTable" style="font-size:10pt;">
         <thead>
         <tr>
+		  <th>&nbsp;&nbsp;</th>
 		  <th>Option</th>
           <th>Type</th>
-		  <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -32,22 +47,23 @@ if ($request->getqueryParams('action') !== null) {
 			?>
 			<tr>
 				<td>
-					<?php echo $escaper->escapeHtml($row['title']); ?>
-			
+					<input type="checkbox" id="selWorkAttrOpt" name="selectWorkAttrOpt[]" value=<?=$row['id']?>>
+				</td>
+				<td>
+					<a href="<?=$this->url('edit_option')?><?='?wkat_id=' . $id . '&id=' . $row['id'] . '&action=edit'?>">
+					<?php echo $escaper->escapeHtml($row['title']); ?></a>			
 				</td>
 				<td>
 					<?php echo $escaper->escapeHtml($row['value']); ?>
-				</td>
-				<td>                   
-					<a href="<?=$this->url('edit_option')?><?='?wkat_id=' . $id . '&id=' . $row['id'] . '&action=edit'?>">Edit</a>        
-					|
-					<a href="<?=$this->url('delete_option')?><?='?wkat_id=' . $id . '&id=' . $row['id'] . '&action=delete'?>">Delete</a>          			
 				</td>
 			</tr>
 			<?php endforeach; ?>
 		<?php } ?>
         </tbody>
 	</table>
+	<input type="hidden" name="wkat_id" value="<?=$id?>">
+	<input type="submit" name="delWorkAttrOpt" id="delWorkAttrOpt" value="Delete">
+	</form>
 	<?php if($this->countp > 1) { ?>
 		<form method="get" action="page">
 			<?=$this->paginationControl($this->rows,

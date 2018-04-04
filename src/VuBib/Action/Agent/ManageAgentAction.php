@@ -192,12 +192,18 @@ class ManageAgentAction
      */
     protected function doDelete($post)
     {
-        if (!is_null($post['id'])) {
-            $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-            $table->deleteRecordByAgentId($post['id']);
-            $table = new \VuBib\Db\Table\Agent($this->adapter);
-            $table->deleteRecord($post['id']);
-        }
+		if ($post['action'] == 'delete') {
+			if ($post['submitt'] == 'Delete') {
+				if (!is_null($post['agent_id'])) {
+					foreach($post['agent_id'] as $agentId):
+						$table = new \VuBib\Db\Table\WorkAgent($this->adapter);
+						$table->deleteRecordByAgentId($agentId);
+						$table = new \VuBib\Db\Table\Agent($this->adapter);
+						$table->deleteRecord($agentId);
+					endforeach;
+				}
+			}
+		}
     }
 
     /**
@@ -283,7 +289,7 @@ class ManageAgentAction
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($query, $post);
-        $paginator->setDefaultItemCountPerPage(7);
+        $paginator->setDefaultItemCountPerPage(15);
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::agent::manage_agent', $this->router, $this->template, $this->adapter);
         $pgs = $simpleAction->getNextPrevious($paginator, $query);

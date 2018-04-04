@@ -126,25 +126,26 @@ class AttributesWorkTypeAction
      */
     protected function doDelete($post)
     {
-        if ($post['submitt'] == 'Delete') {
-            if (!is_null($post['id'])) {
-                //no
-                        $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-                $table->deleteWorkAttributeFromWork($post['id']);
-
-                        //yes
-                        $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
-                $table->deleteAttributeFromAllWorkTypes($post['id']);
-
-                        //yes
-                        $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-                $table->deleteWorkAttributeOptions($post['id']);
-
-                        //no
-                        $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
-                $table->deleteRecord($post['id']);
-            }
-        }
+        if (isset($post['submitt'])) {
+			if ($post['submitt'] == 'Delete') {
+				if (!is_null($post['workattr_id'])) {
+					foreach($post['workattr_id'] as $workattr_Id):
+						//no
+						$table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+						$table->deleteWorkAttributeFromWork($workattr_Id);
+						//yes
+						$table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
+						$table->deleteAttributeFromAllWorkTypes($workattr_Id);
+						//yes
+						$table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+						$table->deleteWorkAttributeOptions($workattr_Id);
+						//no
+						$table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
+						$table->deleteRecord($workattr_Id);
+					endforeach;
+				}
+			}
+		}
     }
     
     /**
@@ -212,7 +213,7 @@ class AttributesWorkTypeAction
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($post);
-        $paginator->setDefaultItemCountPerPage(7);
+        $paginator->setDefaultItemCountPerPage(15);
         //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::worktype::attributes_worktype', $this->router, $this->template, $this->adapter);
