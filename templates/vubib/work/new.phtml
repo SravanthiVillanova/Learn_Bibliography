@@ -212,6 +212,40 @@ $(document).ready(function() {
 	   return false;
    });
    
+   /*$('#addNewPub').on('click', function() {
+	   return false;
+   });*/
+   
+	//$('.addNewPubLink').on('click', function() {
+		//console.log("clicked");
+		$('#addPublisherLookup').on('shown.bs.modal', function() {
+			var lnk = $('.addNewPubLink');
+			console.log("pub name to add is " + lnk.closest('tr').find('#pubName').val());
+			var typedText = lnk.closest('tr').find('#pubName').val();
+			$('#newpublisher').val(typedText);
+			$('#addNewPub').on('click', function(e) {
+				console.log("save new pub");
+				$.ajax({
+					method: 'post',
+					url: ur + workURL,
+					data: {
+						option: option,
+						attribute_Id: attribute_Id
+					},
+					dataType: "json",
+					cache: false,
+					success: function(data) {
+					},
+					error: function() {
+						$(".option_results", context).append('<p>None available</p>');
+					}
+				});
+				return false;
+			});
+			return false;
+		});
+		//return false;
+	//});
 	$('#submit_save').on('click', function() {
 	   var no_of_rows = $('table[name="source_fl_table"]').find("tr").length;
 		var arr = [];
@@ -426,22 +460,29 @@ $(document).ready(function() {
 					</div>
 					<div class="modal-body ig">	
 						    <form class="form-horizontal" method="post" action="<?= $this->url('manage_publisher') ?>">
-								<input type="hidden" name="action" value="<?php echo $action; ?>">
+								<input type="hidden" name="action" value="work_addNew">
 								<div class="form-group">
 									<label class="col-xs-2 control-label">Name: </label>
 									<div class="col-xs-7">
-										<input type="text" class="form-control" name="name_publisher" id="newpublisher" />
+										<input type="text" class="form-control" name="name_publisher" id="newpublisher" required="true" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-3 control-label">Location: </label>
+									<div class="col-xs-7">
+										<input type="text" class="form-control" name="add_publisherloc" id="addpublisherloc" />
 									</div>
 								</div>
 								<div class="form-group">
 									<div class="col-sm-offset-2 col-sm-10">
-										<button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button> 
-										<button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
+										<button type="submit" class="btn btn-primary" id="addNewPub" name="submitt" value="Save">Save</button> 
+										<!--<button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>-->
 									</div>
 								</div>
 							</form>   
 					</div>
 					<div class="modal-footer ignore ig">
+						<button type="button" class="btn btn-default instr_lookup_close ig" data-dismiss="modal">Close</button>
 					</div>
 				</div>
 			</div>

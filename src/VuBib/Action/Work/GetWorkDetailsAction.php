@@ -405,6 +405,9 @@ class GetWorkDetailsAction
         if (isset($post['lookup_title'])) {
             $this->getParentLookup($post);
         }
+		if (isset($post['addNewPub_frmWork'])) {
+			$this->addAndGetNewPub($post);
+		}
     }
     
     /**

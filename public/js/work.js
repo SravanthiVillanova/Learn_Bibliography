@@ -11,7 +11,7 @@ function bindPublisherAutocomplete(context, workURL) {
 	$("#pubLocation", context).prop("disabled", "disabled");
 
 	//Publisher autocomplete
-	$(function() {
+	/*$(function() {
 		$("#pubName", context).autocomplete({
 			//source: ur + '<?=$this->url('get_work_details')?>?autofor=publisher',
 			source: ur + workURL + '?autofor=publisher',
@@ -33,7 +33,63 @@ function bindPublisherAutocomplete(context, workURL) {
 				}
 			}
 		});
-	});
+	});*/
+	$("#pubName", context).autocomplete({
+        source: function (request, response) {            
+            $.ajax({
+                url: ur + workURL + '?autofor=publisher',
+                type: "get",
+                dataType: "json",
+                cache: false,
+                data: {
+                    term : $("#pubName", context).val(),
+                },
+				success: function (data) {
+					if(!data.length){
+						var to_add = $('<p>No matches found. </p>'+
+						             '<a type="button" class="addNewPubLink" href="#addPublisherLookup" data-toggle="modal" ' + 
+						                 'style="text-decoration: underline;">Add New</a>');
+						to_add.remove();
+						$('#pubName', context).after(to_add);
+						/*$('#pubName', context).after('<p>No matches found. </p><a type="button" class="addNewPubLink" href="#addPublisherLookup" data-toggle="modal" ' + 
+						                             'style="text-decoration: underline;">Add New</a>');*/
+						/*$('#pubName', context).after('<p>No matches found. </p>' + 
+						                             '<button class="addNewPubLink btn btn-link" ' + 
+													 'data-toggle="modal" data-target="#addPublisherLookup"' + 
+													 'style="text-decoration: underline;">Add New</button>');*/
+					}
+					else{
+						// normal response
+						response($.map(data, function (item) {
+							return {
+								label: item.label,
+                                value: item.value,
+								id:    item.id
+							}
+						}));
+					}
+				},
+			});
+		},
+        //minLength: that.options.minLength,
+        select: function(event, ui) {
+			if(ui.item.label == "No matches found") {
+				$('#pubName', context).val(ui.item.value);
+				//$('#pubName', context).after('<a>Add New</a>'); 				
+				return false
+			}
+			else{
+				$('#pubName', context).val(ui.item.label);				
+				//Resizing text field to make selected publisher visible
+				var pbLen = $(this).textWidth(ui.item.label) + 35;
+				$('#pubName', context).css('width',pbLen + 'px');				
+				$('#pubId', context).val(ui.item.id);
+				//$("#pubLocation", context).prop("disabled", false);
+				$(".pub_locations", context).prop("disabled", false);
+				return false;
+			}
+		}
+    });
 	$('#pubName', context).on('autocompleteselect', function(e, ui) {
 		var publisher_Id = ui.item.id;
 		i = 0;

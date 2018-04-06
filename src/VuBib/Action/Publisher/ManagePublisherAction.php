@@ -209,6 +209,13 @@ class ManagePublisherAction
                 $this->doNew($post);
             }
         }
+		//add a new publisher from work
+		if ($post['action'] == 'work_addNew') {
+			if ($post['submitt'] == 'Save') {
+				var_dump($post);
+				die();
+			}
+		}
         //edit a publisher
         if ($post['action'] == 'edit') {
             if ($post['submitt'] == 'Save') {
