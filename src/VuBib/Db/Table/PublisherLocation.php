@@ -144,6 +144,25 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
     }
 
 	/**
+     * Insert publisher record.
+     *
+     * @param String $name publisher name
+     *
+     * @return int $id last inserted publisher location id
+     */
+    public function addPublisherLocationAndReturnId($id, $loc)
+    {
+        $this->insert(
+            [
+            'publisher_id' => $id,
+            'location' => $loc,
+            ]
+        );	
+		$id = $this->getLastInsertValue();
+        return $id;
+    }
+	
+	/**
      * Update publisher location record.
      *
      * @param Number $id   publisher id

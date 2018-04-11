@@ -11,29 +11,6 @@ function bindPublisherAutocomplete(context, workURL) {
 	$("#pubLocation", context).prop("disabled", "disabled");
 
 	//Publisher autocomplete
-	/*$(function() {
-		$("#pubName", context).autocomplete({
-			//source: ur + '<?=$this->url('get_work_details')?>?autofor=publisher',
-			source: ur + workURL + '?autofor=publisher',
-			autoFocus: true,
-			select: function(event, ui) {				
-				$('#pubName', context).val(ui.item.label);				
-				//Resizing text field to make selected publisher visible
-				var pbLen = $(this).textWidth(ui.item.label) + 35;
-				$('#pubName', context).css('width',pbLen + 'px');				
-				$('#pubId', context).val(ui.item.id);
-				//$("#pubLocation", context).prop("disabled", false);
-				$(".pub_locations", context).prop("disabled", false);
-				return false;
-			}
-			response: function(event, ui) {
-				if (!ui.content.length) {
-					var noResult = { value:"",label:"No results found" };
-					ui.content.push(noResult);
-				}
-			}
-		});
-	});*/
 	$("#pubName", context).autocomplete({
         source: function (request, response) {            
             $.ajax({
@@ -46,17 +23,14 @@ function bindPublisherAutocomplete(context, workURL) {
                 },
 				success: function (data) {
 					if(!data.length){
-						var to_add = $('<p>No matches found. </p>'+
+						/*var to_add = $('<p>No matches found. </p>'+
 						             '<a type="button" class="addNewPubLink" href="#addPublisherLookup" data-toggle="modal" ' + 
+						                 'style="text-decoration: underline;">Add New</a>');*/
+						var to_add = $('<p>No matches found. </p>'+
+						             '<a type="button" class="addNewPubLink" ' + 
 						                 'style="text-decoration: underline;">Add New</a>');
-						to_add.remove();
+						$('#pubName', context).nextAll().remove()
 						$('#pubName', context).after(to_add);
-						/*$('#pubName', context).after('<p>No matches found. </p><a type="button" class="addNewPubLink" href="#addPublisherLookup" data-toggle="modal" ' + 
-						                             'style="text-decoration: underline;">Add New</a>');*/
-						/*$('#pubName', context).after('<p>No matches found. </p>' + 
-						                             '<button class="addNewPubLink btn btn-link" ' + 
-													 'data-toggle="modal" data-target="#addPublisherLookup"' + 
-													 'style="text-decoration: underline;">Add New</button>');*/
 					}
 					else{
 						// normal response
@@ -71,12 +45,23 @@ function bindPublisherAutocomplete(context, workURL) {
 				},
 			});
 		},
-        //minLength: that.options.minLength,
+		open: function(event, ui) {
+			$('.ui-autocomplete').append('<a type="button" class="addNewItemPubLink" ' + 
+										   'style="text-decoration: underline; color:blue;" data-value="'+ $(this).val() +'"' + 
+										   'data-ele=""' + '>Add New</a>'); //Add new link at end of results
+			
+			$('.addNewItemPubLink').on('click',function(){
+				var lnk = $(event.target);
+				addNewPublisher(context,workURL,lnk);
+				return false;
+			});
+		 },
+        minLength: 3,
         select: function(event, ui) {
 			if(ui.item.label == "No matches found") {
 				$('#pubName', context).val(ui.item.value);
 				//$('#pubName', context).after('<a>Add New</a>'); 				
-				return false
+				return false;
 			}
 			else{
 				$('#pubName', context).val(ui.item.label);				
@@ -121,6 +106,59 @@ function bindPublisherAutocomplete(context, workURL) {
 	});
 }
 
+//add new publisher
+function addNewPublisher(context,workURL,lnk) {
+	//var lnk = $('.addNewPubLink', context);
+	if (lnk == $('.addNewItemPubLink', context)) {
+		$('.addNewPubLink', context).remove();
+	}
+	var typedText = lnk.closest('tr').find('#pubName').val();
+	lnk.closest('tr').find('#pubName').val("");
+
+	$('#addPublisherLookup').modal('show'); 
+	$('#newpublisher').val(typedText);
+	$('#addNewPub').unbind('click').on('click', function(e) {
+		$.ajax({
+			method: 'post',
+			url: ur + workURL,
+			data: {
+				addAction: 'addNewPublisher',
+				pubName: $('#newpublisher').val(),
+				pubLocation: $('#addpublisherloc').val()
+			},
+			dataType: "json",
+			cache: false,
+			success: function(data) {
+				if (Object.keys(data.newPublisher).length > 0) {
+						$('#newpublisher').val('');
+						$('#addpublisherloc').val('');
+						$(".add_new_pub_close").click();
+						lnk.closest('tr').find('#pubId', context).val(data.newPublisher.pub_id);
+						lnk.closest('tr').find('#pubName', context).val(data.newPublisher.pub_name);
+						//Resizing text field to make selected publisher visible
+						var pbLen = lnk.closest('tr').find('#pubName', context).textWidth(data.newPublisher.pub_name) + 35;
+						lnk.closest('tr').find('#pubName', context).css('width',pbLen + 'px');
+						if(typeof(data.newPublisher.pubLoc_id) != "undefined" && data.newPublisher.pubLoc_id !== null) {
+							lnk.closest('tr').find('#pubLocation', context).prop("disabled", false);
+							lnk.closest('tr').find('.pub_locations', context).append('<option id="' + data.newPublisher.pubLoc_id + 
+																			'" value="' + data.newPublisher.pubLoc_id + '">' + 
+																			 data.newPublisher.pub_loc + '</option>');
+							lnk.closest('tr').find('#publoc_id', context).eq(0).val(data.newPublisher.pubLoc_id);
+							
+							//Setting select to auto width to make selected publisher location visible
+							lnk.closest('tr').find('.pub_locations', context).css('width', 'auto');
+						}
+						lnk.closest('tr').find('#pubName', context).nextAll().remove();
+				}
+			},
+			error: function() {
+				$(".option_results", context).append('<p>None available</p>');
+			}
+		});
+		return false;
+	});
+}
+
 //Agent Autocomplete
 function bindAgentAutocomplete(context, workURL) {
 	//agent enable/disable fields
@@ -131,19 +169,67 @@ function bindAgentAutocomplete(context, workURL) {
 
 	$('#agent_type', context).on('change', function() {
 		$("#agent_LastName", context).prop("disabled", false);
-		//agent first name autocomplete
-		$(function() {
-			$("#agent_LastName", context).autocomplete({
-				source: ur + workURL + '?autofor=agent',
-				autoFocus: true,
-				select: function(event, ui) {
+		
+		//Agent autocomplete
+		$("#agent_LastName", context).autocomplete({
+			source: function (request, response) {            
+				$.ajax({
+					url: ur + workURL + '?autofor=agent',
+					autoFocus: true,
+					type: "get",
+					dataType: "json",
+					cache: false,
+					data: {
+						term : $("#agent_LastName", context).val(),
+					},
+					success: function (data) {
+						if(!data.length){
+							var to_add = $('<p>No matches found. </p>'+
+											'<a type="button" class="addNewAgLink" href="#addAgentLookup" data-toggle="modal" ' + 
+											'style="text-decoration: underline;">Add New</a>');
+							$('#agent_LastName', context).nextAll().remove()
+							$('#agent_LastName', context).after(to_add);
+						}
+						else{
+							// normal response
+							response($.map(data, function (item) {
+								return {
+									label: item.label,
+									lname: item.lname,
+									fname: item.fname,
+									alternate_name: item.alternate_name,
+									organization_name: item.organization_name,
+									id:    item.id
+								}
+							}));
+						}
+					},
+				});
+			},
+			open: function(event, ui) {
+				$('.ui-autocomplete').append('<li><a class="addNewItemAgLink" href="#addAgentLookup" data-toggle="modal" ' + 
+						                 'style="text-decoration: underline; color:blue">Add New</a></li>'); //Add new link at end of results
+				$('.addNewItemAgLink').on('click',function(){
+					var lnk = $(event.target);
+					addNewAgent(context,workURL,lnk);
+					return false;
+				});
+			},
+			minLength: 3,
+			select: function(event, ui) {
+				if(ui.item.label == "No matches found") {
+					$('#agent_LastName', context).val("");
+					//$('#pubName', context).after('<a>Add New</a>'); 				
+					return false
+				}
+				else{
 					var arr = ui.item.label.split(' FN: ');
 					ui.item.label = arr[0];
 					$('#agent_LastName', context).val(ui.item.label);
 					$('#agentId', context).val(ui.item.id);
 					return false;
 				}
-			});
+			}
 		});
 	});
 	$('#agent_LastName', context).on('autocompleteselect', function(e, ui) {	
@@ -151,7 +237,7 @@ function bindAgentAutocomplete(context, workURL) {
 		var agent_ln = $('#agent_LastName').textWidth(ui.item.lname) + 25;	//ui.item.fname.length + 5;
 		var agent_fn = $('#agent_FirstName').textWidth(ui.item.fname) + 25;	//ui.item.lname.length + 5;
 		$('#agent_LastName', context).css('width', agent_ln + 'px');
-		if (ui.item.lname != '') {
+		if (ui.item.fname != '') {
 			$("#agent_FirstName", context).prop("disabled", false);
 			$("#agent_FirstName", context).val(ui.item.fname);
 			//Resizing text field to make selected agent first name visible
@@ -165,6 +251,73 @@ function bindAgentAutocomplete(context, workURL) {
 			$("#agent_OrganizationName", context).prop("disabled", false);
 			$("#agent_OrganizationName", context).val(ui.item.organization_name);
 		}
+	});
+}
+
+//add new agent
+function addNewAgent(context,workURL,lnk) {
+	//var lnk = $('.addNewAgLink', context);
+	if (lnk == $('.addNewItemAgLink', context)) {
+		$('.addNewAgLink', context).remove();
+	}
+	var typedText = lnk.closest('tr').find('#agent_LastName').val();
+	lnk.closest('tr').find('#agent_LastName').val("");
+	
+	$('#addAgentLookup').modal('show');
+	$('#newagentlastname').val(typedText);
+	$('#addNewAg').unbind('click').on('click', function(e) {
+		$.ajax({
+			method: 'post',
+			url: ur + workURL,
+			data: {
+				addAction: 'addNewAgent',
+				agFName: $('#newagentfirstname').val(),
+				agLName: $('#newagentlastname').val(),				
+				agAltName: $('#newagentaltname').val(),
+				agOrgName: $('#newagentorgname').val(),
+				agEmail: $('#newagentemail').val()
+			},
+			dataType: "json",
+			cache: false,
+			success: function(data) {
+				if (Object.keys(data.newAgent).length > 0) {
+						$('#newagentfirstname').val('');
+						$('#newagentlastname').val('');
+						$('#newagentaltname').val('');
+						$('#newagentorgname').val('');
+						$('#newagentemail').val('');
+						$(".add_new_ag_close").click();
+						
+						lnk.closest('tr').find('#agentId', context).val(data.newAgent.ag_id);					
+						lnk.closest('tr').find('#agent_LastName', context).val(data.newAgent.ag_lname);
+						
+						//Resizing text field to make selected agent last name visible
+						var agent_ln = lnk.closest('tr').find('#agent_LastName', context).textWidth(data.newAgent.ag_lname) + 25; //data.newAgent.ag_lname.length + 5;
+						var agent_fn = lnk.closest('tr').find('#agent_FirstName', context).textWidth(data.newAgent.ag_fname) + 25; //data.newAgent.ag_fname.length + 5;
+						$('#agent_LastName', context).css('width', agent_ln + 'px');
+						if (data.newAgent.ag_fname != '') {
+							lnk.closest('tr').find("#agent_FirstName", context).prop("disabled", false);
+							lnk.closest('tr').find("#agent_FirstName", context).val(data.newAgent.ag_fname);
+							//Resizing text field to make selected agent first name visible
+							lnk.closest('tr').find('#agent_FirstName', context).css('width', agent_fn + 'px');
+						}
+						if (data.newAgent.ag_altname != '') {
+							lnk.closest('tr').find("#agent_AlternateName", context).prop("disabled", false);
+							lnk.closest('tr').find("#agent_AlternateName", context).val(data.newAgent.ag_altname);
+						}
+						if (data.newAgent.ag_orgname != '') {
+							lnk.closest('tr').find("#agent_OrganizationName", context).prop("disabled", false);
+							lnk.closest('tr').find("#agent_OrganizationName", context).val(data.newAgent.ag_orgname);
+						}
+						
+						lnk.closest('tr').find('#agent_LastName', context).nextAll().remove();
+				}
+			},
+			error: function() {
+				//$(".option_results", context).append('<p>None available</p>');
+			}
+		});
+		return false;
 	});
 }
 
@@ -233,7 +386,6 @@ function bindWorkTypeAttributes(context, workURL) {
 				$('#optionsLookup').on('shown.bs.modal', function() {
 					$('#lookupOption').focus()
 					$('.option_search').on('click', function(e) {
-						//console.log(attr_option_lookup);
 						//var attribute_Id = $(lookupBtn).prev().attr('id');
 						var attribute_Id = attr_option_lookup.attr('id');
 						var option = $('#lookupOption').val();
@@ -263,7 +415,6 @@ function bindWorkTypeAttributes(context, workURL) {
 							var linkval = $(this).attr('href');
 							attr_option_lookup.val(linkval);
 							attr_option_lookup.attr('name', attr_option_lookup.attr('name') + 'optid,' + $(this).attr('name'));
-							//console.log(attr_option_lookup.attr('name'));
 							$('#lookupOption').val('');
 							$(".option_results", context).html('');
 							$('.option_lookup_close').trigger('click');
@@ -414,26 +565,25 @@ function bindParentWork(context,workURL)
 
 function mergeClassification(that, context, workURL, for_str)
 {
+	var to_add_row = $(that).closest("tr"); 
 	if ($(that).val() == "") {
-		$('.' + for_str + '_fl_col').eq(0).nextAll('.source_fl_col').remove();
-		$('.' + for_str + '_fl_col').eq(0).val('');
-	} else
-	{
+		to_add_row.find('.' + for_str + '_fl_col').eq(0).nextAll('.' + for_str + '_fl_col').remove();
+		to_add_row.find('.' + for_str + '_fl_col').eq(0).val('');
+		//return false;
+	} else {
 		fl_changed = $(that).val();
-		var no_of_fl_parent = $('.select_' + for_str + '_fl').length;
 
-		for (var i = 0; i < no_of_fl_parent; i++)
-		{
-			if ($('.select_' + for_str + '_fl').eq(i).val() === fl_changed)
-			{
+		var no_of_fl_parent = to_add_row.find('.select_' + for_str + '_fl').length;
+		for (var i = 0; i < no_of_fl_parent; i++) {
+			if (to_add_row.find('.select_' + for_str + '_fl').eq(i).val() === fl_changed) {
 				change_idx = i;
-				folder_Id = $('.select_' + for_str + '_fl').eq(i).val();
+				folder_Id = to_add_row.find('.select_' + for_str + '_fl').eq(i).val();
 				break;
 			}
 		}
-		$('.' + for_str + '_fl_col').eq(change_idx).nextAll('.' + for_str + '_fl_col').remove();
+		to_add_row.find('.' + for_str + '_fl_col').eq(change_idx).nextAll('.' + for_str + '_fl_col').remove();
 
-		no_of_fl_parent = $('.select_' + for_str + '_fl').length;
+		no_of_fl_parent = to_add_row.find('.select_' + for_str + '_fl').length;
 
 		$.ajax({
 			method: 'post',
@@ -444,30 +594,33 @@ function mergeClassification(that, context, workURL, for_str)
 			},
 			dataType: "json",
 			cache: false,
-			success: function (data)
-			{
-				$('.' + for_str + '_fl_col').eq(no_of_fl_parent - 1).after('<td class="' + for_str + '_fl_col" ' + 
-				                                                           'name="' + for_str + '_fl_col" ' + 
-																		   'id="' + for_str + '_fl_col" style="border-spacing: 10px;"/>');
+			success: function(data) {
+				to_add_row.find('.' + for_str + '_fl_col').eq(no_of_fl_parent - 1).after('<td class="' + for_str + '_fl_col" ' + 
+																							  'name="' + for_str + '_fl_col" ' + 
+																							  'id="' + for_str + '_fl_col" ' + 
+																							  'style="border-spacing: 10px; display: inline-block;"/>');
 
-				_select = $('<select class="form-control select_' + for_str + '_fl" name="select_' + for_str + '_fl[]">');
+				_select = $('<select class="form-control select_' + for_str + '_fl select2" name="select_' + for_str + '_fl[]">');
 				to_append = $('<option value=""></option>');
-				$.each(data.folder_children, function (key, val) {
+				$.each(data.folder_children, function(key, val) {
 					to_append += '<option value="' + val.id + '">' + val.text_fr + '</option>';
 				});
 				_select.append($('<option />'));
 				_select.append(to_append);
-				$('.' + for_str + '_fl_col').eq(no_of_fl_parent).append(_select);
-				$('.' + for_str + '_fl_col').eq(no_of_fl_parent).append('</select>');
 
-				_select.on('change', function () {
+				to_add_row.find('.' + for_str + '_fl_col').eq(no_of_fl_parent).append(_select);
+				to_add_row.find('.' + for_str + '_fl_col').eq(no_of_fl_parent).append('</select>');
+
+				_select.on('change', function() {
 					bindClassification(this, document, workURL, for_str);
+					return false;
 				});
 			},
-			error: function (data) {
-				//$("#Classification", context).html('<p>No Options</p>');
+			error: function(data) {
+				$("#Classification", context).html('<p>No Options</p>');
 			}
 		});
-		}
+		//return false;
+	}
 	return false;
 }

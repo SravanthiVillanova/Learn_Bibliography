@@ -74,6 +74,24 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
             ]
         );
     }
+	
+	/**
+     * Insert publisher record.
+     *
+     * @param String $name publisher name
+     *
+     * @return int $id last inserted publisher id
+     */
+    public function insertPublisherAndReturnId($name)
+    {
+        $this->insert(
+            [
+            'name' => $name,
+            ]
+        );		
+		$id = $this->getLastInsertValue();
+        return $id;
+    }
 
     /**
      * Find publisher by name

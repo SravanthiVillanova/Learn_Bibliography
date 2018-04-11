@@ -362,7 +362,69 @@ class GetWorkDetailsAction
         echo json_encode($output);
         exit;
     }
+	
+	/**
+     * Add a new publisher and send back newly added publisher details
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
+    public function addAndGetNewPub($post)
+    {
+		$rows = [];
+		
+        $newPub_Name = $post['pubName'];		
+        $table = new \VuBib\Db\Table\Publisher($this->adapter);
+        $newPub_id = $table->insertPublisherAndReturnId($newPub_Name);
+		$row['pub_id'] = $newPub_id;
+		$row['pub_name'] = $newPub_Name;
+        
+		if (isset($post['pubLocation']) && $post['pubLocation'] !== "") {
+			$newPub_Loc = $post['pubLocation'];
+			$table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
+			$newPubLoc_id = $table->addPublisherLocationAndReturnId($newPub_id, $newPub_Loc);
+			
+			$row['pubLoc_id'] = $newPubLoc_id;
+			$row['pub_loc'] = $newPub_Loc;
+		}
+		
+        $output = array('newPublisher' => $row);
+        echo json_encode($output);
+        exit;
+    }
     
+	/**
+     * Add a new publisher and send back newly added publisher details
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
+    public function addAndGetNewAgent($post)
+    {
+		$rows = [];
+		
+		$newAg_FName = $post['agFName'];
+        $newAg_LName = $post['agLName'];
+		$newAg_AltName = $post['agAltName'];
+		$newAg_OrgName = $post['agOrgName'];
+		$newAg_Email = $post['agEmail'];
+        $table = new \VuBib\Db\Table\Agent($this->adapter);
+        $newAg_id = $table->insertAgentAndReturnId($newAg_FName, $newAg_LName, $newAg_AltName, $newAg_OrgName, $newAg_Email);
+		
+		$row['ag_id'] = $newAg_id;
+		$row['ag_fname'] = $newAg_FName;
+		$row['ag_lname'] = $newAg_LName;
+		$row['ag_altname'] = $newAg_AltName;
+		$row['ag_orgname'] = $newAg_OrgName;
+		$row['ag_email'] = $newAg_Email;
+		
+        $output = array('newAgent' => $row);
+        echo json_encode($output);
+        exit;
+    }
+	
     /**
      * Action based on post parameter set.
      *
@@ -405,8 +467,13 @@ class GetWorkDetailsAction
         if (isset($post['lookup_title'])) {
             $this->getParentLookup($post);
         }
-		if (isset($post['addNewPub_frmWork'])) {
-			$this->addAndGetNewPub($post);
+		if (isset($post['addAction'])) {
+			if ($post['addAction'] == 'addNewPublisher') {
+				$this->addAndGetNewPub($post);
+			}
+			else if ($post['addAction'] == 'addNewAgent') {
+				$this->addAndGetNewAgent($post);
+			}//$this->addAndGetNewPub($post);
 		}
     }
     

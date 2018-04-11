@@ -7,3 +7,27 @@ td.addEle {
 	padding-left: 15px;
 	text-decoration: underline;
 }
+
+table[name="source_fl_table"] {
+	font-size:10pt;
+	border-collapse: separate;
+	border-spacing: 10px;
+	display: block;
+}
+tr[name="source_fl_row"], td[name="source_fl_col"] {
+	vertical-align: top;
+}
+td[name="source_fl_col"] {
+	border-spacing: 10px;
+	display: inline-block;
+}
+td[name="pubNameCol"], td[name="agLnCol"], td[name="agFnCol"] {
+	width: auto;
+}
+.yrFrom, .yrTo {
+	min-width: 80px;
+	max-width: 80px;
+}
+input[name="pub_yrFrom"], input[name="pub_yrTo"] {
+	width: 100%;
+}

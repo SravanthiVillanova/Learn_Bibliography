@@ -84,6 +84,31 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     }
 
     /**
+     * Insert agent record.
+     *
+     * @param String $fname   first name of agent
+     * @param String $lname   last name of agent
+     * @param String $altname alternate name of agent
+     * @param String $orgname organization name of agent
+     *
+     * @return int   $id id of newly inserted agent record
+     */
+    public function insertAgentAndReturnId($fname, $lname, $altname, $orgname, $mail)
+    {
+        $this->insert(
+            [
+            'fname' => $fname,
+            'lname' => $lname,
+            'alternate_name' => $altname,
+            'organization_name' => $orgname,
+            'email' => $mail,
+            ]
+        );	
+		$id = $this->getLastInsertValue();
+        return $id;
+    }
+	
+    /**
      * Update agent record.
      *
      * @param Number $id      id of agent
