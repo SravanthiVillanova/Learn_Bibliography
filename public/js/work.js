@@ -207,8 +207,9 @@ function bindAgentAutocomplete(context, workURL) {
 				});
 			},
 			open: function(event, ui) {
-				$('.ui-autocomplete').append('<li><a class="addNewItemAgLink" href="#addAgentLookup" data-toggle="modal" ' + 
-						                 'style="text-decoration: underline; color:blue">Add New</a></li>'); //Add new link at end of results
+				$('.ui-autocomplete').append('<li><a class="addNewItemAgLink" ' + 
+						                 'style="text-decoration: underline; color:blue" data-value="'+ $(this).val() +'"' + 
+										   'data-ele=""' + '>Add New</a></li>'); //Add new link at end of results
 				$('.addNewItemAgLink').on('click',function(){
 					var lnk = $(event.target);
 					addNewAgent(context,workURL,lnk);
