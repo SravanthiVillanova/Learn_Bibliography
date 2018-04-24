@@ -370,7 +370,7 @@ function bindWorkTypeAttributes(context, workURL) {
 								'<div>' +
 									'<input type="text" class="Attributeoption" name="wkatid,' + val.id + '" id="' + val.field + ':' + val.id + '" size="50"/>' +
 									'&nbsp;&nbsp;' + 
-									'<button data-toggle="modal" data-target="#pubLookup" class = "btn btn-xs optionLookupBtn"' +
+									'<button data-toggle="modal" data-target="#pubLookup" class = "btn btn-secondary btn-xs optionLookupBtn"' +
 									         'id="optionLookupBtn" data-target="optionsLookup"  value="Lookup" >' + 
 											 'Lookup' + '</button>' + 
 								'</div>' +
@@ -548,9 +548,9 @@ function bindParentWork(context,workURL)
 				   var pr_labelval = $(this).attr('value');
 				   $('.pr_work_div', context).text(pr_labelval);
 				   $('#pr_work_lookup_id',context).val(pr_linkval);
-				   $('.pr_work_div', context).append('<button type="button" class="btn btn-default parent_Chng_Btn" name="parent_changeBtn" id="parent_changeBtn" ' +
+				   $('.pr_work_div', context).append('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-xs parent_Chng_Btn" name="parent_changeBtn" id="parent_changeBtn" ' +
 													 'data-toggle="modal" data-target="#parentLookup_modal">Change</button>')
-				   $('.pr_work_div', context).append('<button type="button" class="btn btn-default parent_Rmv_Btn" name="parent_removeBtn" ' + 
+				   $('.pr_work_div', context).append('&nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-xs parent_Rmv_Btn" name="parent_removeBtn" ' + 
 													  'id="parent_removeBtn">Remove</button>')
 				   $('.pr_work_results').html('');
 				   $('.option_lookup_close').trigger('click');
