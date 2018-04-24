@@ -136,10 +136,11 @@ class ManageUsersAction
     protected function doDelete($post)
     {
         if ($post['submitt'] == 'Delete') {
-            if (!is_null($post['id'])) {
-                //echo "delete";
-                $table = new \VuBib\Db\Table\User($this->adapter);
-                $table->deleteRecord($post['id']);
+			 if (!is_null($post['user_id'])) {
+				 foreach($post['user_id'] as $userId):
+					$table = new \VuBib\Db\Table\User($this->adapter);
+					$table->deleteRecord($userId);
+				endforeach;
             }
         }
     }

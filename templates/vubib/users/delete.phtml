@@ -4,26 +4,36 @@
  ?>
 <div class="col-xs-4">
     <form method="post" action="<?= $this->url('manage_users') ?>">
-        <p>Are you sure you want to delete?</p>        
-        <?php
+        <p>Are you sure you want to delete?</p>
+		<?php
         $id;
         if ($request->getqueryParams('id') !== null) {
             $params = $request->getqueryParams();
             $action = $params['action'];
-            $id = $params['id'];
-            //echo $id;
-            //fetch name based on id
-            $table = new \VuBib\Db\Table\User($adapter);
-            $row = $table->findRecordById($id);
-            $name = $row['name'];
-            $username = $row['username'];
-            echo "<p>user " . $name . " with username as " . $username . "</p>";
-        }
+		}
+						
+		if ($request->getMethod() == 'POST') {
+			$post = $request->getParsedBody();
+		}
+		$user = [];
+		if(count($post['selectUser']) > 0) {
+			foreach($post['selectUser'] as $usr):
+				$user['id'] = $usr;					
+				//fetch name based on id
+				$table = new \VuBib\Db\Table\User($adapter);
+				$row = $table->findRecordById($user['id']);
+				$name = $row['name'];
+				$username = $row['username'];
+				echo "<p>user " . $name . " with username as " . $username . "</p>";
+		?>
+		<ul>
+		<input type="hidden" name="user_id[]" value="<?=$user['id']?>">						
+		<input type="hidden" name="action" value="<?=$action?>">
+		</ul>						
+		<?php
+			endforeach;
+		}
         ?>
-        <ul>
-            <input type="hidden" name="id" value="<?= $id ?>">
-            <input type="hidden" name="action" value="<?= $action ?>">
-        </ul>
         <input type="submit" name="submitt" value="Delete"> 
         <input type="submit" name="submitt" value="Cancel">
     </form>

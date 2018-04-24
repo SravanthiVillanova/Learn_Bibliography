@@ -67,14 +67,16 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecords($location)
     {
+		$escaper = new \Zend\Escaper\Escaper('utf-8');
         $select = $this->sql->select();
         // $select->columns(array('location'));
         $select->join(
             'publisher', 'publisher_location.publisher_id = publisher.id',
             array('name'), 'inner'
         );
+		$select->where->expression('LOWER(location) LIKE ?', strtolower($escaper->escapeHtml($location)).'%');
         //$select->where->like('location', $location.'%');
-        $select->where(['location' => $location]);
+        //$select->where(['location' => $location]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);

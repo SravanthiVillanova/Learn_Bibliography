@@ -149,8 +149,8 @@ class ManageAgentTypeAction
         }
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\AgentType($this->adapter);
-
-        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+		//var_dump($table);
+        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table,null,'type'));
     }
 
     /**

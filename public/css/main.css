@@ -10,16 +10,11 @@ td.addEle {
 
 table[name="source_fl_table"] {
 	font-size:10pt;
+	border-spacing: 0px; 
 	border-collapse: separate;
-	border-spacing: 10px;
-	display: block;
-}
-tr[name="source_fl_row"], td[name="source_fl_col"] {
-	vertical-align: top;
 }
 td[name="source_fl_col"] {
-	border-spacing: 10px;
-	display: inline-block;
+	padding: 2px;
 }
 td[name="pubNameCol"], td[name="agLnCol"], td[name="agFnCol"] {
 	width: auto;

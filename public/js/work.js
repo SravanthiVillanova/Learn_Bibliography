@@ -340,38 +340,37 @@ function bindWorkTypeAttributes(context, workURL) {
 				// append input control at end of form
 				if (val.type == 'Textarea') {
 					$('<div class="form-group required">' +
-						'<label class="col-xs-1 control-label">' + val.field + '</label>' + 
+						'<label class="col-xs-1">' + val.field + '</label>' + 
                         '<div class="col-xs-6">' + 
-							'<textarea class="form-control" name="wkatid,' + val.id + '" id="' + val.field + '" />' +
+							'<textarea name="wkatid,' + val.id + '" id="' + val.field + '" rows="3" cols="50"/>' +
 						'</div>' +
 					'</div>').appendTo("#Citation");
 				}
 				if (val.type == 'Text') {
 					$('<div class="form-group required">' +
-						'<label class="col-xs-1 control-label">' + val.field + '</label>' + 
+						'<label class="col-xs-1">' + val.field + '</label>' + 
                         '<div class="col-xs-6">' + 
-							'<input type="text" class="form-control" name="wkatid,' + val.id + '" id="' + val.field + '" />' +
+							'<input type="text" name="wkatid,' + val.id + '" id="' + val.field + '" size="50"/>' +
 						'</div>' +
 					'</div>').appendTo("#Citation");
 				}
 				if (val.type == 'RadioButton') {
 					$('<div class="form-group required">' +
-							'<label class="col-xs-1 control-label">'+val.field+'</label>' + 
+							'<label class="col-xs-1">'+val.field+'</label>' + 
 							'<div class="col-xs-6">' + 
-								'<div class="radio">' +
-									'<label class="radio"><input type="radio" name="wkatid,' + val.id + '" value="true" />True</label>' +
-									'<label class="radio"><input type="radio" name="wkatid,' + val.id + '" value="false" />False</label>' +
-								'</div>' +
+									'<input type="radio" name="wkatid,' + val.id + '" value="true" /> True<br>' +
+									'<input type="radio" name="wkatid,' + val.id + '" value="false" /> False<br>' +
 							'</div>' +
 					'</div>').appendTo("#Citation");
 				}
 				if (val.type == 'Select') {
 					$('<div class="form-group required">' +
-							'<label class="col-xs-1 control-label">'+val.field+'</label>' + 
+							'<label class="col-xs-1">'+val.field+'</label>' + 
 							'<div class="col-xs-6">' + 
 								'<div>' +
-									'<input type="text" class="form-control Attributeoption" name="wkatid,' + val.id + '" id="' + val.field + ':' + val.id + '" />' +
-									'<button data-toggle="modal" data-target="#pubLookup" class = "btn btn-default optionLookupBtn"' +
+									'<input type="text" class="Attributeoption" name="wkatid,' + val.id + '" id="' + val.field + ':' + val.id + '" size="50"/>' +
+									'&nbsp;&nbsp;' + 
+									'<button data-toggle="modal" data-target="#pubLookup" class = "btn btn-xs optionLookupBtn"' +
 									         'id="optionLookupBtn" data-target="optionsLookup"  value="Lookup" >' + 
 											 'Lookup' + '</button>' + 
 								'</div>' +
@@ -479,10 +478,9 @@ function bindClassification(that, context, workURL, for_str) {
 			if (data.folder_children.length > 0) {
 				to_add_row.find('.' + for_str + '_fl_col', context).eq(no_of_fl_parent - 1).after('<td class="' + for_str + '_fl_col" ' + 
 				                                                                                  'name="' + for_str + '_fl_col" ' +
-																								  'id="' + for_str + '_fl_col" ' +
-																								  'style="border-spacing: 10px; display: inline-block;"/>');
+																								  'id="' + for_str + '_fl_col" ');
 
-				_select = $('<select class="form-control select_' + for_str + '_fl select2" name="select_' + for_str + '_fl[]">');
+				_select = $('<select class="select_' + for_str + '_fl select2" name="select_' + for_str + '_fl[]">');
 				to_append = $('<option value=""></option>');
 				$.each(data.folder_children, function(key, val) {
 					to_append += '<option value="' + val.id + '">' + val.text_fr + '</option>';
@@ -599,9 +597,9 @@ function mergeClassification(that, context, workURL, for_str)
 				to_add_row.find('.' + for_str + '_fl_col').eq(no_of_fl_parent - 1).after('<td class="' + for_str + '_fl_col" ' + 
 																							  'name="' + for_str + '_fl_col" ' + 
 																							  'id="' + for_str + '_fl_col" ' + 
-																							  'style="border-spacing: 10px; display: inline-block;"/>');
+																							  '/>');
 
-				_select = $('<select class="form-control select_' + for_str + '_fl select2" name="select_' + for_str + '_fl[]">');
+				_select = $('<select class="select_' + for_str + '_fl select2" name="select_' + for_str + '_fl[]">');
 				to_append = $('<option value=""></option>');
 				$.each(data.folder_children, function(key, val) {
 					to_append += '<option value="' + val.id + '">' + val.text_fr + '</option>';
