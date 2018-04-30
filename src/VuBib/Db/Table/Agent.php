@@ -61,6 +61,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     {
         parent::__construct('agent', $adapter);
 		$this->escaper = new \Zend\Escaper\Escaper('utf-8');
+		//$quote = new \Zend\Db\Adapter\Abstract
     }
 
     /**
@@ -218,13 +219,13 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         if ($type == 'fname') {
-			$select->where->expression('LOWER(fname) LIKE ?', strtolower($this->escaper->escapeHtml($name)).'%');
+			$select->where->expression('LOWER(fname) LIKE ?', mb_strtolower($this->escaper->escapeHtml($name)).'%');
         } elseif ($type == 'lname') {
-			$select->where->expression('LOWER(lname) LIKE ?', strtolower($this->escaper->escapeHtml($name)).'%');
+			$select->where->expression('LOWER(lname) LIKE ?', mb_strtolower($this->escaper->escapeHtml($name)).'%');
         } elseif ($type == 'altname') {
-			$select->where->expression('LOWER(alternate_name) LIKE ?', strtolower($this->escaper->escapeHtml($name)).'%');
+			$select->where->expression('LOWER(alternate_name) LIKE ?', mb_strtolower($this->escaper->escapeHtml($name)).'%');
         } elseif ($type == 'orgname') {
-			$select->where->expression('LOWER(organization_name) LIKE ?', strtolower($this->escaper->escapeHtml($name)).'%');
+			$select->where->expression('LOWER(organization_name) LIKE ?', mb_strtolower($this->escaper->escapeHtml($name)).'%');
         }
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
@@ -241,8 +242,8 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     public function getLikeRecords($name)
     {
         $callback = function ($select) use ($name) {
-            //$select->where->like('lname', '%'.$name.'%');
-			$select->where->expression('LOWER(lname) LIKE ?', '%'.strtolower($this->escaper->escapeHtml($name)).'%');
+            $select->where->like(new Expression('LOWER(lname)'), '%'.mb_strtolower($name).'%');
+			//$select->where->expression('LOWER(lname) LIKE ?', '%'.mb_strtolower($this->escaper->escapeHtml($name)).'%');
         };
         $rows = $this->select($callback)->toArray();
 

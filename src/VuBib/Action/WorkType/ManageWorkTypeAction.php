@@ -201,8 +201,8 @@ class ManageWorkTypeAction
             if (!empty($post['sort_order'])) {
                 $this->addAttribute($post);
             }
-                    //after adding attrs to work type, adjust ranks
-                    $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
+            //after adding attrs to work type, adjust ranks
+            $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
             $table->updateWorkTypeAttributeRank($post['id'], $post['sort_order']);
         }
     }

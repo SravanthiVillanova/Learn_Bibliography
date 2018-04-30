@@ -164,6 +164,10 @@ class ManagePublisherAction
                 $table->mergePublisher($source_locid);
             }
         endforeach;
+		
+		//Delete source publisher
+		$table = new \VuBib\Db\Table\Publisher($this->adapter);
+		$table->deleteRecord($post['mrg_src_id']);
     }
     
     /**
@@ -209,13 +213,6 @@ class ManagePublisherAction
                 $this->doNew($post);
             }
         }
-		//add a new publisher from work
-		if ($post['action'] == 'work_addNew') {
-			if ($post['submitt'] == 'Save') {
-				var_dump($post);
-				die();
-			}
-		}
         //edit a publisher
         if ($post['action'] == 'edit') {
             if ($post['submitt'] == 'Save') {
@@ -228,6 +225,7 @@ class ManagePublisherAction
                 $this->doDelete($post);
             }
         }
+		//merge publishers
         if ($post['action'] == 'merge_publisher') {
             if ($post['submitt'] == 'Save') {
                 $this->doMerge($post);
@@ -336,16 +334,23 @@ class ManagePublisherAction
         }
         
         if (isset($post['action']) && $post['action'] == 'merge_publisher') {
+			// default: blank/missing search
+			$table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
+			$paginator = $table->findPublisherLocations($post['mrg_dest_id']);
+			
+			$searchParams = $post['mrg_dest_id'];
+			
             return new HtmlResponse(
                 $this->template->render(
-                    'vubib::publisher::merge_publisher',
+                    'vubib::publisher::manage_publisherlocation',
                     [
                     'rows' => $paginator,
                     'previous' => $pgs['prev'],
                     'next' => $pgs['nxt'],
                     'countp' => $pgs['cp'],
                     'searchParams' => $searchParams,
-                    'adapter' => $this->adapter,
+					'request' => $request,
+                    'adapter' => $this->adapter, 
                     ]
                 )
             );

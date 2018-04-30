@@ -7,9 +7,10 @@
 <div class="col-md-9">
     <?php
     $id;
-    if ($request->getqueryParams() !== null) {
-        /* $queryString = implode('',$request->getqueryParams());
-          $params = explode(',',$queryString); */
+	if(isset($searchParams)) {
+		$id = $searchParams;
+	}
+	else if ($request->getqueryParams() !== null) {
         $params = $request->getqueryParams();
         $id = $params['id'];
     }

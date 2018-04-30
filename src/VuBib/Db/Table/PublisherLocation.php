@@ -74,7 +74,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
             'publisher', 'publisher_location.publisher_id = publisher.id',
             array('name'), 'inner'
         );
-		$select->where->expression('LOWER(location) LIKE ?', strtolower($escaper->escapeHtml($location)).'%');
+		$select->where->expression('LOWER(location) LIKE ?', mb_strtolower($escaper->escapeHtml($location)).'%');
         //$select->where->like('location', $location.'%');
         //$select->where(['location' => $location]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);

@@ -105,7 +105,7 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
 		$escaper = new \Zend\Escaper\Escaper('utf-8');
         $select = $this->sql->select();
         //$select->where->like('name', $name.'%');
-		$select->where->expression('LOWER(name) LIKE ?', strtolower($escaper->escapeHtml($name)).'%');
+		$select->where->expression('LOWER(name) LIKE ?', mb_strtolower($escaper->escapeHtml($name)).'%');
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);

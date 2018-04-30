@@ -195,7 +195,7 @@ class AttributesWorkTypeAction
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
 
-        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table,null,['type','field']));
     }
 
     /**

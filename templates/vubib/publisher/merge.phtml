@@ -34,10 +34,10 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                     if ((data.pub_row.length) > 0) {
 						$('#find_src_pub').val('');
                         $('#src_find_outer_div').after('<div class="form-group" id="src_select_div">');
-                        var src_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="src_result_table">' +
+                        var src_result_table = '<table id="src_result_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="src_result_table">' +
                                 '<tr><th>Select</th><th>Publisher Name</th><th>Works</th></tr>';
                         $.each(data.pub_row, function (key, val) {
-                            src_result_table += '<tr><td><div class="radio"><label>' +
+                            src_result_table += '<tr class="src_pub_row"><td><div class="radio"><label>' +
                                     '<input type="radio" id="src_select" name="src_select" value="' + val.id + '"></label>' + '</div></td>' +
                                     '<td>' + val.name + '</td><td>' + val.works + '</td></tr>';
                         });
@@ -71,10 +71,10 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 						if ((data.pub_locs.length) > 0) {
 							$('#src_result_table').html('');
 							$('#src_find_outer_div').after('<div class="form-group" id="src_loc_select_div">');
-							var src_loc_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="src_loc_result_table">' +
+							var src_loc_result_table = '<table id="src_loc_result_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="src_loc_result_table">' +
 												'<tr><th>Move</th><th>Merge</th><th>Location</th><th>Works</th></tr>';
 							$.each(data.pub_locs, function (key, val) {
-								src_loc_result_table += '<tr><td>' +
+								src_loc_result_table += '<tr class="src_loc_row"><td>' +
 											'<input type="radio" id="src_loc_mv_select" name="src_loc[' + val.id + ']" value="move">' + '</td>' +
 											'<td>'+
 											'<input type="radio" id="src_loc_mrg_select" name="src_loc[' + val.id + ']" value="merge">' + '</td>' +
@@ -82,21 +82,12 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 							});
 							src_result_table += '</table>';
 							$('#src_loc_select_div').append(src_loc_result_table);
-							//$('#src_loc_result_table').append('<button class="btn btn-default" name="btn_select_src" id="btn_select_src">Select</button>');
 						} else {
 							$('#src_result_table').html('');
 						}
 					},
 					error: function (data) {}
 				});
-				/*
-				var fn = $('input[name="src_select"]:checked').closest("tr").find('td:eq(1)').text() + ' ' +
-                        $('input[name="src_select"]:checked').closest("tr").find('td:eq(2)').text();
-				$('#src_find_outer_div').html('');
-                $('#src_select_div').html('');
-				$('#src_label').after('<br />' + fn);*/
-               
-                //addMergeButton(document);
             }
             return false;
         });
@@ -105,7 +96,6 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
             var find_dstpub = $('#find_dest_pub').val();
             $.ajax({
                 method: 'post',
-                //url: 'http://localhost<?= $this->url("get_work_details") ?>',
 				url: ur + '<?=$this->url('get_work_details')?>',
                 data: {
                     pub_name: find_dstpub
@@ -116,7 +106,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                     if ((data.pub_row.length) > 0) {
 						$('#find_dest_pub').val('');
                         $('#dest_find_outer_div').after('<div class="form-group" id="dest_select_div">');
-                        var dest_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="dest_result_table">' +
+                        var dest_result_table = '<table id="dest_result_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="dest_result_table">' +
                                 '<tr><th>Select</th><th>Publisher Name</th><th>Works</th></tr>';
                         $.each(data.pub_row, function (key, val) {
                             if (("" + val.id) !== ($('#mrg_src_id').val())) {
@@ -140,18 +130,10 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
         $(document).on('click', '#btn_select_dest', function () {
             var dest = $('input[name="dest_select"]:checked').val();
             if (dest !== null) {
-               /* var fn = $('input[name="dest_select"]:checked').closest("tr").find('td:eq(1)').text() + ' ' +
-                        $('input[name="dest_select"]:checked').closest("tr").find('td:eq(2)').text();
-                $('#dest_find_outer_div').html('');
-                $('#dest_select_div').html('');
-                $('#dest_label').after('<br />' + fn);*/
-                //alert("hidden dest before " + $('#mrg_dest_id').val().length);
                 $('#mrg_dest_id').val(dest);
-                //alert("hidden dest now " + $('#mrg_dest_id').val().length);
 				
 				$.ajax({
 					method: 'post',
-                    //url: 'http://localhost<?= $this->url("get_work_details") ?>',
 				    url: ur + '<?=$this->url('get_work_details')?>',
 					data: {
 						publisher_Id_locs: dest
@@ -162,8 +144,8 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 						if ((data.pub_locs.length) > 0) {
 							$('#dest_result_table').html('');
 							$('#dest_find_outer_div').after('<div class="form-group" id="dest_loc_select_div">');
-							var dest_loc_result_table = '<table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="dest_loc_result_table">' +
-												'<tr><th>Move/Merge To</th><th>Location</th><th>Works</th></tr>';
+							var dest_loc_result_table = '<table id="dest_loc_result_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;" id="dest_loc_result_table">' +
+												'<tr><th>Merge To</th><th>Location</th><th>Works</th></tr>';
 							$.each(data.pub_locs, function (key, val) {
 								dest_loc_result_table += '<tr><td>' +
 											'<input type="radio" id="dest_loc_select" name="dest_loc_select" value="' + val.id + '">' + '</td>' +
@@ -171,7 +153,6 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 							});
 							src_result_table += '</table>';
 							$('#dest_loc_select_div').append(dest_loc_result_table);
-							//$('#src_loc_result_table').append('<button class="btn btn-default" name="btn_select_src" id="btn_select_src">Select</button>');
 						} else {
 							$('#dest_result_table').html('');
 						}
@@ -186,10 +167,19 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
         });
         //check if src and dest are same
         $(document).on('click', '#submit_save', function () {
+			var src_loc_row_cnt = $('.src_loc_row').length;
+			var src_loc_mv_cnt = $('#src_loc_result_table').find('input[id="src_loc_mv_select"]:checked').length;
+			var src_loc_mrg_cnt = $('#src_loc_result_table').find('input[id="src_loc_mrg_select"]:checked').length;
+			var src_loc_sel_cnt = src_loc_mv_cnt + src_loc_mrg_cnt;
+			if(src_loc_row_cnt !== src_loc_sel_cnt) {
+				$('.mergePubSelError').show();
+                return false;
+			}
             if ($('#mrg_src_id').val() === $('#mrg_dest_id').val()) {
                 $('.mergePubError').show();
                 return false;
             }
+			//return false;
         });
         $('#submit_clear').on('click', function () {
             location.reload(true);
@@ -238,6 +228,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                 <!--<button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Merge</button>-->
                 <button type="reset" class="btn btn-default" name="submit_clear" id="submit_clear" value="Cancel">Clear</button>
                 <p class="mergePubError" style="display:none;color:red;margin-bottom:20px;">Cannot merge -- source and destination are the same.</p>
+				<p class="mergePubSelError" style="display:none;color:red;margin-bottom:20px;">Cannot merge -- Select move or merge action for all locations of source publisher.</p>
             </div>
         </div>
     </form>

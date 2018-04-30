@@ -281,7 +281,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     public function findRecords($title)
     {
         $select = $this->sql->select();
-        $select->where->expression('LOWER(title) LIKE ?', strtolower($title).'%');
+        $select->where->expression('LOWER(title) LIKE ?', mb_strtolower($title).'%');
         //->where(['name' => $name]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
@@ -441,7 +441,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
                 ['type']
             );
             //$select->where->like('title', $title.'%');
-			$select->where->expression('LOWER(title) LIKE ?', strtolower($title).'%');
+			$select->where->expression('LOWER(title) LIKE ?', mb_strtolower($title).'%');
         };
         $rows = $this->select($callback)->toArray();
 

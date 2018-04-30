@@ -39,6 +39,7 @@ return [
 			VuBib\Action\WorkType\NewOptionAction::class => VuBib\Action\WorkType\NewOptionFactory::class,
 			VuBib\Action\WorkType\EditOptionAction::class => VuBib\Action\WorkType\EditOptionFactory::class,
 			VuBib\Action\WorkType\DeleteOptionAction::class => VuBib\Action\WorkType\DeleteOptionFactory::class,
+			VuBib\Action\WorkType\MergeOptionAction::class => VuBib\Action\WorkType\MergeOptionFactory::class,
 			VuBib\Action\WorkType\MergeDuplicateOptionAction::class => VuBib\Action\WorkType\MergeDuplicateOptionFactory::class,
             
 			VuBib\Action\Classification\NewClassificationAction::class => VuBib\Action\Classification\NewClassificationFactory::class,
@@ -335,6 +336,17 @@ return [
                 //BodyParamsMiddleware::class,
 				\VuBib\Middleware\AuthenticationMiddleware::class,
                 VuBib\Action\WorkType\DeleteOptionAction::class,
+            ],
+            'allowed_methods' => ['GET','POST'],
+        ],
+				
+		[
+            'name' => 'merge_options',
+		    'path' => '/WorkType/merge_options',
+            'middleware' => [
+                //BodyParamsMiddleware::class,
+				\VuBib\Middleware\AuthenticationMiddleware::class,
+                VuBib\Action\WorkType\MergeOptionAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
         ],

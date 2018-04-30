@@ -28,6 +28,8 @@ $(document).ready(function () {
 </script>
 <div class="col-md-9">
 	<a href="<?=$this->url('new_option')?><?='?id=' . $id . '&action=new'?>"><b style="text-decoration: underline;">Add Option</b></a>
+	&nbsp;&nbsp;&nbsp;
+	<a href="<?=$this->url('merge_options')?><?='?id=' . $id . '&action=merge'?>"><b style="text-decoration: underline;">Merge Options</b></a>
 	<form action="<?=$this->url('delete_option')?><?='?wkat_id=' . $id . '&action=delete'?>" method="post">
 	<table class="table table-striped table-condensed" id="workAttrOptListTable" style="font-size:10pt;">
         <thead>

@@ -123,6 +123,39 @@ class ManagePublisherLocationAction
         }
     }
 
+	/**
+     * Merge publishers.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
+    protected function doPubMerge($post)
+    {
+		//echo "<pre>"; var_dump($post); echo "</pre>"; //die();
+        /*foreach ($post['src_loc'] as $source_locid => $action) :
+            if ($action == 'move') {
+                //update workpub set pubid=destpubid where pubid=srcpubid and locid = $source_locid
+                $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
+                $table->movePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid);
+                //update publoc set pubid = destpubid where pubid=srcpubid and id=$source_locid
+                $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
+                $table->movePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid);
+            } elseif ($action == 'merge') {
+                //update workpub set pubid=destpubid and locid=mrgpublocid where pubid=srcpubid and locid=$source_locid
+                $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
+                $table->mergePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid, $post['dest_loc_select']);
+                //delete $source_locid from publoc
+                $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
+                $table->mergePublisher($source_locid);
+            }
+        endforeach;
+		
+		//Delete source publisher
+		$table = new \VuBib\Db\Table\Publisher($this->adapter);
+		$table->deleteRecord($post['mrg_src_id']);*/
+    }
+	
     /**
      * Action based on action parameter.
      *
@@ -159,7 +192,7 @@ class ManagePublisherLocationAction
             $this->doMerge($post, $query);
         }
     }
-    
+	
     /**
      * Get records to display.
      *
@@ -168,10 +201,10 @@ class ManagePublisherLocationAction
      *
      * @return Paginator                  $paginator
      */
-    protected function getPaginator($query, $post)
+    public function getPaginator($query, $post)
     {
         //add location based on action query parameter
-        if (!empty($post['action'])) {
+        if (!empty($post['action'])) {		
             //add delete merge publisher locations
             $this->doAction($post, $query);
            
@@ -209,19 +242,19 @@ class ManagePublisherLocationAction
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::publisher::manage_publisherlocation', $this->router, $this->template, $this->adapter);
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
-        return new HtmlResponse(
-            $this->template->render(
-                'vubib::publisher::manage_publisherlocation',
-                [
-                    'rows' => $paginator,
-                    'previous' => $pgs['prev'],
-                    'next' => $pgs['nxt'],
-                    'countp' => $pgs['cp'],
-                    //'searchParams' => implode('&', $searchParams),
-                    'request' => $request,
-                    'adapter' => $this->adapter,
-                ]
-            )
-        );
+		return new HtmlResponse(
+			$this->template->render(
+				'vubib::publisher::manage_publisherlocation',
+				[
+					'rows' => $paginator,
+					'previous' => $pgs['prev'],
+					'next' => $pgs['nxt'],
+					'countp' => $pgs['cp'],
+					//'searchParams' => implode('&', $searchParams),
+					'request' => $request,
+					'adapter' => $this->adapter,
+				]
+			)
+		);
     }
 }
