@@ -102,10 +102,10 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecords($name)
     {
-		$escaper = new \Zend\Escaper\Escaper('utf-8');
+		//$escaper = new \Zend\Escaper\Escaper('utf-8');
         $select = $this->sql->select();
-        //$select->where->like('name', $name.'%');
-		$select->where->expression('LOWER(name) LIKE ?', mb_strtolower($escaper->escapeHtml($name)).'%');
+		$select->where->like(new Expression('LOWER(name)'), mb_strtolower($name).'%');
+		//$select->where->expression('LOWER(name) LIKE ?', mb_strtolower($escaper->escapeHtml($name)).'%');
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);

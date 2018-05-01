@@ -35,6 +35,7 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Expression;
 
 /**
  * Table Definition for work_workattribute.
@@ -257,6 +258,24 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 		else {
 			return $wk_wkat_row['value'];
 		}
-    }    
-    
+    } 
+
+    /**
+     * Find work attribute option records using option and attribute id
+     *
+     * @param Integer $pub_id publisher id
+     *
+     * @return Array $rows array of work publisher records
+     */
+    public function findRecordByOptionId($wkat_id, $opt_id)
+    {
+        $callback = function ($select) use ($wkat_id, $opt_id) {
+            $select->columns(['*']);
+            $select->where->equalTo('workattribute_id', $wkat_id);
+			$select->where->equalTo('value', $opt_id);
+        };
+        $rows = $this->select($callback)->toArray();
+
+        return $rows;
+    }	   
 }

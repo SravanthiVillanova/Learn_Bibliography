@@ -163,6 +163,29 @@ class AttributeManageOptionsAction
             }
         }
     }
+	
+	/**
+     * Merges attribute options.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
+    protected function doMergeOptions($post, $query)
+    {
+		if ($post['submitt'] == 'Merge_Options') {
+            if (!is_null($post['mrg_attr_id'])) {
+				foreach($post['src_select'] as $src_workattropt_Id):
+					 //Update work_workattribute,set src_workattropt_Id = dest_select where workattribute_id = $post['mrg_attr_id']
+					 $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+					 $table->updateWork_WorkAttributeValue($post['mrg_attr_id'], $post['dest_select'], $src_workattropt_Id);
+					 //delete source attribute option where id = $src_workattropt_Id and workattribute_id = $post['mrg_attr_id']
+					 $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+					 $table->deleteOption($post['mrg_attr_id'], $src_workattropt_Id);
+				endforeach;
+			}
+		}		
+    }
     
     /**
      * Action based on action parameter.
@@ -189,6 +212,10 @@ class AttributeManageOptionsAction
         //Merge option
         if ($post['action'] == 'merge') {
             $this->doMerge($post);
+        }
+		//Merge option
+        if ($post['action'] == 'merge_options') {
+            $this->doMergeOptions($post, $query);
         }
     }
     

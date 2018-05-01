@@ -313,17 +313,22 @@ class ManageWorkAction
                 //map work to citation(work_workattribute)
                 $wkat_id = [];
                 foreach ($post as $key => $value) {
-                    if ((preg_match("/^[a-z]+\,\d+[a-z]+\,\d+$/", $key)) && ($value != null)) {
+                    if ((preg_match("/^[a-z]+\,\d+([a-z]+\,\d+)*$/", $key)) && ($value != null)) {
                         $keys = preg_split("/[a-z]+\,/", $key);
                         $wkat_id[] = $keys[1];
-                        $wkopt_id[] = $keys[2];
+						if(count($keys) == 4) {
+							$wkopt_id[] = $keys[3];
+						} else {
+							$wkopt_id[] = $keys[2];
+						}
                     }
                     if ((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != null)) {
                         $wkat_id[] = preg_replace("/^[a-z]+\,/", '', $key).'<br />';
                         $wkopt_id[] = $value;
                     }
                 }
-                if ($wkat_id[0] != null) {
+                if(!empty($wkat_id)) {
+				if ($wkat_id[0] != null) {
                     //delete workattribute records
                     $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
                     $table->deleteRecordByWorkId($post['id']);
@@ -331,7 +336,7 @@ class ManageWorkAction
                     //insert workattributes again
                     $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
                     $table->insertRecords($post['id'], $wkat_id, $wkopt_id);
-                } else {
+                } } else {
                     //delete workattribute records
                     $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
                     $table->deleteRecordByWorkId($post['id']);

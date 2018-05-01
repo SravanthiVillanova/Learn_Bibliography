@@ -157,9 +157,9 @@ class GetWorkDetailsAction
         $ag_row = $table->getLastNameLikeRecords($name);
         foreach ($ag_row as $row) :
             $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-        $wks = $table->findRecordByAgentId($row['id']);
-        $no_wks = count($wks);
-        $no_of_wks[] = $no_wks;
+			$wks = $table->findRecordByAgentId($row['id']);
+			$no_wks = count($wks);
+			$no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $ag_row[$i]['works'] = $no_of_wks[$i];
@@ -425,6 +425,37 @@ class GetWorkDetailsAction
         exit;
     }
 	
+	/**
+     * Fetches publisher details.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
+    protected function optName($post)
+    {
+        $no_of_wks = [];
+        $name = $post['opt_name'];
+		$wkat_id = $post['wkat_id'];
+        $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+        $option_row = $table->findRecords($name, $wkat_id);
+        foreach ($option_row as $row) :
+                $opt_row[] = $row;
+        endforeach;
+        foreach ($opt_row as $row) :
+            $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+			$wks = $table->findRecordByOptionId($wkat_id, $row['id']);
+			$no_wks = count($wks);
+			$no_of_wks[] = $no_wks;
+        endforeach;
+        for ($i = 0; $i < count($no_of_wks); ++$i) {
+            $opt_row[$i]['works'] = $no_of_wks[$i];
+        }
+        $output = array('opt_row' => $opt_row);
+        echo json_encode($output);
+        exit;
+    }
+	
     /**
      * Action based on post parameter set.
      *
@@ -475,6 +506,9 @@ class GetWorkDetailsAction
 				$this->addAndGetNewAgent($post);
 			}//$this->addAndGetNewPub($post);
 		}
+		if (isset($post['opt_name'])) {
+            $this->optName($post);
+        }
     }
     
     /**

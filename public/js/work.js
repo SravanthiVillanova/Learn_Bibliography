@@ -623,3 +623,187 @@ function mergeClassification(that, context, workURL, for_str)
 	}
 	return false;
 }
+
+//Add merge buutton on Publisher > Merge
+function addMergeButton(context, for_str) {
+	if(for_str === "pub_merge") {
+		if (($('#mrg_src_id', context).val().length != 0) && ($('#mrg_dest_id', context).val().length != 0)) {
+			$('#submit_clear', context).before('<button type="submit" class="btn btn-default" name="submitt" id="submit_save" value="Save">Merge</button>');
+			return false;
+		}
+	} else if (for_str === "opt_merge") {
+		$('#submit_clear', context).before('<button type="submit" class="btn btn-default" name="submitt" id="submit_save" value="Merge_Options">Merge</button>');
+		return false;
+	}
+}
+
+//For Publisher merge
+function findPublisher(workURL, for_str) {
+	var find_pub = $('#find_' + for_str + '_pub').val();
+    $.ajax({
+		method: 'post',
+		url: ur + workURL,
+        data: {
+			pub_name: find_pub
+        },
+        dataType: "json",
+        cache: false,
+        success: function (data) {
+			if ((data.pub_row.length) > 0) {
+				$('#find_' + for_str + '_pub').val('');
+                $('#' + for_str + '_find_outer_div').after('<div class="form-group" id="' + for_str + '_select_div">');
+                var result_table = '<table id="' + for_str + '_result_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">' +
+                                '<tr><th>Select</th><th>Publisher Name</th><th>Works</th></tr>';
+                $.each(data.pub_row, function (key, val) {
+					if (for_str === "dest") {
+						if (("" + val.id) !== ($('#mrg_src_id').val())) {
+							result_table += '<tr class="' + for_str + '_pub_row"><td><div class="radio">' + 
+											'<label>' +
+											'<input type="radio" id="' + for_str + '_select" name="' + for_str + '_select" value="' + val.id + '">' + 
+											'</label>' + 
+											'</div></td>' +
+											'<td class="' + for_str + '_pub_name">' + val.name + '</td>' + 
+											'<td>' + val.works + '</td></tr>';
+						}
+					} else {
+						result_table += '<tr class="' + for_str + '_pub_row"><td><div class="radio">' + 
+										'<label>' +
+										'<input type="radio" id="' + for_str + '_select" name="' + for_str + '_select" value="' + val.id + '">' + 
+										'</label>' + 
+										'</div></td>' +
+										'<td class="' + for_str + '_pub_name">' + val.name + '</td>' + 
+										'<td>' + val.works + '</td></tr>';
+					}
+                });
+                result_table += '</table>';
+                $('#' + for_str + '_select_div').append(result_table);
+                $('#' + for_str + '_result_table').append('<button type="button" class="btn btn-default" name="btn_select_' + for_str + '" ' + 
+					                                          'id="btn_select_' + for_str + '">Select</button>');
+              } else {
+				$('#find_' + for_str + '_pub').val('');
+              }
+        },
+        error: function (data) {}
+	});
+	return false;
+}
+
+//Publisher merge - get publisher locations
+function findPublisherLoc(context, workURL, for_str) {
+	var pub = $('input[name="' + for_str + '_select"]:checked').val();
+	var sel_pubName = $('input[name="' + for_str + '_select"]:checked').closest('tr').children('td.' + for_str + '_pub_name').text();
+	var pub_result_table = for_str + '_result_table';
+    if (pub !== null) {
+		if(for_str === "src") {
+				$("#find_dest_pub").prop("disabled", false);
+                $("#dest_pub_find_bt").prop("disabled", false); 
+		}            
+        $('#mrg_' + for_str + '_id').val(pub);
+		$('#find_' + for_str + '_pub').val(sel_pubName);
+		$.ajax({
+			method: 'post',
+			url: ur + workURL,
+			data: {
+				publisher_Id_locs: pub
+			},
+			dataType: "json",
+			cache: false,
+			success: function (data) {
+				if ((data.pub_locs.length) > 0) {
+					$('#' + for_str + '_result_table').html('');
+					$('#' + for_str + '_find_outer_div').after('<div class="form-group" id="' + for_str + '_loc_select_div">');
+					if(for_str === "src") {
+						var loc_result_table = '<table id="' + for_str + '_loc_result_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">' +
+												'<tr><th>Move</th><th>Merge</th><th>Location</th><th>Works</th></tr>';
+						$.each(data.pub_locs, function (key, val) {
+							loc_result_table += '<tr class="src_loc_row"><td>' +
+												'<input type="radio" id="src_loc_mv_select" name="src_loc[' + val.id + ']" value="move">' + '</td>' +
+												'<td>'+
+												'<input type="radio" id="src_loc_mrg_select" name="src_loc[' + val.id + ']" value="merge">' + '</td>' +
+												'<td>' + val.location + '</td><td>' + val.works + '</td></tr>';
+						});
+					} else {
+						var loc_result_table = '<table id="' + for_str + '_loc_result_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">' +
+												'<tr><th>Merge</th><th>Location</th><th>Works</th></tr>';
+						$.each(data.pub_locs, function (key, val) {
+							loc_result_table += '<tr class="src_loc_row"><td>' +
+												'<input type="radio" id="src_loc_mrg_select" name="src_loc[' + val.id + ']" value="merge">' + '</td>' +
+												'<td>' + val.location + '</td><td>' + val.works + '</td></tr>';
+						});
+					}
+					pub_result_table += '</table>';
+					$('#' + for_str + '_loc_select_div').append(loc_result_table);
+				} else {
+							$('#' + for_str + '_result_table').html('');
+				}
+			},
+			error: function (data) {}
+		});
+		if (for_str === "dest") {
+			addMergeButton(context, "pub_merge");
+		}
+	}
+    return false;
+}
+
+//For Attribute Options merge
+function findAttrOptions(workURL, for_str, wkat_id) {
+	var find_opt = $('#find_' + for_str + '_opt').val();
+	if(for_str === "dest") {
+		var sel_opts = [];
+		$('input[name="src_select[]"]:checked').each(function () {
+			sel_opts.push($(this).val());
+		});
+		$.each(sel_opts, function(index, value) {
+			//newHTML.push('<span>' + value + '</span>');
+			console.log(index + "is" + value);
+		});
+	}
+    $.ajax({
+		method: 'post',
+		url: ur + workURL,
+        data: {
+			opt_name: find_opt,
+			wkat_id: wkat_id
+        },
+        dataType: "json",
+        cache: false,
+        success: function (data) {
+			if ((data.opt_row.length) > 0) {
+				$('#find_' + for_str + '_opt').val('');
+                $('#' + for_str + '_find_outer_div').after('<div class="form-group" id="' + for_str + '_select_div">');
+                var result_table = '<table id="' + for_str + '_result_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">' +
+								   '<tr><th>Select</th><th>Option Title</th><th>Works</th></tr>';
+                $.each(data.opt_row, function (key, val) {
+					if (for_str === "dest") {
+						if ($.inArray("" + val.id, sel_opts) == -1) {
+							result_table += '<tr class="dest_opt_row"><td><div class="radio">' + 
+											'<label>' +
+											'<input type="radio" id="dest_select" name="dest_select" value="' + val.id + '">' + 
+											'</label>' + 
+											'</div></td>' +
+											'<td class="dest_opt_name">' + val.title + '</td>' + 
+											'<td>' + val.works + '</td></tr>';
+						}
+					} else {
+						result_table += '<tr class="src_opt_row"><td><div class="checkbox">' + 
+										'<label>' +
+										'<input type="checkbox" id="src_select" name="src_select[]" value="' + val.id + '">' + 
+										'</label>' + 
+										'</div></td>' +
+										'<td class="src_opt_name">' + val.title + '</td>' + 
+										'<td>' + val.works + '</td></tr>';
+					}
+                });
+                result_table += '</table>';
+                $('#' + for_str + '_select_div').append(result_table);
+                $('#' + for_str + '_result_table').append('<button type="button" class="btn btn-default" name="btn_select_' + for_str + '" ' + 
+				                                          'id="btn_select_' + for_str + '">Select</button>');
+              } else {
+				$('#find_' + for_str + '_opt').val('');
+              }
+        },
+        error: function (data) {}
+	});
+	return false;
+}

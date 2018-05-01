@@ -35,6 +35,7 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Expression;
 
 /**
  * Table Definition for workattribute_option.
@@ -264,5 +265,21 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         $row = $rowset->current();
 
         return $row;
+    }
+	
+    /**
+     * Find attribute option by title
+     *
+     * @param string $name option title
+     *
+     * @return Paginator $paginatorAdapter attribute option record
+     */
+    public function findRecords($name, $wkat_id)
+    {
+        $select = $this->sql->select();
+		$select->where->like(new Expression('LOWER(title)'), '%'.mb_strtolower($name).'%')->and->equalTo('workattribute_id', $wkat_id);
+        $paginatorAdapter = new DbSelect($select, $this->adapter);
+
+        return new Paginator($paginatorAdapter);
     }
 }

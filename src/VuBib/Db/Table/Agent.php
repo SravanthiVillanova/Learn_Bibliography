@@ -60,8 +60,6 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     public function __construct($adapter)
     {
         parent::__construct('agent', $adapter);
-		$this->escaper = new \Zend\Escaper\Escaper('utf-8');
-		//$quote = new \Zend\Db\Adapter\Abstract
     }
 
     /**
@@ -219,13 +217,13 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         if ($type == 'fname') {
-			$select->where->expression('LOWER(fname) LIKE ?', mb_strtolower($this->escaper->escapeHtml($name)).'%');
+			$select->where->like(new Expression('LOWER(fname)'), mb_strtolower($name).'%');
         } elseif ($type == 'lname') {
-			$select->where->expression('LOWER(lname) LIKE ?', mb_strtolower($this->escaper->escapeHtml($name)).'%');
+			$select->where->like(new Expression('LOWER(lname)'), mb_strtolower($name).'%');
         } elseif ($type == 'altname') {
-			$select->where->expression('LOWER(alternate_name) LIKE ?', mb_strtolower($this->escaper->escapeHtml($name)).'%');
+			$select->where->like(new Expression('LOWER(alternate_name)'), mb_strtolower($name).'%');
         } elseif ($type == 'orgname') {
-			$select->where->expression('LOWER(organization_name) LIKE ?', mb_strtolower($this->escaper->escapeHtml($name)).'%');
+			$select->where->like(new Expression('LOWER(organization_name)'), mb_strtolower($name).'%');
         }
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 

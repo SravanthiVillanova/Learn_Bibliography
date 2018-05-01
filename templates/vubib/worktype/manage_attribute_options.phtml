@@ -9,6 +9,10 @@ $this->headTitle('Manage Options - Attributes');
 if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();
     $id     = $params['id'];
+	//fetch attribute name based on id
+    $table  = new \VuBib\Db\Table\WorkAttribute($adapter);
+    $row    = $table->findRecordById($id);
+    $attribute  = $row['field'];
 }
 ?>
 <script type='text/javascript'>
@@ -27,9 +31,10 @@ $(document).ready(function () {
 });
 </script>
 <div class="col-md-9">
+	<p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p> 
 	<a href="<?=$this->url('new_option')?><?='?id=' . $id . '&action=new'?>"><b style="text-decoration: underline;">Add Option</b></a>
 	&nbsp;&nbsp;&nbsp;
-	<a href="<?=$this->url('merge_options')?><?='?id=' . $id . '&action=merge'?>"><b style="text-decoration: underline;">Merge Options</b></a>
+	<a href="<?=$this->url('merge_options')?><?='?id=' . $id . '&action=merge_options'?>"><b style="text-decoration: underline;">Merge Options</b></a>
 	<form action="<?=$this->url('delete_option')?><?='?wkat_id=' . $id . '&action=delete'?>" method="post">
 	<table class="table table-striped table-condensed" id="workAttrOptListTable" style="font-size:10pt;">
         <thead>
