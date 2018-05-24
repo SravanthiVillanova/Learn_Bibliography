@@ -713,6 +713,7 @@ function findPublisherLoc(context, workURL, for_str) {
 					$('#' + for_str + '_result_table').html('');
 					$('#' + for_str + '_find_outer_div').after('<div class="form-group" id="' + for_str + '_loc_select_div">');
 					if(for_str === "src") {
+						console.log(for_str);
 						var loc_result_table = '<table id="' + for_str + '_loc_result_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">' +
 												'<tr><th>Move</th><th>Merge</th><th>Location</th><th>Works</th></tr>';
 						$.each(data.pub_locs, function (key, val) {
@@ -723,11 +724,12 @@ function findPublisherLoc(context, workURL, for_str) {
 												'<td>' + val.location + '</td><td>' + val.works + '</td></tr>';
 						});
 					} else {
+						console.log("else " + for_str);
 						var loc_result_table = '<table id="' + for_str + '_loc_result_table" style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">' +
 												'<tr><th>Merge</th><th>Location</th><th>Works</th></tr>';
 						$.each(data.pub_locs, function (key, val) {
-							loc_result_table += '<tr class="src_loc_row"><td>' +
-												'<input type="radio" id="src_loc_mrg_select" name="src_loc[' + val.id + ']" value="merge">' + '</td>' +
+							loc_result_table += '<tr class="' + for_str + '_loc_row"><td>' +
+												'<input type="radio" id="' + for_str + '_loc_mrg_select" name="' + for_str + '_loc[' + val.id + ']" value="merge">' + '</td>' +
 												'<td>' + val.location + '</td><td>' + val.works + '</td></tr>';
 						});
 					}

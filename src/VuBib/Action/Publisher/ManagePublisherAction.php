@@ -147,6 +147,10 @@ class ManagePublisherAction
      */
     protected function doMerge($post)
     {
+		if(isset($post['dest_loc'])) {
+			$dest_loc_id = array_search('merge', $post['dest_loc']);
+		}
+
         foreach ($post['src_loc'] as $source_locid => $action) :
             if ($action == 'move') {
                 //update workpub set pubid=destpubid where pubid=srcpubid and locid = $source_locid
@@ -158,10 +162,10 @@ class ManagePublisherAction
             } elseif ($action == 'merge') {
                 //update workpub set pubid=destpubid and locid=mrgpublocid where pubid=srcpubid and locid=$source_locid
                 $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-                $table->mergePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid, $post['dest_loc_select']);
+                $table->mergePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid, $dest_loc_id);
                 //delete $source_locid from publoc
-                //$table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
-                //$table->mergePublisher($source_locid);
+                $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
+                $table->mergePublisher($post['mrg_src_id'],$source_locid);
             }
         endforeach;
 		

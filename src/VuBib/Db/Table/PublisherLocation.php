@@ -273,9 +273,9 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function mergePublisher($src_loc_id)
+    public function mergePublisher($src_pub_id, $src_loc_id)
     {
-        $this->delete(['id' => $src_loc_id]);
+        $this->delete(['id' => $src_loc_id, 'publisher_id' => $src_pub_id]);
     }
 	
 	/**
