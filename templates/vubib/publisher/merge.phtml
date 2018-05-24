@@ -32,10 +32,12 @@
         });
         //check if src and dest are same
         $(document).on('click', '#submit_save', function () {
-			var src_loc_row_cnt = $('.src_loc_row').length;
+			var src_loc_row_cnt = $('#src_loc_result_table').find('tr[class="src_loc_row"]').length;
 			var src_loc_mv_cnt = $('#src_loc_result_table').find('input[id="src_loc_mv_select"]:checked').length;
 			var src_loc_mrg_cnt = $('#src_loc_result_table').find('input[id="src_loc_mrg_select"]:checked').length;
 			var src_loc_sel_cnt = src_loc_mv_cnt + src_loc_mrg_cnt;
+			console.log("src_loc_row_cnt is " + src_loc_row_cnt);
+			console.log("src_loc_sel_cnt is " + src_loc_sel_cnt);
 			if(src_loc_row_cnt !== src_loc_sel_cnt) {
 				$('.mergePubSelError').show();
                 return false;
