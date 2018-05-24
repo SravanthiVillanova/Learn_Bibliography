@@ -160,8 +160,8 @@ class ManagePublisherAction
                 $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
                 $table->mergePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid, $post['dest_loc_select']);
                 //delete $source_locid from publoc
-                $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
-                $table->mergePublisher($source_locid);
+                //$table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
+                //$table->mergePublisher($source_locid);
             }
         endforeach;
 		
