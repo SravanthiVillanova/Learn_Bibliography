@@ -395,7 +395,7 @@ class GetWorkDetailsAction
     }
     
 	/**
-     * Add a new publisher and send back newly added publisher details
+     * Add a new agent and send back newly added agent details
      *
      * @param Array $post contains posted elements of form
      *
@@ -421,6 +421,34 @@ class GetWorkDetailsAction
 		$row['ag_email'] = $newAg_Email;
 		
         $output = array('newAgent' => $row);
+        echo json_encode($output);
+        exit;
+    }
+	
+	/**
+     * Add a new attribute option and send back newly added option details
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
+    public function addAndGetNewAttrOption($post)
+    {
+		$rows = [];
+		
+		$newOpt_AttrId = preg_replace("/^\w+:/", '', $post['attrId']);
+		$new_Option = $post['attrOption'];
+		$new_OptType = $post['attrType'];
+
+        $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+        $newOpt_id = $table->insertOptionAndReturnId($newOpt_AttrId, $new_Option, $new_OptType);
+		
+		$row['attr_id'] = $newOpt_AttrId;
+		$row['opt_id'] = $newOpt_id;
+		$row['opt_title'] = $new_Option;
+		$row['opt_value'] = $new_OptType;
+		
+        $output = array('newOption' => $row);
         echo json_encode($output);
         exit;
     }
@@ -504,7 +532,10 @@ class GetWorkDetailsAction
 			}
 			else if ($post['addAction'] == 'addNewAgent') {
 				$this->addAndGetNewAgent($post);
-			}//$this->addAndGetNewPub($post);
+			}
+			else if ($post['addAction'] == 'addNewOption') {
+				$this->addAndGetNewAttrOption($post);
+			}
 		}
 		if (isset($post['opt_name'])) {
             $this->optName($post);

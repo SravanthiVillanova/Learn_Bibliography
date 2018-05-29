@@ -1136,6 +1136,41 @@ $(document).ready(function () {
 			</div>
 		</div>
 	</div>
+	<div class="modal fade ig" id="addAttributeOption" role="dialog">
+		<div class="modal-dialog ig">
+			<div class="modal-content ig">
+				<div class="modal-header ig">
+					<button type="button" class="close ig" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title ig" id="newAttrOptionModalLabel">New Attribute Option</h4>
+				</div>
+				<div class="modal-body ig">	
+						<form class="form-horizontal" method="post" action="<?= $this->url('manage_publisher') ?>">
+							<div class="form-group">
+								<label class="col-xs-2 control-label">Option: </label>
+								<div class="col-xs-7">
+									<input type="text" class="form-control" name="name_option" id="newoption" required="true" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-xs-2 control-label">Type: </label>
+								<div class="col-xs-7">
+									<input type="text" class="form-control" name="add_optiontype" id="addoptiontype" />
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-10">
+									<button type="submit" class="btn btn-primary" id="addNewOpt" name="submitt" value="Save">Save</button> 
+									<!--<button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>-->
+								</div>
+							</div>
+						</form>   
+				</div>
+				<div class="modal-footer ignore ig">
+					<button type="button" class="btn btn-default add_new_opt_close ig" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <?php
 	}

@@ -115,6 +115,27 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
     }
 
     /**
+     * Insert attribute option record.
+     *
+     * @param String $attrId work attribute id
+     * @param String $title  work attribute option title
+     *
+     * @return int   $id id of newly inserted option record
+     */
+    public function insertOptionAndReturnId($attrId, $title, $val)
+	{
+        $this->insert(
+            [
+            'workattribute_id' => $attrId,
+            'title' => $title,
+			'value' => $val,
+            ]
+        );	
+		$id = $this->getLastInsertValue();
+        return $id;
+    }
+	
+    /**
      * Fetch record by option id
      *
      * @param Integer $id workattribute option id

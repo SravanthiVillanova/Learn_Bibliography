@@ -47,7 +47,7 @@ function bindPublisherAutocomplete(context, workURL) {
 		},
 		open: function(event, ui) {
 			$('.ui-autocomplete').append('<a type="button" class="addNewItemPubLink" ' + 
-										   'style="text-decoration: underline; color:blue;" data-value="'+ $(this).val() +'"' + 
+										   'style="text-decoration: underline; color:blue;" data-value="'+ $(this).val() + '"' + 
 										   'data-ele=""' + '>Add New</a>'); //Add new link at end of results
 			
 			$('.addNewItemPubLink').on('click',function(){
@@ -385,7 +385,7 @@ function bindWorkTypeAttributes(context, workURL) {
 				$("#optionsLookup").modal('show');
 				$('#optionsLookup').on('shown.bs.modal', function() {
 					$('#lookupOption').focus()
-					$('.option_search').on('click', function(e) {
+					$('.option_search').unbind('click').on('click', function(e) {
 						//var attribute_Id = $(lookupBtn).prev().attr('id');
 						var attribute_Id = attr_option_lookup.attr('id');
 						var option = $('#lookupOption').val();
@@ -400,14 +400,33 @@ function bindWorkTypeAttributes(context, workURL) {
 							dataType: "json",
 							cache: false,
 							success: function(data) {
-								$(".option_results", context).html('');
-								$(".option_results", context).append('<p>Search Results</p>');
-								$.each(data.attribute_options, function(key, val) {
-									$(".option_results", context).append('<p><a name="' + val.id + '" href="' + val.title + '" class="link_options">' + val.title + '</a></p>');
-								})
+								if(data.attribute_options.length > 0) {
+									$(".option_results", context).html('');
+									$(".option_results", context).append('<p>Search Results</p>');
+									$.each(data.attribute_options, function(key, val) {
+										$(".option_results", context).append('<p><a name="' + val.id + '" href="' + val.title + '" class="link_options">' + val.title + '</a></p>');
+									})
+								}
+								if($.trim($('.option_results').html()).length > 0) {
+									$( ".link_options:last" ).after('<li><a class="addNewAttrOptionLink" ' + 
+																'style="text-decoration: underline; color:blue" ' + 
+																'data-value="'+ option +'"' + 
+																'data-ele=""' + '>Add New</a></li>' );
+								} else {
+									$(".option_results", context).append('<p>No Search Results</p>' + 
+																		'<li><a class="addNewAttrOptionLink" ' + 
+																		'style="text-decoration: underline; color:blue" ' + 
+																		'data-value="'+ option +'"' + 
+																		'data-ele=""' + '>Add New</a></li>');
+								}
+								$('.addNewAttrOptionLink').on('click',function(){
+									var lnk = $(".option_results", context);
+									addNewOption(context,workURL,lnk,attribute_Id,option);
+									return false;
+								});
 							},
 							error: function() {
-								$(".option_results", context).append('<p>None available</p>');
+								$(".option_results", context).append('<p>No search results</p>');
 							}
 						});
 						$(context).off('click', '.link_options');
@@ -430,6 +449,43 @@ function bindWorkTypeAttributes(context, workURL) {
 			}
 	});
 	return false;
+}
+
+//add new option
+function addNewOption(context,workURL,lnk,attribute_Id,typedText) {
+	$('#addAttributeOption').modal('show');
+	$('#newoption').val(typedText);
+	
+	$('#addNewOpt').unbind('click').on('click', function(e) {
+		$.ajax({
+			method: 'post',
+			url: ur + workURL,
+			data: {
+				addAction: 'addNewOption',
+				attrId: attribute_Id,				
+				attrOption: $('#newoption').val(),
+				attrType: $('#addoptiontype').val()
+			},
+			dataType: "json",
+			cache: false,
+			success: function(data) {
+				if (Object.keys(data.newOption).length > 0) {
+						$('#newoption').val('');
+						$('#addoptiontype').val('');
+						$(".add_new_opt_close").click();
+						
+						lnk.html('');
+						lnk.append('<p><a name="' + data.newOption.opt_id + '" href="' + data.newOption.opt_title + '" class="link_options">' + data.newOption.opt_title + '</a></p>');
+						
+						//lnk.closest('tr').find('#agent_LastName', context).nextAll().remove();
+				}
+			},
+			error: function() {
+				$(".option_results", context).append('<p>Error</p>');
+			}
+		});
+		return false;
+	});
 }
 
 //Add classification hierarchy
