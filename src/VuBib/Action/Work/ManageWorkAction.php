@@ -313,7 +313,7 @@ class ManageWorkAction
                 //map work to citation(work_workattribute)
                 $wkat_id = [];
                 foreach ($post as $key => $value) {
-                    if ((preg_match("/^[a-z]+\,\d+([a-z]+\,\d+)*$/", $key)) && ($value != null)) {
+                    if ((preg_match("/^[a-z]+\,\d+([a-z]+\,\d+)+$/", $key)) && ($value != null)) {
                         $keys = preg_split("/[a-z]+\,/", $key);
                         $wkat_id[] = $keys[1];
 						if(count($keys) == 4) {
@@ -332,7 +332,7 @@ class ManageWorkAction
                     //delete workattribute records
                     $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
                     $table->deleteRecordByWorkId($post['id']);
-
+					
                     //insert workattributes again
                     $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
                     $table->insertRecords($post['id'], $wkat_id, $wkopt_id);
