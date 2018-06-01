@@ -233,6 +233,7 @@ class ManageWorkAction
      */
     protected function doEdit($post)
     {
+		//echo "<pre>"; var_dump($post); echo "</pre>"; die();
         if (isset($post['submit_save'])) {
             if ($post['submit_save'] == 'Save') {
                 //echo "<pre>"; print_r($post); echo "</pre>"; die();

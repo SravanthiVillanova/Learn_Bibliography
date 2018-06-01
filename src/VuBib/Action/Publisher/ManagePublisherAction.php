@@ -67,6 +67,12 @@ class ManagePublisherAction
      * @var $adapter
      */
     protected $adapter;
+	
+	/**
+	 * string
+	 * @var $pub_id
+	 */
+	 protected $pub_id;
 
     //private $dbh;
     //private $qstmt;
@@ -83,6 +89,7 @@ class ManagePublisherAction
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
+		$this->pub_id = "";
     }
 
     /**
@@ -184,7 +191,8 @@ class ManagePublisherAction
     protected function doNew($post)
     {
         $table = new \VuBib\Db\Table\Publisher($this->adapter);
-        $table->insertRecords($post['name_publisher']);
+		return($table->insertPublisherAndReturnId($post['name_publisher']));
+        //$table->insertRecords($post['name_publisher']);
     }
     
     /**
@@ -214,7 +222,7 @@ class ManagePublisherAction
         //add a new publisher
         if ($post['action'] == 'new') {
             if ($post['submitt'] == 'Save') {
-                $this->doNew($post);
+                return($this->doNew($post));
             }
         }
         //edit a publisher
@@ -247,6 +255,7 @@ class ManagePublisherAction
      */
     protected function getPaginator($params, $post)
     {
+		$newpud_id = "";
         //search
         if (!empty($params)) {
             if (!empty($params['name']) || !empty($params['location']) || !empty($params['letter'])) {
@@ -256,8 +265,12 @@ class ManagePublisherAction
               
         //edit, delete actions on publisher
         if (!empty($post['action'])) {
-            //add edit delete merge publisher
+			if($post['action'] == 'new') {
+				$this->pub_id = $this->doAction($post);
+			} else {
+				//add edit delete merge publisher
                 $this->doAction($post);
+			}
             
             //Cancel edit\delete
             if ($post['submitt'] == 'Cancel') {
@@ -266,7 +279,7 @@ class ManagePublisherAction
                 return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
             }
         }
-        
+
         // default: blank/missing search
         $table = new \VuBib\Db\Table\Publisher($this->adapter);
 
@@ -322,10 +335,10 @@ class ManagePublisherAction
         
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::publisher::manage_publisher', $this->router, $this->template, $this->adapter);
         list($query, $post) = $simpleAction->getQueryAndPost($request);
-
+		
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(15);
-
+		
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::publisher::manage_publisher', $this->router, $this->template, $this->adapter);
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
@@ -337,12 +350,13 @@ class ManagePublisherAction
             $searchParams = '';
         }
         
-        if (isset($post['action']) && $post['action'] == 'merge_publisher') {
-			// default: blank/missing search
+        if (isset($post['action']) && (($post['action'] == 'merge_publisher') || ($post['action'] == 'new'))) {
+			$searchParams = ($post['action'] == 'merge_publisher') ? $post['mrg_dest_id'] : $this->pub_id;
+
+			// get publisher locations
 			$table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
-			$paginator = $table->findPublisherLocations($post['mrg_dest_id']);
-			
-			$searchParams = $post['mrg_dest_id'];
+			$paginator = $table->findPublisherLocations($searchParams);
+			//$paginator = $table->findPublisherLocations($post['mrg_dest_id']);
 			
             return new HtmlResponse(
                 $this->template->render(
@@ -358,7 +372,8 @@ class ManagePublisherAction
                     ]
                 )
             );
-        } else {
+        } 
+		else {
             return new HtmlResponse(
                 $this->template->render(
                     'vubib::publisher::manage_publisher',

@@ -141,7 +141,7 @@ function addNewPublisher(context,workURL,lnk) {
 						if(typeof(data.newPublisher.pubLoc_id) != "undefined" && data.newPublisher.pubLoc_id !== null) {
 							lnk.closest('tr').find('#pubLocation', context).prop("disabled", false);
 							lnk.closest('tr').find('.pub_locations', context).append('<option id="' + data.newPublisher.pubLoc_id + 
-																			'" value="' + data.newPublisher.pubLoc_id + '">' + 
+																			'" value="' + data.newPublisher.pubLoc_id + '" selected="selected">' + 
 																			 data.newPublisher.pub_loc + '</option>');
 							lnk.closest('tr').find('#publoc_id', context).eq(0).val(data.newPublisher.pubLoc_id);
 							
@@ -384,6 +384,8 @@ function bindWorkTypeAttributes(context, workURL) {
 				attr_option_lookup = $(lookupBtn).prev();
 				$("#optionsLookup").modal('show');
 				$('#optionsLookup').on('shown.bs.modal', function() {
+					$('#lookupOption').val('');
+					$(".option_results").html('');
 					$('#lookupOption').focus()
 					$('.option_search').unbind('click').on('click', function(e) {
 						//var attribute_Id = $(lookupBtn).prev().attr('id');

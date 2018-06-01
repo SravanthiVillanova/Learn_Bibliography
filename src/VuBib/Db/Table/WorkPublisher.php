@@ -151,9 +151,9 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
                 'publisher_id' => $pub_id[$i],
                 'location_id' => $pub_locid[$i],
                 'publish_month' => 0,
-                'publish_year' => $pub_yr[$i],
+                'publish_year' => (empty($pub_yr[$i])) ? null : $pub_yr[$i],
                 'publish_month_end' => null,
-                'publish_year_end' => $pub_yrEnd[$i],
+                'publish_year_end' => (empty($pub_yrEnd[$i])) ? null : $pub_yrEnd[$i],
                 ]
             );
         }

@@ -239,7 +239,8 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
     public function getAttributeOptions($opt_title, $wkat_id)
     {
         $callback = function ($select) use ($opt_title, $wkat_id) {
-            $select->where->like('title', $opt_title.'%');
+            //$select->where->like('title', $opt_title.'%');
+			$select->where->like(new Expression('LOWER(title)'), mb_strtolower($opt_title).'%');
             $select->where->equalTo('workattribute_id', $wkat_id);
         };
         $rows = $this->select($callback)->toArray();
