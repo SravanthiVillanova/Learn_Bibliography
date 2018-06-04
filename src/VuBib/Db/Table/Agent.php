@@ -240,7 +240,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     public function getLikeRecords($name)
     {
         $callback = function ($select) use ($name) {
-            $select->where->like(new Expression('LOWER(lname)'), '%'.mb_strtolower($name).'%');
+            $select->where->like(new Expression('LOWER(lname)'), mb_strtolower($name).'%');
 			//$select->where->expression('LOWER(lname) LIKE ?', '%'.mb_strtolower($this->escaper->escapeHtml($name)).'%');
         };
         $rows = $this->select($callback)->toArray();

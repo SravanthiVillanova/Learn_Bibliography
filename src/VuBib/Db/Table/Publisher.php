@@ -206,7 +206,8 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
     public function getLikeRecords($name)
     {
         $callback = function ($select) use ($name) {
-            $select->where->like('name', '%'.$name.'%');
+			$select->where->like(new Expression('LOWER(name)'), mb_strtolower($name).'%');
+            //$select->where->like('name', '%'.$name.'%');
         };
         $rows = $this->select($callback)->toArray();
 
