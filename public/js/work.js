@@ -386,7 +386,7 @@ function bindWorkTypeAttributes(context, workURL) {
 				$('#optionsLookup').on('shown.bs.modal', function() {
 					$('#lookupOption').val('');
 					$(".option_results").html('');
-					$('#lookupOption').focus()
+					$('#lookupOption').focus();
 					$('.option_search').unbind('click').on('click', function(e) {
 						//var attribute_Id = $(lookupBtn).prev().attr('id');
 						var attribute_Id = attr_option_lookup.attr('id');
@@ -567,6 +567,7 @@ function bindParentWork(context,workURL)
 {
 	$('.pr_work_results').html('');
 	$('#parent_title',context).focus();
+		
 	   $('.parent_lookup_search',context).off('click').on('click', function(e) {	
 		   var lookup_title = $('#parent_title',context).val();
 		   if (lookup_title != "") {

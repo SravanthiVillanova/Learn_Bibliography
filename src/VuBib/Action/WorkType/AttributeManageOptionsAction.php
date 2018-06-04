@@ -219,6 +219,23 @@ class AttributeManageOptionsAction
         }
     }
     
+	/**
+     * Searches attribute options.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return matched options
+     */
+    protected function searchOption($query)
+    {
+        if ($query['submit'] == 'Search') {
+            if (!is_null($query['worktype_attr'])) {
+                $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+                return($table->findRecords($query['option'], $query['worktype_attr']));
+            }
+        }
+    }
+	
     /**
      * Call aprropriate function for each action.
      *
@@ -229,7 +246,21 @@ class AttributeManageOptionsAction
      */
     protected function getPaginator($query, $post)
     {
-        if (!empty($post['action'])) {
+        $order = "";
+        //order by columns
+        if (!empty($query['orderBy'])) {
+            $sort_ord = $query['sort_ord'];
+            $ord_by = $query['orderBy'];
+            
+            $order = $ord_by . " " . $sort_ord;
+        }
+		//Attribute Option Lookup
+        if (!empty($query['action'])) {
+			if($query['action'] == 'search_option') {
+				return($this->searchOption($query));
+			}
+        }
+		if (!empty($post['action'])) {
             //add edit delete merge option
             $this->doAction($post, $query);
             
@@ -241,9 +272,10 @@ class AttributeManageOptionsAction
                 return $paginator;
             }
         }
+		
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-        $paginator = $table->displayAttributeOptions($query['id']);
+        $paginator = $table->displayAttributeOptions($query['id'],$order);
 
         return $paginator;
     }
@@ -295,19 +327,23 @@ class AttributeManageOptionsAction
             $searchParams[] = 'id='.urlencode($query['id']);
         }
 
-        return new HtmlResponse(
-            $this->template->render(
-                'vubib::worktype::manage_attribute_options',
-                [
-                    'rows' => $paginator,
-                    'previous' => $previous,
-                    'next' => $next,
-                    'countp' => $countPages,
-                    'searchParams' => implode('&', $searchParams),
-                    'request' => $request,
-                    'adapter' => $this->adapter,
-                ]
-            )
-        );
+		if (isset($query['action']) && $query['action'] == 'search_option') {	
+			$searchParams[] = 'action=search_option&worktype_attr='.urlencode($query['worktype_attr']).
+			                  '&option='.urlencode($query['option']).'&submit=Search';
+		}
+		return new HtmlResponse(
+			$this->template->render(
+				'vubib::worktype::manage_attribute_options',
+				[
+					'rows' => $paginator,
+					'previous' => $previous,
+					'next' => $next,
+					'countp' => $countPages,
+					'searchParams' => implode('&', $searchParams),
+					'request' => $request,
+					'adapter' => $this->adapter,
+				]
+			)
+		);
     }
 }

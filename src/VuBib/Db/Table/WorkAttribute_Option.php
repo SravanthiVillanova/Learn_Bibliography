@@ -85,10 +85,15 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Paginator $paginatorAdapter attribute options
      */
-    public function displayAttributeOptions($wkat_id)
+    public function displayAttributeOptions($wkat_id, $order="")
     {
         $select = $this->sql->select();
         $select->where->equalTo('workattribute_id', $wkat_id);
+		
+		if (isset($order) && $order !== '') {
+           $select->order($order);
+        }
+		
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -103,7 +108,7 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function addOption($wkat_id, $title, $val)
+    public function addOption($wkat_id, $title, $val="")
     {
         $this->insert(
             [
@@ -122,7 +127,7 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
      *
      * @return int   $id id of newly inserted option record
      */
-    public function insertOptionAndReturnId($attrId, $title, $val)
+    public function insertOptionAndReturnId($attrId, $title, $val="")
 	{
         $this->insert(
             [
@@ -159,7 +164,7 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function updateOption($id, $title, $val)
+    public function updateOption($id, $title, $val="")
     {
         $this->update(
             [

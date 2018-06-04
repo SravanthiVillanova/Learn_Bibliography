@@ -164,7 +164,7 @@ $(document).ready(function () {
 	
 	//add publisher rows
 	$("#pub_add").click(function(){
-		var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="">' +
+		var pub_row = $('<tr name="pub_row[]"><input type="hidden" data-same name="pub_id[]" id="pubId" value="">' +
 							'<td><input type="checkbox" name="removePublisher[]"></td>' +
 							'<td name="pubNameCol"><input type="text" name="pub_name[]" id="pubName" placeholder="none"  size="80"/></td>'+
 							'<input type="hidden" name="publoc_id[]" id="publoc_id" value="">' +
@@ -190,7 +190,6 @@ $(document).ready(function () {
 			alert("No row(s) selected, Please select row(s) to remove.");
 			return false;
 		}
-        //$(this).parent().parent().remove();
     });
 	//change publisher location
 	$("#pub_table").on('change','.pub_locations',function(){
@@ -334,6 +333,17 @@ $(document).ready(function () {
 	
 	//save
 	$('#submit_save').on('click', function(){
+		$('#General').find('input:required').each(function() {
+			// Find the tab-pane that this element is inside, and get the id
+			var $closest = $(this).closest('.tab-pane');
+			var id = $closest.attr('id');
+			// Find the link that corresponds to the pane and have it show
+			$('.nav a[href="#' + id + '"]').tab('show');
+
+			// Only want to do it once
+			return false;
+		});
+		
 		//var no_of_rows = $('table[name="source_fl_table"]').find("tr").length;
 		var arr = [];
 		var values;
@@ -775,13 +785,14 @@ $(document).ready(function () {
 			<th>Year To</th>  
 		</thead>
 		<tbody>
-		<tr name="pub_row[]">
+		
 		<?php
 		if(count($pub_rows) != 0)
 		{
 			for($i = 0;$i < count($pub_rows);$i++)
 			{
 		?>
+					<tr name="pub_row[]">
 					<input type="hidden" name="pub_id[]" id="pubId" value="<?=$pub_rows[$i]['publisher_id']?>" />
 					<td><input type="checkbox" name="removePublisher[]"></td>
 					<td name="pubNameCol"><input type="text" name="pub_name[]" id="pubName"  value="<?=$pub_rows[$i]['name']?>" />
@@ -830,6 +841,7 @@ $(document).ready(function () {
 		else
 		{
 		?>		
+				<tr name="pub_row[]">
 				<input type="hidden" name="pub_id[]" id="pubId" value="">
 				<td><input type="checkbox" name="removePublisher[]"></td>
 				<td name="pubNameCol">
@@ -866,13 +878,14 @@ $(document).ready(function () {
           <th>Remove</th>
 		</thead>
 		<tbody>	
-		<tr>
+		<!--<tr>-->
 		<?php
 		if(count($ag_rows) > 0)
 		{
 			for($i = 0;$i < count($ag_rows);$i++)
 			{
 		?>		
+					<tr>
 					<td><input type="checkbox" name="removeAgent[]"></td>
 					<td>
 						<input type="hidden" name="agent_id[]" id="agentId" value="<?=$ag_rows[$i]['agent_id']?>">
@@ -969,6 +982,7 @@ $(document).ready(function () {
 		else
 		{
 		?>
+				<tr>
 				<td><input type="checkbox" name="removeAgent[]"></td>
 				<td>
 					<input type="hidden" name="agent_id[]" id="agentId" value="">

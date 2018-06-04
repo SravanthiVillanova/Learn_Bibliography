@@ -49,6 +49,7 @@ return [
 			'vubib::worktype::delete_option' => 'templates/vubib/worktype/delete_option.phtml',
 			'vubib::worktype::merge_options' => 'templates/vubib/worktype/merge_options.phtml',
 			'vubib::worktype::merge_duplicate_option' => 'templates/vubib/worktype/merge_duplicate_values.phtml',
+			'vubib::worktype::search_attribute_option' => 'templates/vubib/worktype/attribute_option_find.phtml',
             //classification
             'vubib::classification::new_classification' => 'templates/vubib/classification/new.phtml',
             'vubib::classification::manage_classification' => 'templates/vubib/classification/manage.phtml',

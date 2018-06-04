@@ -41,6 +41,7 @@ return [
 			VuBib\Action\WorkType\DeleteOptionAction::class => VuBib\Action\WorkType\DeleteOptionFactory::class,
 			VuBib\Action\WorkType\MergeOptionAction::class => VuBib\Action\WorkType\MergeOptionFactory::class,
 			VuBib\Action\WorkType\MergeDuplicateOptionAction::class => VuBib\Action\WorkType\MergeDuplicateOptionFactory::class,
+			VuBib\Action\WorkType\SearchOptionAction::class => VuBib\Action\WorkType\SearchOptionFactory::class,
             
 			VuBib\Action\Classification\NewClassificationAction::class => VuBib\Action\Classification\NewClassificationFactory::class,
 			VuBib\Action\Classification\ManageClassificationAction::class => VuBib\Action\Classification\ManageClassificationFactory::class,
@@ -358,6 +359,17 @@ return [
                 //BodyParamsMiddleware::class,
 				\VuBib\Middleware\AuthenticationMiddleware::class,
                 VuBib\Action\WorkType\MergeDuplicateOptionAction::class,
+            ],
+            'allowed_methods' => ['GET','POST'],
+        ],
+		
+		[
+            'name' => 'search_attribute_option',
+		    'path' => '/WorkType/search_attribute_option',
+            'middleware' => [
+                //BodyParamsMiddleware::class,
+				\VuBib\Middleware\AuthenticationMiddleware::class,
+                VuBib\Action\WorkType\SearchOptionAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
         ],

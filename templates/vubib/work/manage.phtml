@@ -49,7 +49,7 @@ $(document).ready(function () {
 <?php
 $q_str = "";
 //$sort_ord = isset($_GET['sort_ord'])?!$_GET['sort_ord']:1;
-$sort_ord = isset($_GET['sort_ord'])?"DESC":"ASC";
+$sort_ord = isset($_GET['sort_ord'])?($_GET['sort_ord']=="ASC"?"DESC":"ASC"):"ASC";
 if ($request->getqueryParams()!= null) {
 	$params = $request->getqueryParams();
 	$q_str = $_SERVER["QUERY_STRING"];
