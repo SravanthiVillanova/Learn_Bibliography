@@ -12,6 +12,7 @@ function bindPublisherAutocomplete(context, workURL) {
 
 	//Publisher autocomplete
 	$("#pubName", context).autocomplete({
+        autoFocus: true,
         source: function (request, response) {            
             $.ajax({
                 url: ur + workURL + '?autofor=publisher',
@@ -172,6 +173,7 @@ function bindAgentAutocomplete(context, workURL) {
 		
 		//Agent autocomplete
 		$("#agent_LastName", context).autocomplete({
+            autoFocus: true,
 			source: function (request, response) {            
 				$.ajax({
 					url: ur + workURL + '?autofor=agent',
