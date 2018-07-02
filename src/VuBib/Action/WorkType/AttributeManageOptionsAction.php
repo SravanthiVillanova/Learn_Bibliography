@@ -92,7 +92,7 @@ class AttributeManageOptionsAction
     {
         if ($post['submitt'] == 'Save') {
             $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-            $table->addOption($post['id'], $post['new_option'], $post['option_value']);
+            $table->addOption($post['id'], $post['new_option']);
         }
     }
     
@@ -108,7 +108,7 @@ class AttributeManageOptionsAction
         if ($post['submitt'] == 'Save') {
             if (!is_null($post['id'])) {
                 $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-                $table->updateOption($post['id'], $post['edit_option'], $post['edit_value']);
+                $table->updateOption($post['id'], $post['edit_option']);
             }
         }
     }
@@ -175,10 +175,11 @@ class AttributeManageOptionsAction
     {
 		if ($post['submitt'] == 'Merge_Options') {
             if (!is_null($post['mrg_attr_id'])) {
-				foreach($post['src_select'] as $src_workattropt_Id):
+                $src_select = explode(",",$post['src_opts_hidden']);
+				foreach($src_select as $src_workattropt_Id):
 					 //Update work_workattribute,set src_workattropt_Id = dest_select where workattribute_id = $post['mrg_attr_id']
 					 $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-					 $table->updateWork_WorkAttributeValue($post['mrg_attr_id'], $post['dest_select'], $src_workattropt_Id);
+					 $table->updateWork_WorkAttributeValue($post['mrg_attr_id'], $post['dest_opt_hidden'], $src_workattropt_Id);
 					 //delete source attribute option where id = $src_workattropt_Id and workattribute_id = $post['mrg_attr_id']
 					 $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
 					 $table->deleteOption($post['mrg_attr_id'], $src_workattropt_Id);

@@ -814,13 +814,8 @@ function findAttrOptions(workURL, for_str, wkat_id) {
 	var find_opt = $('#find_' + for_str + '_opt').val();
 	if(for_str === "dest") {
 		var sel_opts = [];
-		$('input[name="src_select[]"]:checked').each(function () {
-			sel_opts.push($(this).val());
-		});
-		$.each(sel_opts, function(index, value) {
-			//newHTML.push('<span>' + value + '</span>');
-			console.log(index + "is" + value);
-		});
+        var sel_ids = $('#src_opts_hidden').val();
+        sel_opts = sel_ids.split(',');
 	}
     $.ajax({
 		method: 'post',
