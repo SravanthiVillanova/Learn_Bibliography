@@ -60,6 +60,9 @@ if ($request->getqueryParams('id') !== null) {
                     $dest_loc;
                     foreach ($_POST['selectsource'] as $sourceloc) {
                         $source_locs = unserialize($sourceloc);
+                        if(strpos($source_locs['location'], '**hasSpace**') !== false) {
+                            $source_locs['location'] = str_replace("**hasSpace**", " ", $source_locs['location']);
+                        }
                         ?>
                         <input type="hidden" name="sourceids[]" value="<?= $source_locs['id'] ?>">
                         <?php

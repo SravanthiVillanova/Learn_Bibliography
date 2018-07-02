@@ -122,39 +122,6 @@ class ManagePublisherLocationAction
             }
         }
     }
-
-	/**
-     * Merge publishers.
-     *
-     * @param Array $post contains posted elements of form
-     *
-     * @return empty
-     */
-    protected function doPubMerge($post)
-    {
-		//echo "<pre>"; var_dump($post); echo "</pre>"; //die();
-        /*foreach ($post['src_loc'] as $source_locid => $action) :
-            if ($action == 'move') {
-                //update workpub set pubid=destpubid where pubid=srcpubid and locid = $source_locid
-                $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-                $table->movePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid);
-                //update publoc set pubid = destpubid where pubid=srcpubid and id=$source_locid
-                $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
-                $table->movePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid);
-            } elseif ($action == 'merge') {
-                //update workpub set pubid=destpubid and locid=mrgpublocid where pubid=srcpubid and locid=$source_locid
-                $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-                $table->mergePublisher($post['mrg_src_id'], $post['mrg_dest_id'], $source_locid, $post['dest_loc_select']);
-                //delete $source_locid from publoc
-                $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
-                $table->mergePublisher($source_locid);
-            }
-        endforeach;
-		
-		//Delete source publisher
-		$table = new \VuBib\Db\Table\Publisher($this->adapter);
-		$table->deleteRecord($post['mrg_src_id']);*/
-    }
 	
     /**
      * Action based on action parameter.

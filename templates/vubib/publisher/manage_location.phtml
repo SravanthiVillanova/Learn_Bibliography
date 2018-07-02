@@ -37,7 +37,7 @@
 			$escaper = new Zend\Escaper\Escaper('utf-8');
 			foreach ($this->rows as $row) :
 				//$row1 = [];        
-				$row1 = $row;
+				$row1 = (array) $row;          
 			?>
                 <form>
                     <tr>
@@ -51,6 +51,11 @@
                         </td>
                         <td>
                             <div class="checkbox">
+                                <?php
+                                if(strpos($row1['location'], ' ') !== false) {
+                                    $row1['location'] = str_replace(" ", "**hasSpace**", $row1['location']);
+                                }
+                                ?>
                                 <label><input type="checkbox" id='select' name="selectsource[]" value=<?= serialize($row1); ?>></label>
                             </div>
                         </td> 
