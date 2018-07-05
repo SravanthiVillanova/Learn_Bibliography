@@ -149,6 +149,38 @@ class AttributesWorkTypeAction
     }
     
     /**
+     * Adds worktype attributes.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
+    protected function doAddSubAttribute($post)
+    {
+        if ($post['submitt'] == 'Save') {
+            $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
+            $table->addSubAttribute($post['wkattr_id'], $post['subattribute']);
+        }
+    }
+    
+    /**
+     * Edits worktype attributes.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
+    protected function doEditSubAttribute($post)
+    {
+        if ($post['submitt'] == 'Save') {
+            if (!is_null($post['subattr_id'])) {
+                $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
+                $table->updateRecord($post['subattr_id'], $post['attr_id'], $post['edit_subattribute']);
+            }
+        }
+    }
+    
+    /**
      * Action based on action parameter.
      *
      * @param Array $post contains posted elements of form
@@ -168,6 +200,18 @@ class AttributesWorkTypeAction
         //delete attribute
         if ($post['action'] == 'delete') {
             $this->doDelete($post);
+        }
+        //add sub attribute
+        if ($post['action'] == 'add_subattribute') {
+            $this->doAddSubAttribute($post);
+        }
+        //edit sub attribute
+        if ($post['action'] == 'add_subattribute') {
+            $this->doEditSubAttribute($post);
+        }
+        //delete sub attribute
+        if ($post['action'] == 'add_subattribute') {
+            $this->doDeleteSubAttribute($post);
         }
     }
     

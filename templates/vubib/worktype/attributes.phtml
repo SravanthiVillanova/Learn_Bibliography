@@ -52,6 +52,8 @@ $(document).ready(function () {
 					<a href="<?=$this->url('manage_attribute_options')?><?='?id=' . $row['id']?>">Manage Options</a>
 					|
 					<a href="<?=$this->url('merge_duplicate_option')?><?= '?id=' . $row['id'] . '&action=merge' ?>">Merge Duplicate Values</a>
+                    |
+                    <a href="<?=$this->url('subattribute')?><?='?wkat_id=' . $row['id'] . '&action=subattr'?>">Sub Attribute</a>
 				<?php
 				}
 				?>
