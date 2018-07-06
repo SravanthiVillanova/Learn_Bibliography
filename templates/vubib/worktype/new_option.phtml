@@ -5,6 +5,13 @@ if ($request->getqueryParams('action') !== null) {
     $params  = $request->getqueryParams();
     $action  = $params['action'];
     $wkat_id = $params['id'];
+    //fetch if attribute has subattribute
+    $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
+    $subattr_row = $table->findRecordByAttributeId($wkat_id);
+    if(isset($subattr_row['id'])) {
+        $subattr_id = $subattr_row['id'];
+        $subattr = $subattr_row['subattribute'];
+    }
 	$this->layout()->breadcrumbs .= '<a href="' .  $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' .   
 	            '<a href="' .  $this->url('manage_attribute_options') . '?id=' . $wkat_id . '" style="float:left;color:white;"> Attribute Options > </a>' 
 				. ' New';
@@ -21,6 +28,15 @@ if ($request->getqueryParams('action') !== null) {
             </div>
             <br /> <br />
         </div>
+        <?php if(isset($subattr_id)) { ?>
+            <div class="form-group">
+                <label class="col-xs-2 control-label"><?=$subattr?>: </label>
+                <div class="col-xs-7">
+                    <input type="text" class="form-control" name="subattr_name" id="subattr_name" />
+                </div>
+                <br /> <br />
+            </div>
+        <? } ?>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button>

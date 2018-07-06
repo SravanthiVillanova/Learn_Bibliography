@@ -164,7 +164,7 @@ class AttributesWorkTypeAction
     }
     
     /**
-     * Edits worktype attributes.
+     * Edits worktype sub attribute.
      *
      * @param Array $post contains posted elements of form
      *
@@ -174,8 +174,26 @@ class AttributesWorkTypeAction
     {
         if ($post['submitt'] == 'Save') {
             if (!is_null($post['subattr_id'])) {
+                //echo "<pre>"; var_dump($post); echo "</pre>"; die();
                 $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
-                $table->updateRecord($post['subattr_id'], $post['attr_id'], $post['edit_subattribute']);
+                $table->editSubAttribute($post['subattr_id'], $post['attr_id'], $post['edit_subattribute']);
+            }
+        }
+    }
+    
+    /**
+     * Edits worktype sub attribute.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
+    protected function doDeleteSubAttribute($post)
+    {
+        if ($post['submitt'] == 'Save') {
+            if (!is_null($post['subattr_id'])) {
+                $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
+                $table->deleteSubAttribute($post['subattr_id'], $post['attr_id'], $post['edit_subattribute']);
             }
         }
     }
@@ -206,11 +224,11 @@ class AttributesWorkTypeAction
             $this->doAddSubAttribute($post);
         }
         //edit sub attribute
-        if ($post['action'] == 'add_subattribute') {
+        if ($post['action'] == 'edit_subattribute') {
             $this->doEditSubAttribute($post);
         }
         //delete sub attribute
-        if ($post['action'] == 'add_subattribute') {
+        if ($post['action'] == 'delete_subattribute') {
             $this->doDeleteSubAttribute($post);
         }
     }
@@ -264,18 +282,32 @@ class AttributesWorkTypeAction
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         $searchParams = [];
-
-        return new HtmlResponse(
-            $this->template->render(
-                'vubib::worktype::attributes_worktype',
-                [
-                    'rows' => $paginator,
-                    'previous' => $pgs['prev'],
-                    'next' => $pgs['nxt'],
-                    'countp' => $pgs['cp'],
-                    'searchParams' => implode('&', $searchParams),
-                ]
-            )
-        );
+        
+        if (isset($post['action']) && $post['action'] == 'edit_subattribute') {	
+            $searchParams[] = urlencode($post['attr_id']);
+            return new HtmlResponse(
+                $this->template->render(
+                    'vubib::worktype::subattribute',
+                    [
+                        'request' => $request,
+                        'adapter' => $this->adapter,
+                        'searchParams' => implode('&', $searchParams),
+                    ]
+                )
+            );
+        } else {
+            return new HtmlResponse(
+                $this->template->render(
+                    'vubib::worktype::attributes_worktype',
+                    [
+                        'rows' => $paginator,
+                        'previous' => $pgs['prev'],
+                        'next' => $pgs['nxt'],
+                        'countp' => $pgs['cp'],
+                        'searchParams' => implode('&', $searchParams),
+                    ]
+                )
+            );
+        }
     }
 }
