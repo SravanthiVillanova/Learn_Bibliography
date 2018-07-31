@@ -35,8 +35,10 @@ return [
 			VuBib\Action\WorkType\NewAttributeAction::class => VuBib\Action\WorkType\NewAttributeFactory::class,
 			VuBib\Action\WorkType\EditAttributeAction::class => VuBib\Action\WorkType\EditAttributeFactory::class,
 			VuBib\Action\WorkType\DeleteAttributeAction::class => VuBib\Action\WorkType\DeleteAttributeFactory::class,
-            VuBib\Action\WorkType\SubAttributeAction::class => VuBib\Action\WorkType\SubAttributeFactory::class,
-            VuBib\Action\WorkType\ManageSubAttributeAction::class => VuBib\Action\WorkType\ManageSubAttributeFactory::class,
+            VuBib\Action\WorkType\ManageSubAttributesAction::class => VuBib\Action\WorkType\ManageSubAttributesFactory::class,
+            VuBib\Action\WorkType\NewSubAttributeAction::class => VuBib\Action\WorkType\NewSubAttributeFactory::class,
+            VuBib\Action\WorkType\EditSubAttributeAction::class => VuBib\Action\WorkType\EditSubAttributeFactory::class,
+            VuBib\Action\WorkType\DeleteSubAttributeAction::class => VuBib\Action\WorkType\DeleteSubAttributeFactory::class,
 			VuBib\Action\WorkType\AttributeManageOptionsAction::class => VuBib\Action\WorkType\AttributeManageOptionsFactory::class,
 			VuBib\Action\WorkType\NewOptionAction::class => VuBib\Action\WorkType\NewOptionFactory::class,
 			VuBib\Action\WorkType\EditOptionAction::class => VuBib\Action\WorkType\EditOptionFactory::class,
@@ -300,27 +302,49 @@ return [
         ],
         
         [
-            'name' => 'subattribute',
-		    'path' => '/WorkType/subattribute',
+            'name' => 'manage_subattributes',
+		    'path' => '/WorkType/manage_subattributes',
             'middleware' => [
                 //BodyParamsMiddleware::class,
 				\VuBib\Middleware\AuthenticationMiddleware::class,
-                VuBib\Action\WorkType\SubAttributeAction::class,
-            ],
-            'allowed_methods' => ['GET','POST'],
-        ],
-        
-        [
-            'name' => 'manage_subattribute',
-		    'path' => '/WorkType/manage_subattribute',
-            'middleware' => [
-                //BodyParamsMiddleware::class,
-				\VuBib\Middleware\AuthenticationMiddleware::class,
-                VuBib\Action\WorkType\ManageSubAttributeAction::class,
+                VuBib\Action\WorkType\ManageSubAttributesAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
         ],
 		
+        [
+            'name' => 'new_subattribute',
+		    'path' => '/WorkType/new_subattribute',
+            'middleware' => [
+                //BodyParamsMiddleware::class,
+				\VuBib\Middleware\AuthenticationMiddleware::class,
+                VuBib\Action\WorkType\NewSubAttributeAction::class,
+            ],
+            'allowed_methods' => ['GET','POST'],
+        ],
+        
+                [
+            'name' => 'edit_subattribute',
+		    'path' => '/WorkType/edit_subattribute',
+            'middleware' => [
+                //BodyParamsMiddleware::class,
+				\VuBib\Middleware\AuthenticationMiddleware::class,
+                VuBib\Action\WorkType\EditSubAttributeAction::class,
+            ],
+            'allowed_methods' => ['GET','POST'],
+        ],
+        
+                [
+            'name' => 'delete_subattribute',
+		    'path' => '/WorkType/delete_subattribute',
+            'middleware' => [
+                //BodyParamsMiddleware::class,
+				\VuBib\Middleware\AuthenticationMiddleware::class,
+                VuBib\Action\WorkType\DeleteSubAttributeAction::class,
+            ],
+            'allowed_methods' => ['GET','POST'],
+        ],
+        
 		[
             'name' => 'manage_attribute_options',
 		    'path' => '/WorkType/manage_attribute_options',

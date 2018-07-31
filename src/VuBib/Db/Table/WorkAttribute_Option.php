@@ -309,4 +309,21 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
 
         return new Paginator($paginatorAdapter);
     }
+    
+    /**
+     * Get option Ids for an attribute
+     *
+     * @param Integer $wkat_id workattribute id
+     *
+     * @return Array $row attribute option Ids
+     */
+    public function getOptionIdsForAttribute($wkat_id)
+    {
+        $callback = function ($select) use($wkat_id){
+            $select->columns('id');
+            $select->where->equalTo('workattribute_id', $wkat_id);
+        };
+
+        return $this->select($callback)->toArray();
+    }
 }
