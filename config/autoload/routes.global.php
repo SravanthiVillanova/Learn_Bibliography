@@ -11,12 +11,8 @@ return [
             VuBib\Action\HomePageAction::class => VuBib\Action\HomePageFactory::class,
             //VuBib\Action\LoginPageAction::class => VuBib\Action\LoginPageFactory::class,
             VuBib\Action\DefaultPageAction::class => VuBib\Action\DefaultPageFactory::class,
-            			
-			/*VuBib\Action\SimpleRenderAction::class => VuBib\Action\Work\NewWorkFactory::class,
-			VuBib\Action\SimpleRenderAction::class => VuBib\Action\Work\SearchWorkFactory::class,
-			VuBib\Action\Work\ManageWorkAction::class => VuBib\Action\Work\ManageWorkFactory::class,
-			VuBib\Action\SimpleRenderAction::class => VuBib\Action\Work\ReviewWorkFactory::class,
-			VuBib\Action\SimpleRenderAction::class => VuBib\Action\Work\ClassifyWorkFactory::class,*/
+            //VuBib\Action\SimpleRenderAction::class => VuBib\Action\SimpleRenderFactory::class,	
+            
 			VuBib\Action\Work\NewWorkAction::class => VuBib\Action\Work\NewWorkFactory::class,
 			VuBib\Action\Work\GetWorkDetailsAction::class => VuBib\Action\Work\GetWorkDetailsFactory::class,
 			VuBib\Action\Work\SearchWorkAction::class => VuBib\Action\Work\SearchWorkFactory::class,
@@ -54,6 +50,7 @@ return [
 			VuBib\Action\Classification\EditClassificationAction::class => VuBib\Action\Classification\EditClassificationFactory::class,
             VuBib\Action\Classification\MoveClassificationAction::class => VuBib\Action\Classification\MoveClassificationFactory::class,
             
+            
 			VuBib\Action\Agent\NewAgentAction::class => VuBib\Action\Agent\NewAgentFactory::class,
 			VuBib\Action\Agent\FindAgentAction::class => VuBib\Action\Agent\FindAgentFactory::class,
 			VuBib\Action\Agent\ManageAgentAction::class => VuBib\Action\Agent\ManageAgentFactory::class,
@@ -90,6 +87,10 @@ return [
             
 			VuBib\Action\Preferences\ChangePasswordPreferencesAction::class => VuBib\Action\Preferences\ChangePasswordPreferencesFactory::class,
         ],
+        /*'aliases'  =>
+        [
+            VuBib\Action\Agent\NewAgentAction::class => VuBib\Action\SimpleRenderAction::class,
+        ],*/
     ],
 
     'routes' => [

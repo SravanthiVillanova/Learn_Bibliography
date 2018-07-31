@@ -320,10 +320,11 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
     public function getOptionIdsForAttribute($wkat_id)
     {
         $callback = function ($select) use($wkat_id){
-            $select->columns('id');
+            $select->columns(['id']);
             $select->where->equalTo('workattribute_id', $wkat_id);
         };
-
-        return $this->select($callback)->toArray();
+        
+        $rows = array_column($this->select($callback)->toArray(), "id");
+        return $rows;
     }
 }

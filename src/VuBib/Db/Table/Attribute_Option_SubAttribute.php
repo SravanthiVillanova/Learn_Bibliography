@@ -93,4 +93,40 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
             ]
         );
     }
+    
+    /**
+     * Update record
+     *
+     * @param string $field work attribute name
+     * @param string $type  work attribute type
+     *
+     * @return id newly inserted subattribute id
+     */
+    public function updateRecord($wkat_id, $opt_id, $subattr_id, $subattr_val = "")
+    {
+        $this->update(
+            [
+            'subattr_value' => $subattr_val,
+            ],
+            ['workattribute_id' => $wkat_id,'option_id' => $opt_id, 'subattribute_id' => $subattr_id]
+        );
+    }
+    
+    /**
+     * Delete attribute option
+     *
+     * @param Integer $wkat_id workattribute id
+     * @param Integer $id      workattribute option id
+     *
+     * @return empty
+     */
+    public function deleteRecordByOptionId($wkat_id, $opt_id)
+    {
+        $this->delete(
+            [
+                'workattribute_id' => $wkat_id,
+                'option_id' => $opt_id,
+            ]
+        );
+    }
 }

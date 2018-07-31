@@ -93,16 +93,16 @@ class ManageSubAttributesAction
         if ($post['submitt'] == 'Save') {                       
             $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
             $subattr_id = $table->addSubAttributeReturnId($post['wkat_id'], $post['new_subattr']);
-            
+
             //get option ids of work attribute
             $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
             $optIds = $table->getOptionIdsForAttribute($post['wkat_id']);
-            
+
             //add a record for each option in attribute_option_subattribute table
             $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
             foreach($optIds as $optId):
-                
-                
+                $table->insertRecord($post['wkat_id'], $optId, $subattr_id);
+            endforeach;
         }
     }
     

@@ -92,7 +92,15 @@ class AttributeManageOptionsAction
     {
         if ($post['submitt'] == 'Save') {
             $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-            $table->addOption($post['id'], $post['new_option']);
+            $optId = $table->insertOptionAndReturnId($post['id'], $post['new_option']);
+            //$table->addOption($post['id'], $post['new_option']);
+ 
+            //Insert option to subattribute table
+            $subattr_arr = array_combine($post['subattr_ids'], $post['subattroption']);
+            $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
+            foreach($subattr_arr as $k => $v):
+                $table->insertRecord($post['id'], $optId, $k, $v);
+            endforeach;
         }
     }
     
@@ -107,11 +115,15 @@ class AttributeManageOptionsAction
     {
         if ($post['submitt'] == 'Save') {
             if (!is_null($post['id'])) {
-                $arr = array_combine($post['subattr_ids'], $post['edit_option']);
-                echo "<pre>"; var_dump($arr); echo "</pre>";
-                echo "<pre>"; var_dump($post); echo "</pre>"; die();
                 $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
                 $table->updateOption($post['id'], $post['edit_option']);
+                
+                //update corresponding subattribute values for option
+                $subattr_arr = array_combine($post['subattr_ids'], $post['subattroption']);
+                $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
+                foreach($subattr_arr as $k => $v):
+                    $table->updateRecord($post['wkat_id'], $post['id'], $k, $v);
+                endforeach;
             }
         }
     }
@@ -132,6 +144,8 @@ class AttributeManageOptionsAction
 					foreach($post['workattropt_id'] as $workattropt_Id):
 						$table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
 						$table->deleteRecordByValue($query['id'], $workattropt_Id);
+                        $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
+						$table->deleteRecordByOptionId($query['id'], $workattropt_Id);
 						$table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
 						$table->deleteOption($query['id'], $workattropt_Id);
 					endforeach;
