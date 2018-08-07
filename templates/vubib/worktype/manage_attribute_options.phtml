@@ -73,7 +73,7 @@ $(document).ready(function () {
 			$escaper = new Zend\Escaper\Escaper('utf-8'); 
 			foreach($this->rows as $row) : 
 				$output = (array)$row;
-                $params = implode(', ', $output);        
+                $params = implode(', ', $output);     
 			?>
 			<tr>
 				<td>
@@ -83,6 +83,14 @@ $(document).ready(function () {
 					<a href="<?=$this->url('edit_option')?><?='?wkat_id=' . $id . '&id=' . $row['id'] . '&action=edit'?>">
 					<?php echo $escaper->escapeHtml($row['title']); ?></a>			
 				</td>
+                <?php 
+                foreach ($subattrs as $subattr) : 
+                    //fetch subattribute value for option
+                    $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
+                    $opt_subattr_row = $table->findRecordByOption($row['id'], $subattr['id']);
+                ?>
+                <td><?=$opt_subattr_row['subattr_value']?></td>
+                <?php endforeach; ?>
 			</tr>
 			<?php endforeach; ?>
 		<?php } ?>

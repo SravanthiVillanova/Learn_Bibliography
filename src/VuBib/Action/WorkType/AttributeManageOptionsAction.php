@@ -155,7 +155,7 @@ class AttributeManageOptionsAction
     }
     
     /**
-     * Merges attribute options.
+     * Merges attribute options duplicate values.
      *
      * @param Array $post contains posted elements of form
      *
@@ -172,7 +172,12 @@ class AttributeManageOptionsAction
                     for ($j = 0; $j < count($rows); ++$j) {
                         $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
                         $table->updateWork_WorkAttributeValue($post['workattribute_id'], $post['option_id'][$i], $rows[$j]['id']);
-
+                        
+                        //delete option record from attribute_option_subattribute
+                        $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
+						$table->deleteRecordByOptionId($post['workattribute_id'], $rows[$j]['id']);
+                        //$table->updateRecordOptionId($post['workattribute_id'], $post['option_id'][$i], $rows[$j]['id']);
+                        
                         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
                         $table->deleteOption($post['workattribute_id'], $rows[$j]['id']);
                     }
@@ -197,6 +202,12 @@ class AttributeManageOptionsAction
 					 //Update work_workattribute,set src_workattropt_Id = dest_select where workattribute_id = $post['mrg_attr_id']
 					 $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
 					 $table->updateWork_WorkAttributeValue($post['mrg_attr_id'], $post['dest_opt_hidden'], $src_workattropt_Id);
+                     
+                     //delete option record from attribute_option_subattribute
+                     $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
+				     $table->deleteRecordByOptionId($post['mrg_attr_id'], $src_workattropt_Id);
+                     //$table->updateRecordOptionId($post['mrg_attr_id'], $post['dest_opt_hidden'], $src_workattropt_Id);
+                     
 					 //delete source attribute option where id = $src_workattropt_Id and workattribute_id = $post['mrg_attr_id']
 					 $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
 					 $table->deleteOption($post['mrg_attr_id'], $src_workattropt_Id);

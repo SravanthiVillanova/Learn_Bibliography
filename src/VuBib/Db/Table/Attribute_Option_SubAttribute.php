@@ -129,4 +129,31 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
             ]
         );
     }
+    
+    /**
+     * Update record
+     *
+     * @param Integer $wkat_id         work attribute id
+     * @param Integer $new_option_id   new option id
+     * @param Integer $old_option_id   old option id
+     *
+     * @return empty
+     */
+    public function updateRecordOptionId($wkat_id, $new_option_id, $old_option_id)
+    {
+        $callback = function ($select) use ($wkat_id, $old_option_id) {
+            $select->where->equalTo('workattribute_id', $wkat_id);
+            $select->where->equalTo('option_id', $old_option_id);
+        };
+        $rows = $this->select($callback)->toArray();
+        for ($i = 0; $i < count($rows); ++$i) {
+            $this->update(
+                [
+                    'option_id' => $new_option_id,
+                ],
+                ['option_id' => $rows[$i]['option_id']]
+            );
+        }
+    }
+
 }
