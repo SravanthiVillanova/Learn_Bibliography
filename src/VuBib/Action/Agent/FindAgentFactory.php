@@ -47,7 +47,8 @@ class FindAgentFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container 
+              that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -59,6 +60,8 @@ class FindAgentFactory
             : null;
         $adapter = $container->get(Adapter::class);
         //return new FindAgentAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction('vubib::agent::find_agent', $router, $template, $adapter);
+        return new \VuBib\Action\SimpleRenderAction(
+            'vubib::agent::find_agent', $router, $template, $adapter
+        );
     }
 }
