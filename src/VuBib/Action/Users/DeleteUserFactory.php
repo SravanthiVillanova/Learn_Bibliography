@@ -47,7 +47,8 @@ class DeleteUserFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container 
+              that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -59,6 +60,9 @@ class DeleteUserFactory
             : null;
         $adapter = $container->get(Adapter::class);
         //return new EditWorkTypeAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction('vubib::users::delete_user', $router, $template, $adapter);
+        return new \VuBib\Action\SimpleRenderAction(
+            'vubib::users::delete_user', $router, 
+            $template, $adapter
+        );
     }
 }

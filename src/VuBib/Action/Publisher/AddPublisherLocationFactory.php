@@ -47,7 +47,8 @@ class AddPublisherLocationFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container 
+              that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -59,6 +60,9 @@ class AddPublisherLocationFactory
             : null;
         $adapter = $container->get(Adapter::class);
         //return new AddPublisherLocationAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction('vubib::publisher::add_publisher_location', $router, $template, $adapter);
+        return new \VuBib\Action\SimpleRenderAction(
+            'vubib::publisher::add_publisher_location', $router, 
+            $template, $adapter
+        );
     }
 }

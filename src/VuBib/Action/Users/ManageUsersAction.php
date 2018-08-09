@@ -78,8 +78,10 @@ class ManageUsersAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
-    {
+    public function __construct(Router\RouterInterface $router, 
+        Template\TemplateRendererInterface $template = null, Adapter $adapter
+    ) {
+    
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
@@ -97,7 +99,10 @@ class ManageUsersAction
         if ($post['submitt'] == 'Save') {
             //echo "<pre>";print_r($post);echo"</pre>";
             $table = new \VuBib\Db\Table\User($this->adapter);
-            $table->insertRecords($post['newuser_name'], $post['new_username'], md5($post['new_user_pwd']), $post['access_level']);
+            $table->insertRecords(
+                $post['newuser_name'], $post['new_username'], 
+                md5($post['new_user_pwd']), $post['access_level']
+            );
         }
     }
  
@@ -119,7 +124,8 @@ class ManageUsersAction
                 }
                 $table = new \VuBib\Db\Table\User($this->adapter);
                 $table->updateRecord(
-                    $post['id'], $post['edituser_name'], $post['edit_username'], $pwd,
+                    $post['id'], $post['edituser_name'], 
+                    $post['edit_username'], $pwd,
                     $post['access_level']
                 );
             }
@@ -218,7 +224,9 @@ class ManageUsersAction
             if ($post['submitt'] == 'Cancel') {
                 $table = new \VuBib\Db\Table\User($this->adapter);
 
-                return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+                return new Paginator(
+                    new \Zend\Paginator\Adapter\DbTableGateway($table)
+                ); //this
             }
         }
         // default: blank for listing in manage
@@ -236,16 +244,24 @@ class ManageUsersAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
-        $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::users::manage_users', $this->router, $this->template, $this->adapter);
+    public function __invoke(ServerRequestInterface $request, 
+        ResponseInterface $response, callable $next = null
+    ) {
+    
+        $simpleAction = new \VuBib\Action\SimpleRenderAction(
+            'vubib::users::manage_users', $this->router, 
+            $this->template, $this->adapter
+        );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(15);
         //$allItems = $paginator->getTotalItemCount();
 
-        $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::users::manage_users', $this->router, $this->template, $this->adapter);
+        $simpleAction = new \VuBib\Action\SimpleRenderAction(
+            'vubib::users::manage_users', $this->router, 
+            $this->template, $this->adapter
+        );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         $searchParams = [];

@@ -47,7 +47,8 @@ class FindPublisherFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container 
+              that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -59,6 +60,9 @@ class FindPublisherFactory
             : null;
         $adapter = $container->get(Adapter::class);
         //return new FindPublisherAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction('vubib::publisher::find_publisher', $router, $template, $adapter);
+        return new \VuBib\Action\SimpleRenderAction(
+            'vubib::publisher::find_publisher', $router, 
+            $template, $adapter
+        );
     }
 }

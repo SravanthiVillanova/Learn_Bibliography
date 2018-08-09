@@ -75,8 +75,11 @@ class SimpleRenderAction
      * @param Template\TemplateRendererInterface $template     for templates
      * @param Adapter                            $adapter      for db connection
      */
-    public function __construct($templateName, Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
-    {
+    public function __construct($templateName, 
+        Router\RouterInterface $router, 
+        Template\TemplateRendererInterface $template = null, Adapter $adapter
+    ) {
+    
         $this->templateName = $templateName;
         $this->router = $router;
         $this->template = $template;
@@ -92,9 +95,16 @@ class SimpleRenderAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
-        return new HtmlResponse($this->template->render($this->templateName, ['request' => $request, 'adapter' => $this->adapter]));
+    public function __invoke(ServerRequestInterface $request, 
+        ResponseInterface $response, callable $next = null
+    ) {
+    
+        return new HtmlResponse(
+            $this->template->render(
+                $this->templateName, [
+                'request' => $request, 'adapter' => $this->adapter]
+            )
+        );
     }
 
     /**
