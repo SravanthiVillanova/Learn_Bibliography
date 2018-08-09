@@ -78,8 +78,10 @@ class ManageClassificationAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
-    {
+    public function __construct(Router\RouterInterface $router, 
+        Template\TemplateRendererInterface $template = null, Adapter $adapter
+    ) {
+    
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
@@ -100,8 +102,11 @@ class ManageClassificationAction
                 //echo "<pre>";print_r($post);echo "</pre>"; die();
                 $table = new \VuBib\Db\Table\Folder($this->adapter);
                 $table->insertRecords(
-                    $post['parent_id'], $post['new_classif_engtitle'], $post['new_classif_frenchtitle'],
-                    $post['new_classif_germantitle'], $post['new_classif_dutchtitle'], $post['new_classif_spanishtitle'],
+                    $post['parent_id'], $post['new_classif_engtitle'], 
+                    $post['new_classif_frenchtitle'], 
+                    $post['new_classif_germantitle'], 
+                    $post['new_classif_dutchtitle'], 
+                    $post['new_classif_spanishtitle'], 
                     $post['new_classif_italiantitle'], $post['new_classif_sortorder']
                 );
             }
@@ -114,8 +119,9 @@ class ManageClassificationAction
                     $table = new \VuBib\Db\Table\Folder($this->adapter);
                     $table->updateRecord(
                         $post['id'], $post['edit_texten'], $post['edit_textfr'],
-                        $post['edit_textde'], $post['edit_textnl'], $post['edit_textes'],
-                        $post['edit_textit'], $post['edit_sortorder']
+                        $post['edit_textde'], $post['edit_textnl'], 
+                        $post['edit_textes'], $post['edit_textit'], 
+                        $post['edit_sortorder']
                     );
                 }
             }
@@ -143,7 +149,9 @@ class ManageClassificationAction
     {
         if ($post['submit_save'] == 'Save') {
             $lg = count($post['select_fl']);
-            if ($post['select_fl'][$lg - 1] == '' || $post['select_fl'][$lg - 1] == 'none') {
+            if ($post['select_fl'][$lg - 1] == '' 
+                || $post['select_fl'][$lg - 1] == 'none'
+            ) {
                 $fl_to_move = $post['select_fl'][$lg - 2];
             } else {
                 $fl_to_move = $post['select_fl'][$lg - 1];
@@ -189,11 +197,11 @@ class ManageClassificationAction
         $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
         $table->mergeWkFlUpdate($source_id, $dest_id);
 
-        // Track merge history -- update any previous history, then add the current merge:
+        //Track merge history, update previous history,then add the current merge:
         $table = new \VuBib\Db\Table\Folder_Merge_History($this->adapter);
         $table->mergeFlMgHistUpdate($source_id, $dest_id);
 
-        // Track merge history -- update any previous history, then add the current merge:
+        //Track merge history, update previous history,then add the current merge:
         $table = new \VuBib\Db\Table\Folder_Merge_History($this->adapter);
         $table->insertRecord($source_id, $dest_id);
 
@@ -217,7 +225,9 @@ class ManageClassificationAction
             if ($query['action'] == 'get_children') {
                 $table = new \VuBib\Db\Table\Folder($this->adapter);
                 $rows = $table->getChild($query['id']);
-                $paginator = new Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($rows));
+                $paginator = new Paginator(
+                    new \Zend\Paginator\Adapter\ArrayAdapter($rows)
+                );
 
                 return $paginator;
             }
@@ -225,7 +235,6 @@ class ManageClassificationAction
             if ($query['action'] == 'get_siblings') {
                 $table = new \VuBib\Db\Table\Folder($this->adapter);
                 $rows = $table->findParent();
-                //$paginator = new Paginator(new \Zend\Paginator\Adapter\ArrayAdapter($rows));
                 return $rows;
             }
         }
@@ -282,8 +291,11 @@ class ManageClassificationAction
     protected function getSearchParams($query)
     {
         $searchParams = [];
-        if (!empty($query['id']) && !empty($query['fl']) && $query['action'] == 'get_children') {
-            $searchParams[] = 'id='.urlencode($query['id']).'&fl='.urlencode($query['fl']).'&action=get_children';
+        if (!empty($query['id']) && !empty($query['fl']) 
+            && $query['action'] == 'get_children'
+        ) {
+            $searchParams[] = 'id='.urlencode($query['id']).
+              '&fl='.urlencode($query['fl']).'&action=get_children';
         }
         return $searchParams;
     }
@@ -297,8 +309,10 @@ class ManageClassificationAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
+    public function __invoke(ServerRequestInterface $request, 
+        ResponseInterface $response, callable $next = null
+    ) {
+    
         $query = $request->getqueryParams();
         $post = [];
         if ($request->getMethod() == 'POST') {

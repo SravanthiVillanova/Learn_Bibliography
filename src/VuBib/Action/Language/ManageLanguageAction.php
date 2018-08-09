@@ -78,8 +78,10 @@ class ManageLanguageAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
-    {
+    public function __construct(Router\RouterInterface $router, 
+        Template\TemplateRendererInterface $template = null, Adapter $adapter
+    ) {
+    
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
@@ -99,7 +101,8 @@ class ManageLanguageAction
             if ($post['submitt'] == 'Save') {
                 $table = new \VuBib\Db\Table\TranslateLanguage($this->adapter);
                 $table->insertRecords(
-                    $_POST['de_newlang'], $_POST['en_newlang'], $_POST['es_newlang'], $_POST['fr_newlang'],
+                    $_POST['de_newlang'], $_POST['en_newlang'], 
+                    $_POST['es_newlang'], $_POST['fr_newlang'],
                     $_POST['it_newlang'], $_POST['nl_newlang']
                 );
             }
@@ -110,8 +113,10 @@ class ManageLanguageAction
                 if (!is_null($post['id'])) {
                     $table = new \VuBib\Db\Table\TranslateLanguage($this->adapter);
                     $table->updateRecord(
-                        $_POST['id'], $_POST['de_newlang'], $_POST['en_newlang'], $_POST['es_newlang'],
-                        $_POST['fr_newlang'], $_POST['it_newlang'], $_POST['nl_newlang']
+                        $_POST['id'], $_POST['de_newlang'], 
+                        $_POST['en_newlang'], $_POST['es_newlang'],
+                        $_POST['fr_newlang'], $_POST['it_newlang'], 
+                        $_POST['nl_newlang']
                     );
                 }
             }
@@ -145,7 +150,9 @@ class ManageLanguageAction
             if ($post['submitt'] == 'Cancel') {
                 $table = new \VuBib\Db\Table\TranslateLanguage($this->adapter);
 
-                return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+                return new Paginator(
+                    new \Zend\Paginator\Adapter\DbTableGateway($table)
+                );
             }
         }
         // default: blank for listing in manage
@@ -163,15 +170,23 @@ class ManageLanguageAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
-        $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::language::manage_language', $this->router, $this->template, $this->adapter);
+    public function __invoke(ServerRequestInterface $request, 
+        ResponseInterface $response, callable $next = null
+    ) {
+    
+        $simpleAction = new \VuBib\Action\SimpleRenderAction(
+            'vubib::language::manage_language', $this->router, 
+            $this->template, $this->adapter
+        );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(10);
 
-        $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::language::manage_language', $this->router, $this->template, $this->adapter);
+        $simpleAction = new \VuBib\Action\SimpleRenderAction(
+            'vubib::language::manage_language', $this->router, 
+            $this->template, $this->adapter
+        );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         //$allItems = $paginator->getTotalItemCount();

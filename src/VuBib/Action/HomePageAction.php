@@ -67,8 +67,10 @@ class HomePageAction
      * @param Router\RouterInterface             $router   for routes
      * @param Template\TemplateRendererInterface $template for templates
      */
-    public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null)
-    {
+    public function __construct(Router\RouterInterface $router, 
+        Template\TemplateRendererInterface $template = null
+    ) {
+    
         $this->router = $router;
         $this->template = $template;
     }
@@ -82,8 +84,10 @@ class HomePageAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
+    public function __invoke(ServerRequestInterface $request, 
+        ResponseInterface $response, callable $next = null
+    ) {
+    
         return new HtmlResponse($this->template->render('vubib::home-page', $this));
     }
 }

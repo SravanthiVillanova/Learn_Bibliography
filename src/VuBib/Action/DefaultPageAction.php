@@ -74,8 +74,10 @@ class DefaultPageAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
-    {
+    public function __construct(Router\RouterInterface $router, 
+        Template\TemplateRendererInterface $template = null, Adapter $adapter
+    ) {
+    
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
@@ -90,8 +92,15 @@ class DefaultPageAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
-        return new HtmlResponse($this->template->render('vubib::default', ['request' => $request, 'adapter' => $this->adapter]));
+    public function __invoke(ServerRequestInterface $request, 
+        ResponseInterface $response, callable $next = null
+    ) {
+    
+        return new HtmlResponse(
+            $this->template->render(
+                'vubib::default', 
+                ['request' => $request, 'adapter' => $this->adapter]
+            )
+        );
     }
 }

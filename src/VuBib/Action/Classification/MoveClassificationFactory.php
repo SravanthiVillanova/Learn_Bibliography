@@ -47,7 +47,8 @@ class MoveClassificationFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container 
+              that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -59,6 +60,9 @@ class MoveClassificationFactory
             : null;
         $adapter = $container->get(Adapter::class);
         //return new MoveClassificationAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction('vubib::classification::move_classification', $router, $template, $adapter);
+        return new \VuBib\Action\SimpleRenderAction(
+            'vubib::classification::move_classification', $router, 
+            $template, $adapter
+        );
     }
 }
