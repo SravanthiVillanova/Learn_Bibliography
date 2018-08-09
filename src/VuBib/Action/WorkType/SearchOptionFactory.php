@@ -47,7 +47,8 @@ class SearchOptionFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container 
+              that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -59,6 +60,9 @@ class SearchOptionFactory
             : null;
         $adapter = $container->get(Adapter::class);
         //return new SearchWorkAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction('vubib::worktype::search_attribute_option', $router, $template, $adapter);
+        return new \VuBib\Action\SimpleRenderAction(
+            'vubib::worktype::search_attribute_option', $router, 
+            $template, $adapter
+        );
     }
 }

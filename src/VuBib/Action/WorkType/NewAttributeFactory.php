@@ -47,7 +47,8 @@ class NewAttributeFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container 
+              that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -59,6 +60,9 @@ class NewAttributeFactory
             : null;
         $adapter = $container->get(Adapter::class);
         //return new NewAttributeAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction('vubib::worktype::new_attribute', $router, $template, $adapter);
+        return new \VuBib\Action\SimpleRenderAction(
+            'vubib::worktype::new_attribute', $router, 
+            $template, $adapter
+        );
     }
 }

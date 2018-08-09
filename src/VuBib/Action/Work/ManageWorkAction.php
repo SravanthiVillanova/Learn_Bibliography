@@ -85,10 +85,10 @@ class ManageWorkAction
     }
 
     /**
- * //this
      * Fetches distinct initial letters of each work.
      *
-     * @param Array $params url query parameters
+     * @param Array  $params url query parameters
+     * @param String $order  Order by string
      *
      * @return Array
      */
@@ -133,10 +133,10 @@ class ManageWorkAction
     }
     
     /**
- * //this
      * Fetch works to be reviewed and classified.
      *
-     * @param Array $params url query parameters
+     * @param Array  $params url query parameters
+     * @param String $order  Order by string
      *
      * @return paginator $paginator
      */
@@ -306,7 +306,7 @@ class ManageWorkAction
                             $post['pub_yrTo']
                         );
                         //$table->insertRecords($post['id'], $post['pub_id'], 
-                        //$post['publoc_id'], $post['pub_yrFrom'], $post['pub_yrTo']);
+                        //$post['publoc_id'],$post['pub_yrFrom'],$post['pub_yrTo']);
                     }
                 } else {
                     //delete all publishers
@@ -339,8 +339,7 @@ class ManageWorkAction
                     ) {
                         $keys = preg_split("/[a-z]+\,/", $key);
                         $wkat_id[] = $keys[1];
-                        if(count($keys) == 4
-                        ) {
+                        if (count($keys) == 4) {
                             $wkopt_id[] = $keys[3];
                         } else {
                             $wkopt_id[] = $keys[2];
@@ -351,14 +350,14 @@ class ManageWorkAction
                         $wkopt_id[] = $value;
                     }
                 }
-                if(!empty($wkat_id)) { //this
+                if (!empty($wkat_id)) { //this
                     if ($wkat_id[0] != null) {
                         //delete workattribute records
                         $table = new \VuBib\Db\Table\Work_WorkAttribute(
                             $this->adapter
                         );
                         $table->deleteRecordByWorkId($post['id']);
-                    
+                        
                         //insert workattributes again
                         $table = new \VuBib\Db\Table\Work_WorkAttribute(
                             $this->adapter
@@ -367,7 +366,7 @@ class ManageWorkAction
                             $post['id'], 
                             $wkat_id, $wkopt_id
                         );
-                    } 
+                    }
                 } else {
                     //delete workattribute records
                     $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);

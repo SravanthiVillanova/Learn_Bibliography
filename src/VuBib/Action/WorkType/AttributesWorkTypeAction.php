@@ -78,8 +78,10 @@ class AttributesWorkTypeAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
-    {
+    public function __construct(Router\RouterInterface $router, 
+        Template\TemplateRendererInterface $template = null, Adapter $adapter
+    ) {
+    
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
@@ -131,16 +133,24 @@ class AttributesWorkTypeAction
                 if (!is_null($post['workattr_id'])) {
                     foreach($post['workattr_id'] as $workattr_Id):
                         //no
-                        $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+                        $table = new \VuBib\Db\Table\Work_WorkAttribute(
+                            $this->adapter
+                        );
                         $table->deleteWorkAttributeFromWork($workattr_Id);
                         //yes
-                        $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
+                        $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
+                            $this->adapter
+                        );
                         $table->deleteAttributeFromAllWorkTypes($workattr_Id);
                         //yes
-                        $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+                        $table = new \VuBib\Db\Table\WorkAttribute_Option(
+                            $this->adapter
+                        );
                         $table->deleteWorkAttributeOptions($workattr_Id);
                         //no
-                        $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
+                        $table = new \VuBib\Db\Table\WorkAttribute(
+                            $this->adapter
+                        );
                         $table->deleteRecord($workattr_Id);
                     endforeach;
                 }
@@ -174,9 +184,13 @@ class AttributesWorkTypeAction
     {
         if ($post['submitt'] == 'Save') {
             if (!is_null($post['subattr_id'])) {
-                //echo "<pre>"; var_dump($post); echo "</pre>"; die();
-                $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
-                $table->editSubAttribute($post['subattr_id'], $post['attr_id'], $post['edit_subattribute']);
+                $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
+                    $this->adapter
+                );
+                $table->editSubAttribute(
+                    $post['subattr_id'], $post['attr_id'], 
+                    $post['edit_subattribute']
+                );
             }
         }
     }
@@ -192,8 +206,13 @@ class AttributesWorkTypeAction
     {
         if ($post['submitt'] == 'Save') {
             if (!is_null($post['subattr_id'])) {
-                $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
-                $table->deleteSubAttribute($post['subattr_id'], $post['attr_id'], $post['edit_subattribute']);
+                $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
+                    $this->adapter
+                );
+                $table->deleteSubAttribute(
+                    $post['subattr_id'], $post['attr_id'], 
+                    $post['edit_subattribute']
+                );
             }
         }
     }
@@ -251,13 +270,19 @@ class AttributesWorkTypeAction
             if ($post['submitt'] == 'Cancel') {
                 $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
 
-                return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+                return new Paginator(
+                    new \Zend\Paginator\Adapter\DbTableGateway($table)
+                );
             }
         }
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
 
-        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table, null, ['type','field']));
+        return new Paginator(
+            new \Zend\Paginator\Adapter\DbTableGateway(
+                $table, null, ['type','field']
+            )
+        );
     }
 
     /**
@@ -269,21 +294,29 @@ class AttributesWorkTypeAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
-        $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::worktype::attributes_worktype', $this->router, $this->template, $this->adapter);
+    public function __invoke(ServerRequestInterface $request, 
+        ResponseInterface $response, callable $next = null
+    ) {
+    
+        $simpleAction = new \VuBib\Action\SimpleRenderAction(
+            'vubib::worktype::attributes_worktype', $this->router, 
+            $this->template, $this->adapter
+        );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(15);
         //$allItems = $paginator->getTotalItemCount();
 
-        $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::worktype::attributes_worktype', $this->router, $this->template, $this->adapter);
+        $simpleAction = new \VuBib\Action\SimpleRenderAction(
+            'vubib::worktype::attributes_worktype', $this->router, 
+            $this->template, $this->adapter
+        );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         $searchParams = [];
         
-        if (isset($post['action']) && $post['action'] == 'edit_subattribute') {    
+        if (isset($post['action']) && $post['action'] == 'edit_subattribute') {
             $searchParams[] = urlencode($post['attr_id']);
             return new HtmlResponse(
                 $this->template->render(

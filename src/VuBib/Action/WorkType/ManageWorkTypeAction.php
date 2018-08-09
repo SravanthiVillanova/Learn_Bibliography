@@ -75,8 +75,10 @@ class ManageWorkTypeAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
-    {
+    public function __construct(Router\RouterInterface $router, 
+        Template\TemplateRendererInterface $template = null, Adapter $adapter
+    ) {
+    
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
@@ -129,7 +131,9 @@ class ManageWorkTypeAction
                     foreach($post['worktype_id'] as $worktype_Id):
                         $table = new \VuBib\Db\Table\Work($this->adapter);
                         $table->updateWorkTypeId($worktype_Id);
-                        $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
+                        $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
+                            $this->adapter
+                        );
                         $table->deleteRecordByWorkType($worktype_Id);
                         $table = new \VuBib\Db\Table\WorkType($this->adapter);
                         $table->deleteRecord($worktype_Id);
@@ -151,12 +155,16 @@ class ManageWorkTypeAction
         $attrs_to_remove = [];
         preg_match_all('/,?id_\d+/', $post['remove_attr'], $matches);
         foreach ($matches[0] as $id) :
-                            $attrs_to_remove[] = (int) preg_replace("/^,?\w{2,3}_/", '', $id);
+            $attrs_to_remove[] = (int) preg_replace(
+                "/^,?\w{2,3}_/", '', $id
+            );
         endforeach;
         if (!is_null($attrs_to_remove)) {
             if (count($attrs_to_remove) != 0) {
                 //remove attributes from a work type
-                                $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
+                $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
+                    $this->adapter
+                );
                 $table->deleteAttributeFromWorkType($post['id'], $attrs_to_remove);
             }
         }
@@ -174,7 +182,9 @@ class ManageWorkTypeAction
         $attrs_to_add = [];
         preg_match_all('/,?nid_\d+/', $post['sort_order'], $matches);
         foreach ($matches[0] as $id) :
-                            $attrs_to_add[] = (int) preg_replace("/^,?\w{2,3}_/", '', $id);
+            $attrs_to_add[] = (int) preg_replace(
+                "/^,?\w{2,3}_/", '', $id
+            );
         endforeach;
         if (!is_null($attrs_to_add)) {
             if (count($attrs_to_add) != 0) {
@@ -252,7 +262,9 @@ class ManageWorkTypeAction
             if ($post['submitt'] == 'Cancel') {
                 $table = new \VuBib\Db\Table\WorkType($this->adapter);
 
-                return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+                return new Paginator(
+                    new \Zend\Paginator\Adapter\DbTableGateway($table)
+                );
             }
         }
         // default: blank for listing in manage
@@ -270,21 +282,31 @@ class ManageWorkTypeAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
-        $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::worktype::manage_worktype', $this->router, $this->template, $this->adapter);
+    public function __invoke(ServerRequestInterface $request, 
+        ResponseInterface $response, callable $next = null
+    ) {
+    
+        $simpleAction = new \VuBib\Action\SimpleRenderAction(
+            'vubib::worktype::manage_worktype', $this->router, 
+            $this->template, $this->adapter
+        );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($post);
         $paginator->setDefaultItemCountPerPage(15);
         //$allItems = $paginator->getTotalItemCount();
 
-        $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::worktype::manage_worktype', $this->router, $this->template, $this->adapter);
+        $simpleAction = new \VuBib\Action\SimpleRenderAction(
+            'vubib::worktype::manage_worktype', $this->router, 
+            $this->template, $this->adapter
+        );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         $searchParams = [];
 
-        if (isset($post['action']) && $post['action'] == 'sortable' && $post['submitt'] == 'Save') {
+        if (isset($post['action']) && $post['action'] == 'sortable' 
+            && $post['submitt'] == 'Save'
+        ) {
             //if ($post['action'] == 'sortable' && $post['submitt'] == 'Save') {
                 return new HtmlResponse(
                     $this->template->render(

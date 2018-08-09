@@ -47,7 +47,8 @@ class NewOptionFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container 
+              that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -59,6 +60,9 @@ class NewOptionFactory
             : null;
         $adapter = $container->get(Adapter::class);
         //return new NewOptionAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction('vubib::worktype::new_option', $router, $template, $adapter);
+        return new \VuBib\Action\SimpleRenderAction(
+            'vubib::worktype::new_option', $router, 
+            $template, $adapter
+        );
     }
 }

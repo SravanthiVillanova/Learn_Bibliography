@@ -47,7 +47,8 @@ class DeleteSubAttributeFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container 
+              that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -59,6 +60,9 @@ class DeleteSubAttributeFactory
             : null;
         $adapter = $container->get(Adapter::class);
         //return new DeleteSubAttributeAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction('vubib::worktype::delete_subattribute', $router, $template, $adapter);
+        return new \VuBib\Action\SimpleRenderAction(
+            'vubib::worktype::delete_subattribute', $router, 
+            $template, $adapter
+        );
     }
 }
