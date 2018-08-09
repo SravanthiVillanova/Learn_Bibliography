@@ -96,12 +96,29 @@ class LoginPageAction
     /**
      * LoginPageAction constructor.
      *
-     * @param Router\RouterInterface                  $router                    for routes
-     * @param Template\TemplateRendererInterface|null $template                  for templates
-     * @param UserAuthenticationInterface             $userAuthenticationService to authenticate username, password
-     * @param string                                  $defaultRedirectUri        to url to redirect to
-     * @param Adapter                                 $adapter                   for db connection
-     * @param Session                                 $session                   session variable
+     * @param Router\RouterInterface                  $router                    
+              for routes
+     * @param Template\TemplateRendererInterface|null $template                  
+     *                                                                           for
+     *                                                                           templates
+     * @param UserAuthenticationInterface             $userAuthenticationService 
+     *                                                                           to
+     *                                                                           authenticate
+     *                                                                           username,
+     *                                                                           password
+     * @param string                                  $defaultRedirectUri        
+     *                                                                           to
+     *                                                                           url
+     *                                                                           to
+     *                                                                           redirect
+     *                                                                           to
+     * @param Adapter                                 $adapter                   
+     *                                                                           for
+     *                                                                           db
+     *                                                                           connection
+     * @param Session                                 $session                   
+     *                                                                           session
+     *                                                                           variable
      */
     public function __construct(
         Router\RouterInterface $router,
@@ -129,7 +146,9 @@ class LoginPageAction
         $user1 = [];
         if ($post['action'] == 'login') {
             $table = new \VuBib\Db\Table\User($this->adapter);
-            $user = $table->checkUserAuthentication($post['user_name'], $post['user_pwd']);
+            $user = $table->checkUserAuthentication(
+                $post['user_name'], $post['user_pwd']
+            );
             $user1 = array_reduce($user, 'array_merge', array());
         }
         return $user1;
@@ -171,15 +190,17 @@ class LoginPageAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
+    public function __invoke(ServerRequestInterface $request, 
+        ResponseInterface $response, callable $next = null
+    ) {
+    
         if ($request->getMethod() == 'POST') {
             $post = [];
             $post = $request->getParsedBody();
             if (!empty($post['action'])) {
                 $user1 = $this->doLogin($post);
             }
-            if(isset($user1['id'])) {
+            if (isset($user1['id'])) {
                 if (!(is_null($user1['id']))) {
                     $this->setModuleAccess($user1);
                     return new RedirectResponse(
@@ -212,7 +233,8 @@ class LoginPageAction
     /**
      * Render an HTML reponse, containing the login form.
      *
-     * Provide the functionality required to let a user authenticate, based on using an HTML form.
+     * Provide the functionality required to let a user authenticate, 
+               based on using an HTML form.
      *
      * @param ResquestInterface $request server-side request
      *
@@ -231,9 +253,10 @@ class LoginPageAction
     /**
      * Get the URL to redirect the user to.
      *
-     * The value returned here is where to send the user to after a successful authentication has
-     * taken place. The intent is to avoid the user being redirected to a generic route after
-     * login, requiring them to have to specify where they want to navigate to.
+     * The value returned here is where to send the user to after a 
+     * successful authentication has taken place. The intent is to 
+     * avoid the user being redirected to a generic route after login, 
+     * requiring them to have to specify where they want to navigate to.
      *
      * @param ServerRequestInterface $request server-side request.
      *
@@ -243,9 +266,12 @@ class LoginPageAction
     {
         if (array_key_exists('logout', $request->getQueryParams())) {
             $reqParams = $request->getServerParams();
-            //$baseUrl = $uri->getScheme() . '://' . $uri->getHost() . '/' . $uri->getPath();
-            $toUrl = 'http'.'://'.$reqParams['HTTP_HOST'].'/'.$reqParams['REDIRECT_URL'];
+            //$baseUrl = $uri->getScheme() . '://' . $uri->getHost() 
+            //. '/' . $uri->getPath();
+            $toUrl = 'http' . '://' . $reqParams['HTTP_HOST'] 
+                . '/' . $reqParams['REDIRECT_URL'];
             //return $toUrl.'?redirect_to=/VuBib/public/';
+
             return $toUrl.'?redirect_to=' . $reqParams['REDIRECT_BASE'];
         }
         if (array_key_exists('redirect_to', $request->getQueryParams())) {

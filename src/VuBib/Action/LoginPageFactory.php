@@ -63,7 +63,8 @@ class LoginPageFactory implements RequiresConfigId
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container 
+              that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -77,7 +78,9 @@ class LoginPageFactory implements RequiresConfigId
         $adapter = $container->get(Adapter::class);
         //$userEntity = new LoginUser();
 
-        $authenticationOptions = $this->options($container->get('config'), 'authentication');
+        $authenticationOptions = $this->options(
+            $container->get('config'), 'authentication'
+        );
 
         return new LoginPageAction(
             $router,
