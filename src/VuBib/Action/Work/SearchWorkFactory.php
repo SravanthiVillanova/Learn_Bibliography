@@ -47,7 +47,8 @@ class SearchWorkFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container 
+              that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -59,6 +60,9 @@ class SearchWorkFactory
             : null;
         $adapter = $container->get(Adapter::class);
         //return new SearchWorkAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction('vubib::work::search_work', $router, $template, $adapter);
+        return new \VuBib\Action\SimpleRenderAction(
+            'vubib::work::search_work', $router, 
+            $template, $adapter
+        );
     }
 }

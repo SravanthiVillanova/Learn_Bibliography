@@ -74,8 +74,10 @@ class GetWorkDetailsAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
-    {
+    public function __construct(Router\RouterInterface $router, 
+        Template\TemplateRendererInterface $template = null, Adapter $adapter
+    ) {
+    
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
@@ -383,7 +385,9 @@ class GetWorkDetailsAction
         if (isset($post['pubLocation']) && $post['pubLocation'] !== "") {
                $newPub_Loc = $post['pubLocation'];
                $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
-               $newPubLoc_id = $table->addPublisherLocationAndReturnId($newPub_id, $newPub_Loc);
+               $newPubLoc_id = $table->addPublisherLocationAndReturnId(
+                   $newPub_id, $newPub_Loc
+               );
             
                $row['pubLoc_id'] = $newPubLoc_id;
                $row['pub_loc'] = $newPub_Loc;
@@ -411,7 +415,10 @@ class GetWorkDetailsAction
         $newAg_OrgName = $post['agOrgName'];
         $newAg_Email = $post['agEmail'];
         $table = new \VuBib\Db\Table\Agent($this->adapter);
-        $newAg_id = $table->insertAgentAndReturnId($newAg_FName, $newAg_LName, $newAg_AltName, $newAg_OrgName, $newAg_Email);
+        $newAg_id = $table->insertAgentAndReturnId(
+            $newAg_FName, $newAg_LName, 
+            $newAg_AltName, $newAg_OrgName, $newAg_Email
+        );
         
         $row['ag_id'] = $newAg_id;
         $row['ag_fname'] = $newAg_FName;
@@ -441,7 +448,10 @@ class GetWorkDetailsAction
         $new_OptType = $post['attrType'];
 
         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-        $newOpt_id = $table->insertOptionAndReturnId($newOpt_AttrId, $new_Option, $new_OptType);
+        $newOpt_id = $table->insertOptionAndReturnId(
+            $newOpt_AttrId, 
+            $new_Option, $new_OptType
+        );
         
         $row['attr_id'] = $newOpt_AttrId;
         $row['opt_id'] = $newOpt_id;
@@ -529,11 +539,9 @@ class GetWorkDetailsAction
         if (isset($post['addAction'])) {
             if ($post['addAction'] == 'addNewPublisher') {
                 $this->addAndGetNewPub($post);
-            }
-            else if ($post['addAction'] == 'addNewAgent') {
+            } else if ($post['addAction'] == 'addNewAgent') {
                 $this->addAndGetNewAgent($post);
-            }
-            else if ($post['addAction'] == 'addNewOption') {
+            } else if ($post['addAction'] == 'addNewOption') {
                 $this->addAndGetNewAttrOption($post);
             }
         }
@@ -551,8 +559,10 @@ class GetWorkDetailsAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
+    public function __invoke(ServerRequestInterface $request, 
+        ResponseInterface $response, callable $next = null
+    ) {
+    
         if (isset($_GET['autofor'])) {
             $autofor = $_GET['autofor'];
             if (isset($_GET['term'])) {

@@ -47,7 +47,8 @@ class GetWorkDetailsFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container 
+              that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -60,6 +61,5 @@ class GetWorkDetailsFactory
         $adapter = $container->get(Adapter::class);
 
         return new GetWorkDetailsAction($router, $template, $adapter);
-        //return new \VuBib\Action\SimpleRenderAction('vubib::work::get_work_details', $router, $template, $adapter);
     }
 }
