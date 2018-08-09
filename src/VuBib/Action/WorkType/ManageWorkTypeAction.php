@@ -123,20 +123,20 @@ class ManageWorkTypeAction
      */
     protected function doDelete($post)
     {
-		if (isset($post['submitt'])) {
-			if ($post['submitt'] == 'Delete') {
-				if (!is_null($post['worktype_id'])) {
-					foreach($post['worktype_id'] as $worktype_Id):
-						$table = new \VuBib\Db\Table\Work($this->adapter);
-						$table->updateWorkTypeId($worktype_Id);
-						$table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
-						$table->deleteRecordByWorkType($worktype_Id);
-						$table = new \VuBib\Db\Table\WorkType($this->adapter);
-						$table->deleteRecord($worktype_Id);
-					endforeach;
-				}
-			}
-		}
+        if (isset($post['submitt'])) {
+            if ($post['submitt'] == 'Delete') {
+                if (!is_null($post['worktype_id'])) {
+                    foreach($post['worktype_id'] as $worktype_Id):
+                        $table = new \VuBib\Db\Table\Work($this->adapter);
+                        $table->updateWorkTypeId($worktype_Id);
+                        $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
+                        $table->deleteRecordByWorkType($worktype_Id);
+                        $table = new \VuBib\Db\Table\WorkType($this->adapter);
+                        $table->deleteRecord($worktype_Id);
+                    endforeach;
+                }
+            }
+        }
     }
     
     /**

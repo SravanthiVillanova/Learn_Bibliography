@@ -348,7 +348,7 @@ class ManageClassificationAction
                     'countp' => $countPages,
                     //'previous_folder' => $previous_folder,
                     'trail' => $ts,
-					'request' => $request,
+                'request' => $request,
                     'searchParams' => $searchParams,
                 ]
             )

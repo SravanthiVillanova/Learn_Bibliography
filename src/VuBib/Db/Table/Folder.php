@@ -93,8 +93,8 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         fputs($file, $bom = (chr(0xEF).chr(0xBB).chr(0xBF)));
         foreach ($row as $t):
             $content = $t['id'].' '.$escaper->escapeHtml($t['text_fr']).' ';
-        fputcsv($file, array($content));
-        $fl->getDepth($t['id'], $file, $content);
+            fputcsv($file, array($content));
+            $fl->getDepth($t['id'], $file, $content);
         endforeach;
         fflush($file);
         fclose($file);
@@ -264,7 +264,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function getParentChainRecord($id, $reverse = false)
     {
-		$parentList = array();
+        $parentList = array();
         $fl = new self($this->adapter);
         $row = $fl->getParent($id);
 
@@ -275,16 +275,16 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
             $row = $fl->getParent($current);
 
             $encounteredIds[] = $row['id'];
-			$parentList[] = $row;
+            $parentList[] = $row;
             $current = $row['parent_id'];
         }
 
-		if ($reverse) {
+        if ($reverse) {
             $parentList = array_reverse($parentList);
-		}
+        }
 
         return $parentList;
-    }	
+    }    
 
     /**
      * Insert folder record.

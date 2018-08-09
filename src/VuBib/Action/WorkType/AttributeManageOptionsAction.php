@@ -138,20 +138,20 @@ class AttributeManageOptionsAction
      */
     protected function doDelete($post, $query)
     {
-		if (isset($post['submitt'])) {
-			if ($post['submitt'] == 'Delete') {
-				if (!is_null($post['workattropt_id'])) {
-					foreach($post['workattropt_id'] as $workattropt_Id):
-						$table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-						$table->deleteRecordByValue($query['id'], $workattropt_Id);
+        if (isset($post['submitt'])) {
+            if ($post['submitt'] == 'Delete') {
+                if (!is_null($post['workattropt_id'])) {
+                    foreach($post['workattropt_id'] as $workattropt_Id):
+                        $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+                        $table->deleteRecordByValue($query['id'], $workattropt_Id);
                         $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
-						$table->deleteRecordByOptionId($query['id'], $workattropt_Id);
-						$table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-						$table->deleteOption($query['id'], $workattropt_Id);
-					endforeach;
-				}
-			}
-		}
+                        $table->deleteRecordByOptionId($query['id'], $workattropt_Id);
+                        $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+                        $table->deleteOption($query['id'], $workattropt_Id);
+                    endforeach;
+                }
+            }
+        }
     }
     
     /**
@@ -175,7 +175,7 @@ class AttributeManageOptionsAction
                         
                         //delete option record from attribute_option_subattribute
                         $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
-						$table->deleteRecordByOptionId($post['workattribute_id'], $rows[$j]['id']);
+                        $table->deleteRecordByOptionId($post['workattribute_id'], $rows[$j]['id']);
                         //$table->updateRecordOptionId($post['workattribute_id'], $post['option_id'][$i], $rows[$j]['id']);
                         
                         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
@@ -185,8 +185,8 @@ class AttributeManageOptionsAction
             }
         }
     }
-	
-	/**
+    
+    /**
      * Merges attribute options.
      *
      * @param Array $post contains posted elements of form
@@ -195,25 +195,25 @@ class AttributeManageOptionsAction
      */
     protected function doMergeOptions($post, $query)
     {
-		if ($post['submitt'] == 'Merge_Options') {
+        if ($post['submitt'] == 'Merge_Options') {
             if (!is_null($post['mrg_attr_id'])) {
-                $src_select = explode(",",$post['src_opts_hidden']);
-				foreach($src_select as $src_workattropt_Id):
-					 //Update work_workattribute,set src_workattropt_Id = dest_select where workattribute_id = $post['mrg_attr_id']
-					 $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-					 $table->updateWork_WorkAttributeValue($post['mrg_attr_id'], $post['dest_opt_hidden'], $src_workattropt_Id);
+                $src_select = explode(",", $post['src_opts_hidden']);
+                foreach($src_select as $src_workattropt_Id):
+                              //Update work_workattribute,set src_workattropt_Id = dest_select where workattribute_id = $post['mrg_attr_id']
+                              $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+                              $table->updateWork_WorkAttributeValue($post['mrg_attr_id'], $post['dest_opt_hidden'], $src_workattropt_Id);
                      
                      //delete option record from attribute_option_subattribute
                      $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
-				     $table->deleteRecordByOptionId($post['mrg_attr_id'], $src_workattropt_Id);
+                     $table->deleteRecordByOptionId($post['mrg_attr_id'], $src_workattropt_Id);
                      //$table->updateRecordOptionId($post['mrg_attr_id'], $post['dest_opt_hidden'], $src_workattropt_Id);
                      
-					 //delete source attribute option where id = $src_workattropt_Id and workattribute_id = $post['mrg_attr_id']
-					 $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-					 $table->deleteOption($post['mrg_attr_id'], $src_workattropt_Id);
-				endforeach;
-			}
-		}		
+                              //delete source attribute option where id = $src_workattropt_Id and workattribute_id = $post['mrg_attr_id']
+                              $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+                              $table->deleteOption($post['mrg_attr_id'], $src_workattropt_Id);
+                endforeach;
+            }
+        }        
     }
     
     /**
@@ -242,13 +242,13 @@ class AttributeManageOptionsAction
         if ($post['action'] == 'merge') {
             $this->doMerge($post);
         }
-		//Merge option
+        //Merge option
         if ($post['action'] == 'merge_options') {
             $this->doMergeOptions($post, $query);
         }
     }
     
-	/**
+    /**
      * Searches attribute options.
      *
      * @param Array $post contains posted elements of form
@@ -264,7 +264,7 @@ class AttributeManageOptionsAction
             }
         }
     }
-	
+    
     /**
      * Call aprropriate function for each action.
      *
@@ -283,13 +283,13 @@ class AttributeManageOptionsAction
             
             $order = $ord_by . " " . $sort_ord;
         }
-		//Attribute Option Lookup
+        //Attribute Option Lookup
         if (!empty($query['action'])) {
-			if($query['action'] == 'search_option') {
-				return($this->searchOption($query));
-			}
+            if($query['action'] == 'search_option') {
+                      return($this->searchOption($query));
+            }
         }
-		if (!empty($post['action'])) {
+        if (!empty($post['action'])) {
             //add edit delete merge option
             $this->doAction($post, $query);
             
@@ -301,10 +301,10 @@ class AttributeManageOptionsAction
                 return $paginator;
             }
         }
-		
+        
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-        $paginator = $table->displayAttributeOptions($query['id'],$order);
+        $paginator = $table->displayAttributeOptions($query['id'], $order);
 
         return $paginator;
     }
@@ -356,23 +356,23 @@ class AttributeManageOptionsAction
             $searchParams[] = 'id='.urlencode($query['id']);
         }
 
-		if (isset($query['action']) && $query['action'] == 'search_option') {	
-			$searchParams[] = 'action=search_option&worktype_attr='.urlencode($query['worktype_attr']).
-			                  '&option='.urlencode($query['option']).'&submit=Search';
-		}
-		return new HtmlResponse(
-			$this->template->render(
-				'vubib::worktype::manage_attribute_options',
-				[
-					'rows' => $paginator,
-					'previous' => $previous,
-					'next' => $next,
-					'countp' => $countPages,
-					'searchParams' => implode('&', $searchParams),
-					'request' => $request,
-					'adapter' => $this->adapter,
-				]
-			)
-		);
+        if (isset($query['action']) && $query['action'] == 'search_option') {    
+               $searchParams[] = 'action=search_option&worktype_attr='.urlencode($query['worktype_attr']).
+                              '&option='.urlencode($query['option']).'&submit=Search';
+        }
+        return new HtmlResponse(
+            $this->template->render(
+                'vubib::worktype::manage_attribute_options',
+                [
+                'rows' => $paginator,
+                'previous' => $previous,
+                'next' => $next,
+                'countp' => $countPages,
+                'searchParams' => implode('&', $searchParams),
+                'request' => $request,
+                'adapter' => $this->adapter,
+                ]
+            )
+        );
     }
 }

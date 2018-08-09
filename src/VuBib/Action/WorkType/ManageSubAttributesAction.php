@@ -133,19 +133,19 @@ class ManageSubAttributesAction
      */
     protected function doDelete($post, $query)
     {
-		if (isset($post['submitt'])) {
-			if ($post['submitt'] == 'Delete') {
-				if (!is_null($post['subattr_id'])) {
-					foreach($post['subattr_id'] as $subattr_Id):						
-						$table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
-						$table->deleteRecordBySubAttributeId($subattr_Id);
+        if (isset($post['submitt'])) {
+            if ($post['submitt'] == 'Delete') {
+                if (!is_null($post['subattr_id'])) {
+                    foreach($post['subattr_id'] as $subattr_Id):                        
+                        $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
+                        $table->deleteRecordBySubAttributeId($subattr_Id);
                         
                         $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
-						$table->deleteRecordById($subattr_Id);
-					endforeach;
-				}
-			}
-		}
+                        $table->deleteRecordById($subattr_Id);
+                    endforeach;
+                }
+            }
+        }
     }
     
     /**
@@ -172,7 +172,7 @@ class ManageSubAttributesAction
         }
     }
     
-	/**
+    /**
      * Searches attribute options.
      *
      * @param Array $post contains posted elements of form
@@ -188,7 +188,7 @@ class ManageSubAttributesAction
             }
         }
     }
-	
+    
     /**
      * Call aprropriate function for each action.
      *
@@ -201,7 +201,7 @@ class ManageSubAttributesAction
     {
         $order = "";
         $wkat_id = isset($post['wkat_id']) ? $post['wkat_id'] : $query['wkat_id'];
-		if (!empty($post['action'])) {
+        if (!empty($post['action'])) {
             //add edit delete sub attribute
             $this->doAction($post, $query);
             
@@ -213,10 +213,10 @@ class ManageSubAttributesAction
                 return $paginator;
             }
         }
-		
+        
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
-        $paginator = $table->displaySubAttributes($wkat_id,$order);
+        $paginator = $table->displaySubAttributes($wkat_id, $order);
 
         return $paginator;
     }
@@ -268,24 +268,24 @@ class ManageSubAttributesAction
             $searchParams[] = 'wkat_id='.urlencode($query['wkat_id']);
         }
         $wkat_id = isset($post['wkat_id']) ? $post['wkat_id'] : $query['wkat_id'];
-		/*if (isset($query['action']) && $query['action'] == 'search_option') {	
-			$searchParams[] = 'action=search_option&worktype_attr='.urlencode($query['worktype_attr']).
+        /*if (isset($query['action']) && $query['action'] == 'search_option') {	
+        $searchParams[] = 'action=search_option&worktype_attr='.urlencode($query['worktype_attr']).
 			                  '&option='.urlencode($query['option']).'&submit=Search';
-		}*/
-		return new HtmlResponse(
-			$this->template->render(
-				'vubib::worktype::manage_subattributes',
-				[
-					'rows' => $paginator,
+        }*/
+        return new HtmlResponse(
+            $this->template->render(
+                'vubib::worktype::manage_subattributes',
+                [
+                'rows' => $paginator,
                     'wkat_id' => $wkat_id,
-					'previous' => $previous,
-					'next' => $next,
-					'countp' => $countPages,
-					'searchParams' => implode('&', $searchParams),
-					'request' => $request,
-					'adapter' => $this->adapter,
-				]
-			)
-		);
+                'previous' => $previous,
+                'next' => $next,
+                'countp' => $countPages,
+                'searchParams' => implode('&', $searchParams),
+                'request' => $request,
+                'adapter' => $this->adapter,
+                ]
+            )
+        );
     }
 }

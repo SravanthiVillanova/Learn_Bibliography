@@ -67,14 +67,14 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecords($location)
     {
-		$escaper = new \Zend\Escaper\Escaper('utf-8');
+        $escaper = new \Zend\Escaper\Escaper('utf-8');
         $select = $this->sql->select();
         // $select->columns(array('location'));
         $select->join(
             'publisher', 'publisher_location.publisher_id = publisher.id',
             array('name'), 'inner'
         );
-		$select->where->expression('LOWER(location) LIKE ?', mb_strtolower($escaper->escapeHtml($location)).'%');
+        $select->where->expression('LOWER(location) LIKE ?', mb_strtolower($escaper->escapeHtml($location)).'%');
         //$select->where->like('location', $location.'%');
         //$select->where(['location' => $location]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
@@ -145,7 +145,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
-	/**
+    /**
      * Insert publisher record.
      *
      * @param String $name publisher name
@@ -159,12 +159,12 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
             'publisher_id' => $id,
             'location' => $loc,
             ]
-        );	
-		$id = $this->getLastInsertValue();
+        );    
+        $id = $this->getLastInsertValue();
         return $id;
     }
-	
-	/**
+    
+    /**
      * Update publisher location record.
      *
      * @param Number $id   publisher id
@@ -181,7 +181,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
             ['id' => $loc_id]
         );
     }
-	
+    
     /**
      * Find publisher location
      *
@@ -277,8 +277,8 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
     {
         $this->delete(['id' => $src_loc_id, 'publisher_id' => $src_pub_id]);
     }
-	
-	/**
+    
+    /**
      * Find publisher location by id
      *
      * @param Number $id publisher location id

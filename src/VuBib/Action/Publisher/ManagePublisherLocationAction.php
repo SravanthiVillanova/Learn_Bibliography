@@ -122,7 +122,7 @@ class ManagePublisherLocationAction
             }
         }
     }
-	
+    
     /**
      * Action based on action parameter.
      *
@@ -141,14 +141,14 @@ class ManagePublisherLocationAction
             }
         }
         
-		//add a new publisher
+        //add a new publisher
         if ($post['action'] == 'edit') {
             if ($post['submitt'] == 'Save') {
                 $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
                 $table->updatePublisherLocation($post['location_id'], $post['location_newname']);
             }
         }
-		
+        
         //delete a location for a publisher
         if ($post['action'] == 'delete') {
             $this->doDelete($post, $query);
@@ -159,7 +159,7 @@ class ManagePublisherLocationAction
             $this->doMerge($post, $query);
         }
     }
-	
+    
     /**
      * Get records to display.
      *
@@ -171,7 +171,7 @@ class ManagePublisherLocationAction
     public function getPaginator($query, $post)
     {
         //add location based on action query parameter
-        if (!empty($post['action'])) {		
+        if (!empty($post['action'])) {        
             //add delete merge publisher locations
             $this->doAction($post, $query);
            
@@ -209,19 +209,19 @@ class ManagePublisherLocationAction
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::publisher::manage_publisherlocation', $this->router, $this->template, $this->adapter);
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
-		return new HtmlResponse(
-			$this->template->render(
-				'vubib::publisher::manage_publisherlocation',
-				[
-					'rows' => $paginator,
-					'previous' => $pgs['prev'],
-					'next' => $pgs['nxt'],
-					'countp' => $pgs['cp'],
-					//'searchParams' => implode('&', $searchParams),
-					'request' => $request,
-					'adapter' => $this->adapter,
-				]
-			)
-		);
+        return new HtmlResponse(
+            $this->template->render(
+                'vubib::publisher::manage_publisherlocation',
+                [
+                'rows' => $paginator,
+                'previous' => $pgs['prev'],
+                'next' => $pgs['nxt'],
+                'countp' => $pgs['cp'],
+                //'searchParams' => implode('&', $searchParams),
+                'request' => $request,
+                'adapter' => $this->adapter,
+                ]
+            )
+        );
     }
 }

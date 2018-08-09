@@ -133,9 +133,9 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
     /**
      * Update record
      *
-     * @param Integer $wkat_id         work attribute id
-     * @param Integer $new_option_id   new option id
-     * @param Integer $old_option_id   old option id
+     * @param Integer $wkat_id       work attribute id
+     * @param Integer $new_option_id new option id
+     * @param Integer $old_option_id old option id
      *
      * @return empty
      */

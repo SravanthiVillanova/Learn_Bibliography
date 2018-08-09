@@ -316,11 +316,11 @@ class ManageWorkAction
                     if ((preg_match("/^[a-z]+\,\d+([a-z]+\,\d+)+$/", $key)) && ($value != null)) {
                         $keys = preg_split("/[a-z]+\,/", $key);
                         $wkat_id[] = $keys[1];
-						if(count($keys) == 4) {
-							$wkopt_id[] = $keys[3];
-						} else {
-							$wkopt_id[] = $keys[2];
-						}
+                        if(count($keys) == 4) {
+                                           $wkopt_id[] = $keys[3];
+                        } else {
+                                           $wkopt_id[] = $keys[2];
+                        }
                     }
                     if ((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != null)) {
                         $wkat_id[] = preg_replace("/^[a-z]+\,/", '', $key).'<br />';
@@ -328,15 +328,16 @@ class ManageWorkAction
                     }
                 }
                 if(!empty($wkat_id)) {
-				if ($wkat_id[0] != null) {
-                    //delete workattribute records
-                    $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-                    $table->deleteRecordByWorkId($post['id']);
-					
-                    //insert workattributes again
-                    $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-                    $table->insertRecords($post['id'], $wkat_id, $wkopt_id);
-                } } else {
+                    if ($wkat_id[0] != null) {
+                                    //delete workattribute records
+                                    $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+                                    $table->deleteRecordByWorkId($post['id']);
+                    
+                                    //insert workattributes again
+                                    $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+                                    $table->insertRecords($post['id'], $wkat_id, $wkopt_id);
+                    } 
+                } else {
                     //delete workattribute records
                     $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
                     $table->deleteRecordByWorkId($post['id']);
@@ -356,20 +357,20 @@ class ManageWorkAction
     {
         if (isset($post['submitt'])) {
             if ($post['submitt'] == 'Delete') {
-				if (!is_null($post['work_id'])) {
-					foreach($post['work_id'] as $workId):
-						$table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-						$table->deleteRecordByWorkId($workId);
-						$table = new \VuBib\Db\Table\Work_Folder($this->adapter);
-						$table->deleteRecordByWorkId($workId);
-						$table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-						$table->deleteRecordByWorkId($workId);
-						$table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-						$table->deleteRecordByWorkId($workId);
-						$table = new \VuBib\Db\Table\Work($this->adapter);
-						$table->deleteRecordByWorkId($workId);
-					endforeach;
-				}
+                if (!is_null($post['work_id'])) {
+                    foreach($post['work_id'] as $workId):
+                        $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
+                        $table->deleteRecordByWorkId($workId);
+                        $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
+                        $table->deleteRecordByWorkId($workId);
+                        $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
+                        $table->deleteRecordByWorkId($workId);
+                        $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+                        $table->deleteRecordByWorkId($workId);
+                        $table = new \VuBib\Db\Table\Work($this->adapter);
+                        $table->deleteRecordByWorkId($workId);
+                    endforeach;
+                }
             }
         }
     }
@@ -544,7 +545,7 @@ class ManageWorkAction
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(15);
-		//$allItems = $paginator->getTotalItemCount();
+        //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::work::manage_work', $this->router, $this->template, $this->adapter);
         $pgs = $simpleAction->getNextPrevious($paginator, $query);

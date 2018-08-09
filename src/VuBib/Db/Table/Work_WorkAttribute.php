@@ -235,29 +235,29 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     /**
      * Find attribute records
      *
-     * @param string $attribute  work attribute
+     * @param string $attribute work attribute
      *
      * @return Array $row
-     */	
+     */    
     public function getAttributeValue($wk_id, $attribute)
     {
         $wa = new WorkAttribute($this->adapter);
         $wa_row = $wa->getAttributeRecord($attribute);
-		
-		$attr_id = $wa_row['id'];
-		$wk_wkat = $this->select(array('work_id' => $wk_id,'workattribute_id' => $attr_id));
+        
+        $attr_id = $wa_row['id'];
+        $wk_wkat = $this->select(array('work_id' => $wk_id,'workattribute_id' => $attr_id));
         $wk_wkat_row = $wk_wkat->current();
-		
-		if ($wa_row['type'] == 'Select') {
-			if (isset($wk_wkat_row['value']) && $wk_wkat_row['value'] != '') {
-		        $wa_opt = new WorkAttribute_Option($this->adapter);
+        
+        if ($wa_row['type'] == 'Select') {
+            if (isset($wk_wkat_row['value']) && $wk_wkat_row['value'] != '') {
+                $wa_opt = new WorkAttribute_Option($this->adapter);
                 $wa_opt_row = $wa_opt->findRecordById($wk_wkat_row['value']);
-				return $wa_opt_row['title'];
-			}
-		}
-		else {
-			return $wk_wkat_row['value'];
-		}
+                return $wa_opt_row['title'];
+            }
+        }
+        else {
+               return $wk_wkat_row['value'];
+        }
     } 
 
     /**
@@ -272,10 +272,10 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         $callback = function ($select) use ($wkat_id, $opt_id) {
             $select->columns(['*']);
             $select->where->equalTo('workattribute_id', $wkat_id);
-			$select->where->equalTo('value', $opt_id);
+            $select->where->equalTo('value', $opt_id);
         };
         $rows = $this->select($callback)->toArray();
 
         return $rows;
-    }	   
+    }       
 }

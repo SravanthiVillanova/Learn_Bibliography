@@ -153,11 +153,11 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         $select->where->equalTo('workattribute_id', $wkat_id);
-		
-		if (isset($order) && $order !== '') {
-           $select->order($order);
+        
+        if (isset($order) && $order !== '') {
+                 $select->order($order);
         }
-		
+        
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);

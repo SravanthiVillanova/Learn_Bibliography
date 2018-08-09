@@ -99,9 +99,9 @@ class GetWorkDetailsAction
         endforeach;
         foreach ($pub_row as $row) :
             $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-			$wks = $table->findRecordByPublisherId($row['id']);
-			$no_wks = count($wks);
-			$no_of_wks[] = $no_wks;
+            $wks = $table->findRecordByPublisherId($row['id']);
+            $no_wks = count($wks);
+            $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_row[$i]['works'] = $no_of_wks[$i];
@@ -130,9 +130,9 @@ class GetWorkDetailsAction
         }
         foreach ($pub_loc_rows as $row) :
             $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-        $wks = $table->findRecordByLocationId($row['id']);
-        $no_wks = count($wks);
-        $no_of_wks[] = $no_wks;
+            $wks = $table->findRecordByLocationId($row['id']);
+            $no_wks = count($wks);
+            $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_loc_rows[$i]['works'] = $no_of_wks[$i];
@@ -157,9 +157,9 @@ class GetWorkDetailsAction
         $ag_row = $table->getLastNameLikeRecords($name);
         foreach ($ag_row as $row) :
             $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-			$wks = $table->findRecordByAgentId($row['id']);
-			$no_wks = count($wks);
-			$no_of_wks[] = $no_wks;
+            $wks = $table->findRecordByAgentId($row['id']);
+            $no_wks = count($wks);
+            $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $ag_row[$i]['works'] = $no_of_wks[$i];
@@ -333,7 +333,7 @@ class GetWorkDetailsAction
                 $rows[$i]['id'] = $row['id'];
                 $rows[$i]['label'] = $row['lname'] . " FN: " . $row['fname'];
                 $rows[$i]['fname'] = $row['fname'];
-				$rows[$i]['lname'] = $row['lname'];
+                $rows[$i]['lname'] = $row['lname'];
                 $rows[$i]['alternate_name'] = $row['alternate_name'];
                 $rows[$i]['organization_name'] = $row['organization_name'];
             }
@@ -362,8 +362,8 @@ class GetWorkDetailsAction
         echo json_encode($output);
         exit;
     }
-	
-	/**
+    
+    /**
      * Add a new publisher and send back newly added publisher details
      *
      * @param Array $post contains posted elements of form
@@ -372,29 +372,29 @@ class GetWorkDetailsAction
      */
     public function addAndGetNewPub($post)
     {
-		$rows = [];
-		
-        $newPub_Name = $post['pubName'];		
+        $rows = [];
+        
+        $newPub_Name = $post['pubName'];        
         $table = new \VuBib\Db\Table\Publisher($this->adapter);
         $newPub_id = $table->insertPublisherAndReturnId($newPub_Name);
-		$row['pub_id'] = $newPub_id;
-		$row['pub_name'] = $newPub_Name;
+        $row['pub_id'] = $newPub_id;
+        $row['pub_name'] = $newPub_Name;
         
-		if (isset($post['pubLocation']) && $post['pubLocation'] !== "") {
-			$newPub_Loc = $post['pubLocation'];
-			$table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
-			$newPubLoc_id = $table->addPublisherLocationAndReturnId($newPub_id, $newPub_Loc);
-			
-			$row['pubLoc_id'] = $newPubLoc_id;
-			$row['pub_loc'] = $newPub_Loc;
-		}
-		
+        if (isset($post['pubLocation']) && $post['pubLocation'] !== "") {
+               $newPub_Loc = $post['pubLocation'];
+               $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
+               $newPubLoc_id = $table->addPublisherLocationAndReturnId($newPub_id, $newPub_Loc);
+            
+               $row['pubLoc_id'] = $newPubLoc_id;
+               $row['pub_loc'] = $newPub_Loc;
+        }
+        
         $output = array('newPublisher' => $row);
         echo json_encode($output);
         exit;
     }
     
-	/**
+    /**
      * Add a new agent and send back newly added agent details
      *
      * @param Array $post contains posted elements of form
@@ -403,29 +403,29 @@ class GetWorkDetailsAction
      */
     public function addAndGetNewAgent($post)
     {
-		$rows = [];
-		
-		$newAg_FName = $post['agFName'];
+        $rows = [];
+        
+        $newAg_FName = $post['agFName'];
         $newAg_LName = $post['agLName'];
-		$newAg_AltName = $post['agAltName'];
-		$newAg_OrgName = $post['agOrgName'];
-		$newAg_Email = $post['agEmail'];
+        $newAg_AltName = $post['agAltName'];
+        $newAg_OrgName = $post['agOrgName'];
+        $newAg_Email = $post['agEmail'];
         $table = new \VuBib\Db\Table\Agent($this->adapter);
         $newAg_id = $table->insertAgentAndReturnId($newAg_FName, $newAg_LName, $newAg_AltName, $newAg_OrgName, $newAg_Email);
-		
-		$row['ag_id'] = $newAg_id;
-		$row['ag_fname'] = $newAg_FName;
-		$row['ag_lname'] = $newAg_LName;
-		$row['ag_altname'] = $newAg_AltName;
-		$row['ag_orgname'] = $newAg_OrgName;
-		$row['ag_email'] = $newAg_Email;
-		
+        
+        $row['ag_id'] = $newAg_id;
+        $row['ag_fname'] = $newAg_FName;
+        $row['ag_lname'] = $newAg_LName;
+        $row['ag_altname'] = $newAg_AltName;
+        $row['ag_orgname'] = $newAg_OrgName;
+        $row['ag_email'] = $newAg_Email;
+        
         $output = array('newAgent' => $row);
         echo json_encode($output);
         exit;
     }
-	
-	/**
+    
+    /**
      * Add a new attribute option and send back newly added option details
      *
      * @param Array $post contains posted elements of form
@@ -434,26 +434,26 @@ class GetWorkDetailsAction
      */
     public function addAndGetNewAttrOption($post)
     {
-		$rows = [];
-		
-		$newOpt_AttrId = preg_replace("/^\w+:/", '', $post['attrId']);
-		$new_Option = $post['attrOption'];
-		$new_OptType = $post['attrType'];
+        $rows = [];
+        
+        $newOpt_AttrId = preg_replace("/^\w+:/", '', $post['attrId']);
+        $new_Option = $post['attrOption'];
+        $new_OptType = $post['attrType'];
 
         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
         $newOpt_id = $table->insertOptionAndReturnId($newOpt_AttrId, $new_Option, $new_OptType);
-		
-		$row['attr_id'] = $newOpt_AttrId;
-		$row['opt_id'] = $newOpt_id;
-		$row['opt_title'] = $new_Option;
-		$row['opt_value'] = $new_OptType;
-		
+        
+        $row['attr_id'] = $newOpt_AttrId;
+        $row['opt_id'] = $newOpt_id;
+        $row['opt_title'] = $new_Option;
+        $row['opt_value'] = $new_OptType;
+        
         $output = array('newOption' => $row);
         echo json_encode($output);
         exit;
     }
-	
-	/**
+    
+    /**
      * Fetches publisher details.
      *
      * @param Array $post contains posted elements of form
@@ -464,7 +464,7 @@ class GetWorkDetailsAction
     {
         $no_of_wks = [];
         $name = $post['opt_name'];
-		$wkat_id = $post['wkat_id'];
+        $wkat_id = $post['wkat_id'];
         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
         $option_row = $table->findRecords($name, $wkat_id);
         foreach ($option_row as $row) :
@@ -472,9 +472,9 @@ class GetWorkDetailsAction
         endforeach;
         foreach ($opt_row as $row) :
             $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-			$wks = $table->findRecordByOptionId($wkat_id, $row['id']);
-			$no_wks = count($wks);
-			$no_of_wks[] = $no_wks;
+            $wks = $table->findRecordByOptionId($wkat_id, $row['id']);
+            $no_wks = count($wks);
+            $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $opt_row[$i]['works'] = $no_of_wks[$i];
@@ -483,7 +483,7 @@ class GetWorkDetailsAction
         echo json_encode($output);
         exit;
     }
-	
+    
     /**
      * Action based on post parameter set.
      *
@@ -526,18 +526,18 @@ class GetWorkDetailsAction
         if (isset($post['lookup_title'])) {
             $this->getParentLookup($post);
         }
-		if (isset($post['addAction'])) {
-			if ($post['addAction'] == 'addNewPublisher') {
-				$this->addAndGetNewPub($post);
-			}
-			else if ($post['addAction'] == 'addNewAgent') {
-				$this->addAndGetNewAgent($post);
-			}
-			else if ($post['addAction'] == 'addNewOption') {
-				$this->addAndGetNewAttrOption($post);
-			}
-		}
-		if (isset($post['opt_name'])) {
+        if (isset($post['addAction'])) {
+            if ($post['addAction'] == 'addNewPublisher') {
+                $this->addAndGetNewPub($post);
+            }
+            else if ($post['addAction'] == 'addNewAgent') {
+                $this->addAndGetNewAgent($post);
+            }
+            else if ($post['addAction'] == 'addNewOption') {
+                $this->addAndGetNewAttrOption($post);
+            }
+        }
+        if (isset($post['opt_name'])) {
             $this->optName($post);
         }
     }

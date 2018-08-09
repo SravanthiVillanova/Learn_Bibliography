@@ -179,15 +179,15 @@ class LoginPageAction
             if (!empty($post['action'])) {
                 $user1 = $this->doLogin($post);
             }
-			if(isset($user1['id'])) {
-            if (!(is_null($user1['id']))) {
-                $this->setModuleAccess($user1);
-                return new RedirectResponse(
-                    $this->getRedirectUri($request),
-                    RFC7231::FOUND
-                );
+            if(isset($user1['id'])) {
+                if (!(is_null($user1['id']))) {
+                    $this->setModuleAccess($user1);
+                    return new RedirectResponse(
+                        $this->getRedirectUri($request),
+                        RFC7231::FOUND
+                    );
+                }
             }
-			}
             return new RedirectResponse(
                 $this->getRedirectUri($request),
                 RFC7231::FOUND

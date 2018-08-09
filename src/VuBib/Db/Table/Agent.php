@@ -50,8 +50,8 @@ use Zend\Db\Sql\Expression;
  */
 class Agent extends \Zend\Db\TableGateway\TableGateway
 {
-	private $escaper;
-	
+    private $escaper;
+    
     /**
      * Agent constructor.
      *
@@ -105,11 +105,11 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
             'organization_name' => $orgname,
             'email' => $mail,
             ]
-        );	
-		$id = $this->getLastInsertValue();
+        );    
+        $id = $this->getLastInsertValue();
         return $id;
     }
-	
+    
     /**
      * Update agent record.
      *
@@ -217,13 +217,13 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         if ($type == 'fname') {
-			$select->where->like(new Expression('LOWER(fname)'), mb_strtolower($name).'%');
+            $select->where->like(new Expression('LOWER(fname)'), mb_strtolower($name).'%');
         } elseif ($type == 'lname') {
-			$select->where->like(new Expression('LOWER(lname)'), mb_strtolower($name).'%');
+            $select->where->like(new Expression('LOWER(lname)'), mb_strtolower($name).'%');
         } elseif ($type == 'altname') {
-			$select->where->like(new Expression('LOWER(alternate_name)'), mb_strtolower($name).'%');
+            $select->where->like(new Expression('LOWER(alternate_name)'), mb_strtolower($name).'%');
         } elseif ($type == 'orgname') {
-			$select->where->like(new Expression('LOWER(organization_name)'), mb_strtolower($name).'%');
+            $select->where->like(new Expression('LOWER(organization_name)'), mb_strtolower($name).'%');
         }
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
@@ -241,7 +241,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     {
         $callback = function ($select) use ($name) {
             $select->where->like(new Expression('LOWER(lname)'), mb_strtolower($name).'%');
-			//$select->where->expression('LOWER(lname) LIKE ?', '%'.mb_strtolower($this->escaper->escapeHtml($name)).'%');
+            //$select->where->expression('LOWER(lname) LIKE ?', '%'.mb_strtolower($this->escaper->escapeHtml($name)).'%');
         };
         $rows = $this->select($callback)->toArray();
 
@@ -275,15 +275,15 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
      */
     public function getAgentRecordsByLimitOffset($limit, $offset)
     {
-		$callback = function ($select) use ($limit, $offset) {
+        $callback = function ($select) use ($limit, $offset) {
             $select->limit($limit)->offset($offset);
         };
         $rows = $this->select($callback)->toArray();
-		
-		$arrayAdapter = new ArrayAdapter($rows);
+        
+        $arrayAdapter = new ArrayAdapter($rows);
 
         $paginator = new Paginator($arrayAdapter);
-		
+        
         return $paginator;
     }
 }

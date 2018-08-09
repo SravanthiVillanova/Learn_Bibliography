@@ -192,18 +192,18 @@ class ManageAgentAction
      */
     protected function doDelete($post)
     {
-		if ($post['action'] == 'delete') {
-			if ($post['submitt'] == 'Delete') {
-				if (!is_null($post['agent_id'])) {
-					foreach($post['agent_id'] as $agentId):
-						$table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-						$table->deleteRecordByAgentId($agentId);
-						$table = new \VuBib\Db\Table\Agent($this->adapter);
-						$table->deleteRecord($agentId);
-					endforeach;
-				}
-			}
-		}
+        if ($post['action'] == 'delete') {
+            if ($post['submitt'] == 'Delete') {
+                if (!is_null($post['agent_id'])) {
+                    foreach($post['agent_id'] as $agentId):
+                        $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
+                        $table->deleteRecordByAgentId($agentId);
+                        $table = new \VuBib\Db\Table\Agent($this->adapter);
+                        $table->deleteRecord($agentId);
+                    endforeach;
+                }
+            }
+        }
     }
 
     /**

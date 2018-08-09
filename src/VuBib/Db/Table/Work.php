@@ -323,23 +323,23 @@ class Work extends \Zend\Db\TableGateway\TableGateway
         if ($status === '00') {
             $status = null;
         }
-		$this->insert(
-		[
-		'work_id' => ($pr_workid !== -1) ? $pr_workid : null,
-		'type_id' => $type_id,
-		'title' => $title,
-		'subtitle' => $subtitle,
-		'paralleltitle' => $paralleltitle,
-		'description' => $description,
-		'create_date' => $create_date,
-		'create_user_id' => $create_user_id,
-		'modify_date' => '0000-00-00 00:00:00',
-		'modify_user_id' => null,
-		'status' => $status,
-		'publish_month' => null,
-		'publish_year' => $pub_yrFrom[0],
-		]
-		);
+        $this->insert(
+            [
+            'work_id' => ($pr_workid !== -1) ? $pr_workid : null,
+            'type_id' => $type_id,
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'paralleltitle' => $paralleltitle,
+            'description' => $description,
+            'create_date' => $create_date,
+            'create_user_id' => $create_user_id,
+            'modify_date' => '0000-00-00 00:00:00',
+            'modify_user_id' => null,
+            'status' => $status,
+            'publish_month' => null,
+            'publish_year' => $pub_yrFrom[0],
+            ]
+        );
         $id = $this->getLastInsertValue();
 
         return $id;
@@ -389,7 +389,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             'modify_date' => $modify_date,
             'modify_user_id' => $modify_user,
             'status' => $status,
-			'publish_month' => null,
+            'publish_month' => null,
             'publish_year' => $pub_yrFrom[0],
             ],
             ['id' => $id]
@@ -426,10 +426,10 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Array $rows work records as array
      */
-     public function fetchParentLookup($title)
+    public function fetchParentLookup($title)
     {
         /*$callback = function ($select) use ($title) {
-            $select->where->like('title', $title.'%');
+          $select->where->like('title', $title.'%');
         };
         $rows = $this->select($callback)->toArray();
         return $rows;*/
@@ -441,11 +441,11 @@ class Work extends \Zend\Db\TableGateway\TableGateway
                 ['type']
             );
             //$select->where->like('title', $title.'%');
-			$select->where->expression('LOWER(title) LIKE ?', mb_strtolower($title).'%');
+            $select->where->expression('LOWER(title) LIKE ?', mb_strtolower($title).'%');
         };
-        $rows = $this->select($callback)->toArray();
+            $rows = $this->select($callback)->toArray();
 
-        return $rows;
+            return $rows;
     }
 
     /**
@@ -458,15 +458,15 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      */
     public function getWorkRecordsByLimitOffset($limit, $offset)
     {
-		$callback = function ($select) use ($limit, $offset) {
+        $callback = function ($select) use ($limit, $offset) {
             $select->limit($limit)->offset($offset);
         };
         $rows = $this->select($callback)->toArray();
-		
-		$arrayAdapter = new ArrayAdapter($rows);
+        
+        $arrayAdapter = new ArrayAdapter($rows);
 
         $paginator = new Paginator($arrayAdapter);
-		
+        
         return $paginator;
     }
 }

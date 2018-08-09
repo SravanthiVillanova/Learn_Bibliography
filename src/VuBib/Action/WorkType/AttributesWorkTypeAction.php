@@ -127,25 +127,25 @@ class AttributesWorkTypeAction
     protected function doDelete($post)
     {
         if (isset($post['submitt'])) {
-			if ($post['submitt'] == 'Delete') {
-				if (!is_null($post['workattr_id'])) {
-					foreach($post['workattr_id'] as $workattr_Id):
-						//no
-						$table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-						$table->deleteWorkAttributeFromWork($workattr_Id);
-						//yes
-						$table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
-						$table->deleteAttributeFromAllWorkTypes($workattr_Id);
-						//yes
-						$table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-						$table->deleteWorkAttributeOptions($workattr_Id);
-						//no
-						$table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
-						$table->deleteRecord($workattr_Id);
-					endforeach;
-				}
-			}
-		}
+            if ($post['submitt'] == 'Delete') {
+                if (!is_null($post['workattr_id'])) {
+                    foreach($post['workattr_id'] as $workattr_Id):
+                        //no
+                        $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
+                        $table->deleteWorkAttributeFromWork($workattr_Id);
+                        //yes
+                        $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
+                        $table->deleteAttributeFromAllWorkTypes($workattr_Id);
+                        //yes
+                        $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+                        $table->deleteWorkAttributeOptions($workattr_Id);
+                        //no
+                        $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
+                        $table->deleteRecord($workattr_Id);
+                    endforeach;
+                }
+            }
+        }
     }
     
     /**
@@ -257,7 +257,7 @@ class AttributesWorkTypeAction
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
 
-        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table,null,['type','field']));
+        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table, null, ['type','field']));
     }
 
     /**
@@ -283,7 +283,7 @@ class AttributesWorkTypeAction
 
         $searchParams = [];
         
-        if (isset($post['action']) && $post['action'] == 'edit_subattribute') {	
+        if (isset($post['action']) && $post['action'] == 'edit_subattribute') {    
             $searchParams[] = urlencode($post['attr_id']);
             return new HtmlResponse(
                 $this->template->render(

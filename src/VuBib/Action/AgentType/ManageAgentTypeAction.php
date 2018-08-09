@@ -103,7 +103,7 @@ class ManageAgentTypeAction
         }
         //edit an agent type
         if ($post['action'] == 'edit') {
-            if ($post['submitt'] == 'Save') {				
+            if ($post['submitt'] == 'Save') {                
                 if (!is_null($post['id'])) {
                     $table = new \VuBib\Db\Table\AgentType($this->adapter);
                     $table->updateRecord($post['id'], $post['edit_agenttype']);
@@ -114,13 +114,13 @@ class ManageAgentTypeAction
         if ($post['action'] == 'delete') {
             if ($post['submitt'] == 'Delete') {
                 if (!is_null($post['agType_id'])) {
-					foreach($post['agType_id'] as $agentTypeId):
-						$table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-						$table->deleteRecordByAgentTypeId($agentTypeId);
+                    foreach($post['agType_id'] as $agentTypeId):
+                                    $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
+                                    $table->deleteRecordByAgentTypeId($agentTypeId);
 
-						$table = new \VuBib\Db\Table\AgentType($this->adapter);
-						$table->deleteRecord($agentTypeId);
-					endforeach;
+                                    $table = new \VuBib\Db\Table\AgentType($this->adapter);
+                                    $table->deleteRecord($agentTypeId);
+                    endforeach;
                 }
             }
         }
@@ -149,8 +149,8 @@ class ManageAgentTypeAction
         }
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\AgentType($this->adapter);
-		//var_dump($table);
-        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table,null,'type'));
+        //var_dump($table);
+        return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table, null, 'type'));
     }
 
     /**
