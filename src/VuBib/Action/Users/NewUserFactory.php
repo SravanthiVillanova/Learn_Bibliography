@@ -61,8 +61,8 @@ class NewUserFactory
         $adapter = $container->get(Adapter::class);
         //return new NewUsersAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-           'vubib::users::new_user', $router, 
-           $template, $adapter
+            'vubib::users::new_user', $router, 
+            $template, $adapter
         );
     }
 }
