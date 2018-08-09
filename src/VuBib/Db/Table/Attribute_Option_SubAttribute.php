@@ -156,4 +156,19 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
         }
     }
 
+    /**
+     * Delete record
+     *
+     * @param Integer $subat_id subattribute id
+     *
+     * @return empty
+     */
+    public function deleteRecordBySubAttributeId($subat_id)
+    {
+        $this->delete(
+            [
+                'subattribute_id' => $subat_id,
+            ]
+        );
+    }
 }

@@ -162,4 +162,16 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
 
         return new Paginator($paginatorAdapter);
     }
+    
+    /**
+     * Delete record by id
+     *
+     * @param Integer $subattr_id id
+     *
+     * @return empty
+     */
+    public function deleteRecordById($subattr_id)
+    {
+        $this->delete(['id' => $subattr_id]);
+    }
 }

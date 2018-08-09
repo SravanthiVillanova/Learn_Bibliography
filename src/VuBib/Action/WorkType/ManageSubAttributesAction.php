@@ -124,7 +124,7 @@ class ManageSubAttributesAction
     }
     
     /**
-     * Deletes attribute options.
+     * Deletes sub attributes.
      *
      * @param Array $post  contains posted elements of form
      * @param Array $query url query parameters
@@ -136,11 +136,12 @@ class ManageSubAttributesAction
 		if (isset($post['submitt'])) {
 			if ($post['submitt'] == 'Delete') {
 				if (!is_null($post['subattr_id'])) {
-					foreach($post['subattr_id'] as $subattr_Id):
-						$table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-						$table->deleteRecordByValue($query['id'], $subattr_Id);
-						$table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-						$table->deleteOption($post['wkat_id'], $subattr_Id);
+					foreach($post['subattr_id'] as $subattr_Id):						
+						$table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
+						$table->deleteRecordBySubAttributeId($subattr_Id);
+                        
+                        $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
+						$table->deleteRecordById($subattr_Id);
 					endforeach;
 				}
 			}
@@ -163,14 +164,10 @@ class ManageSubAttributesAction
         }
         //edit option
         if ($post['action'] == 'edit') {
-            echo "<pre>"; var_dump($query); echo "</pre>";
-            echo "<pre>"; var_dump($post); echo "</pre>"; die();
             $this->doEdit($post);
         }
         //delete option
         if ($post['action'] == 'delete') {
-            echo "<pre>"; var_dump($query); echo "</pre>";
-            echo "<pre>"; var_dump($post); echo "</pre>"; die();
             $this->doDelete($post, $query);
         }
     }
