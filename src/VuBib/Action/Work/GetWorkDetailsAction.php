@@ -364,7 +364,7 @@ class GetWorkDetailsAction
         echo json_encode($output);
         exit;
     }
-    
+
     /**
      * Add a new publisher and send back newly added publisher details
      *
@@ -376,7 +376,7 @@ class GetWorkDetailsAction
     {
         $rows = [];
         
-        $newPub_Name = $post['pubName'];        
+        $newPub_Name = $post['pubName'];
         $table = new \VuBib\Db\Table\Publisher($this->adapter);
         $newPub_id = $table->insertPublisherAndReturnId($newPub_Name);
         $row['pub_id'] = $newPub_id;
@@ -388,7 +388,7 @@ class GetWorkDetailsAction
                $newPubLoc_id = $table->addPublisherLocationAndReturnId(
                    $newPub_id, $newPub_Loc
                );
-            
+               
                $row['pubLoc_id'] = $newPubLoc_id;
                $row['pub_loc'] = $newPub_Loc;
         }
