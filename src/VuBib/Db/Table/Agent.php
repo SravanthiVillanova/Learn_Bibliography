@@ -107,7 +107,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
             'organization_name' => $orgname,
             'email' => $mail,
             ]
-        );    
+        );
         $id = $this->getLastInsertValue();
         return $id;
     }

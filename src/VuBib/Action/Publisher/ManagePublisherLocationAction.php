@@ -182,7 +182,7 @@ class ManagePublisherLocationAction
     public function getPaginator($query, $post)
     {
         //add location based on action query parameter
-        if (!empty($post['action'])) {        
+        if (!empty($post['action'])) {
             //add delete merge publisher locations
             $this->doAction($post, $query);
            

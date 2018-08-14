@@ -31,7 +31,7 @@
 		"zendframework/zend-form": "^2.9"
     },
     "require-dev": {
-		"friendsofphp/php-cs-fixer": "^1.12",
+		"friendsofphp/php-cs-fixer": "^2.0",
 		"phploc/phploc": "2.0.6",
 		"phpmd/phpmd": "2.4.2",
         "phpunit/phpunit": "^4.8",
