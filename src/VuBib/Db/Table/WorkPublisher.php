@@ -153,7 +153,8 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
                 'publish_month' => 0,
                 'publish_year' => (empty($pub_yr[$i])) ? null : $pub_yr[$i],
                 'publish_month_end' => null,
-                'publish_year_end' => (empty($pub_yrEnd[$i])) ? null : $pub_yrEnd[$i],
+                'publish_year_end' => 
+                   (empty($pub_yrEnd[$i])) ? null : $pub_yrEnd[$i],
                 ]
             );
         }
@@ -170,8 +171,16 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
     {
         $callback = function ($select) use ($wk_id) {
             $select->columns(['*']);
-            $select->join('publisher', 'work_publisher.publisher_id = publisher.id', array('name'), 'left');
-            $select->join('publisher_location', 'work_publisher.location_id = publisher_location.id', array('location'), 'left');
+            $select->join(
+                'publisher', 
+                'work_publisher.publisher_id = publisher.id', 
+                array('name'), 'left'
+            );
+            $select->join(
+                'publisher_location', 
+                'work_publisher.location_id = publisher_location.id', 
+                array('location'), 'left'
+            );
             $select->where(['work_id' => $wk_id]);
         };
         $rows = $this->select($callback)->toArray();
@@ -238,7 +247,8 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
      */
     public function movePublisher($pub_src_id, $pub_dest_id, $src_loc_id)
     {
-        //update workpub set pubid=destpubid where pubid=srcpubid and locid = $source_locid
+        //update workpub set pubid=destpubid 
+        //where pubid=srcpubid and locid = $source_locid
         $this->update(
             [
                 'publisher_id' => $pub_dest_id,
@@ -257,9 +267,12 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function mergePublisher($pub_src_id, $pub_dest_id, $src_loc_id, $dest_loc_id)
-    {
-        //update workpub set pubid=destpubid and locid=mrgpublocid where pubid=srcpubid and locid=$source_locid
+    public function mergePublisher($pub_src_id, $pub_dest_id, 
+        $src_loc_id, $dest_loc_id
+    ) {
+    
+        //update workpub set pubid=destpubid and locid=mrgpublocid 
+        //where pubid=srcpubid and locid=$source_locid
         $this->update(
             [
                 'publisher_id' => $pub_dest_id,

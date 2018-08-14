@@ -197,7 +197,7 @@ class AttributeManageOptionsAction
                         $table = new \VuBib\Db\Table\Work_WorkAttribute(
                             $this->adapter
                         );
-                        $table->updateWork_WorkAttributeValue(
+                        $table->updateWorkAndWorkAttributeValue(
                             $post['workattribute_id'], $post['option_id'][$i], 
                             $rows[$j]['id']
                         );
@@ -241,7 +241,7 @@ class AttributeManageOptionsAction
                     $table = new \VuBib\Db\Table\Work_WorkAttribute(
                         $this->adapter
                     );
-                    $table->updateWork_WorkAttributeValue(
+                    $table->updateWorkAndWorkAttributeValue(
                         $post['mrg_attr_id'], 
                         $post['dest_opt_hidden'], $src_workattropt_Id
                     );

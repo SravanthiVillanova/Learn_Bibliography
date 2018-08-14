@@ -143,7 +143,8 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         $callback = function ($select) use ($parent) {
             $select->columns(['*']);
             $select->where->equalTo('parent_id', $parent);
-            //$select->order(new Expression('case when sort_order is null then 1 else 0 end, sort_order'),'text_fr');
+            //$select->order(new Expression('case when sort_order is null 
+            //then 1 else 0 end, sort_order'),'text_fr');
             $select->order('sort_order');
             $select->order('text_fr');
         };
@@ -258,7 +259,8 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
     /**
      * Get the hierarchial parent chain record for a folder.
      *
-     * @param Number $id id of the folder
+     * @param Number  $id      id of the folder
+     * @param Boolean $reverse order of parent chain of the folder
      *
      * @return Array $parentList parent hierarchy of a folder
      */
@@ -284,8 +286,8 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         }
 
         return $parentList;
-    }    
-
+    }
+    
     /**
      * Insert folder record.
      *
@@ -300,8 +302,10 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function insertRecords($parent_id, $text_en, $text_fr, $text_de, $text_nl, $text_es, $text_it, $sort_order)
-    {
+    public function insertRecords($parent_id, $text_en, $text_fr, $text_de, 
+        $text_nl, $text_es, $text_it, $sort_order
+    ) {
+    
         $this->insert(
             [
                 'parent_id' => $parent_id,
@@ -330,8 +334,10 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function updateRecord($id, $text_en, $text_fr, $text_de, $text_nl, $text_es, $text_it, $sort_order)
-    {
+    public function updateRecord($id, $text_en, $text_fr, $text_de, 
+        $text_nl, $text_es, $text_it, $sort_order
+    ) {
+    
         $this->update(
             [
                 'text_en' => $text_en,

@@ -148,8 +148,15 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
         $rows = [];
         $callback = function ($select) use ($wk_id) {
             $select->columns(['*']);
-            $select->join('agenttype', 'work_agent.agenttype_id = agenttype.id', array('type'), 'left');
-            $select->join('agent', 'work_agent.agent_id = agent.id', array('fname', 'lname', 'alternate_name', 'organization_name'), 'left');
+            $select->join(
+                'agenttype', 'work_agent.agenttype_id = agenttype.id', 
+                array('type'), 'left'
+            );
+            $select->join(
+                'agent', 'work_agent.agent_id = agent.id', 
+                array('fname', 'lname', 'alternate_name', 'organization_name'), 
+                'left'
+            );
             $select->where(['work_id' => $wk_id]);
         };
 

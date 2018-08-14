@@ -74,7 +74,10 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
             'publisher', 'publisher_location.publisher_id = publisher.id',
             array('name'), 'inner'
         );
-        $select->where->expression('LOWER(location) LIKE ?', mb_strtolower($escaper->escapeHtml($location)).'%');
+        $select->where->expression(
+            'LOWER(location) LIKE ?', 
+            mb_strtolower($escaper->escapeHtml($location)).'%'
+        );
         //$select->where->like('location', $location.'%');
         //$select->where(['location' => $location]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
@@ -148,7 +151,8 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
     /**
      * Insert publisher record.
      *
-     * @param String $name publisher name
+     * @param Number $id  publisher id
+     * @param String $loc publisher location
      *
      * @return int $id last inserted publisher location id
      */
@@ -159,7 +163,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
             'publisher_id' => $id,
             'location' => $loc,
             ]
-        );    
+        );
         $id = $this->getLastInsertValue();
         return $id;
     }
@@ -167,8 +171,8 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
     /**
      * Update publisher location record.
      *
-     * @param Number $id   publisher id
-     * @param String $name publisher name
+     * @param Number $loc_id   id of publisher location
+     * @param String $location publisher location
      *
      * @return empty
      */
@@ -257,7 +261,8 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
      */
     public function movePublisher($pub_src_id, $pub_dest_id, $src_loc_id)
     {
-        //update publoc set pubid = destpubid where pubid=srcpubid and id=$source_locid
+        //update publoc set pubid = destpubid 
+        //where pubid=srcpubid and id=$source_locid
         $this->update(
             [
                 'publisher_id' => $pub_dest_id,
@@ -269,7 +274,8 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
     /**
      * Merge publisher location
      *
-     * @param Number $src_loc_id id of source publisher location
+     * @param Number $src_pub_id id of source publisher id
+     * @param Number $src_loc_id id of source publisher location id
      *
      * @return empty
      */
@@ -281,7 +287,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
     /**
      * Find publisher location by id
      *
-     * @param Number $id publisher location id
+     * @param Number $loc_id publisher location id
      *
      * @return Array $row publisher location record
      */

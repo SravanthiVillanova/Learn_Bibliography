@@ -68,7 +68,10 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordByOption($opt_id, $subattr_id)
     {
-        $rowset = $this->select(array('subattribute_id' => $subattr_id, 'option_id' => $opt_id));
+        $rowset = $this->select(
+            array('subattribute_id' => $subattr_id, 
+            'option_id' => $opt_id)
+        );
         $row = $rowset->current();
         
         return $row;
@@ -77,8 +80,10 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
     /**
      * Add record
      *
-     * @param string $field work attribute name
-     * @param string $type  work attribute type
+     * @param string $wkat_id     work attribute id
+     * @param string $opt_id      work attribute option id
+     * @param string $subattr_id  sub attribute id
+     * @param string $subattr_val value of sub atrribute
      *
      * @return id newly inserted subattribute id
      */
@@ -97,8 +102,10 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
     /**
      * Update record
      *
-     * @param string $field work attribute name
-     * @param string $type  work attribute type
+     * @param string $wkat_id     work attribute id
+     * @param string $opt_id      work attribute option id
+     * @param string $subattr_id  sub attribute id
+     * @param string $subattr_val value of sub atrribute
      *
      * @return id newly inserted subattribute id
      */
@@ -108,15 +115,16 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
             [
             'subattr_value' => $subattr_val,
             ],
-            ['workattribute_id' => $wkat_id,'option_id' => $opt_id, 'subattribute_id' => $subattr_id]
+            ['workattribute_id' => $wkat_id,'option_id' => $opt_id, 
+             'subattribute_id' => $subattr_id]
         );
     }
     
     /**
      * Delete attribute option
      *
-     * @param Integer $wkat_id workattribute id
-     * @param Integer $id      workattribute option id
+     * @param string $wkat_id work attribute id
+     * @param string $opt_id  work attribute option id
      *
      * @return empty
      */

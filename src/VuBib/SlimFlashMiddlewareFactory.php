@@ -44,7 +44,8 @@ class SlimFlashMiddlewareFactory
     /**
      * Start session
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a 
+         container that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */

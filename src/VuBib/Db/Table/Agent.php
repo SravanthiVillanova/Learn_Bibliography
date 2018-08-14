@@ -50,7 +50,7 @@ use Zend\Db\Sql\Expression;
  */
 class Agent extends \Zend\Db\TableGateway\TableGateway
 {
-    private $escaper;
+    private $_escaper;
     
     /**
      * Agent constructor.
@@ -62,13 +62,14 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         parent::__construct('agent', $adapter);
     }
 
-    /**
+    /** 
      * Insert agent record.
      *
      * @param String $fname   first name of agent
      * @param String $lname   last name of agent
      * @param String $altname alternate name of agent
      * @param String $orgname organization name of agent
+     * @param String $mail    email of agent
      *
      * @return empty
      */
@@ -85,13 +86,14 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
         );
     }
 
-    /**
+    /** 
      * Insert agent record.
      *
      * @param String $fname   first name of agent
      * @param String $lname   last name of agent
      * @param String $altname alternate name of agent
      * @param String $orgname organization name of agent
+     * @param String $mail    email of agent
      *
      * @return int   $id id of newly inserted agent record
      */
@@ -118,6 +120,7 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
      * @param String $lname   last name of agent
      * @param String $altname alternate name of agent
      * @param String $orgname organization name of agent
+     * @param String $mail    email of agent
      *
      * @return empty
      */
@@ -217,13 +220,25 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         if ($type == 'fname') {
-            $select->where->like(new Expression('LOWER(fname)'), mb_strtolower($name).'%');
+            $select->where->like(
+                new Expression('LOWER(fname)'), 
+                mb_strtolower($name).'%'
+            );
         } elseif ($type == 'lname') {
-            $select->where->like(new Expression('LOWER(lname)'), mb_strtolower($name).'%');
+            $select->where->like(
+                new Expression('LOWER(lname)'), 
+                mb_strtolower($name).'%'
+            );
         } elseif ($type == 'altname') {
-            $select->where->like(new Expression('LOWER(alternate_name)'), mb_strtolower($name).'%');
+            $select->where->like(
+                new Expression('LOWER(alternate_name)'), 
+                mb_strtolower($name).'%'
+            );
         } elseif ($type == 'orgname') {
-            $select->where->like(new Expression('LOWER(organization_name)'), mb_strtolower($name).'%');
+            $select->where->like(
+                new Expression('LOWER(organization_name)'), 
+                mb_strtolower($name).'%'
+            );
         }
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
@@ -231,17 +246,21 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
     }
 
     /**
-     * Agent records with first name like given string.
+     * Agent records with last name like given string.
      *
-     * @param string $fname part of first name of agent
+     * @param string $name part of last name of agent
      *
      * @return Array $rows agent records as array
      */
     public function getLikeRecords($name)
     {
         $callback = function ($select) use ($name) {
-            $select->where->like(new Expression('LOWER(lname)'), mb_strtolower($name).'%');
-            //$select->where->expression('LOWER(lname) LIKE ?', '%'.mb_strtolower($this->escaper->escapeHtml($name)).'%');
+            $select->where->like(
+                new Expression('LOWER(lname)'), 
+                mb_strtolower($name).'%'
+            );
+            //$select->where->expression('LOWER(lname) LIKE ?', 
+               //'%'.mb_strtolower($this->_escaper->escapeHtml($name)).'%');
         };
         $rows = $this->select($callback)->toArray();
 

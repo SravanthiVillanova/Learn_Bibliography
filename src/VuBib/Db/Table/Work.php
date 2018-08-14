@@ -170,13 +170,15 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      * Get works by work title letter
      *
      * @param string $letter starting letter of work title
+     * @param string $order  order of records asc or desc
      *
      * @return Paginator $paginatorAdapter work records
      */
     public function displayRecordsByName($letter, $order)
     {
         $select = $this->sql->select();
-        $select->where->like('title', $letter.'%')->or->like('title', strtolower($letter).'%');
+        $select->where->like('title', $letter.'%')->or
+            ->like('title', strtolower($letter).'%');
         if (isset($order) && $order !== '') {
             $select->order($order);
         }
@@ -190,13 +192,15 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      * Get review works by work title letter
      *
      * @param string $letter starting letter of work title
+     * @param string $order  order of records asc or desc
      *
      * @return Paginator $paginatorAdapter work records
      */
     public function displayReviewRecordsByLetter($letter, $order)
     {
         $select = $this->sql->select();
-        $select->where->like('title', $letter.'%')->or->like('title', strtolower($letter).'%');
+        $select->where->like('title', $letter.'%')->or
+            ->like('title', strtolower($letter).'%');
         $select->where->equalTo('status', 0);
         if (isset($order) && $order !== '') {
             $select->order($order);
@@ -211,6 +215,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      * Get classify works by work title letter
      *
      * @param string $letter starting letter of work title
+     * @param string $order  order of records asc or desc
      *
      * @return Paginator $paginatorAdapter work records
      */
@@ -221,7 +226,8 @@ class Work extends \Zend\Db\TableGateway\TableGateway
 
         $select = $this->sql->select();
         $select->where->notIn('id', $subselect);
-        $select->where->like('title', $letter.'%')->or->like('title', strtolower($letter).'%');
+        $select->where->like('title', $letter.'%')->or
+            ->like('title', strtolower($letter).'%');
         if (isset($order) && $order !== '') {
             $select->order($order);
         }
@@ -233,6 +239,8 @@ class Work extends \Zend\Db\TableGateway\TableGateway
 
     /**
      * Get works to be reviewed
+     *
+     * @param string $order order of records asc or desc
      *
      * @return Paginator $paginatorAdapter work records
      */
@@ -251,6 +259,8 @@ class Work extends \Zend\Db\TableGateway\TableGateway
 
     /**
      * Get works to be classified
+     *
+     * @param string $order order of records asc or desc
      *
      * @return Paginator $paginatorAdapter work records
      */
@@ -306,6 +316,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     /**
      * Insert work record.
      *
+     * @param Integer $pr_workid      parent work id
      * @param Integer $type_id        work type id
      * @param String  $title          work title
      * @param String  $subtitle       work sub title
@@ -318,8 +329,11 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function insertRecords($pr_workid, $type_id, $title, $subtitle, $paralleltitle, $description, $create_date, $create_user_id, $status, $pub_yrFrom)
-    {
+    public function insertRecords($pr_workid, $type_id, $title, $subtitle, 
+        $paralleltitle, $description, $create_date, $create_user_id, 
+        $status, $pub_yrFrom
+    ) {
+    
         if ($status === '00') {
             $status = null;
         }
@@ -360,6 +374,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     /**
      * Update work record.
      *
+     * @param Integer $pr_workid     parent work id
      * @param Integer $id            work id
      * @param Integer $type_id       work type id
      * @param String  $title         work title
@@ -373,8 +388,10 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function updateRecords($pr_workid, $id, $type_id, $title, $subtitle, $paralleltitle, $desc, $modify_date, $modify_user, $status, $pub_yrFrom)
-    {
+    public function updateRecords($pr_workid, $id, $type_id, $title, $subtitle, 
+        $paralleltitle, $desc, $modify_date, $modify_user, $status, $pub_yrFrom
+    ) {
+    
         if ($status === '00') {
             $status = null;
         }
@@ -441,7 +458,10 @@ class Work extends \Zend\Db\TableGateway\TableGateway
                 ['type']
             );
             //$select->where->like('title', $title.'%');
-            $select->where->expression('LOWER(title) LIKE ?', mb_strtolower($title).'%');
+            $select->where->expression(
+                'LOWER(title) LIKE ?', 
+                mb_strtolower($title).'%'
+            );
         };
             $rows = $this->select($callback)->toArray();
 

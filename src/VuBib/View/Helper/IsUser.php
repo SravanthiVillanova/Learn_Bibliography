@@ -46,14 +46,14 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
      *
      * @var $session
      */
-    private $session;
+    private $_session;
 
     /**
      * Zend\Db\Adapter\Adapter
      *
      * @var $adapter
      */
-    private $adapter;
+    private $_adapter;
 
     /**
      * ManageAgentAction constructor.
@@ -63,8 +63,8 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
      */
     public function __construct(\Zend\Db\Adapter\Adapter $adapter, $session)
     {
-        $this->adapter = $adapter;
-        $this->session = $session;
+        $this->_adapter = $adapter;
+        $this->_session = $session;
     }
 
     /**
@@ -75,11 +75,11 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
     public function __invoke()
     {
         //test_cnt(ContainerInterface $container);
-        //$table = new \VuBib\Db\Table\User($this->adapter);
+        //$table = new \VuBib\Db\Table\User($this->_adapter);
         //$user = $table->isAdmin();
-        //var_dump($this->session->modules_access);
-        //return 'hello, ' . $this->session->id . 'has access to';
-         //. implode($this->session->modules_access)
+        //var_dump($this->_session->modules_access);
+        //return 'hello, ' . $this->_session->id . 'has access to';
+         //. implode($this->_session->modules_access)
         return $this;
          //return $this->session->modules_access;
     }
@@ -87,11 +87,11 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
     /**
      * Check if user has access to a module
      *
-     * @return bool $this->session->modules_access
+     * @return bool $this->_session->modules_access
      */
     public function hasPermission()
     {
-        return $this->session->modules_access;
+        return $this->_session->modules_access;
     }
 
     /**
@@ -101,7 +101,7 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
      */
     public function isLogged()
     {
-        if ($this->session->id != null) {
+        if ($this->_session->id != null) {
             return true;
         }
 
@@ -115,8 +115,8 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
      */
     public function getUser()
     {
-        if ($this->session->id != null) {
-            return $this->session->id;
+        if ($this->_session->id != null) {
+            return $this->_session->id;
         }
 
         return null;
@@ -132,7 +132,7 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
     public function isInsSet($str)
     {
         //fetch instructions
-        $table = new \VuBib\Db\Table\Page_Instructions($this->adapter);
+        $table = new \VuBib\Db\Table\Page_Instructions($this->_adapter);
         $ins = $table->findRecordByPageName($str);
 
         return $ins;
@@ -147,8 +147,8 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
     {
         // $usr_typ = '';
 
-        $table = new \VuBib\Db\Table\User($this->adapter);
-        $usr = $table->findRecordById($this->session->id);
+        $table = new \VuBib\Db\Table\User($this->_adapter);
+        $usr = $table->findRecordById($this->_session->id);
 
         if (isset($usr['level'])) {
             if ($usr['level'] == 1) {
@@ -170,7 +170,7 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
      */
     public function getRvwCount()
     {
-        $table = new \VuBib\Db\Table\Work($this->adapter);
+        $table = new \VuBib\Db\Table\Work($this->_adapter);
         $cnt = $table->getPendingReviewWorksCount();
 
         return $cnt;

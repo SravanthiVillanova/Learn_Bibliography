@@ -84,8 +84,10 @@ class User extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function insertRecords($newuser_name, $new_username, $new_user_pwd, $access_level)
-    {
+    public function insertRecords($newuser_name, $new_username, 
+        $new_user_pwd, $access_level
+    ) {
+    
         $this->insert(
             [
             'name' => $newuser_name,

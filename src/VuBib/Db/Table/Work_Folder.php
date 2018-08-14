@@ -258,15 +258,21 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
      * @return Array $rows array of records
      */
     function getFoldersByWorkId($wk_id)
-    {    
+    {
         $flRows = [];
         $subselect = $this->sql->select();
-        $subselect->join('folder', 'work_folder.folder_id = folder.id', array('*'), 'inner');
+        $subselect->join(
+            'folder', 
+            'work_folder.folder_id = folder.id', 
+            array('*'), 'inner'
+        );
         $subselect->where(['work_id' => $wk_id]);
 
-        $paginatorAdapter = new Paginator(new DbSelect($subselect, $this->adapter));
+        $paginatorAdapter = new Paginator(
+            new DbSelect($subselect, $this->adapter)
+        );
         $cnt = $paginatorAdapter->getTotalItemCount();
-        if($cnt > 0) {
+        if ($cnt > 0) {
                $paginatorAdapter->setDefaultItemCountPerPage($cnt);
 
             foreach ($paginatorAdapter as $row) :

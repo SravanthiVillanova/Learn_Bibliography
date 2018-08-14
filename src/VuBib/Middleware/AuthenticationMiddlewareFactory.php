@@ -46,7 +46,8 @@ class AuthenticationMiddlewareFactory
     /**
      * Invokes authentication middleware
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a 
+          container that exposes methods to read its entries.
      *
      * @return AuthenticationMiddleware
      */
@@ -57,7 +58,8 @@ class AuthenticationMiddlewareFactory
             ? $container->get(TemplateRendererInterface::class)
             : null;
 
-        $basePath = $container->get(\Blast\BaseUrl\BasePathHelper::class)->__invoke();
+        $basePath = $container->get(\Blast\BaseUrl\BasePathHelper::class)
+            ->__invoke();
         $session = $container->get(\Zend\Session\Container::class);
 
         return new AuthenticationMiddleware($router, $template, $basePath, $session);

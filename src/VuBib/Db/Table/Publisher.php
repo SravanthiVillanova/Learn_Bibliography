@@ -88,7 +88,8 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
             [
             'name' => $name,
             ]
-        );        
+        );
+        
         $id = $this->getLastInsertValue();
         return $id;
     }
@@ -104,8 +105,12 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
     {
         //$escaper = new \Zend\Escaper\Escaper('utf-8');
         $select = $this->sql->select();
-        $select->where->like(new Expression('LOWER(name)'), mb_strtolower($name).'%');
-        //$select->where->expression('LOWER(name) LIKE ?', mb_strtolower($escaper->escapeHtml($name)).'%');
+        $select->where->like(
+            new Expression('LOWER(name)'), 
+            mb_strtolower($name).'%'
+        );
+        //$select->where->expression('LOWER(name) LIKE ?', 
+        //mb_strtolower($escaper->escapeHtml($name)).'%');
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -206,7 +211,10 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
     public function getLikeRecords($name)
     {
         $callback = function ($select) use ($name) {
-            $select->where->like(new Expression('LOWER(name)'), mb_strtolower($name).'%');
+            $select->where->like(
+                new Expression('LOWER(name)'), 
+                mb_strtolower($name).'%'
+            );
             //$select->where->like('name', '%'.$name.'%');
         };
         $rows = $this->select($callback)->toArray();

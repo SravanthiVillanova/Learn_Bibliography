@@ -61,8 +61,8 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
     /**
      * Add attribute
      *
-     * @param string $field work attribute name
-     * @param string $type  work attribute type
+     * @param Integer $wkattr_id work attribute id
+     * @param string  $subattr   sub attribute name
      *
      * @return id newly inserted subattribute id
      */
@@ -82,8 +82,9 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
     /**
      * Update record
      *
-     * @param Integer $id    workattribute id
-     * @param string  $field workattribute name
+     * @param Integer $id      sub attribute id
+     * @param Integer $attr_id workattribute id
+     * @param string  $subattr sub attribute name
      *
      * @return empty
      */
@@ -100,7 +101,7 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
     /**
      * Find record using workattribute id
      *
-     * @param Integer $id workattribute id
+     * @param Integer $wkattr_id workattribute id
      *
      * @return Array $row sub atrribute
      */
@@ -115,7 +116,7 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
     /**
      * Find record using workattribute id
      *
-     * @param Integer $id workattribute id
+     * @param Integer $wkattr_id workattribute id
      *
      * @return Array $row sub atrribute
      */
@@ -146,6 +147,7 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
      * Fetch sub attribute records
      *
      * @param Integer $wkat_id workattribute id
+     * @param String  $order   records order asc or desc
      *
      * @return Paginator $paginatorAdapter sub attributes
      */

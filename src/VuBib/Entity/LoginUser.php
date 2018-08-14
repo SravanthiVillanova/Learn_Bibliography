@@ -52,7 +52,7 @@ class LoginUser implements AuthUserInterface
      *
      * @var int
      */
-    private $username;
+    private $_username;
 
     /**
      * Password
@@ -67,7 +67,7 @@ class LoginUser implements AuthUserInterface
      *
      * @var string
      */
-    private $password;
+    private $_password;
 
     /**
      * Zend form submit
@@ -77,7 +77,7 @@ class LoginUser implements AuthUserInterface
      *
      * @var string
      */
-    private $submit;
+    private $_submit;
 
     /**
      * Set username and password
@@ -88,8 +88,8 @@ class LoginUser implements AuthUserInterface
      */
     public function populate($data)
     {
-        $this->username = $data['username'];
-        $this->password = $data['password'];
+        $this->_username = $data['username'];
+        $this->_password = $data['password'];
     }
 
     /**
@@ -109,7 +109,7 @@ class LoginUser implements AuthUserInterface
      */
     public function getUsername()
     {
-        return $this->username;
+        return $this->_username;
     }
 
     /**
@@ -119,6 +119,6 @@ class LoginUser implements AuthUserInterface
      */
     public function getPassword()
     {
-        return $this->password;
+        return $this->_password;
     }
 }

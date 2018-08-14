@@ -69,7 +69,11 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     public function displayRanks($id)
     {
         $select = $this->sql->select();
-        $select->join('workattribute', 'worktype_workattribute.workattribute_id = workattribute.id', array('field'), 'inner');
+        $select->join(
+            'workattribute', 
+            'worktype_workattribute.workattribute_id = workattribute.id', 
+            array('field'), 'inner'
+        );
         $select->where(['worktype_id' => $id]);
         $select->order('rank');
 
@@ -89,7 +93,11 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     public function getWorkAttributeQuery($id)
     {
         $subselect = $this->sql->select();
-        $subselect->join('workattribute', 'worktype_workattribute.workattribute_id = workattribute.id', array('field'), 'inner');
+        $subselect->join(
+            'workattribute', 
+            'worktype_workattribute.workattribute_id = workattribute.id', 
+            array('field'), 'inner'
+        );
         $subselect->where(['worktype_id' => $id]);
         $subselect->order('rank');
 
