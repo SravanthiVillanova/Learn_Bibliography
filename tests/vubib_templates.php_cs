@@ -1,6 +1,6 @@
 <?php
 
-$finder = PhpCsFixer\Finder::create()->in(__DIR__ . '/../themes')
+$finder = PhpCsFixer\Finder::create()->in(__DIR__ . '/../templates')
     ->name('*.phtml');
 
 $rules = [

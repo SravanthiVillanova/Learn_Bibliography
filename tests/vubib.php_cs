@@ -2,7 +2,7 @@
 
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__ . '/../config')
-    ->in(__DIR__ . '/../module')
+    ->in(__DIR__ . '/../src/VuBib')
     ->in(__DIR__ . '/../public');
 
 $rules = [
