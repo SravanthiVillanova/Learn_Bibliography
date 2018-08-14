@@ -6,7 +6,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__ . '/../public');
 
 $rules = [
-    //'align_multiline_comment' => true,
+    'align_multiline_comment' => true,
     'array_syntax' => ['syntax' => 'short'],
     'binary_operator_spaces' => [
         'default' => 'single_space',
@@ -51,7 +51,7 @@ $rules = [
     'no_trailing_whitespace' => true,
     'no_trailing_whitespace_in_comment' => true,
     'no_unneeded_control_parentheses' => true,
-    //'no_unneeded_curly_braces' => true,
+    'no_unneeded_curly_braces' => true,
     'no_unused_imports' => true,
     'no_useless_return' => true,
     'no_whitespace_before_comma_in_array' => true,
