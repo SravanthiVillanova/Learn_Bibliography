@@ -155,17 +155,17 @@ class AttributeManageOptionsAction
                         $table = new \VuBib\Db\Table\Work_WorkAttribute(
                             $this->adapter
                         );
-                    $table->deleteRecordByValue($query['id'], $workattropt_Id);
-                    $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
+                        $table->deleteRecordByValue($query['id'], $workattropt_Id);
+                        $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
                             $this->adapter
                         );
-                    $table->deleteRecordByOptionId(
+                        $table->deleteRecordByOptionId(
                             $query['id'], $workattropt_Id
                         );
-                    $table = new \VuBib\Db\Table\WorkAttribute_Option(
+                        $table = new \VuBib\Db\Table\WorkAttribute_Option(
                             $this->adapter
                         );
-                    $table->deleteOption($query['id'], $workattropt_Id);
+                        $table->deleteOption($query['id'], $workattropt_Id);
                     endforeach;
                 }
             }
@@ -240,25 +240,25 @@ class AttributeManageOptionsAction
                     $table = new \VuBib\Db\Table\Work_WorkAttribute(
                         $this->adapter
                     );
-                $table->updateWorkAndWorkAttributeValue(
+                    $table->updateWorkAndWorkAttributeValue(
                         $post['mrg_attr_id'],
                         $post['dest_opt_hidden'], $src_workattropt_Id
                     );
 
-                //delete option record from attribute_option_subattribute
-                $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
+                    //delete option record from attribute_option_subattribute
+                    $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
                         $this->adapter
                     );
-                $table->deleteRecordByOptionId(
+                    $table->deleteRecordByOptionId(
                         $post['mrg_attr_id'], $src_workattropt_Id
                     );
 
-                //delete src attr opt,where id = $src_wkattropt_Id
-                //and wkatt_id = $post['mrg_attr_id']
-                $table = new \VuBib\Db\Table\WorkAttribute_Option(
+                    //delete src attr opt,where id = $src_wkattropt_Id
+                    //and wkatt_id = $post['mrg_attr_id']
+                    $table = new \VuBib\Db\Table\WorkAttribute_Option(
                         $this->adapter
                     );
-                $table->deleteOption(
+                    $table->deleteOption(
                         $post['mrg_attr_id'], $src_workattropt_Id
                     );
                 endforeach;
@@ -312,8 +312,7 @@ class AttributeManageOptionsAction
                 $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
                 return $table->findRecords(
                     $query['option'], $query['worktype_attr']
-                )
-                ;
+                );
             }
         }
     }

@@ -144,7 +144,7 @@ class ManageUsersAction
             if (null !== $post['user_id']) {
                 foreach ($post['user_id'] as $userId):
                     $table = new \VuBib\Db\Table\User($this->adapter);
-                $table->deleteRecord($userId);
+                    $table->deleteRecord($userId);
                 endforeach;
             }
         }

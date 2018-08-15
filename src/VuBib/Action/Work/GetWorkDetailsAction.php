@@ -99,9 +99,9 @@ class GetWorkDetailsAction
         endforeach;
         foreach ($pub_row as $row) :
             $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-        $wks = $table->findRecordByPublisherId($row['id']);
-        $no_wks = count($wks);
-        $no_of_wks[] = $no_wks;
+            $wks = $table->findRecordByPublisherId($row['id']);
+            $no_wks = count($wks);
+            $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_row[$i]['works'] = $no_of_wks[$i];
@@ -130,9 +130,9 @@ class GetWorkDetailsAction
         }
         foreach ($pub_loc_rows as $row) :
             $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-        $wks = $table->findRecordByLocationId($row['id']);
-        $no_wks = count($wks);
-        $no_of_wks[] = $no_wks;
+            $wks = $table->findRecordByLocationId($row['id']);
+            $no_wks = count($wks);
+            $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_loc_rows[$i]['works'] = $no_of_wks[$i];
@@ -157,9 +157,9 @@ class GetWorkDetailsAction
         $ag_row = $table->getLastNameLikeRecords($name);
         foreach ($ag_row as $row) :
             $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-        $wks = $table->findRecordByAgentId($row['id']);
-        $no_wks = count($wks);
-        $no_of_wks[] = $no_wks;
+            $wks = $table->findRecordByAgentId($row['id']);
+            $no_wks = count($wks);
+            $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $ag_row[$i]['works'] = $no_of_wks[$i];
@@ -480,9 +480,9 @@ class GetWorkDetailsAction
         endforeach;
         foreach ($opt_row as $row) :
             $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-        $wks = $table->findRecordByOptionId($wkat_id, $row['id']);
-        $no_wks = count($wks);
-        $no_of_wks[] = $no_wks;
+            $wks = $table->findRecordByOptionId($wkat_id, $row['id']);
+            $no_wks = count($wks);
+            $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $opt_row[$i]['works'] = $no_of_wks[$i];

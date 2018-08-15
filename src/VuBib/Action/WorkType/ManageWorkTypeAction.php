@@ -129,13 +129,13 @@ class ManageWorkTypeAction
                 if (null !== $post['worktype_id']) {
                     foreach ($post['worktype_id'] as $worktype_Id):
                         $table = new \VuBib\Db\Table\Work($this->adapter);
-                    $table->updateWorkTypeId($worktype_Id);
-                    $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
+                        $table->updateWorkTypeId($worktype_Id);
+                        $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
                             $this->adapter
                         );
-                    $table->deleteRecordByWorkType($worktype_Id);
-                    $table = new \VuBib\Db\Table\WorkType($this->adapter);
-                    $table->deleteRecord($worktype_Id);
+                        $table->deleteRecordByWorkType($worktype_Id);
+                        $table = new \VuBib\Db\Table\WorkType($this->adapter);
+                        $table->deleteRecord($worktype_Id);
                     endforeach;
                 }
             }
@@ -307,9 +307,9 @@ class ManageWorkTypeAction
         ) {
             //if ($post['action'] == 'sortable' && $post['submitt'] == 'Save') {
             return new HtmlResponse(
-                    $this->template->render(
-                        'vubib::worktype::manage_worktypeattribute',
-                        [
+                $this->template->render(
+                    'vubib::worktype::manage_worktypeattribute',
+                    [
                         'rows' => $paginator,
                         'previous' => $pgs['prev'],
                         'next' => $pgs['nxt'],
@@ -318,9 +318,9 @@ class ManageWorkTypeAction
                         'adapter' => $this->adapter,
                         'searchParams' => implode('&', $searchParams),
                         ]
-                    )
-                );
-        //}
+                )
+            );
+            //}
         } else {
             return new HtmlResponse(
                 $this->template->render(

@@ -95,29 +95,16 @@ class LoginPageAction
     /**
      * LoginPageAction constructor.
      *
-     * @param Router\RouterInterface                  $router
-     * for routes
-     * @param Template\TemplateRendererInterface|null $template
-     *                                                                           for
-     *                                                                           templates
-     * @param UserAuthenticationInterface             $userAuthenticationService
+     * @param Router\RouterInterface                  $router                    for routes
+     * @param Template\TemplateRendererInterface|null $template                  for templates
+     * @param UserAuthenticationInterface             $userAuthenticationService 
      *                                                                           to
      *                                                                           authenticate
      *                                                                           username,
      *                                                                           password
-     * @param string                                  $defaultRedirectUri
-     *                                                                           to
-     *                                                                           url
-     *                                                                           to
-     *                                                                           redirect
-     *                                                                           to
-     * @param Adapter                                 $adapter
-     *                                                                           for
-     *                                                                           db
-     *                                                                           connection
-     * @param Session                                 $session
-     *                                                                           session
-     *                                                                           variable
+     * @param string                                  $defaultRedirectUri        to url redirect
+     * @param Adapter                                 $adapter                   for db connection
+     * @param Session                                 $session                   session variable
      */
     public function __construct(
         Router\RouterInterface $router,

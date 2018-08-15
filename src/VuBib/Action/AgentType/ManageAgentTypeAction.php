@@ -119,12 +119,12 @@ class ManageAgentTypeAction
                                     $table = new \VuBib\Db\Table\WorkAgent(
                                         $this->adapter
                                     );
-                    $table->deleteRecordByAgentTypeId($agentTypeId);
+                        $table->deleteRecordByAgentTypeId($agentTypeId);
 
-                    $table = new \VuBib\Db\Table\AgentType(
-                                        $this->adapter
-                                    );
-                    $table->deleteRecord($agentTypeId);
+                        $table = new \VuBib\Db\Table\AgentType(
+                            $this->adapter
+                        );
+                        $table->deleteRecord($agentTypeId);
                     endforeach;
                 }
             }

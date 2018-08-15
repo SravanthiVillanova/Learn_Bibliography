@@ -152,12 +152,12 @@ class ManageSubAttributesAction
                         $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
                             $this->adapter
                         );
-                    $table->deleteRecordBySubAttributeId($subattr_Id);
+                        $table->deleteRecordBySubAttributeId($subattr_Id);
 
-                    $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
+                        $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
                             $this->adapter
                         );
-                    $table->deleteRecordById($subattr_Id);
+                        $table->deleteRecordById($subattr_Id);
                     endforeach;
                 }
             }
@@ -202,8 +202,7 @@ class ManageSubAttributesAction
                 $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
                 return $table->findRecords(
                     $query['option'], $query['worktype_attr']
-                )
-                ;
+                );
             }
         }
     }

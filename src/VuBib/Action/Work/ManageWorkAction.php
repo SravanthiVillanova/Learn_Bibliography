@@ -213,19 +213,25 @@ class ManageWorkAction
                 //insert Agent(work_agent)
                 if ($post['agent_id'][0] != null) {
                     $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-                    $table->insertRecords($wk_id, $post['agent_id'], $post['agent_type']); //this
+                    $table->insertRecords(
+                        $wk_id, 
+                        $post['agent_id'], $post['agent_type']
+                    );
                 }
 
                 //map work to citation(work_workattribute)
                 $wkat_id = [];
                 foreach ($post as $key => $value) {
-                    if ((preg_match("/^[a-z]+\,\d+[a-z]+\,\d+$/", $key)) && ($value != null)) { //this
+                    if ((preg_match("/^[a-z]+\,\d+[a-z]+\,\d+$/", $key))
+                        && ($value != null)
+                    ) {
                         $keys = preg_split("/[a-z]+\,/", $key);
                         $wkat_id[] = $keys[1];
                         $wkopt_id[] = $keys[2];
                     }
                     if ((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != null)) {
-                        $wkat_id[] = preg_replace("/^[a-z]+\,/", '', $key) . '<br />';
+                        $wkat_id[] = preg_replace("/^[a-z]+\,/", '', $key)
+                           . '<br />';
                         $wkopt_id[] = $value;
                     }
                 }
@@ -345,7 +351,8 @@ class ManageWorkAction
                         }
                     }
                     if ((preg_match("/^[a-z]+\,\d+$/", $key)) && ($value != null)) {
-                        $wkat_id[] = preg_replace("/^[a-z]+\,/", '', $key) . '<br />';
+                        $wkat_id[] = preg_replace("/^[a-z]+\,/", '', $key)
+                           . '<br />';
                         $wkopt_id[] = $value;
                     }
                 }
@@ -389,17 +396,17 @@ class ManageWorkAction
                 if (null !== $post['work_id']) {
                     foreach ($post['work_id'] as $workId):
                         $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-                    $table->deleteRecordByWorkId($workId);
-                    $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
-                    $table->deleteRecordByWorkId($workId);
-                    $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-                    $table->deleteRecordByWorkId($workId);
-                    $table = new \VuBib\Db\Table\Work_WorkAttribute(
+                        $table->deleteRecordByWorkId($workId);
+                        $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
+                        $table->deleteRecordByWorkId($workId);
+                        $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
+                        $table->deleteRecordByWorkId($workId);
+                        $table = new \VuBib\Db\Table\Work_WorkAttribute(
                             $this->adapter
                         );
-                    $table->deleteRecordByWorkId($workId);
-                    $table = new \VuBib\Db\Table\Work($this->adapter);
-                    $table->deleteRecordByWorkId($workId);
+                        $table->deleteRecordByWorkId($workId);
+                        $table = new \VuBib\Db\Table\Work($this->adapter);
+                        $table->deleteRecordByWorkId($workId);
                     endforeach;
                 }
             }
@@ -518,7 +525,8 @@ class ManageWorkAction
                    '&sort_ord=' . urlencode($query['sort_ord']);
         }
         if (!empty($query['find_worktitle'])) {
-            $searchParams[] = 'find_worktitle=' . urlencode($query['find_worktitle']);
+            $searchParams[] = 'find_worktitle=' . 
+                 urlencode($query['find_worktitle']);
         }
         if (!empty($query['letter']) && $query['action'] == 'alphasearch') {
             $searchParams[] = 'letter=' . urlencode($query['letter']) .

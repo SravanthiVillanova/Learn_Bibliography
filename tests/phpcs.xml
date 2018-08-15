@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="VuBib Coding Standards" namespace="VuBib\PHPCS">
   <description>Coding standards for VuBib.</description>
-  <file>../src</file>
+  <file>../src/VuBib</file>
   <!--<exclude-pattern>../config/*</exclude-pattern>
   <exclude-pattern>module/[^/]+/tests/*</exclude-pattern>-->
   <arg name="extensions" value="php"/>

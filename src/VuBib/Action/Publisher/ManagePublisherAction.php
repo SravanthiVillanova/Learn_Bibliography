@@ -136,13 +136,13 @@ class ManagePublisherAction
         if (null !== $post['pub_id']) {
             foreach ($post['pub_id'] as $pubId):
                       $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-            $table->deleteRecordByPub($pubId);
+                $table->deleteRecordByPub($pubId);
 
-            $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
-            $table->deletePublisherRecord($pubId, $locs);
+                $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
+                $table->deletePublisherRecord($pubId, $locs);
 
-            $table = new \VuBib\Db\Table\Publisher($this->adapter);
-            $table->deleteRecord($pubId);
+                $table = new \VuBib\Db\Table\Publisher($this->adapter);
+                $table->deleteRecord($pubId);
             endforeach;
         }
     }

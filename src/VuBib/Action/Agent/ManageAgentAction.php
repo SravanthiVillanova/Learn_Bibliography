@@ -201,9 +201,9 @@ class ManageAgentAction
                 if (null !== $post['agent_id']) {
                     foreach ($post['agent_id'] as $agentId):
                         $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-                    $table->deleteRecordByAgentId($agentId);
-                    $table = new \VuBib\Db\Table\Agent($this->adapter);
-                    $table->deleteRecord($agentId);
+                        $table->deleteRecordByAgentId($agentId);
+                        $table = new \VuBib\Db\Table\Agent($this->adapter);
+                        $table->deleteRecord($agentId);
                     endforeach;
                 }
             }

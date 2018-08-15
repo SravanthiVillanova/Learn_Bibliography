@@ -135,22 +135,22 @@ class AttributesWorkTypeAction
                         $table = new \VuBib\Db\Table\Work_WorkAttribute(
                             $this->adapter
                         );
-                    $table->deleteWorkAttributeFromWork($workattr_Id);
-                    //yes
-                    $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
+                        $table->deleteWorkAttributeFromWork($workattr_Id);
+                        //yes
+                        $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
                             $this->adapter
                         );
-                    $table->deleteAttributeFromAllWorkTypes($workattr_Id);
-                    //yes
-                    $table = new \VuBib\Db\Table\WorkAttribute_Option(
+                        $table->deleteAttributeFromAllWorkTypes($workattr_Id);
+                        //yes
+                        $table = new \VuBib\Db\Table\WorkAttribute_Option(
                             $this->adapter
                         );
-                    $table->deleteWorkAttributeOptions($workattr_Id);
-                    //no
-                    $table = new \VuBib\Db\Table\WorkAttribute(
+                        $table->deleteWorkAttributeOptions($workattr_Id);
+                        //no
+                        $table = new \VuBib\Db\Table\WorkAttribute(
                             $this->adapter
                         );
-                    $table->deleteRecord($workattr_Id);
+                        $table->deleteRecord($workattr_Id);
                     endforeach;
                 }
             }
