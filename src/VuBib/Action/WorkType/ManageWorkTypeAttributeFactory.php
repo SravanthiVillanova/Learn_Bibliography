@@ -28,9 +28,9 @@
 namespace VuBib\Action\WorkType;
 
 use Interop\Container\ContainerInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for ManageWorkTypeAttributeFactory.
@@ -47,8 +47,8 @@ class ManageWorkTypeAttributeFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container 
-              that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container
+     * that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -61,7 +61,7 @@ class ManageWorkTypeAttributeFactory
         $adapter = $container->get(Adapter::class);
         //return new ManageWorkTypeAttributeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::manage_worktypeattribute', $router, 
+            'vubib::worktype::manage_worktypeattribute', $router,
             $template, $adapter
         );
     }

@@ -28,9 +28,9 @@
 namespace VuBib\Action\WorkType;
 
 use Interop\Container\ContainerInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for EditWorkTypeFactory.
@@ -47,8 +47,8 @@ class EditWorkTypeFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container 
-              that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container
+     * that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -61,7 +61,7 @@ class EditWorkTypeFactory
         $adapter = $container->get(Adapter::class);
         //return new EditWorkTypeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::edit_worktype', $router, 
+            'vubib::worktype::edit_worktype', $router,
             $template, $adapter
         );
     }

@@ -30,9 +30,8 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
+use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 
 /**
@@ -149,12 +148,12 @@ class WorkAgent extends \Zend\Db\TableGateway\TableGateway
         $callback = function ($select) use ($wk_id) {
             $select->columns(['*']);
             $select->join(
-                'agenttype', 'work_agent.agenttype_id = agenttype.id', 
-                array('type'), 'left'
+                'agenttype', 'work_agent.agenttype_id = agenttype.id',
+                ['type'], 'left'
             );
             $select->join(
-                'agent', 'work_agent.agent_id = agent.id', 
-                array('fname', 'lname', 'alternate_name', 'organization_name'), 
+                'agent', 'work_agent.agent_id = agent.id',
+                ['fname', 'lname', 'alternate_name', 'organization_name'],
                 'left'
             );
             $select->where(['work_id' => $wk_id]);

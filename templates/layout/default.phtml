@@ -15,17 +15,17 @@
 <div class="banner">
   <h1>Administration</h1><br />
   <?php
-	// Set up breadcrumbs:
+    // Set up breadcrumbs:
     if (isset($this->layout()->breadcrumbs)) {
-		$this->layout()->breadcrumbs = '<a href="' .  $this->url('home') . '" style="float:left;color:white;">Home > </a>'   
-		                              . $this->layout()->breadcrumbs;
-		echo $this->layout()->breadcrumbs;
-	}
-	else
-	{
-		$this->layout()->breadcrumbs = '<a href="' .  $this->url('home') . '" style="float:left;color:white;">Home > </a>';
-		echo $this->layout()->breadcrumbs;
-	}
+        $this->layout()->breadcrumbs = '<a href="' . $this->url('home') . '" style="float:left;color:white;">Home > </a>'
+                                      . $this->layout()->breadcrumbs;
+        echo $this->layout()->breadcrumbs;
+    }
+    else
+    {
+        $this->layout()->breadcrumbs = '<a href="' . $this->url('home') . '" style="float:left;color:white;">Home > </a>';
+        echo $this->layout()->breadcrumbs;
+    }
   ?>
   <a href="<?=$this->url('login')?><?='?logout=y'?>" style="float:right;color:white;">Logout</a>
     <!--<a href="#" style="float:right;color:yellow;">&nbspInstructions&nbsp</a>-->
@@ -47,9 +47,9 @@
         <div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right pull-left">
 			<?php 
-				$modules = $this->isUser()->hasPermission();
-				if (in_array("Work", $modules)) { 
-			?>
+                $modules = $this->isUser()->hasPermission();
+                if (in_array("Work", $modules)) {
+            ?>
             <li class="dropdown">
 				<a href="#" class="dropdown-toggle " data-toggle="dropdown">Work<b class="caret"></b></a>			  
 				<ul class="dropdown-menu" style="margin: 0 -3px;">
@@ -153,41 +153,41 @@
 
 <div class="app-content" width="100%">
     <?php 
-		echo $this->content;
-	?>
+        echo $this->content;
+    ?>
 </div>
  <?php
-	$url_components = parse_url($this->serverUrl());
-	$url_host = $url_components['scheme'] . '://' . $url_components['host'];
-	
-	$str = $this->layout()->page;
+    $url_components = parse_url($this->serverUrl());
+    $url_host = $url_components['scheme'] . '://' . $url_components['host'];
+
+    $str = $this->layout()->page;
     $page = "";
 
-	$returnValue = preg_replace('/index.php/','',$_SERVER['PHP_SELF']);
+    $returnValue = preg_replace('/index.php/', '', $_SERVER['PHP_SELF']);
 
-	if($returnValue == $_SERVER['REQUEST_URI'])
-	{
-		$page = "public";
-		$str = $page . "/";
-	}
-	else
-	{
-		$str = str_replace($returnValue,'',parse_url($this->url())['path']);
-		if(isset($_SERVER['QUERY_STRING']))
-		{
-			if(preg_match('/action=(?<action_name>[A-Za-z]+)/', $_SERVER['QUERY_STRING'], $matches))
-			{
-				$str .= "?action=" . $matches['action_name'];
-			}
-		}
-	}
+    if($returnValue == $_SERVER['REQUEST_URI'])
+    {
+        $page = "public";
+        $str = $page . "/";
+    }
+    else
+    {
+        $str = str_replace($returnValue, '', parse_url($this->url())['path']);
+        if(isset($_SERVER['QUERY_STRING']))
+        {
+            if(preg_match('/action=(?<action_name>[A-Za-z]+)/', $_SERVER['QUERY_STRING'], $matches))
+            {
+                $str .= "?action=" . $matches['action_name'];
+            }
+        }
+    }
 
-	$ins = $this->isUser()->isInsSet($str);
+    $ins = $this->isUser()->isInsSet($str);
 
-	if(isset($ins['instructions']))
-	{
-		$this->layout()->instructions = $ins['instructions'];
-	?>
+    if(isset($ins['instructions']))
+    {
+        $this->layout()->instructions = $ins['instructions'];
+    ?>
 		<script>
 		$(document).ready(function () {
 			var pgid = <?php echo json_encode($ins['id']);?>;
@@ -198,11 +198,11 @@
 		});
 		</script>
 	<?php
-	}
-	else
-	{
-		$this->layout()->instructions = '';
-	?>
+    }
+    else
+    {
+        $this->layout()->instructions = '';
+    ?>
 		<script>
 		$(document).ready(function () {	
 			var pgnm = <?php echo json_encode($str);?>;
@@ -211,36 +211,36 @@
 		});
 		</script>
 	<?php
-	}
-	$usr = $this->isUser()->getUserType();
+    }
+    $usr = $this->isUser()->getUserType();
 
-	if($usr['level'] == "Administrator")
-	{
-	?>
+    if($usr['level'] == "Administrator")
+    {
+    ?>
 		<b><?php
-			if($page == "public")
-			{
-				echo "Welcome, " . $usr['name'] . "<br/>"; 
-				$cnt = $this->isUser()->getRvwCount();
-				echo "You have " . $cnt[0]['review_count'] . " works awaiting review.<br />";
-			}
-			?>
+            if($page == "public")
+            {
+                echo "Welcome, " . $usr['name'] . "<br/>";
+                $cnt = $this->isUser()->getRvwCount();
+                echo "You have " . $cnt[0]['review_count'] . " works awaiting review.<br />";
+            }
+            ?>
 		</b>
-	<?php			
-	}
-	if($usr['level'] == "Super User" || $usr['level'] == "User")
-	{
-	?>
+	<?php	
+    }
+    if($usr['level'] == "Super User" || $usr['level'] == "User")
+    {
+    ?>
 		<b>
 		<?php 
-		if($page == "public")
-		{
-			echo "Welcome, " . $usr['name']; 
-		}
-		?>
+        if($page == "public")
+        {
+            echo "Welcome, " . $usr['name'];
+        }
+        ?>
 		</b>
 	<?php
-	}				
+    }
 ?>
 <script>
 $(document).ready(function () {	

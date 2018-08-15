@@ -1,12 +1,12 @@
 <?php $this->headTitle('Merge Duplicate Values'); ?>
 <?php 
-	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' 
-	                                . ' Attribute Duplicate Values';
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
+                                    . ' Attribute Duplicate Values';
  ?>
 <?php
 $id;
-if ($request->getqueryParams('id') !== null) 
-{   
+if ($request->getqueryParams('id') !== null)
+{
     $params = $request->getqueryParams();
     $action = $params['action'];
     $wkat_id = $params['id'];
@@ -15,17 +15,17 @@ if ($request->getqueryParams('id') !== null)
 <div class="col-xs-4">
     <form method="post" action="<?=$this->url('manage_attribute_options')?><?= '?id=' . $wkat_id ?>">
        
-    <?php                                       
-	$table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-	$paginator = $table->getDuplicateOptions($wkat_id);
-	$cnt = $paginator->getTotalItemCount();
-	if($cnt > 0) {
-	?>
+    <?php 
+    $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+    $paginator = $table->getDuplicateOptions($wkat_id);
+    $cnt = $paginator->getTotalItemCount();
+    if($cnt > 0) {
+    ?>
 		<p>Duplicates to merge:</p> 
 		<?php
-		$escaper = new Zend\Escaper\Escaper('utf-8'); 
-		foreach($paginator as $row) :
-		?>
+        $escaper = new Zend\Escaper\Escaper('utf-8');
+        foreach($paginator as $row) :
+        ?>
 			<ul>
 				<li>
 					<?php echo $escaper->escapeHtml($row['title']); ?>
@@ -39,12 +39,12 @@ if ($request->getqueryParams('id') !== null)
 			<input type="hidden" name="action" value="<?=$action?>">
 		</ul>
 		<input type="submit" name="submitt" value="Merge">                            
-    <?php   
-	} else {
-	?>
+    <?php 
+    } else {
+    ?>
 		<p>No duplicates to merge</p>
-	<?php		
-	}
+	<?php	
+    }
     ?>
 		<input type="submit" name="submitt" value="Cancel">
     </form>

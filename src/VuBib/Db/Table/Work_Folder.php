@@ -30,12 +30,10 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Paginator;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
+use Zend\Paginator\Adapter\DbSelect;
+use Zend\Paginator\Paginator;
 
 /**
  * Table Definition for work_folder.
@@ -114,7 +112,7 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordByWorkId($id)
     {
-        $rowset = $this->select(array('work_id' => $id));
+        $rowset = $this->select(['work_id' => $id]);
         $row = $rowset->current();
 
         return $row;
@@ -257,14 +255,14 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Array $rows array of records
      */
-    function getFoldersByWorkId($wk_id)
+    public function getFoldersByWorkId($wk_id)
     {
         $flRows = [];
         $subselect = $this->sql->select();
         $subselect->join(
-            'folder', 
-            'work_folder.folder_id = folder.id', 
-            array('*'), 'inner'
+            'folder',
+            'work_folder.folder_id = folder.id',
+            ['*'], 'inner'
         );
         $subselect->where(['work_id' => $wk_id]);
 
@@ -273,7 +271,7 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
         );
         $cnt = $paginatorAdapter->getTotalItemCount();
         if ($cnt > 0) {
-               $paginatorAdapter->setDefaultItemCountPerPage($cnt);
+            $paginatorAdapter->setDefaultItemCountPerPage($cnt);
 
             foreach ($paginatorAdapter as $row) :
                 $flRows[] = $row;

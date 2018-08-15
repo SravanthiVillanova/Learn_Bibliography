@@ -28,9 +28,9 @@
 namespace VuBib\Action\WorkType;
 
 use Interop\Container\ContainerInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for SearchWorkFactory.
@@ -47,8 +47,8 @@ class SubAttributeFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container 
-              that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container
+     * that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -62,7 +62,7 @@ class SubAttributeFactory
 
         //return new SubAttributeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::subattribute', $router, 
+            'vubib::worktype::subattribute', $router,
             $template, $adapter
         );
     }

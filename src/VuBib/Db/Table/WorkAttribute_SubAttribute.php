@@ -30,11 +30,9 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
+use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
-use Zend\Db\Sql\Sql;
 
 /**
  * Table Definition for workattribute.
@@ -74,11 +72,11 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
             'subattribute' => $subattr,
             ]
         );
-        
+
         $id = $this->getLastInsertValue();
         return $id;
     }
-    
+
     /**
      * Update record
      *
@@ -97,7 +95,7 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
             ['id' => $id, 'workattribute_id' => $attr_id]
         );
     }
-    
+
     /**
      * Find record using workattribute id
      *
@@ -107,12 +105,12 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordByAttributeId($wkattr_id)
     {
-        $rowset = $this->select(array('workattribute_id' => $wkattr_id));
+        $rowset = $this->select(['workattribute_id' => $wkattr_id]);
         $row = $rowset->current();
 
         return $row;
     }
-    
+
     /**
      * Find record using workattribute id
      *
@@ -122,12 +120,12 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordsByWorkAttrId($wkattr_id)
     {
-        $rowset = $this->select(array('workattribute_id' => $wkattr_id));
+        $rowset = $this->select(['workattribute_id' => $wkattr_id]);
         //$row = $rowset->current();
 
         return $rowset->toArray();
     }
-    
+
     /**
      * Find record using id
      *
@@ -137,12 +135,12 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordById($id)
     {
-        $rowset = $this->select(array('id' => $id));
+        $rowset = $this->select(['id' => $id]);
         $row = $rowset->current();
 
         return $row;
     }
-    
+
     /**
      * Fetch sub attribute records
      *
@@ -155,16 +153,16 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         $select->where->equalTo('workattribute_id', $wkat_id);
-        
+
         if (isset($order) && $order !== '') {
-                 $select->order($order);
+            $select->order($order);
         }
-        
+
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
     }
-    
+
     /**
      * Delete record by id
      *

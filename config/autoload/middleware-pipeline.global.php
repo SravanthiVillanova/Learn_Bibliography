@@ -5,13 +5,13 @@ use Zend\Expressive\Helper;
 return [
     'dependencies' => [
         'factories' => [
-		//new
-		Blast\BaseUrl\BaseUrlMiddleware::class => Blast\BaseUrl\BaseUrlMiddlewareFactory::class,
-		
+        //new
+        Blast\BaseUrl\BaseUrlMiddleware::class => Blast\BaseUrl\BaseUrlMiddlewareFactory::class,
+
             Helper\ServerUrlMiddleware::class => Helper\ServerUrlMiddlewareFactory::class,
             Helper\UrlHelperMiddleware::class => Helper\UrlHelperMiddlewareFactory::class,
             'VuBib\SlimFlashMiddleware' => VuBib\SlimFlashMiddlewareFactory::class,
-			VuBib\FormHelpersMiddleware::class => VuBib\FormHelpersMiddlewareFactory::class
+            VuBib\FormHelpersMiddleware::class => VuBib\FormHelpersMiddlewareFactory::class
         ],
     ],
     // This can be used to seed pre- and/or post-routing middleware
@@ -45,8 +45,8 @@ return [
                 // - pre-conditions
                 // - modifications to outgoing responses
                 Helper\ServerUrlMiddleware::class,
-				//new
-				Blast\BaseUrl\BaseUrlMiddleware::class,
+                //new
+                Blast\BaseUrl\BaseUrlMiddleware::class,
                 'VuBib\SlimFlashMiddleware',
             ],
             'priority' => 10000,
@@ -54,20 +54,20 @@ return [
 
         'routing' => [
             'middleware' => [
-			    //new-0n 2/22/2017
-				//Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
+                //new-0n 2/22/2017
+                //Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE,
                 //Zend\Expressive\Helper\UrlHelperMiddleware::class,
                 //Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE,
-				
+
                 ApplicationFactory::ROUTING_MIDDLEWARE,
                 Helper\UrlHelperMiddleware::class,
-				ApplicationFactory::DISPATCH_MIDDLEWARE,
+                ApplicationFactory::DISPATCH_MIDDLEWARE,
                 // Add more middleware here that needs to introspect the routing
                 // results; this might include:
                 // - route-based authentication
                 // - route-based validation
                 // - etc.
-                
+
             ],
             'priority' => 1,
         ],

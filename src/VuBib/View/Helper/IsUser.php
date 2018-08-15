@@ -79,9 +79,9 @@ class IsUser extends \Zend\View\Helper\AbstractHelper
         //$user = $table->isAdmin();
         //var_dump($this->_session->modules_access);
         //return 'hello, ' . $this->_session->id . 'has access to';
-         //. implode($this->_session->modules_access)
+        //. implode($this->_session->modules_access)
         return $this;
-         //return $this->session->modules_access;
+        //return $this->session->modules_access;
     }
 
     /**

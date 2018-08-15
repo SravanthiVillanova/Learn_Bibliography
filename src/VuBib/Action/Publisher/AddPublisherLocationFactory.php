@@ -28,9 +28,9 @@
 namespace VuBib\Action\Publisher;
 
 use Interop\Container\ContainerInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for AddPublisherLocationFactory.
@@ -47,8 +47,8 @@ class AddPublisherLocationFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container 
-              that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container
+     * that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -61,7 +61,7 @@ class AddPublisherLocationFactory
         $adapter = $container->get(Adapter::class);
         //return new AddPublisherLocationAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::publisher::add_publisher_location', $router, 
+            'vubib::publisher::add_publisher_location', $router,
             $template, $adapter
         );
     }

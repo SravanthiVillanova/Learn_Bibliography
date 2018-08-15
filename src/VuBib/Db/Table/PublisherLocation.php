@@ -30,11 +30,9 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
+use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
-use Zend\Db\Sql\Expression;
 
 /**
  * Table Definition for publisher_location.
@@ -72,11 +70,11 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
         // $select->columns(array('location'));
         $select->join(
             'publisher', 'publisher_location.publisher_id = publisher.id',
-            array('name'), 'inner'
+            ['name'], 'inner'
         );
         $select->where->expression(
-            'LOWER(location) LIKE ?', 
-            mb_strtolower($escaper->escapeHtml($location)).'%'
+            'LOWER(location) LIKE ?',
+            mb_strtolower($escaper->escapeHtml($location)) . '%'
         );
         //$select->where->like('location', $location.'%');
         //$select->where(['location' => $location]);
@@ -167,7 +165,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
         $id = $this->getLastInsertValue();
         return $id;
     }
-    
+
     /**
      * Update publisher location record.
      *
@@ -185,7 +183,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
             ['id' => $loc_id]
         );
     }
-    
+
     /**
      * Find publisher location
      *
@@ -210,7 +208,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
      */
     public function findPublisherId($id)
     {
-        $rowset = $this->select(array('publisher_id' => $id));
+        $rowset = $this->select(['publisher_id' => $id]);
         $row = $rowset->current();
 
         return $row;
@@ -249,7 +247,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
         $rows = $this->select($callback)->toArray();
         return $rows;
     }
-    
+
     /**
      * Move publisher location
      *
@@ -261,7 +259,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
      */
     public function movePublisher($pub_src_id, $pub_dest_id, $src_loc_id)
     {
-        //update publoc set pubid = destpubid 
+        //update publoc set pubid = destpubid
         //where pubid=srcpubid and id=$source_locid
         $this->update(
             [
@@ -283,7 +281,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
     {
         $this->delete(['id' => $src_loc_id, 'publisher_id' => $src_pub_id]);
     }
-    
+
     /**
      * Find publisher location by id
      *
@@ -293,7 +291,7 @@ class PublisherLocation extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordById($loc_id)
     {
-        $rowset = $this->select(array('id' => $loc_id));
+        $rowset = $this->select(['id' => $loc_id]);
         $row = $rowset->current();
 
         return $row;

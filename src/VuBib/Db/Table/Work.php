@@ -30,13 +30,11 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Paginator;
-use Zend\Paginator\Adapter\ArrayAdapter;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
+use Zend\Paginator\Adapter\ArrayAdapter;
+use Zend\Paginator\Adapter\DbSelect;
+use Zend\Paginator\Paginator;
 
 /**
  * Table Definition for work.
@@ -59,7 +57,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     {
         parent::__construct('work', $adapter);
     }
-   
+
     /**
      * Fetch works by work type
      *
@@ -177,12 +175,12 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     public function displayRecordsByName($letter, $order)
     {
         $select = $this->sql->select();
-        $select->where->like('title', $letter.'%')->or
-            ->like('title', strtolower($letter).'%');
+        $select->where->like('title', $letter . '%')->or
+            ->like('title', strtolower($letter) . '%');
         if (isset($order) && $order !== '') {
             $select->order($order);
         }
-        
+
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -199,13 +197,13 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     public function displayReviewRecordsByLetter($letter, $order)
     {
         $select = $this->sql->select();
-        $select->where->like('title', $letter.'%')->or
-            ->like('title', strtolower($letter).'%');
+        $select->where->like('title', $letter . '%')->or
+            ->like('title', strtolower($letter) . '%');
         $select->where->equalTo('status', 0);
         if (isset($order) && $order !== '') {
             $select->order($order);
         }
-        
+
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -226,12 +224,12 @@ class Work extends \Zend\Db\TableGateway\TableGateway
 
         $select = $this->sql->select();
         $select->where->notIn('id', $subselect);
-        $select->where->like('title', $letter.'%')->or
-            ->like('title', strtolower($letter).'%');
+        $select->where->like('title', $letter . '%')->or
+            ->like('title', strtolower($letter) . '%');
         if (isset($order) && $order !== '') {
             $select->order($order);
         }
-        
+
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -291,7 +289,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
     public function findRecords($title)
     {
         $select = $this->sql->select();
-        $select->where->expression('LOWER(title) LIKE ?', mb_strtolower($title).'%');
+        $select->where->expression('LOWER(title) LIKE ?', mb_strtolower($title) . '%');
         //->where(['name' => $name]);
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
@@ -307,7 +305,7 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordById($id)
     {
-        $rowset = $this->select(array('id' => $id));
+        $rowset = $this->select(['id' => $id]);
         $row = $rowset->current();
 
         return $row;
@@ -329,11 +327,10 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function insertRecords($pr_workid, $type_id, $title, $subtitle, 
-        $paralleltitle, $description, $create_date, $create_user_id, 
+    public function insertRecords($pr_workid, $type_id, $title, $subtitle,
+        $paralleltitle, $description, $create_date, $create_user_id,
         $status, $pub_yrFrom
     ) {
-    
         if ($status === '00') {
             $status = null;
         }
@@ -388,10 +385,9 @@ class Work extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function updateRecords($pr_workid, $id, $type_id, $title, $subtitle, 
+    public function updateRecords($pr_workid, $id, $type_id, $title, $subtitle,
         $paralleltitle, $desc, $modify_date, $modify_user, $status, $pub_yrFrom
     ) {
-    
         if ($status === '00') {
             $status = null;
         }
@@ -459,13 +455,13 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             );
             //$select->where->like('title', $title.'%');
             $select->where->expression(
-                'LOWER(title) LIKE ?', 
-                mb_strtolower($title).'%'
+                'LOWER(title) LIKE ?',
+                mb_strtolower($title) . '%'
             );
         };
-            $rows = $this->select($callback)->toArray();
+        $rows = $this->select($callback)->toArray();
 
-            return $rows;
+        return $rows;
     }
 
     /**
@@ -482,11 +478,11 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             $select->limit($limit)->offset($offset);
         };
         $rows = $this->select($callback)->toArray();
-        
+
         $arrayAdapter = new ArrayAdapter($rows);
 
         $paginator = new Paginator($arrayAdapter);
-        
+
         return $paginator;
     }
 }

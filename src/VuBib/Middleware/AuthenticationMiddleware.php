@@ -27,9 +27,9 @@
  */
 namespace VuBib\Middleware;
 
-use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 use Teapot\StatusCode\RFC\RFC7231;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
@@ -114,7 +114,7 @@ class AuthenticationMiddleware
         if (!isset($this->_session->id)) {
             return new RedirectResponse(
                 sprintf(
-                    $this->_basePath . '/login?redirect_to=%s', 
+                    $this->_basePath . '/login?redirect_to=%s',
                     $this->_getCurrentRequest($request)
                 ), RFC7231::FOUND
             );
@@ -133,7 +133,7 @@ class AuthenticationMiddleware
     private function _getCurrentRequest(
         ServerRequestInterface $request
     ) {
-    
+
         /**
          * Uri
          *
@@ -141,14 +141,14 @@ class AuthenticationMiddleware
          */
         $uri = $request->getUri();
 
-        $redirectTo = $this->_basePath.$uri->getPath();
+        $redirectTo = $this->_basePath . $uri->getPath();
 
         if ($uri->getQuery() !== '') {
-            $redirectTo .= '?'.$uri->getQuery();
+            $redirectTo .= '?' . $uri->getQuery();
         }
 
         if ($uri->getFragment() !== '') {
-            $redirectTo .= '#'.$uri->getFragment();
+            $redirectTo .= '#' . $uri->getFragment();
         }
 
         return urlencode($redirectTo);

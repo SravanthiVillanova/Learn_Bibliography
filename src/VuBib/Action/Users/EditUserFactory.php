@@ -28,9 +28,9 @@
 namespace VuBib\Action\Users;
 
 use Interop\Container\ContainerInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for EditUserFactory.
@@ -47,8 +47,8 @@ class EditUserFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container 
-              that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container
+     * that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -61,7 +61,7 @@ class EditUserFactory
         $adapter = $container->get(Adapter::class);
         //return new EditWorkTypeAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::users::edit_user', $router, 
+            'vubib::users::edit_user', $router,
             $template, $adapter
         );
     }

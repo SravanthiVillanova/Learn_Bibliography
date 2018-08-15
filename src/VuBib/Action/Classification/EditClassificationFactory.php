@@ -28,9 +28,9 @@
 namespace VuBib\Action\Classification;
 
 use Interop\Container\ContainerInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for EditClassificationFactory.
@@ -47,8 +47,8 @@ class EditClassificationFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container 
-              that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container
+     * that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -61,7 +61,7 @@ class EditClassificationFactory
         $adapter = $container->get(Adapter::class);
         //return new EditClassificationAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::classification::edit_classification', $router, 
+            'vubib::classification::edit_classification', $router,
             $template, $adapter
         );
     }

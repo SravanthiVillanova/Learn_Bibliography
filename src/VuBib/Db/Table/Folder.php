@@ -30,12 +30,10 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Paginator;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
+use Zend\Paginator\Adapter\DbSelect;
+use Zend\Paginator\Paginator;
 
 /**
  * Table Definition for folder.
@@ -90,11 +88,11 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         header('Content-Disposition: attachment; filename=test_export.csv');
         $file = fopen('php://output', 'w') or die('Unable to open file!');
         //add BOM to fix UTF-8 in Excel
-        fputs($file, $bom = (chr(0xEF).chr(0xBB).chr(0xBF)));
+        fputs($file, $bom = (chr(0xEF) . chr(0xBB) . chr(0xBF)));
         foreach ($row as $t):
-            $content = $t['id'].' '.$escaper->escapeHtml($t['text_fr']).' ';
-            fputcsv($file, array($content));
-            $fl->getDepth($t['id'], $file, $content);
+            $content = $t['id'] . ' ' . $escaper->escapeHtml($t['text_fr']) . ' ';
+        fputcsv($file, [$content]);
+        $fl->getDepth($t['id'], $file, $content);
         endforeach;
         fflush($file);
         fclose($file);
@@ -123,10 +121,10 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         $rc = $this->select($callback)->toArray();
         if (count($rc) != 0) {
             for ($i = 0; $i < count($rc); ++$i) {
-                $con1 = ' '.$escaper->escapeHtml($rc[$i]['text_fr']).' ';
-                fputcsv($file, array($con.$con1));
+                $con1 = ' ' . $escaper->escapeHtml($rc[$i]['text_fr']) . ' ';
+                fputcsv($file, [$con . $con1]);
                 $current_parent_id = $rc[$i]['id'];
-                $fl->getDepth($current_parent_id, $file, $con.$con1);
+                $fl->getDepth($current_parent_id, $file, $con . $con1);
             }
         }
     }
@@ -143,7 +141,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         $callback = function ($select) use ($parent) {
             $select->columns(['*']);
             $select->where->equalTo('parent_id', $parent);
-            //$select->order(new Expression('case when sort_order is null 
+            //$select->order(new Expression('case when sort_order is null
             //then 1 else 0 end, sort_order'),'text_fr');
             $select->order('sort_order');
             $select->order('text_fr');
@@ -161,7 +159,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function getParent($child)
     {
-        $rowset = $this->select(array('id' => $child));
+        $rowset = $this->select(['id' => $child]);
         $row = $rowset->current();
 
         return $row;
@@ -206,9 +204,9 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         };
         $rc = $this->select($callback)->toArray();
         if (count($rc) == 0) {
-            return $str.':'.'Top';
+            return $str . ':' . 'Top';
         } else {
-            $r = $r.':'.$rc[0]['text_fr'].'*'.$rc[0]['id'];
+            $r = $r . ':' . $rc[0]['text_fr'] . '*' . $rc[0]['id'];
             $r = $fl->getTrail($rc[0]['parent_id'], $r);
             return $r;
         }
@@ -223,7 +221,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordById($id)
     {
-        $rowset = $this->select(array('id' => $id));
+        $rowset = $this->select(['id' => $id]);
         $row = $rowset->current();
 
         return $row;
@@ -241,7 +239,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
         $fl = new self($this->adapter);
         $row = $fl->getParent($id);
 
-        $encounteredIds = array($row['id']);
+        $encounteredIds = [$row['id']];
         $current = $row['parent_id'];
 
         while ($current != null && !in_array($current, $encounteredIds)) {
@@ -266,11 +264,11 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function getParentChainRecord($id, $reverse = false)
     {
-        $parentList = array();
+        $parentList = [];
         $fl = new self($this->adapter);
         $row = $fl->getParent($id);
 
-        $encounteredIds = array($row['id']);
+        $encounteredIds = [$row['id']];
         $current = $row['parent_id'];
 
         while ($current != null && !in_array($current, $encounteredIds)) {
@@ -287,7 +285,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
 
         return $parentList;
     }
-    
+
     /**
      * Insert folder record.
      *
@@ -302,10 +300,9 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function insertRecords($parent_id, $text_en, $text_fr, $text_de, 
+    public function insertRecords($parent_id, $text_en, $text_fr, $text_de,
         $text_nl, $text_es, $text_it, $sort_order
     ) {
-    
         $this->insert(
             [
                 'parent_id' => $parent_id,
@@ -334,10 +331,9 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function updateRecord($id, $text_en, $text_fr, $text_de, 
+    public function updateRecord($id, $text_en, $text_fr, $text_de,
         $text_nl, $text_es, $text_it, $sort_order
     ) {
-    
         $this->update(
             [
                 'text_en' => $text_en,
@@ -409,7 +405,7 @@ class Folder extends \Zend\Db\TableGateway\TableGateway
      */
     public function getSiblings($pid)
     {
-        if (is_null($pid)) {
+        if (null === $pid) {
             $callback = function ($select) {
                 $select->columns(['*']);
                 $select->where('parent_id IS NULL');

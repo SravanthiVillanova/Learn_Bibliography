@@ -30,12 +30,10 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Paginator;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
+use Zend\Paginator\Adapter\DbSelect;
+use Zend\Paginator\Paginator;
 
 /**
  * Table Definition for publisher.
@@ -74,7 +72,7 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
             ]
         );
     }
-    
+
     /**
      * Insert publisher record.
      *
@@ -89,7 +87,7 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
             'name' => $name,
             ]
         );
-        
+
         $id = $this->getLastInsertValue();
         return $id;
     }
@@ -106,10 +104,10 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
         //$escaper = new \Zend\Escaper\Escaper('utf-8');
         $select = $this->sql->select();
         $select->where->like(
-            new Expression('LOWER(name)'), 
-            mb_strtolower($name).'%'
+            new Expression('LOWER(name)'),
+            mb_strtolower($name) . '%'
         );
-        //$select->where->expression('LOWER(name) LIKE ?', 
+        //$select->where->expression('LOWER(name) LIKE ?',
         //mb_strtolower($escaper->escapeHtml($name)).'%');
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
@@ -125,7 +123,7 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordById($id)
     {
-        $rowset = $this->select(array('id' => $id));
+        $rowset = $this->select(['id' => $id]);
         $row = $rowset->current();
 
         return $row;
@@ -195,7 +193,7 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
     public function displayRecordsByName($letter)
     {
         $select = $this->sql->select();
-        $select->where->like('name', $letter.'%');
+        $select->where->like('name', $letter . '%');
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -212,8 +210,8 @@ class Publisher extends \Zend\Db\TableGateway\TableGateway
     {
         $callback = function ($select) use ($name) {
             $select->where->like(
-                new Expression('LOWER(name)'), 
-                mb_strtolower($name).'%'
+                new Expression('LOWER(name)'),
+                mb_strtolower($name) . '%'
             );
             //$select->where->like('name', '%'.$name.'%');
         };

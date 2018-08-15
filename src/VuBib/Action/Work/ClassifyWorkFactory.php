@@ -28,10 +28,10 @@
 namespace VuBib\Action\Work;
 
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\Router\RouterInterface;
-use Zend\Expressive\Template\TemplateRendererInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Helper\ServerUrlHelper;
+use Zend\Expressive\Router\RouterInterface;
+use Zend\Expressive\Template\TemplateRendererInterface;
 
 /**
  * Class Definition for ClassifyWorkFactory.
@@ -48,8 +48,8 @@ class ClassifyWorkFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container 
-              that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container
+     * that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -63,7 +63,7 @@ class ClassifyWorkFactory
         //$helper = $container->get(ServerUrlHelper::class);
         //return new ClassifyWorkAction($router, $template, $adapter, $helper);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::work::classify_work', $router, 
+            'vubib::work::classify_work', $router,
             $template, $adapter
         );
     }

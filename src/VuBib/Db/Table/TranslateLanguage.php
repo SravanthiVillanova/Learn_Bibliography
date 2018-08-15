@@ -51,7 +51,7 @@ class TranslateLanguage extends \Zend\Db\TableGateway\TableGateway
     {
         parent::__construct('translate_language', $adapter);
     }
-    
+
     /**
      * Insert record.
      *
@@ -127,7 +127,7 @@ class TranslateLanguage extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordById($id)
     {
-        $rowset = $this->select(array('id' => $id));
+        $rowset = $this->select(['id' => $id]);
         $row = $rowset->current();
 
         return $row;

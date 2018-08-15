@@ -30,11 +30,9 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
+use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
-use Zend\Db\Sql\Sql;
 
 /**
  * Table Definition for workattribute.
@@ -119,7 +117,7 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordById($id)
     {
-        $rowset = $this->select(array('id' => $id));
+        $rowset = $this->select(['id' => $id]);
         $row = $rowset->current();
 
         return $row;
@@ -166,9 +164,9 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     {
         $subselect = $this->sql->select();
         $subselect->join(
-            'worktype_workattribute', 
-            'workattribute.id = worktype_workattribute.workattribute_id', 
-            array(), 'inner'
+            'worktype_workattribute',
+            'workattribute.id = worktype_workattribute.workattribute_id',
+            [], 'inner'
         );
         $subselect->where(['worktype_id' => $id]);
         $subselect->order('rank');
@@ -187,7 +185,7 @@ class WorkAttribute extends \Zend\Db\TableGateway\TableGateway
      */
     public function getAttributeRecord($attribute)
     {
-        $rowset = $this->select(array('field' => $attribute));
+        $rowset = $this->select(['field' => $attribute]);
         $row = $rowset->current();
 
         return $row;

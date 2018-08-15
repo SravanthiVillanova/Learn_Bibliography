@@ -29,10 +29,10 @@ namespace VuBib\Action\WorkType;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for ManageSubAttributesAction.
@@ -52,14 +52,14 @@ class ManageSubAttributesAction
      * @var $router
      */
     protected $router;
-    
+
     /**
      * Template\TemplateRendererInterface
      *
      * @var $template
      */
     protected $template;
-    
+
     /**
      * Zend\Db\Adapter\Adapter
      *
@@ -74,15 +74,14 @@ class ManageSubAttributesAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, 
+    public function __construct(Router\RouterInterface $router,
         Template\TemplateRendererInterface $template = null, Adapter $adapter
     ) {
-    
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
     }
-    
+
     /**
      * Adds attribute options.
      *
@@ -92,7 +91,7 @@ class ManageSubAttributesAction
      */
     protected function doAdd($post)
     {
-        if ($post['submitt'] == 'Save') {                       
+        if ($post['submitt'] == 'Save') {
             $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
             $subattr_id = $table->addSubAttributeReturnId(
                 $post['wkat_id'], $post['new_subattr']
@@ -106,12 +105,12 @@ class ManageSubAttributesAction
             $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
                 $this->adapter
             );
-            foreach($optIds as $optId):
+            foreach ($optIds as $optId):
                 $table->insertRecord($post['wkat_id'], $optId, $subattr_id);
             endforeach;
         }
     }
-    
+
     /**
      * Edits attribute options.
      *
@@ -122,18 +121,18 @@ class ManageSubAttributesAction
     protected function doEdit($post)
     {
         if ($post['submitt'] == 'Save') {
-            if (!is_null($post['id'])) {
+            if (null !== $post['id']) {
                 $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
                     $this->adapter
                 );
                 $table->editSubAttribute(
-                    $post['id'], $post['wkat_id'], 
+                    $post['id'], $post['wkat_id'],
                     $post['edit_subattr']
                 );
             }
         }
     }
-    
+
     /**
      * Deletes sub attributes.
      *
@@ -146,25 +145,25 @@ class ManageSubAttributesAction
     {
         if (isset($post['submitt'])) {
             if ($post['submitt'] == 'Delete') {
-                if (!is_null($post['subattr_id'])) {
-                    foreach ($post['subattr_id'] as 
+                if (null !== $post['subattr_id']) {
+                    foreach ($post['subattr_id'] as
                       $subattr_Id
                     ):
                         $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
                             $this->adapter
                         );
-                        $table->deleteRecordBySubAttributeId($subattr_Id);
-                        
-                        $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
+                    $table->deleteRecordBySubAttributeId($subattr_Id);
+
+                    $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
                             $this->adapter
                         );
-                        $table->deleteRecordById($subattr_Id);
+                    $table->deleteRecordById($subattr_Id);
                     endforeach;
                 }
             }
         }
     }
-    
+
     /**
      * Action based on action parameter.
      *
@@ -188,7 +187,7 @@ class ManageSubAttributesAction
             $this->doDelete($post, $query);
         }
     }
-    
+
     /**
      * Searches attribute options.
      *
@@ -199,16 +198,16 @@ class ManageSubAttributesAction
     protected function searchOption($query)
     {
         if ($query['submit'] == 'Search') {
-            if (!is_null($query['worktype_attr'])) {
+            if (null !== $query['worktype_attr']) {
                 $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-                return($table->findRecords(
+                return $table->findRecords(
                     $query['option'], $query['worktype_attr']
                 )
-                );
+                ;
             }
         }
     }
-    
+
     /**
      * Call aprropriate function for each action.
      *
@@ -224,7 +223,7 @@ class ManageSubAttributesAction
         if (!empty($post['action'])) {
             //add edit delete sub attribute
             $this->doAction($post, $query);
-            
+
             //Cancel add\edit\delete
             if ($post['submitt'] == 'Cancel') {
                 $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
@@ -235,7 +234,7 @@ class ManageSubAttributesAction
                 return $paginator;
             }
         }
-        
+
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
         $paginator = $table->displaySubAttributes($wkat_id, $order);
@@ -252,10 +251,9 @@ class ManageSubAttributesAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, 
+    public function __invoke(ServerRequestInterface $request,
         ResponseInterface $response, callable $next = null
     ) {
-    
         $countPages = 0;
         $query = $request->getqueryParams();
         /*if (!empty($query['action'])) {
@@ -289,7 +287,7 @@ class ManageSubAttributesAction
 
         $searchParams = [];
         if (!empty($query['wkat_id'])) {
-            $searchParams[] = 'wkat_id='.urlencode($query['wkat_id']);
+            $searchParams[] = 'wkat_id=' . urlencode($query['wkat_id']);
         }
         $wkat_id = isset($post['wkat_id']) ? $post['wkat_id'] : $query['wkat_id'];
 

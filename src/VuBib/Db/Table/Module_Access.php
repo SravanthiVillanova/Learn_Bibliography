@@ -30,7 +30,6 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -87,7 +86,7 @@ class Module_Access extends \Zend\Db\TableGateway\TableGateway
         $row = $this->select($callback)->toArray();
         return $row;
     }
-    
+
     /**
      * Set modules to access for a role.
      *
@@ -110,7 +109,7 @@ class Module_Access extends \Zend\Db\TableGateway\TableGateway
             ['module' => $module]
         );
     }
-    
+
     /**
      * UnSet access to module(s) for a role.
      *
@@ -133,7 +132,7 @@ class Module_Access extends \Zend\Db\TableGateway\TableGateway
             ['module' => $module]
         );
     }
-    
+
     /**
      * Get all the modules
      *

@@ -11,7 +11,7 @@ return [
             'template_error' => 'error::error',
         ],
     ],
-	'app' => [
+    'app' => [
       'authentication' => [
           'default_redirect_to' => '/',
       ]

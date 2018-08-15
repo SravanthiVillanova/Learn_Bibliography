@@ -30,12 +30,10 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Paginator;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
+use Zend\Paginator\Adapter\DbSelect;
+use Zend\Paginator\Paginator;
 
 /**
  * Table Definition for worktype_workattribute.
@@ -70,9 +68,9 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         $select->join(
-            'workattribute', 
-            'worktype_workattribute.workattribute_id = workattribute.id', 
-            array('field'), 'inner'
+            'workattribute',
+            'worktype_workattribute.workattribute_id = workattribute.id',
+            ['field'], 'inner'
         );
         $select->where(['worktype_id' => $id]);
         $select->order('rank');
@@ -94,9 +92,9 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     {
         $subselect = $this->sql->select();
         $subselect->join(
-            'workattribute', 
-            'worktype_workattribute.workattribute_id = workattribute.id', 
-            array('field'), 'inner'
+            'workattribute',
+            'worktype_workattribute.workattribute_id = workattribute.id',
+            ['field'], 'inner'
         );
         $subselect->where(['worktype_id' => $id]);
         $subselect->order('rank');
@@ -129,7 +127,7 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
                 [
                 'worktype_id' => $wkt_id,
                 'workattribute_id' => $wkat_ids[$i],
-                'rank' => new Expression('999'.$i),
+                'rank' => new Expression('999' . $i),
                 ]
             );
         }
@@ -169,7 +167,7 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     {
         $wkat_ids = explode(',', $wkatids);
         foreach ($wkat_ids as $id) :
-            $sort_wkatids[] = (int) preg_replace("/^\w{2,3}_/", '', $id);
+            $sort_wkatids[] = (int)preg_replace("/^\w{2,3}_/", '', $id);
         endforeach;
         $callback = function ($select) use ($wkt_id) {
             $select->where->equalTo('worktype_id', $wkt_id);
@@ -181,7 +179,7 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
         for ($i = 0; $i < $cnt; ++$i) {
             $this->update(
                 [
-                'rank' => new Expression('1999'.$i),
+                'rank' => new Expression('1999' . $i),
                 ],
                 ['workattribute_id' => $sort_wkatids[$i]]
             );

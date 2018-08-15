@@ -29,10 +29,10 @@ namespace VuBib\Action\WorkType;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
-use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 
 /**
@@ -78,10 +78,9 @@ class AttributesWorkTypeAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, 
+    public function __construct(Router\RouterInterface $router,
         Template\TemplateRendererInterface $template = null, Adapter $adapter
     ) {
-    
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
@@ -101,7 +100,7 @@ class AttributesWorkTypeAction
             $table->addAttribute($post['new_attribute'], $post['field_type']);
         }
     }
-    
+
     /**
      * Edits worktype attributes.
      *
@@ -112,13 +111,13 @@ class AttributesWorkTypeAction
     protected function doEdit($post)
     {
         if ($post['submitt'] == 'Save') {
-            if (!is_null($post['id'])) {
+            if (null !== $post['id']) {
                 $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
                 $table->updateRecord($post['id'], $post['edit_attribute']);
             }
         }
     }
-    
+
     /**
      * Deletes worktype attributes.
      *
@@ -130,34 +129,34 @@ class AttributesWorkTypeAction
     {
         if (isset($post['submitt'])) {
             if ($post['submitt'] == 'Delete') {
-                if (!is_null($post['workattr_id'])) {
-                    foreach($post['workattr_id'] as $workattr_Id):
+                if (null !== $post['workattr_id']) {
+                    foreach ($post['workattr_id'] as $workattr_Id):
                         //no
                         $table = new \VuBib\Db\Table\Work_WorkAttribute(
                             $this->adapter
                         );
-                        $table->deleteWorkAttributeFromWork($workattr_Id);
-                        //yes
-                        $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
+                    $table->deleteWorkAttributeFromWork($workattr_Id);
+                    //yes
+                    $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
                             $this->adapter
                         );
-                        $table->deleteAttributeFromAllWorkTypes($workattr_Id);
-                        //yes
-                        $table = new \VuBib\Db\Table\WorkAttribute_Option(
+                    $table->deleteAttributeFromAllWorkTypes($workattr_Id);
+                    //yes
+                    $table = new \VuBib\Db\Table\WorkAttribute_Option(
                             $this->adapter
                         );
-                        $table->deleteWorkAttributeOptions($workattr_Id);
-                        //no
-                        $table = new \VuBib\Db\Table\WorkAttribute(
+                    $table->deleteWorkAttributeOptions($workattr_Id);
+                    //no
+                    $table = new \VuBib\Db\Table\WorkAttribute(
                             $this->adapter
                         );
-                        $table->deleteRecord($workattr_Id);
+                    $table->deleteRecord($workattr_Id);
                     endforeach;
                 }
             }
         }
     }
-    
+
     /**
      * Adds worktype attributes.
      *
@@ -172,7 +171,7 @@ class AttributesWorkTypeAction
             $table->addSubAttribute($post['wkattr_id'], $post['subattribute']);
         }
     }
-    
+
     /**
      * Edits worktype sub attribute.
      *
@@ -183,18 +182,18 @@ class AttributesWorkTypeAction
     protected function doEditSubAttribute($post)
     {
         if ($post['submitt'] == 'Save') {
-            if (!is_null($post['subattr_id'])) {
+            if (null !== $post['subattr_id']) {
                 $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
                     $this->adapter
                 );
                 $table->editSubAttribute(
-                    $post['subattr_id'], $post['attr_id'], 
+                    $post['subattr_id'], $post['attr_id'],
                     $post['edit_subattribute']
                 );
             }
         }
     }
-    
+
     /**
      * Edits worktype sub attribute.
      *
@@ -205,18 +204,18 @@ class AttributesWorkTypeAction
     protected function doDeleteSubAttribute($post)
     {
         if ($post['submitt'] == 'Save') {
-            if (!is_null($post['subattr_id'])) {
+            if (null !== $post['subattr_id']) {
                 $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
                     $this->adapter
                 );
                 $table->deleteSubAttribute(
-                    $post['subattr_id'], $post['attr_id'], 
+                    $post['subattr_id'], $post['attr_id'],
                     $post['edit_subattribute']
                 );
             }
         }
     }
-    
+
     /**
      * Action based on action parameter.
      *
@@ -251,7 +250,7 @@ class AttributesWorkTypeAction
             $this->doDeleteSubAttribute($post);
         }
     }
-    
+
     /**
      * Call aprropriate function for each action.
      *
@@ -265,7 +264,7 @@ class AttributesWorkTypeAction
         if (!empty($post['action'])) {
             //add edit delete attribute
             $this->doAction($post);
-            
+
             //Cancel add\edit\delete
             if ($post['submitt'] == 'Cancel') {
                 $table = new \VuBib\Db\Table\WorkAttribute($this->adapter);
@@ -294,12 +293,11 @@ class AttributesWorkTypeAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, 
+    public function __invoke(ServerRequestInterface $request,
         ResponseInterface $response, callable $next = null
     ) {
-    
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::attributes_worktype', $this->router, 
+            'vubib::worktype::attributes_worktype', $this->router,
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
@@ -309,13 +307,13 @@ class AttributesWorkTypeAction
         //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::attributes_worktype', $this->router, 
+            'vubib::worktype::attributes_worktype', $this->router,
             $this->template, $this->adapter
         );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         $searchParams = [];
-        
+
         if (isset($post['action']) && $post['action'] == 'edit_subattribute') {
             $searchParams[] = urlencode($post['attr_id']);
             return new HtmlResponse(

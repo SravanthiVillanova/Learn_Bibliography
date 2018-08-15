@@ -1,8 +1,8 @@
 <?php header('Content-Type: text/html; charset=UTF-8'); ?>
 <?php $this->headTitle('Delete Language'); ?>
 <?php 
-	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_language') . '" style="float:left;color:white;"> Language > </a>' 
-	                                . ' Delete';
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_language') . '" style="float:left;color:white;"> Language > </a>'
+                                    . ' Delete';
  ?>
 <div class="col-xs-4">
     <form method="post" action="<?= $this->url('manage_language') ?>">
@@ -12,7 +12,7 @@
                 $id;
                 if ($request->getqueryParams('id') !== null) {
                     $params = $request->getqueryParams();
-                    //echo $params['term']; 
+                    //echo $params['term'];
                     $action = $params['action'];
                     $id = $params['id'];
                     //fetch name based on id

@@ -28,9 +28,9 @@
 namespace VuBib\Action\Agent;
 
 use Interop\Container\ContainerInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for MergeAgentFactory.
@@ -48,7 +48,7 @@ class MergeAgentFactory
      * Invokes required template
      *
      * @param ContainerInterface $container interface of a container
-                         that exposes methods to read its entries.
+     * that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */

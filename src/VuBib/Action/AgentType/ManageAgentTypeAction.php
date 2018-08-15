@@ -29,10 +29,10 @@ namespace VuBib\Action\AgentType;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
-use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 
 /**
@@ -78,15 +78,14 @@ class ManageAgentTypeAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, 
+    public function __construct(Router\RouterInterface $router,
         Template\TemplateRendererInterface $template = null, Adapter $adapter
     ) {
-    
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
     }
-    
+
     /**
      * Action based on action parameter.
      *
@@ -106,7 +105,7 @@ class ManageAgentTypeAction
         //edit an agent type
         if ($post['action'] == 'edit') {
             if ($post['submitt'] == 'Save') {
-                if (!is_null($post['id'])) {
+                if (null !== $post['id']) {
                     $table = new \VuBib\Db\Table\AgentType($this->adapter);
                     $table->updateRecord($post['id'], $post['edit_agenttype']);
                 }
@@ -115,23 +114,23 @@ class ManageAgentTypeAction
         //delete an agent type
         if ($post['action'] == 'delete') {
             if ($post['submitt'] == 'Delete') {
-                if (!is_null($post['agType_id'])) {
-                    foreach($post['agType_id'] as $agentTypeId):
+                if (null !== $post['agType_id']) {
+                    foreach ($post['agType_id'] as $agentTypeId):
                                     $table = new \VuBib\Db\Table\WorkAgent(
                                         $this->adapter
                                     );
-                                    $table->deleteRecordByAgentTypeId($agentTypeId);
+                    $table->deleteRecordByAgentTypeId($agentTypeId);
 
-                                    $table = new \VuBib\Db\Table\AgentType(
+                    $table = new \VuBib\Db\Table\AgentType(
                                         $this->adapter
                                     );
-                                    $table->deleteRecord($agentTypeId);
+                    $table->deleteRecord($agentTypeId);
                     endforeach;
                 }
             }
         }
     }
- 
+
     /**
      * Get records to display.
      *
@@ -145,7 +144,7 @@ class ManageAgentTypeAction
         if (!empty($post['action'])) {
             //add edit delete agenttype
             $this->doAction($post);
-            
+
             //Cancel edit\delete
             if ($post['submitt'] == 'Cancel') {
                 $table = new \VuBib\Db\Table\AgentType($this->adapter);
@@ -171,12 +170,11 @@ class ManageAgentTypeAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, 
+    public function __invoke(ServerRequestInterface $request,
         ResponseInterface $response, callable $next = null
     ) {
-    
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::agenttype::manage_agenttype', $this->router, 
+            'vubib::agenttype::manage_agenttype', $this->router,
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
@@ -186,7 +184,7 @@ class ManageAgentTypeAction
         //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::agenttype::manage_agenttype', $this->router, 
+            'vubib::agenttype::manage_agenttype', $this->router,
             $this->template, $this->adapter
         );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);

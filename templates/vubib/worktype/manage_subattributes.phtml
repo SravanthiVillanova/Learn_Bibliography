@@ -2,26 +2,26 @@
 $this->headTitle('Manage Sub Attributes');
 ?>
 <?php 
-	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' 
-	                                . ' Sub Attributes';
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
+                                    . ' Sub Attributes';
  ?>
 <?php
 if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();
-    $attr_id     = isset($params['wkat_id']) ? $params['wkat_id'] : $this->wkat_id;
-	//fetch attribute name based on id
-    $table  = new \VuBib\Db\Table\WorkAttribute($adapter);
-    $attr_row    = $table->findRecordById($attr_id);
-    $attribute  = $attr_row['field'];
+    $attr_id = isset($params['wkat_id']) ? $params['wkat_id'] : $this->wkat_id;
+    //fetch attribute name based on id
+    $table = new \VuBib\Db\Table\WorkAttribute($adapter);
+    $attr_row = $table->findRecordById($attr_id);
+    $attribute = $attr_row['field'];
 }
 ?>
 <?php
 /*$q_str = "";
 $sort_ord = isset($_GET['sort_ord'])?($_GET['sort_ord']=="ASC"?"DESC":"ASC"):"ASC";
 if ($request->getqueryParams()!= null) {
-	$params = $request->getqueryParams();
-	$q_str = $_SERVER["QUERY_STRING"];
-	if(preg_match('/(?P<pg>page=\d+&)?(?P<action>.*)(?P<ord>&orderBy=\w+&sort_ord=\w+)/',$q_str,$matches)) {
+    $params = $request->getqueryParams();
+    $q_str = $_SERVER["QUERY_STRING"];
+    if(preg_match('/(?P<pg>page=\d+&)?(?P<action>.*)(?P<ord>&orderBy=\w+&sort_ord=\w+)/',$q_str,$matches)) {
         $q_str = preg_replace('/(?P<pg>page=\d+&)?(?P<action>.*)(?P<ord>&orderBy=\w+&sort_ord=\w+)/', $matches['action'], $q_str);
     }
 }*/
@@ -55,11 +55,11 @@ $(document).ready(function () {
         <tbody>
 			<?php if($this->countp > 0) { ?>
 			<?php 
-			$escaper = new Zend\Escaper\Escaper('utf-8'); 
-			foreach($this->rows as $row) : 
-				$output = (array)$row;
-                $params = implode(', ', $output);        
-			?>
+            $escaper = new Zend\Escaper\Escaper('utf-8');
+            foreach($this->rows as $row) :
+                $output = (array)$row;
+                $params = implode(', ', $output);
+            ?>
 			<tr>
 				<td>
 					<input type="checkbox" id="selSubAttr" name="selectSubAttr[]" value=<?=$row['id']?>>
@@ -79,13 +79,13 @@ $(document).ready(function () {
 	<?php if($this->countp > 1) { ?>
 		<form method="get" action="page">
 			<?=$this->paginationControl($this->rows,
-				'Sliding',
-				'vubib::controls',
-				[
-					'route'  => 'manage_subattributes',
-					'extraParams' => $searchParams,
-				]
-			);?>
+                'Sliding',
+                'vubib::controls',
+                [
+                    'route' => 'manage_subattributes',
+                    'extraParams' => $searchParams,
+                ]
+            );?>
 		</form>
     <?php } ?> 
 </div>

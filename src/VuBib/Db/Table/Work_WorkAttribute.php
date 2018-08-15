@@ -30,12 +30,10 @@
  */
 namespace VuBib\Db\Table;
 
+use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Select;
 use Zend\Paginator\Adapter\DbSelect;
-use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
 
 /**
  * Table Definition for work_workattribute.
@@ -121,7 +119,6 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     public function updateWorkAndWorkAttributeValue(
         $wkat_id, $option_first_id, $val
     ) {
-    
         $callback = function ($select) use ($wkat_id, $val) {
             $select->where->equalTo('workattribute_id', $wkat_id);
             $select->where->equalTo('value', $val);
@@ -202,9 +199,9 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         $select->join(
-            'workattribute', 
-            'work_workattribute.workattribute_id = workattribute.id', 
-            array('field', 'type'), 'inner'
+            'workattribute',
+            'work_workattribute.workattribute_id = workattribute.id',
+            ['field', 'type'], 'inner'
         );
         $select->where(['work_id' => $wk_id]);
 
@@ -235,8 +232,8 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     public function getRecord($wk_id, $wkat_id)
     {
         $rowset = $this->select(
-            array('work_id' => $wk_id,
-            'workattribute_id' => $wkat_id)
+            ['work_id' => $wk_id,
+            'workattribute_id' => $wkat_id]
         );
         $row = $rowset->current();
 
@@ -255,14 +252,14 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     {
         $wa = new WorkAttribute($this->adapter);
         $wa_row = $wa->getAttributeRecord($attribute);
-        
+
         $attr_id = $wa_row['id'];
         $wk_wkat = $this->select(
-            array('work_id' => $wk_id,
-            'workattribute_id' => $attr_id)
+            ['work_id' => $wk_id,
+            'workattribute_id' => $attr_id]
         );
         $wk_wkat_row = $wk_wkat->current();
-        
+
         if ($wa_row['type'] == 'Select') {
             if (isset($wk_wkat_row['value']) && $wk_wkat_row['value'] != '') {
                 $wa_opt = new WorkAttribute_Option($this->adapter);
@@ -270,9 +267,9 @@ class Work_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
                 return $wa_opt_row['title'];
             }
         } else {
-               return $wk_wkat_row['value'];
+            return $wk_wkat_row['value'];
         }
-    } 
+    }
 
     /**
      * Find work attribute option records using option and attribute id

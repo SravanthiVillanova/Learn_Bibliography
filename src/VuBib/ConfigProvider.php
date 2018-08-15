@@ -105,30 +105,30 @@ class ConfigProvider
     {
         return [
             'factories' => [
-                AuthenticationMiddleware::class => 
+                AuthenticationMiddleware::class =>
                       AuthenticationMiddlewareFactory::class,
                 LoginPageAction::class => LoginPageFactory::class,
-                UserTableAuthentication::class => 
+                UserTableAuthentication::class =>
                      UserAuthenticationFactory::class,
                 /*
                  * Register a class that will handle the user authentication.
-                 * The one registered here provides only a 
+                 * The one registered here provides only a
                        generic sample implementation
                  * and is not meant to be taken seriously.
                  *
-                 * UserTableAuthentication::class => 
+                 * UserTableAuthentication::class =>
                         UserAuthenticationFactory::class,
                  * */
             ],
             'aliases' => [
                 UserAuthenticationInterface::class => UserTableAuthentication::class,
                 /*
-                 * This is a sample setup whereby the specific 
+                 * This is a sample setup whereby the specific
                          implementation is never
-                 * referenced anywhere in the codebase, instead 
+                 * referenced anywhere in the codebase, instead
                         using a generic alias.
                  *
-                 * UserAuthenticationInterface::class => 
+                 * UserAuthenticationInterface::class =>
                         UserTableAuthentication::class
                  * */
             ],

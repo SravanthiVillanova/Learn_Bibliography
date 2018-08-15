@@ -29,10 +29,9 @@ namespace VuBib\Action\Work;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for GetWorkDetailsAction.
@@ -74,10 +73,9 @@ class GetWorkDetailsAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, 
+    public function __construct(Router\RouterInterface $router,
         Template\TemplateRendererInterface $template = null, Adapter $adapter
     ) {
-    
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
@@ -101,14 +99,14 @@ class GetWorkDetailsAction
         endforeach;
         foreach ($pub_row as $row) :
             $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-            $wks = $table->findRecordByPublisherId($row['id']);
-            $no_wks = count($wks);
-            $no_of_wks[] = $no_wks;
+        $wks = $table->findRecordByPublisherId($row['id']);
+        $no_wks = count($wks);
+        $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_row[$i]['works'] = $no_of_wks[$i];
         }
-        $output = array('pub_row' => $pub_row);
+        $output = ['pub_row' => $pub_row];
         echo json_encode($output);
         exit;
     }
@@ -132,14 +130,14 @@ class GetWorkDetailsAction
         }
         foreach ($pub_loc_rows as $row) :
             $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
-            $wks = $table->findRecordByLocationId($row['id']);
-            $no_wks = count($wks);
-            $no_of_wks[] = $no_wks;
+        $wks = $table->findRecordByLocationId($row['id']);
+        $no_wks = count($wks);
+        $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_loc_rows[$i]['works'] = $no_of_wks[$i];
         }
-        $output = array('pub_locs' => $pub_loc_rows);
+        $output = ['pub_locs' => $pub_loc_rows];
         echo json_encode($output);
         exit;
     }
@@ -159,18 +157,18 @@ class GetWorkDetailsAction
         $ag_row = $table->getLastNameLikeRecords($name);
         foreach ($ag_row as $row) :
             $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-            $wks = $table->findRecordByAgentId($row['id']);
-            $no_wks = count($wks);
-            $no_of_wks[] = $no_wks;
+        $wks = $table->findRecordByAgentId($row['id']);
+        $no_wks = count($wks);
+        $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $ag_row[$i]['works'] = $no_of_wks[$i];
         }
-        $output = array('ag_row' => $ag_row);
+        $output = ['ag_row' => $ag_row];
         echo json_encode($output);
         exit;
     }
-    
+
     /**
      * Add/Edit instructions.
      *
@@ -192,7 +190,7 @@ class GetWorkDetailsAction
         }
         exit;
     }
-    
+
     /**
      * Fetches classification details.
      *
@@ -205,11 +203,11 @@ class GetWorkDetailsAction
         $fl_id = $post['folder_Id'];
         $table = new \VuBib\Db\Table\Folder($this->adapter);
         $rows = $table->getChild($fl_id);
-        $output = array('folder_children' => $rows);
+        $output = ['folder_children' => $rows];
         echo json_encode($output);
         exit;
     }
-    
+
     /**
      * Fetches classification parent trail.
      *
@@ -222,11 +220,11 @@ class GetWorkDetailsAction
         $fl_id = $post['fl_id'];
         $table = new \VuBib\Db\Table\Folder($this->adapter);
         $src_row = $table->getParentChain($fl_id);
-        $output = array('fl_row' => $src_row);
+        $output = ['fl_row' => $src_row];
         echo json_encode($output);
         exit;
     }
- 
+
     /**
      * Fetches Attribute options.
      *
@@ -238,14 +236,14 @@ class GetWorkDetailsAction
     {
         $opt_title = $post['option'];
         $wkat_id = preg_replace("/^\w+:/", '', $post['attribute_Id']);
-            //$wkat_id = $_POST['attribute_Id'];
-            $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
+        //$wkat_id = $_POST['attribute_Id'];
+        $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
         $rows = $table->getAttributeOptions($opt_title, $wkat_id);
-        $output = array('attribute_options' => $rows);
+        $output = ['attribute_options' => $rows];
         echo json_encode($output);
         exit;
     }
-    
+
     /**
      * Fetches workattribute options.
      *
@@ -264,11 +262,11 @@ class GetWorkDetailsAction
         foreach ($paginator as $row) :
                 $rows[] = $row;
         endforeach;
-        $output = array('worktype_attribute' => $rows);
+        $output = ['worktype_attribute' => $rows];
         echo json_encode($output);
         exit;
     }
-    
+
     /**
      * Fetches publisher and location details.
      *
@@ -286,11 +284,11 @@ class GetWorkDetailsAction
             $rows[$i]['label'] = $row['location'];
             $rows[$i]['id'] = $row['id'];
         }
-        $output = array('publoc' => $rows);
+        $output = ['publoc' => $rows];
         echo json_encode($output);
         exit;
     }
-   
+
     /**
      * Fetches agent and no of works for each.
      *
@@ -303,11 +301,11 @@ class GetWorkDetailsAction
         $ag_id = $post['ag_id'];
         $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
         $wks = $table->findRecordByAgentId($ag_id);
-        $output = array('ag_no_of_wks' => count($wks));
+        $output = ['ag_no_of_wks' => count($wks)];
         echo json_encode($output);
         exit;
     }
-    
+
     /**
      * Autosuggest
      *
@@ -360,7 +358,7 @@ class GetWorkDetailsAction
             $rows[$i]['label'] = $row['title'];
             $rows[$i]['type'] = $row['type'];
         }
-        $output = array('prnt_lookup' => $rows);
+        $output = ['prnt_lookup' => $rows];
         echo json_encode($output);
         exit;
     }
@@ -375,29 +373,29 @@ class GetWorkDetailsAction
     public function addAndGetNewPub($post)
     {
         $rows = [];
-        
+
         $newPub_Name = $post['pubName'];
         $table = new \VuBib\Db\Table\Publisher($this->adapter);
         $newPub_id = $table->insertPublisherAndReturnId($newPub_Name);
         $row['pub_id'] = $newPub_id;
         $row['pub_name'] = $newPub_Name;
-        
+
         if (isset($post['pubLocation']) && $post['pubLocation'] !== "") {
-               $newPub_Loc = $post['pubLocation'];
-               $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
+            $newPub_Loc = $post['pubLocation'];
+            $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
             $newPubLoc_id = $table->addPublisherLocationAndReturnId(
                 $newPub_id, $newPub_Loc
             );
-               
-               $row['pubLoc_id'] = $newPubLoc_id;
-               $row['pub_loc'] = $newPub_Loc;
+
+            $row['pubLoc_id'] = $newPubLoc_id;
+            $row['pub_loc'] = $newPub_Loc;
         }
-        
-        $output = array('newPublisher' => $row);
+
+        $output = ['newPublisher' => $row];
         echo json_encode($output);
         exit;
     }
-    
+
     /**
      * Add a new agent and send back newly added agent details
      *
@@ -408,7 +406,7 @@ class GetWorkDetailsAction
     public function addAndGetNewAgent($post)
     {
         $rows = [];
-        
+
         $newAg_FName = $post['agFName'];
         $newAg_LName = $post['agLName'];
         $newAg_AltName = $post['agAltName'];
@@ -416,22 +414,22 @@ class GetWorkDetailsAction
         $newAg_Email = $post['agEmail'];
         $table = new \VuBib\Db\Table\Agent($this->adapter);
         $newAg_id = $table->insertAgentAndReturnId(
-            $newAg_FName, $newAg_LName, 
+            $newAg_FName, $newAg_LName,
             $newAg_AltName, $newAg_OrgName, $newAg_Email
         );
-        
+
         $row['ag_id'] = $newAg_id;
         $row['ag_fname'] = $newAg_FName;
         $row['ag_lname'] = $newAg_LName;
         $row['ag_altname'] = $newAg_AltName;
         $row['ag_orgname'] = $newAg_OrgName;
         $row['ag_email'] = $newAg_Email;
-        
-        $output = array('newAgent' => $row);
+
+        $output = ['newAgent' => $row];
         echo json_encode($output);
         exit;
     }
-    
+
     /**
      * Add a new attribute option and send back newly added option details
      *
@@ -442,27 +440,27 @@ class GetWorkDetailsAction
     public function addAndGetNewAttrOption($post)
     {
         $rows = [];
-        
+
         $newOpt_AttrId = preg_replace("/^\w+:/", '', $post['attrId']);
         $new_Option = $post['attrOption'];
         $new_OptType = $post['attrType'];
 
         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
         $newOpt_id = $table->insertOptionAndReturnId(
-            $newOpt_AttrId, 
+            $newOpt_AttrId,
             $new_Option, $new_OptType
         );
-        
+
         $row['attr_id'] = $newOpt_AttrId;
         $row['opt_id'] = $newOpt_id;
         $row['opt_title'] = $new_Option;
         $row['opt_value'] = $new_OptType;
-        
-        $output = array('newOption' => $row);
+
+        $output = ['newOption' => $row];
         echo json_encode($output);
         exit;
     }
-    
+
     /**
      * Fetches publisher details.
      *
@@ -482,18 +480,18 @@ class GetWorkDetailsAction
         endforeach;
         foreach ($opt_row as $row) :
             $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
-            $wks = $table->findRecordByOptionId($wkat_id, $row['id']);
-            $no_wks = count($wks);
-            $no_of_wks[] = $no_wks;
+        $wks = $table->findRecordByOptionId($wkat_id, $row['id']);
+        $no_wks = count($wks);
+        $no_of_wks[] = $no_wks;
         endforeach;
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $opt_row[$i]['works'] = $no_of_wks[$i];
         }
-        $output = array('opt_row' => $opt_row);
+        $output = ['opt_row' => $opt_row];
         echo json_encode($output);
         exit;
     }
-    
+
     /**
      * Action based on post parameter set.
      *
@@ -539,9 +537,9 @@ class GetWorkDetailsAction
         if (isset($post['addAction'])) {
             if ($post['addAction'] == 'addNewPublisher') {
                 $this->addAndGetNewPub($post);
-            } else if ($post['addAction'] == 'addNewAgent') {
+            } elseif ($post['addAction'] == 'addNewAgent') {
                 $this->addAndGetNewAgent($post);
-            } else if ($post['addAction'] == 'addNewOption') {
+            } elseif ($post['addAction'] == 'addNewOption') {
                 $this->addAndGetNewAttrOption($post);
             }
         }
@@ -549,7 +547,7 @@ class GetWorkDetailsAction
             $this->optName($post);
         }
     }
-    
+
     /**
      * Invokes required template
      *
@@ -559,10 +557,9 @@ class GetWorkDetailsAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, 
+    public function __invoke(ServerRequestInterface $request,
         ResponseInterface $response, callable $next = null
     ) {
-    
         if (isset($_GET['autofor'])) {
             $autofor = $_GET['autofor'];
             if (isset($_GET['term'])) {
@@ -572,7 +569,7 @@ class GetWorkDetailsAction
             echo json_encode($rows);
             exit;
         }
-        
+
         $post = [];
         if ($request->getMethod() == 'POST') {
             $post = $request->getParsedBody();

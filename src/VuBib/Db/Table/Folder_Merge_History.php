@@ -51,7 +51,7 @@ class Folder_Merge_History extends \Zend\Db\TableGateway\TableGateway
     {
         parent::__construct('folder_merge_history', $adapter);
     }
-    
+
     /**
      * Update folder merge history record.
      *

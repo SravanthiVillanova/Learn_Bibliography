@@ -29,10 +29,10 @@ namespace VuBib\Action\WorkType;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
-use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 
 /**
@@ -75,10 +75,9 @@ class ManageWorkTypeAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, 
+    public function __construct(Router\RouterInterface $router,
         Template\TemplateRendererInterface $template = null, Adapter $adapter
     ) {
-    
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
@@ -98,7 +97,7 @@ class ManageWorkTypeAction
             $table->insertRecords($post['new_worktype']);
         }
     }
-    
+
     /**
      * Edits worktype.
      *
@@ -109,13 +108,13 @@ class ManageWorkTypeAction
     protected function doEdit($post)
     {
         if ($post['submitt'] == 'Save') {
-            if (!is_null($post['id'])) {
+            if (null !== $post['id']) {
                 $table = new \VuBib\Db\Table\WorkType($this->adapter);
                 $table->updateRecord($post['id'], $post['edit_worktype']);
             }
         }
     }
-    
+
     /**
      * Deletes worktype.
      *
@@ -127,22 +126,22 @@ class ManageWorkTypeAction
     {
         if (isset($post['submitt'])) {
             if ($post['submitt'] == 'Delete') {
-                if (!is_null($post['worktype_id'])) {
-                    foreach($post['worktype_id'] as $worktype_Id):
+                if (null !== $post['worktype_id']) {
+                    foreach ($post['worktype_id'] as $worktype_Id):
                         $table = new \VuBib\Db\Table\Work($this->adapter);
-                        $table->updateWorkTypeId($worktype_Id);
-                        $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
+                    $table->updateWorkTypeId($worktype_Id);
+                    $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
                             $this->adapter
                         );
-                        $table->deleteRecordByWorkType($worktype_Id);
-                        $table = new \VuBib\Db\Table\WorkType($this->adapter);
-                        $table->deleteRecord($worktype_Id);
+                    $table->deleteRecordByWorkType($worktype_Id);
+                    $table = new \VuBib\Db\Table\WorkType($this->adapter);
+                    $table->deleteRecord($worktype_Id);
                     endforeach;
                 }
             }
         }
     }
-    
+
     /**
      * Removes attributes from a worktype.
      *
@@ -155,11 +154,11 @@ class ManageWorkTypeAction
         $attrs_to_remove = [];
         preg_match_all('/,?id_\d+/', $post['remove_attr'], $matches);
         foreach ($matches[0] as $id) :
-            $attrs_to_remove[] = (int) preg_replace(
+            $attrs_to_remove[] = (int)preg_replace(
                 "/^,?\w{2,3}_/", '', $id
             );
         endforeach;
-        if (!is_null($attrs_to_remove)) {
+        if (null !== $attrs_to_remove) {
             if (count($attrs_to_remove) != 0) {
                 //remove attributes from a work type
                 $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
@@ -169,7 +168,7 @@ class ManageWorkTypeAction
             }
         }
     }
-    
+
     /**
      * Adds attributes to a worktype.
      *
@@ -182,11 +181,11 @@ class ManageWorkTypeAction
         $attrs_to_add = [];
         preg_match_all('/,?nid_\d+/', $post['sort_order'], $matches);
         foreach ($matches[0] as $id) :
-            $attrs_to_add[] = (int) preg_replace(
+            $attrs_to_add[] = (int)preg_replace(
                 "/^,?\w{2,3}_/", '', $id
             );
         endforeach;
-        if (!is_null($attrs_to_add)) {
+        if (null !== $attrs_to_add) {
             if (count($attrs_to_add) != 0) {
                 //Add attributes to work type
                 $table = new \VuBib\Db\Table\WorkType_WorkAttribute($this->adapter);
@@ -194,7 +193,7 @@ class ManageWorkTypeAction
             }
         }
     }
-    
+
     /**
      * Sort attributes of a worktype.
      *
@@ -216,7 +215,7 @@ class ManageWorkTypeAction
             $table->updateWorkTypeAttributeRank($post['id'], $post['sort_order']);
         }
     }
-    
+
     /**
      * Action based on action parameter.
      *
@@ -243,7 +242,7 @@ class ManageWorkTypeAction
             $this->doAttributeSort($post);
         }
     }
-    
+
     /**
      * Call aprropriate function for each action.
      *
@@ -257,7 +256,7 @@ class ManageWorkTypeAction
         if (!empty($post['action'])) {
             //add edit delete worktypes and manage attributes
             $this->doAction($post);
-                        
+
             //Cancel add\edit\delete
             if ($post['submitt'] == 'Cancel') {
                 $table = new \VuBib\Db\Table\WorkType($this->adapter);
@@ -282,12 +281,11 @@ class ManageWorkTypeAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, 
+    public function __invoke(ServerRequestInterface $request,
         ResponseInterface $response, callable $next = null
     ) {
-    
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::manage_worktype', $this->router, 
+            'vubib::worktype::manage_worktype', $this->router,
             $this->template, $this->adapter
         );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
@@ -297,18 +295,18 @@ class ManageWorkTypeAction
         //$allItems = $paginator->getTotalItemCount();
 
         $simpleAction = new \VuBib\Action\SimpleRenderAction(
-            'vubib::worktype::manage_worktype', $this->router, 
+            'vubib::worktype::manage_worktype', $this->router,
             $this->template, $this->adapter
         );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         $searchParams = [];
 
-        if (isset($post['action']) && $post['action'] == 'sortable' 
+        if (isset($post['action']) && $post['action'] == 'sortable'
             && $post['submitt'] == 'Save'
         ) {
             //if ($post['action'] == 'sortable' && $post['submitt'] == 'Save') {
-                return new HtmlResponse(
+            return new HtmlResponse(
                     $this->template->render(
                         'vubib::worktype::manage_worktypeattribute',
                         [
@@ -322,7 +320,7 @@ class ManageWorkTypeAction
                         ]
                     )
                 );
-            //}
+        //}
         } else {
             return new HtmlResponse(
                 $this->template->render(

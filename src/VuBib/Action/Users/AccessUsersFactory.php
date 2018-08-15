@@ -28,9 +28,9 @@
 namespace VuBib\Action\Users;
 
 use Interop\Container\ContainerInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for AccessUsersFactory.
@@ -47,8 +47,8 @@ class AccessUsersFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container 
-              that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container
+     * that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -61,7 +61,7 @@ class AccessUsersFactory
         $adapter = $container->get(Adapter::class);
         //return new AccessUsersAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
-            'vubib::users::access_users', $router, 
+            'vubib::users::access_users', $router,
             $template, $adapter
         );
     }

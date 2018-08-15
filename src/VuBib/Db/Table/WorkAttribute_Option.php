@@ -30,12 +30,10 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Paginator;
-use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
+use Zend\Paginator\Adapter\DbSelect;
+use Zend\Paginator\Paginator;
 
 /**
  * Table Definition for workattribute_option.
@@ -90,11 +88,11 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         $select->where->equalTo('workattribute_id', $wkat_id);
-        
+
         if (isset($order) && $order !== '') {
-                 $select->order($order);
+            $select->order($order);
         }
-        
+
         $paginatorAdapter = new DbSelect($select, $this->adapter);
 
         return new Paginator($paginatorAdapter);
@@ -138,11 +136,11 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
             'value' => $val,
             ]
         );
-        
+
         $id = $this->getLastInsertValue();
         return $id;
     }
-    
+
     /**
      * Fetch record by option id
      *
@@ -152,7 +150,7 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordById($id)
     {
-        $rowset = $this->select(array('id' => $id));
+        $rowset = $this->select(['id' => $id]);
         $row = $rowset->current();
 
         return $row;
@@ -224,10 +222,9 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
      *
      * @return Array $rows attribute duplicate option records
      */
-    public function getDuplicateOptionRecords($wkat_id, 
+    public function getDuplicateOptionRecords($wkat_id,
         $option_dup_title, $option_dup_id
     ) {
-    
         $callback = function ($select) use (
             $wkat_id, $option_dup_title, $option_dup_id
         ) {
@@ -253,8 +250,8 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
         $callback = function ($select) use ($opt_title, $wkat_id) {
             //$select->where->like('title', $opt_title.'%');
             $select->where->like(
-                new Expression('LOWER(title)'), 
-                mb_strtolower($opt_title).'%'
+                new Expression('LOWER(title)'),
+                mb_strtolower($opt_title) . '%'
             );
             $select->where->equalTo('workattribute_id', $wkat_id);
         };
@@ -298,12 +295,12 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
      */
     public function getOptionTitle($id, $wkat_id)
     {
-        $rowset = $this->select(array('id' => $id, 'workattribute_id' => $wkat_id));
+        $rowset = $this->select(['id' => $id, 'workattribute_id' => $wkat_id]);
         $row = $rowset->current();
 
         return $row;
     }
-    
+
     /**
      * Find attribute option by title
      *
@@ -316,8 +313,8 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
     {
         $select = $this->sql->select();
         $select->where->like(
-            new Expression('LOWER(title)'), 
-            '%'.mb_strtolower($name).'%'
+            new Expression('LOWER(title)'),
+            '%' . mb_strtolower($name) . '%'
         )->and
             ->equalTo(
                 'workattribute_id', $wkat_id
@@ -326,7 +323,7 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
 
         return new Paginator($paginatorAdapter);
     }
-    
+
     /**
      * Get option Ids for an attribute
      *
@@ -340,7 +337,7 @@ class WorkAttribute_Option extends \Zend\Db\TableGateway\TableGateway
             $select->columns(['id']);
             $select->where->equalTo('workattribute_id', $wkat_id);
         };
-        
+
         $rows = array_column($this->select($callback)->toArray(), "id");
         return $rows;
     }

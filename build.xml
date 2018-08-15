@@ -27,8 +27,6 @@
 
    <!-- Call standard tasks -->
     <phingcall target="phpcs"/>
-    <phingcall target="phpcbf"/>
-    <phingcall target="php-cs-fixer"/>
     <phingcall target="php-cs-fixer-dryrun"/>
     <phingcall target="phpcpd"/>
     <phingcall target="phpmd"/>

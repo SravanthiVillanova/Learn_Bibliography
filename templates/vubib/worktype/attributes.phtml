@@ -1,6 +1,6 @@
 <?php $this->headTitle('Attributes Work Type'); ?>
 <?php 
-	  $this->layout()->breadcrumbs .= ' Attributes';
+      $this->layout()->breadcrumbs .= ' Attributes';
  ?>
 <script type='text/javascript'>
 $(document).ready(function () {
@@ -32,11 +32,11 @@ $(document).ready(function () {
         </thead>
         <tbody>
 		<?php 
-		$escaper = new Zend\Escaper\Escaper('utf-8'); 
-		foreach($this->rows as $row) : 
-			$output = (array)$row;
-            $params = implode(', ', $output);        
-		?>
+        $escaper = new Zend\Escaper\Escaper('utf-8');
+        foreach($this->rows as $row) :
+            $output = (array)$row;
+            $params = implode(', ', $output);
+        ?>
         <tr>
 			<td>
 				<input type="checkbox" id="selWorkTypeAttr" name="selectWorkTypeAttr[]" value=<?=$row['id']?>>
@@ -47,16 +47,16 @@ $(document).ready(function () {
 			</td>
 			<td>
 				<?php
-				if ($row['type'] == 'Select') {
-				?>
+                if ($row['type'] == 'Select') {
+                ?>
 					<a href="<?=$this->url('manage_attribute_options')?><?='?id=' . $row['id']?>">Manage Options</a>
 					|
 					<a href="<?=$this->url('merge_duplicate_option')?><?= '?id=' . $row['id'] . '&action=merge' ?>">Merge Duplicate Values</a>
                     |
                     <a href="<?=$this->url('manage_subattributes')?><?='?wkat_id=' . $row['id']?>">Sub Attributes</a>
 				<?php
-				}
-				?>
+                }
+                ?>
 			</td>
         </tr>
 		<?php endforeach; ?>
@@ -70,8 +70,8 @@ $(document).ready(function () {
                 'Sliding',
                 'vubib::controls',
                 [
-                    'route'  => 'attributes_worktype',
-					'extraParams' => $searchParams,
+                    'route' => 'attributes_worktype',
+                    'extraParams' => $searchParams,
                 ]
             );?>
         </form>

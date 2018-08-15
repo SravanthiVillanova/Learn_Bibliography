@@ -30,11 +30,7 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Paginator;
-use Zend\Db\Sql\Sql;
 
 /**
  * Table Definition for attribute_option_subattribute.
@@ -57,7 +53,7 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
     {
         parent::__construct('attribute_option_subattribute', $adapter);
     }
-    
+
     /**
      * Find record using workattribute id
      *
@@ -69,14 +65,14 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
     public function findRecordByOption($opt_id, $subattr_id)
     {
         $rowset = $this->select(
-            array('subattribute_id' => $subattr_id, 
-            'option_id' => $opt_id)
+            ['subattribute_id' => $subattr_id,
+            'option_id' => $opt_id]
         );
         $row = $rowset->current();
-        
+
         return $row;
     }
-    
+
     /**
      * Add record
      *
@@ -98,7 +94,7 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
             ]
         );
     }
-    
+
     /**
      * Update record
      *
@@ -115,11 +111,11 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
             [
             'subattr_value' => $subattr_val,
             ],
-            ['workattribute_id' => $wkat_id,'option_id' => $opt_id, 
+            ['workattribute_id' => $wkat_id,'option_id' => $opt_id,
              'subattribute_id' => $subattr_id]
         );
     }
-    
+
     /**
      * Delete attribute option
      *
@@ -137,7 +133,7 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
             ]
         );
     }
-    
+
     /**
      * Update record
      *

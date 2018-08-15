@@ -45,6 +45,7 @@ interface AuthUserInterface
      * @return empty
      */
     public function getUsername();
+
     /**
      * Get password
      *

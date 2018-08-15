@@ -30,7 +30,6 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Expression;
 
 /**
@@ -153,7 +152,7 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
                 'publish_month' => 0,
                 'publish_year' => (empty($pub_yr[$i])) ? null : $pub_yr[$i],
                 'publish_month_end' => null,
-                'publish_year_end' => 
+                'publish_year_end' =>
                    (empty($pub_yrEnd[$i])) ? null : $pub_yrEnd[$i],
                 ]
             );
@@ -172,14 +171,14 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
         $callback = function ($select) use ($wk_id) {
             $select->columns(['*']);
             $select->join(
-                'publisher', 
-                'work_publisher.publisher_id = publisher.id', 
-                array('name'), 'left'
+                'publisher',
+                'work_publisher.publisher_id = publisher.id',
+                ['name'], 'left'
             );
             $select->join(
-                'publisher_location', 
-                'work_publisher.location_id = publisher_location.id', 
-                array('location'), 'left'
+                'publisher_location',
+                'work_publisher.location_id = publisher_location.id',
+                ['location'], 'left'
             );
             $select->where(['work_id' => $wk_id]);
         };
@@ -199,7 +198,7 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
     {
         $this->delete(['work_id' => $id]);
     }
-    
+
     /**
      * Find work publisher records using publisher id
      *
@@ -217,7 +216,7 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
 
         return $rows;
     }
-    
+
     /**
      * Find work publisher records using publisher location id
      *
@@ -235,7 +234,7 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
 
         return $rows;
     }
-    
+
     /**
      * Move publisher
      *
@@ -247,7 +246,7 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
      */
     public function movePublisher($pub_src_id, $pub_dest_id, $src_loc_id)
     {
-        //update workpub set pubid=destpubid 
+        //update workpub set pubid=destpubid
         //where pubid=srcpubid and locid = $source_locid
         $this->update(
             [
@@ -256,7 +255,7 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
             ['publisher_id' => $pub_src_id, 'location_id' => $src_loc_id]
         );
     }
-    
+
     /**
      * Merge publisher
      *
@@ -267,11 +266,11 @@ class WorkPublisher extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function mergePublisher($pub_src_id, $pub_dest_id, 
+    public function mergePublisher($pub_src_id, $pub_dest_id,
         $src_loc_id, $dest_loc_id
     ) {
-    
-        //update workpub set pubid=destpubid and locid=mrgpublocid 
+
+        //update workpub set pubid=destpubid and locid=mrgpublocid
         //where pubid=srcpubid and locid=$source_locid
         $this->update(
             [

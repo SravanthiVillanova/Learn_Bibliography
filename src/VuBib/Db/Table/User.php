@@ -30,7 +30,6 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -84,10 +83,9 @@ class User extends \Zend\Db\TableGateway\TableGateway
      *
      * @return empty
      */
-    public function insertRecords($newuser_name, $new_username, 
+    public function insertRecords($newuser_name, $new_username,
         $new_user_pwd, $access_level
     ) {
-    
         $this->insert(
             [
             'name' => $newuser_name,
@@ -107,7 +105,7 @@ class User extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordById($id)
     {
-        $rowset = $this->select(array('id' => $id));
+        $rowset = $this->select(['id' => $id]);
         $row = $rowset->current();
 
         return $row;
@@ -142,7 +140,7 @@ class User extends \Zend\Db\TableGateway\TableGateway
             $level = null;
         }
 
-        if (is_null($pwd)) {
+        if (null === $pwd) {
             $this->update(
                 [
                 'name' => $name,
@@ -184,7 +182,7 @@ class User extends \Zend\Db\TableGateway\TableGateway
 
         return $row;
     }
-    
+
     /**
      * Change password
      *
