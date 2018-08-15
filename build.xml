@@ -27,7 +27,7 @@
 
    <!-- Call standard tasks -->
     <phingcall target="phpcs"/>
-    <phingcall target="phpcbf"/>
+    <!--<phingcall target="phpcbf"/>-->
     <phingcall target="php-cs-fixer-dryrun"/>
     <phingcall target="phpcpd"/>
     <phingcall target="phpmd"/>
@@ -37,9 +37,9 @@
 
 <!-- Report rule violations with PHPMD (mess detector) -->
   <target name="phpmd">
-    <exec command="${srcdir}/vendor/bin/phpmd ${srcdir}/src xml ${srcdir}/test/phpmd.xml --exclude ${srcdir}/test --reportfile ${builddir}/reports/phpmd.xml" />
+    <exec command="${srcdir}/vendor/bin/phpmd ${srcdir}/src xml ${srcdir}/tests/phpmd.xml --exclude ${srcdir}/test --reportfile ${builddir}/reports/phpmd.xml" />
   </target>
-
+  
   <!-- Measure project with phploc -->
   <target name="phploc">
     <exec command="${srcdir}/vendor/bin/phploc --log-csv ${builddir}/reports/phploc.csv ${srcdir}/src" />
