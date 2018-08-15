@@ -385,9 +385,9 @@ class GetWorkDetailsAction
         if (isset($post['pubLocation']) && $post['pubLocation'] !== "") {
                $newPub_Loc = $post['pubLocation'];
                $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
-               $newPubLoc_id = $table->addPublisherLocationAndReturnId(
-                   $newPub_id, $newPub_Loc
-               );
+            $newPubLoc_id = $table->addPublisherLocationAndReturnId(
+                $newPub_id, $newPub_Loc
+            );
                
                $row['pubLoc_id'] = $newPubLoc_id;
                $row['pub_loc'] = $newPub_Loc;
