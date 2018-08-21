@@ -10,8 +10,13 @@
             "homepage": "https://github.com/FalveyLibraryTechnology"
         }
     ],
+    "config": {
+        "platform": {
+            "php": "7.0.8"
+        }
+    },
     "require": {
-        "php": ">=7.0.2",
+        "php": ">=7.0.8",
         "zendframework/zend-expressive": "^1.0",
         "zendframework/zend-expressive-helpers": "^2.0",
         "zendframework/zend-stdlib": "^2.7 || ^3.0",
