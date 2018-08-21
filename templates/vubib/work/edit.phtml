@@ -614,7 +614,7 @@ $(document).ready(function () {
 		</div>
 		<div class="form-group">
             <label class="col-xs-1">Parent Work: </label>
-			    <input type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="<?=isset($pr_wrk_id)?$pr_wrk_id:""?>">
+			    <input type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="<?=$pr_wrk_id ?? ""?>">
                 <div class="col-xs-6 pr_work_div">
 				    <?php
                     if ($pr_wrk !== "") {

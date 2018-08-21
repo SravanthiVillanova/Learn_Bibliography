@@ -8,7 +8,7 @@ $this->headTitle('Manage Sub Attributes');
 <?php
 if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();
-    $attr_id = isset($params['wkat_id']) ? $params['wkat_id'] : $this->wkat_id;
+    $attr_id = $params['wkat_id'] ?? $this->wkat_id;
     //fetch attribute name based on id
     $table = new \VuBib\Db\Table\WorkAttribute($adapter);
     $attr_row = $table->findRecordById($attr_id);

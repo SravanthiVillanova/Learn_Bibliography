@@ -158,8 +158,7 @@
 
            }
           // print_r($instructions);
-            $this->layout()->instructions = isset($instructions[$page])
-                    ? $instructions[$page] : '';
+            $this->layout()->instructions = $instructions[$page] ?? '';
 ?>
         <main class="container">  
 				<div style="float: right; width: 20%;">

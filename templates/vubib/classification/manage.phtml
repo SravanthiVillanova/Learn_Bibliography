@@ -5,7 +5,7 @@
  <?php
 if ($request->getqueryParams('id') !== null) {
     $params = $request->getqueryParams();
-    $parent_id = isset($params['id']) ? $params['id'] : -1;
+    $parent_id = $params['id'] ?? -1;
 }
  ?>
 <div class="col-md-9">
