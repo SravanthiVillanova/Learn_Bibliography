@@ -443,18 +443,31 @@ class GetWorkDetailsAction
 
         $newOpt_AttrId = preg_replace("/^\w+:/", '', $post['attrId']);
         $new_Option = $post['attrOption'];
-        $new_OptType = $post['attrType'];
+        //$new_OptType = $post['attrType'];
 
         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
         $newOpt_id = $table->insertOptionAndReturnId(
             $newOpt_AttrId,
-            $new_Option, $new_OptType
+            $new_Option
         );
 
+        //fetch subattributes of attribute
+        $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
+        $subattr = $table->findRecordsByWorkAttrId($newOpt_AttrId);
+        
+        if (count($subattr) > 0) {
+            $row['subattr_id'] = $subattr['id'];
+            //Insert option to subattribute table
+            $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
+                $this->adapter
+            );
+            $table->insertRecord($newOpt_AttrId, $newOpt_id, $subattr['id']);
+        }
+        
         $row['attr_id'] = $newOpt_AttrId;
         $row['opt_id'] = $newOpt_id;
         $row['opt_title'] = $new_Option;
-        $row['opt_value'] = $new_OptType;
+        //$row['opt_value'] = $new_OptType;
 
         $output = ['newOption' => $row];
         echo json_encode($output);
@@ -492,6 +505,46 @@ class GetWorkDetailsAction
         exit;
     }
 
+    /**
+     * Get Sub attribute for an attribute
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return string $output
+     */
+    public function getSubAttr($post)
+    {
+        //$row = [][];
+        
+        $post['attribute_Id'] = preg_replace("/^\w+:/", '', $post['attribute_Id']);
+        //fetch subattributes of attribute
+        $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
+        $subattr = $table->findRecordsByWorkAttrId($post['attribute_Id']);
+        
+        if (count($subattr) > 0) {
+            $row['attr_id'] = $subattr['workattribute_id'];
+            $row['opt_id'] = $post['option_id'];
+            $row['subattr_id'] = $subattr['id'];
+            $row['subattr'] = $subattr['subattribute'];
+            
+            //fetch subattribute values for option
+            $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
+                $this->adapter
+            );
+            $opt_subattr_rows = $table->findRecordByOption(
+                $row['opt_id'], $row['subattr_id']
+            );
+            for ($i = 0; $i < count($opt_subattr_rows); ++$i) {
+                $arr[$i] = $opt_subattr_rows[$i]['subattr_value'];
+            }
+            $row['subattr_vals'] = $arr;
+        }
+
+        $output = ['subattr' => $row];
+        echo json_encode($output);
+        exit;
+    }
+    
     /**
      * Action based on post parameter set.
      *
@@ -545,6 +598,9 @@ class GetWorkDetailsAction
         }
         if (isset($post['opt_name'])) {
             $this->optName($post);
+        }
+        if (isset($post['subattr'])) {
+            $this->getSubAttr($post);
         }
     }
 

@@ -47,6 +47,7 @@ return [
             'vubib::worktype::new_subattribute' => 'templates/vubib/worktype/new_subattribute.phtml',
             'vubib::worktype::edit_subattribute' => 'templates/vubib/worktype/edit_subattribute.phtml',
             'vubib::worktype::delete_subattribute' => 'templates/vubib/worktype/delete_subattribute.phtml',
+            'vubib::worktype::edit_subattribute_values' => 'templates/vubib/worktype/edit_subattribute_values.phtml',
             'vubib::worktype::manage_attribute_options' => 'templates/vubib/worktype/manage_attribute_options.phtml',
             'vubib::worktype::new_option' => 'templates/vubib/worktype/new_option.phtml',
             'vubib::worktype::edit_option' => 'templates/vubib/worktype/edit_option.phtml',

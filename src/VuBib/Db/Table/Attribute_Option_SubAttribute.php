@@ -68,9 +68,10 @@ class Attribute_Option_SubAttribute extends \Zend\Db\TableGateway\TableGateway
             ['subattribute_id' => $subattr_id,
             'option_id' => $opt_id]
         );
-        $row = $rowset->current();
+        //$row = $rowset->current();
 
-        return $row;
+        //return $row;
+        return $rowset->toArray();
     }
 
     /**

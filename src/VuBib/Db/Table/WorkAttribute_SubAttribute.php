@@ -121,9 +121,10 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
     public function findRecordsByWorkAttrId($wkattr_id)
     {
         $rowset = $this->select(['workattribute_id' => $wkattr_id]);
-        //$row = $rowset->current();
+        $row = $rowset->current();
 
-        return $rowset->toArray();
+        //return $rowset->toArray();
+        return $row;
     }
 
     /**
@@ -145,22 +146,15 @@ class WorkAttribute_SubAttribute extends \Zend\Db\TableGateway\TableGateway
      * Fetch sub attribute records
      *
      * @param Integer $wkat_id workattribute id
-     * @param String  $order   records order asc or desc
      *
      * @return Paginator $paginatorAdapter sub attributes
      */
-    public function displaySubAttributes($wkat_id, $order="")
+    public function displaySubAttributes($wkat_id)
     {
-        $select = $this->sql->select();
-        $select->where->equalTo('workattribute_id', $wkat_id);
+        $rowset = $this->select(['workattribute_id' => $wkat_id]);
+        $row = $rowset->current();
 
-        if (isset($order) && $order !== '') {
-            $select->order($order);
-        }
-
-        $paginatorAdapter = new DbSelect($select, $this->adapter);
-
-        return new Paginator($paginatorAdapter);
+        return $row;
     }
 
     /**

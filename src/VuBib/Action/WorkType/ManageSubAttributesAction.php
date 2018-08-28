@@ -189,25 +189,6 @@ class ManageSubAttributesAction
     }
 
     /**
-     * Searches attribute options.
-     *
-     * @param Array $query url query parameters
-     *
-     * @return matched options
-     */
-    protected function searchOption($query)
-    {
-        if ($query['submit'] == 'Search') {
-            if (null !== $query['worktype_attr']) {
-                $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-                return $table->findRecords(
-                    $query['option'], $query['worktype_attr']
-                );
-            }
-        }
-    }
-
-    /**
      * Call aprropriate function for each action.
      *
      * @param Array $query url query parameters
@@ -228,17 +209,17 @@ class ManageSubAttributesAction
                 $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
                     $this->adapter
                 );
-                $paginator = $table->displaySubAttributes($wkat_id);
+                $subattrs = $table->displaySubAttributes($wkat_id);
 
-                return $paginator;
+                return $subattrs;
             }
         }
 
         // default: blank for listing in manage
         $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
-        $paginator = $table->displaySubAttributes($wkat_id, $order);
+        $subattrs = $table->displaySubAttributes($wkat_id, $order);
 
-        return $paginator;
+        return $subattrs;
     }
 
     /**
@@ -255,15 +236,13 @@ class ManageSubAttributesAction
     ) {
         $countPages = 0;
         $query = $request->getqueryParams();
-        /*if (!empty($query['action'])) {
-            $action = $query['action'];
-        }*/
+
         $post = [];
         if ($request->getMethod() == 'POST') {
             $post = $request->getParsedBody();
         }
-        $paginator = $this->getPaginator($query, $post);
-        $paginator->setDefaultItemCountPerPage(15);
+        $subattrs = $this->getPaginator($query, $post);
+        /*$paginator->setDefaultItemCountPerPage(15);
         //$allItems = $paginator->getTotalItemCount();
         $countPages = $paginator->count();
 
@@ -282,7 +261,7 @@ class ManageSubAttributesAction
         } else {
             $next = $currentPage + 1;
             $previous = $currentPage - 1;
-        }
+        }*/
 
         $searchParams = [];
         if (!empty($query['wkat_id'])) {
@@ -294,11 +273,8 @@ class ManageSubAttributesAction
             $this->template->render(
                 'vubib::worktype::manage_subattributes',
                 [
-                'rows' => $paginator,
-                    'wkat_id' => $wkat_id,
-                'previous' => $previous,
-                'next' => $next,
-                'countp' => $countPages,
+                'rows' => $subattrs,
+                'wkat_id' => $wkat_id,
                 'searchParams' => implode('&', $searchParams),
                 'request' => $request,
                 'adapter' => $this->adapter,

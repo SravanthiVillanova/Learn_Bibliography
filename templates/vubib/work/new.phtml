@@ -36,6 +36,8 @@ label {
 <script>
 var ur = "";
 var workURL = '<?=$this->url('get_work_details')?>';
+var sattrURL = '<?=$this->url('edit_subattribute_values')?>';
+//var sattrURL = '<?=$this->url('edit_option')?>';
 
 $(document).ready(function() {
 	//Publisher
@@ -109,7 +111,7 @@ $(document).ready(function() {
 	});
 	//get attributes for selected worktypes
 	$('#work_type', document).on('change', function() {
-		bindWorkTypeAttributes(document, workURL);
+		bindWorkTypeAttributes(document, workURL, sattrURL);
 	});
 	//classification
 	//add classification rows
@@ -180,7 +182,7 @@ $(document).ready(function() {
 		addNewAgent(document,workURL,lnk);
 		return false;
 	});
-		
+     
 	$('#submit_save').on('click', function() {
 		$('#General').find('input:required').each(function() {
 			// Find the tab-pane that this element is inside, and get the id

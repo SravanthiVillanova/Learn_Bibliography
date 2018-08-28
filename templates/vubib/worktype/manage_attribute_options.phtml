@@ -22,7 +22,7 @@ if ($request->getqueryParams('action') !== null) {
     $attribute = $row['field'];
     //fetch subattributes of attribute
     $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
-    $subattrs = $table->findRecordsByWorkAttrId($id);
+    $subattr = $table->findRecordsByWorkAttrId($id);
 }
 ?>
 <?php
@@ -62,9 +62,9 @@ $(document).ready(function () {
         <tr>
 		  <th>&nbsp;&nbsp;</th>
 		  <th><a href="<?=$this->url('manage_attribute_options')?><?='?' . $q_str . '&orderBy=title&sort_ord=' . $sort_ord?>">Option</a></th>
-          <?php foreach ($subattrs as $subattr) : ?>
+          <?php if (count($subattr) > 0){ ?>
                 <th><?=$subattr['subattribute']?></th>
-          <?php endforeach; ?>
+          <?php } ?>
         </tr>
         </thead>
         <tbody>
@@ -84,13 +84,19 @@ $(document).ready(function () {
 					<?php echo $escaper->escapeHtml($row['title']); ?></a>			
 				</td>
                 <?php 
-                foreach ($subattrs as $subattr) :
-                    //fetch subattribute value for option
+                if (count($subattr) > 0){
+                    $subattr_value = "";
+                    //fetch subattribute values for option
                     $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
-                    $opt_subattr_row = $table->findRecordByOption($row['id'], $subattr['id']);
+                    $opt_subattr_rows = $table->findRecordByOption($row['id'], $subattr['id']);
+                    foreach($opt_subattr_rows as $subopt_row):
+                        if ($subopt_row["subattr_value"] != "") {
+                            $subattr_value .= $subopt_row['subattr_value'] . ", ";
+                        }
+                    endforeach;
                 ?>
-                <td><?=$opt_subattr_row['subattr_value']?></td>
-                <?php endforeach; ?>
+                <td><?=trim($subattr_value, ", ");?></td>
+                <?php } ?>
 			</tr>
 			<?php endforeach; ?>
 		<?php } ?>

@@ -75,7 +75,7 @@ class AttributeManageOptionsAction
      * @param Adapter                            $adapter  for db connection
      */
     public function __construct(Router\RouterInterface $router,
-        Template\TemplateRendererInterface $template = null, Adapter $adapter
+        Template\TemplateRendererInterface $template = null, Adapter $adapter = null
     ) {
         $this->router = $router;
         $this->template = $template;
@@ -92,21 +92,26 @@ class AttributeManageOptionsAction
     protected function doAdd($post)
     {
         if ($post['submitt'] == 'Save') {
+            $wkat_id = $post['id'];
+            $subat_id = $post['subattr_id'];
             $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
             $optId = $table->insertOptionAndReturnId(
-                $post['id'], $post['new_option']
+                $wkat_id, $post['new_option']
             );
 
             //Insert option to subattribute table
-            $subattr_arr = array_combine(
-                $post['subattr_ids'], $post['subattroption']
-            );
             $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
                 $this->adapter
             );
-            foreach ($subattr_arr as $k => $v):
-                $table->insertRecord($post['id'], $optId, $k, $v);
-            endforeach;
+            if (!array_filter($post['newsubattr'])) {
+                $table->insertRecord($wkat_id, $optId, $subat_id);
+            } else {
+                foreach ($post['newsubattr'] as $subat):
+                    if ($subat != "") {
+                        $table->insertRecord($wkat_id, $optId, $subat_id, $subat);
+                    }
+                endforeach;
+            }
         }
     }
 
@@ -121,19 +126,67 @@ class AttributeManageOptionsAction
     {
         if ($post['submitt'] == 'Save') {
             if (null !== $post['id']) {
+                $wkat_id = $post['wkat_id'];
+                $opt_id =  $post['id'];
                 $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
-                $table->updateOption($post['id'], $post['edit_option']);
+                $table->updateOption($opt_id, $post['edit_option']);
 
-                //update corresponding subattribute values for option
-                $subattr_arr = array_combine(
-                    $post['subattr_ids'], $post['subattroption']
-                );
+                //delete subattr vals and insert new values for option
                 $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
                     $this->adapter
                 );
-                foreach ($subattr_arr as $k => $v):
-                    $table->updateRecord($post['wkat_id'], $post['id'], $k, $v);
-                endforeach;
+                $table->deleteRecordByOptionId($wkat_id, $opt_id);
+                if (!array_filter($post['newsubattr'])  
+                    && isset($post['subattr_id'])
+                ) {
+                    //empty - no subattr vals
+                    $table->insertRecord($wkat_id, $opt_id, $post['subattr_id']);
+                } elseif (isset($post['subattr_id'])) {
+                    //not empty - has subattr vals
+                    foreach ($post['newsubattr'] as $subat):
+                        if ($subat != "") {
+                            $table->insertRecord($wkat_id, $opt_id, $post['subattr_id'], $subat);  //this
+                        }
+                    endforeach;
+                }
+            }
+        }
+    }
+
+    /**
+     * Edits attribute options.
+     *
+     * @param Array $post contains posted elements of form
+     *
+     * @return empty
+     */
+    protected function doEditSubAttrVals($post)
+    {
+        if ($post['submitt'] == 'Save') {
+            if (null !== $post['id']) {
+                $wkat_id = $post['wkat_id'];
+                $opt_id =  $post['id'];
+
+                //delete subattr vals and insert new values for option
+                $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
+                    $this->adapter
+                );
+                $table->deleteRecordByOptionId($wkat_id, $opt_id);
+                if (!array_filter($post['newsubattr'])  
+                    && isset($post['subattr_id'])
+                ) {
+                    //empty - no subattr vals
+                    $table->insertRecord($wkat_id, $opt_id, $post['subattr_id']);
+                } elseif (isset($post['subattr_id'])) {
+                    //not empty - has subattr vals
+                    foreach ($post['newsubattr'] as $subat):
+                        if ($subat != "") {
+                            $table->insertRecord(
+                                $wkat_id, $opt_id, $post['subattr_id'], $subat
+                            );
+                        }
+                    endforeach;
+                }
             }
         }
     }
@@ -244,13 +297,15 @@ class AttributeManageOptionsAction
                         $post['mrg_attr_id'],
                         $post['dest_opt_hidden'], $src_workattropt_Id
                     );
-
-                    //delete option record from attribute_option_subattribute
+                    
+                    //Update attr_opt_subat,set src_wkattropt_Id = dest_select
+                    //where wkattr_id = $post['mrg_attr_id']
                     $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
                         $this->adapter
                     );
-                    $table->deleteRecordByOptionId(
-                        $post['mrg_attr_id'], $src_workattropt_Id
+                    $table->updateRecordOptionId(
+                        $post['mrg_attr_id'],
+                        $post['dest_opt_hidden'], $src_workattropt_Id
                     );
 
                     //delete src attr opt,where id = $src_wkattropt_Id
@@ -295,6 +350,10 @@ class AttributeManageOptionsAction
         //Merge option
         if ($post['action'] == 'merge_options') {
             $this->doMergeOptions($post, $query);
+        }
+        //Edit option sub attribute values
+        if ($post['action'] == 'edit_sattr_vals') {
+            $this->doEditSubAttrVals($post);
         }
     }
 

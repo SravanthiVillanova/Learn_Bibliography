@@ -35,6 +35,7 @@ return [
             VuBib\Action\WorkType\NewSubAttributeAction::class => VuBib\Action\WorkType\NewSubAttributeFactory::class,
             VuBib\Action\WorkType\EditSubAttributeAction::class => VuBib\Action\WorkType\EditSubAttributeFactory::class,
             VuBib\Action\WorkType\DeleteSubAttributeAction::class => VuBib\Action\WorkType\DeleteSubAttributeFactory::class,
+            VuBib\Action\WorkType\EditSubAttributeValuesAction::class => VuBib\Action\WorkType\EditSubAttributeValuesFactory::class,
             VuBib\Action\WorkType\AttributeManageOptionsAction::class => VuBib\Action\WorkType\AttributeManageOptionsFactory::class,
             VuBib\Action\WorkType\NewOptionAction::class => VuBib\Action\WorkType\NewOptionFactory::class,
             VuBib\Action\WorkType\EditOptionAction::class => VuBib\Action\WorkType\EditOptionFactory::class,
@@ -323,7 +324,7 @@ return [
             'allowed_methods' => ['GET','POST'],
         ],
 
-                [
+        [
             'name' => 'edit_subattribute',
             'path' => '/WorkType/edit_subattribute',
             'middleware' => [
@@ -334,13 +335,24 @@ return [
             'allowed_methods' => ['GET','POST'],
         ],
 
-                [
+        [
             'name' => 'delete_subattribute',
             'path' => '/WorkType/delete_subattribute',
             'middleware' => [
                 //BodyParamsMiddleware::class,
                 \VuBib\Middleware\AuthenticationMiddleware::class,
                 VuBib\Action\WorkType\DeleteSubAttributeAction::class,
+            ],
+            'allowed_methods' => ['GET','POST'],
+        ],
+        
+        [
+            'name' => 'edit_subattribute_values',
+            'path' => '/WorkType/edit_subattribute_values',
+            'middleware' => [
+                //BodyParamsMiddleware::class,
+                \VuBib\Middleware\AuthenticationMiddleware::class,
+                VuBib\Action\WorkType\EditSubAttributeValuesAction::class,
             ],
             'allowed_methods' => ['GET','POST'],
         ],
