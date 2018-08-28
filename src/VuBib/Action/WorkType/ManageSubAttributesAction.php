@@ -146,19 +146,15 @@ class ManageSubAttributesAction
         if (isset($post['submitt'])) {
             if ($post['submitt'] == 'Delete') {
                 if (null !== $post['subattr_id']) {
-                    foreach ($post['subattr_id'] as
-                      $subattr_Id
-                    ):
-                        $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
-                            $this->adapter
-                        );
-                        $table->deleteRecordBySubAttributeId($subattr_Id);
+                    $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
+                        $this->adapter
+                    );
+                    $table->deleteRecordBySubAttributeId($post['subattr_id']);
 
-                        $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
-                            $this->adapter
-                        );
-                        $table->deleteRecordById($subattr_Id);
-                    endforeach;
+                    $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute(
+                        $this->adapter
+                    );
+                    $table->deleteRecordById($post['subattr_id']);
                 }
             }
         }
