@@ -1,18 +1,18 @@
 <?php $this->headTitle('Edit WorkType'); ?>
 <?php
-	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_worktype') . '" style="float:left;color:white;"> Worktype > </a>' 
-	                                 . ' Edit';
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_worktype') . '" style="float:left;color:white;"> Worktype > </a>'
+                                     . ' Edit';
  ?>
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {
     $params = $request->getqueryParams();
     $action = $params['action'];
-    $id     = $params['id'];
+    $id = $params['id'];
     //fetch name based on id
-    $table  = new \VuBib\Db\Table\WorkType($adapter);
-    $row    = $table->findRecordById($id);
-    $type   = $row['type'];
+    $table = new \VuBib\Db\Table\WorkType($adapter);
+    $row = $table->findRecordById($id);
+    $type = $row['type'];
 }
 ?>
 <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>

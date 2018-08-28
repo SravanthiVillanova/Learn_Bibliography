@@ -28,9 +28,9 @@
 namespace VuBib\Action\Language;
 
 use Interop\Container\ContainerInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for EditLanguageFactory.
@@ -47,7 +47,8 @@ class EditLanguageFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container
+     * that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -59,6 +60,9 @@ class EditLanguageFactory
             : null;
         $adapter = $container->get(Adapter::class);
         //return new EditLanguageAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction('vubib::language::edit_language', $router, $template, $adapter);
+        return new \VuBib\Action\SimpleRenderAction(
+            'vubib::language::edit_language', $router,
+            $template, $adapter
+        );
     }
 }

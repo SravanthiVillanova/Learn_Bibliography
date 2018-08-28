@@ -5,7 +5,7 @@
 <property name="package"  value="${phing.project.name}" override="true" />
 <property name="builddir" value="${tmp}/build/${phing.project.name}" override="true" />
 <property name="srcdir"   value="${project.basedir}" override="true" />
-<property name="php-cs-fixers" value="no_blank_lines_before_namespaces,function_call_space,lowercase_keywords,encoding,parenthesis,php_closing_tag,visibility,extra_empty_lines,no_blank_lines_after_class_opening,operators_spaces,spaces_before_semicolon,ternary_spaces,eof_ending" />
+<!--<property name="php-cs-fixers" value="no_blank_lines_before_namespaces,function_call_space,lowercase_keywords,encoding,parenthesis,php_closing_tag,visibility,extra_empty_lines,no_blank_lines_after_class_opening,operators_spaces,spaces_before_semicolon,ternary_spaces,eof_ending" />-->
 
 <!-- Main Target -->
   <target name="main" description="main target">
@@ -27,6 +27,7 @@
 
    <!-- Call standard tasks -->
     <phingcall target="phpcs"/>
+    <phingcall target="php-cs-fixer-dryrun"/>
     <phingcall target="phpcpd"/>
     <phingcall target="phpmd"/>
 	<phingcall target="pdepend"/>
@@ -35,9 +36,9 @@
 
 <!-- Report rule violations with PHPMD (mess detector) -->
   <target name="phpmd">
-    <exec command="${srcdir}/vendor/bin/phpmd ${srcdir}/src xml ${srcdir}/test/phpmd.xml --exclude ${srcdir}/test --reportfile ${builddir}/reports/phpmd.xml" />
+    <exec command="${srcdir}/vendor/bin/phpmd ${srcdir}/src xml ${srcdir}/tests/phpmd.xml --exclude ${srcdir}/test --reportfile ${builddir}/reports/phpmd.xml" />
   </target>
-
+  
   <!-- Measure project with phploc -->
   <target name="phploc">
     <exec command="${srcdir}/vendor/bin/phploc --log-csv ${builddir}/reports/phploc.csv ${srcdir}/src" />
@@ -54,11 +55,14 @@
   </target>
 
   <!-- PHP CodeSniffer -->
+  <target name="phpcbf">
+    <exec command="${srcdir}/vendor/bin/phpcbf --standard=${srcdir}/tests/phpcs.xml" escape="false" passthru="true" checkreturn="true" />
+  </target>
   <target name="phpcs">
-    <exec command="${srcdir}/vendor/bin/phpcs --standard=PEAR --ignore=tests/* --extensions=php --report=checkstyle ${srcdir}/src &gt; ${builddir}/reports/checkstyle.xml" escape="false" />
+    <exec command="${srcdir}/vendor/bin/phpcs --standard=${srcdir}/tests/phpcs.xml --report=checkstyle &gt; ${builddir}/reports/checkstyle.xml" escape="false" />
   </target>
   <target name="phpcs-console">
-    <exec command="${srcdir}/vendor/bin/phpcs --standard=PEAR --ignore=tests/* --extensions=php ${srcdir}/src" escape="false" passthru="true" checkreturn="true" />
+    <exec command="${srcdir}/vendor/bin/phpcs --standard=${srcdir}/tests/phpcs.xml" escape="false" passthru="true" checkreturn="true" />
   </target>
   
    <!-- PHP copy-and-paste detection -->
@@ -67,10 +71,10 @@
   </target>
   
    <!-- php-cs-fixer (first task applies fixes, second task simply checks if they are needed) -->
-   <target name="php-cs-fixer">
-    <exec command="${srcdir}/vendor/bin/php-cs-fixer fix ${srcdir}/src --fixers=${php-cs-fixers} --verbose" passthru="true" escape="false" />
+  <target name="php-cs-fixer">
+    <exec command="${srcdir}/vendor/bin/php-cs-fixer fix --config=${srcdir}/tests/vubib_templates.php_cs -vvv" passthru="true" escape="false" />
   </target>
   <target name="php-cs-fixer-dryrun">
-    <exec command="${srcdir}/vendor/bin/php-cs-fixer fix ${srcdir}/src --fixers=${php-cs-fixers} --dry-run --verbose --diff" passthru="true" escape="false" checkreturn="true" />
+    <exec command="${srcdir}/vendor/bin/php-cs-fixer fix --config=${srcdir}/tests/vubib_templates.php_cs --dry-run -vvv --diff" passthru="true" escape="false" checkreturn="true" />
   </target>
 </project>

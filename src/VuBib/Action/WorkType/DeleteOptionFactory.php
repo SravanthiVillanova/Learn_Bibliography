@@ -28,9 +28,9 @@
 namespace VuBib\Action\WorkType;
 
 use Interop\Container\ContainerInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for DeleteOptionFactory.
@@ -47,7 +47,8 @@ class DeleteOptionFactory
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container
+     * that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -59,6 +60,9 @@ class DeleteOptionFactory
             : null;
         $adapter = $container->get(Adapter::class);
         //return new DeleteOptionAction($router, $template, $adapter);
-        return new \VuBib\Action\SimpleRenderAction('vubib::worktype::delete_option', $router, $template, $adapter);
+        return new \VuBib\Action\SimpleRenderAction(
+            'vubib::worktype::delete_option', $router,
+            $template, $adapter
+        );
     }
 }

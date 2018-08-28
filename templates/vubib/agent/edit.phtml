@@ -2,7 +2,7 @@
 $this->headTitle('Edit Agent');
 ?> 
 <?php 
-	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_agent') . '" style="float:left;color:white;"> Agent > </a>' . ' Edit';
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_agent') . '" style="float:left;color:white;"> Agent > </a>' . ' Edit';
  ?>
 
 <?php
@@ -18,7 +18,7 @@ if ($request->getqueryParams('id') !== null) {
     $lname = $row['lname'];
     $altname = $row['alternate_name'];
     $orgname = $row['organization_name'];
-	$mail = $row['email'];
+    $mail = $row['email'];
 }
 ?>
 <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>

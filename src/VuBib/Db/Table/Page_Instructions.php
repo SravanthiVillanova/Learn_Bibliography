@@ -30,8 +30,6 @@
  */
 namespace VuBib\Db\Table;
 
-use Zend\Db\Sql\Select;
-
 /**
  * Table Definition for page_instructions.
  *
@@ -63,7 +61,7 @@ class Page_Instructions extends \Zend\Db\TableGateway\TableGateway
      */
     public function findRecordByPageName($str)
     {
-        $rowset = $this->select(array('page_name' => $str));
+        $rowset = $this->select(['page_name' => $str]);
         $row = $rowset->current();
 
         return $row;

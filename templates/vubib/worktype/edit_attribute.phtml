@@ -1,18 +1,18 @@
 <?php $this->headTitle('Edit Attribute'); ?>
 <?php
-	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' 
-	                                 . ' Edit';
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
+                                     . ' Edit';
  ?>
 <?php
 $id;
 if ($request->getqueryParams('id') !== null) {
     $params = $request->getqueryParams();
     $action = $params['action'];
-    $id     = $params['id'];
+    $id = $params['id'];
     //fetch name based on id
-    $table  = new \VuBib\Db\Table\WorkAttribute($adapter);
-    $row    = $table->findRecordById($id);
-    $field  = $row['field'];
+    $table = new \VuBib\Db\Table\WorkAttribute($adapter);
+    $row = $table->findRecordById($id);
+    $field = $row['field'];
 }
 ?>
 <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>

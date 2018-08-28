@@ -1,23 +1,22 @@
 <?php
-use Zend\Expressive\Application;
-use Zend\Db\Adapter\Adapter;
-return array(
-    'service_manager' => array(
-        'factories' => array(
+
+return [
+    'service_manager' => [
+        'factories' => [
             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
-        ),
-        'aliases' => array(
+        ],
+        'aliases' => [
             'db' => 'Zend\Db\Adapter\Adapter',
-        ),
-    ),
-    'db' => array(
+        ],
+    ],
+    'db' => [
         'driver'    => 'mysqli',
-        //'database' => 'pr_test', 
-		//'database'       => 'panta_rhei',
-		'database' => 'vubib_1',
+        //'database' => 'pr_test',
+        //'database'       => 'panta_rhei',
+        'database' => 'vubib_1',
         'username'  => 'root',
         'password'  => '',
-		'charset'  => 'utf8',
-    	
-    ),
-);
+        'charset'  => 'utf8',
+
+    ],
+];

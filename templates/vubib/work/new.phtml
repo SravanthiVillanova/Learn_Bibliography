@@ -1,8 +1,8 @@
 <?php $this->headTitle('New Work'); ?>
 <?php 
-	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_work') . '" style="float:left;color:white;"> Work > </a>' 
-	                                . ' New';
-	  $this->layout()->page = "Work/New";
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '" style="float:left;color:white;"> Work > </a>'
+                                    . ' New';
+      $this->layout()->page = "Work/New";
  ?>
 <?php
 //fetch worktypes
@@ -36,6 +36,8 @@ label {
 <script>
 var ur = "";
 var workURL = '<?=$this->url('get_work_details')?>';
+var sattrURL = '<?=$this->url('edit_subattribute_values')?>';
+//var sattrURL = '<?=$this->url('edit_option')?>';
 
 $(document).ready(function() {
 	//Publisher
@@ -78,9 +80,9 @@ $(document).ready(function() {
 				'<select class="agent_type" name="agent_type[]" id="agent_type">' +
 				'<option value=""></option>' +
 				<?php
-				foreach ($paginator_agtype as $ag_row) :
-				//print_r($row);
-				?>
+                foreach ($paginator_agtype as $ag_row) :
+                //print_r($row);
+                ?>
 					'<option value="<?= $ag_row['id'] ?>"><?php echo $ag_row['type']; ?></option>' +
 				<?php endforeach; ?>
 				'</select>' +
@@ -109,7 +111,7 @@ $(document).ready(function() {
 	});
 	//get attributes for selected worktypes
 	$('#work_type', document).on('change', function() {
-		bindWorkTypeAttributes(document, workURL);
+		bindWorkTypeAttributes(document, workURL, sattrURL);
 	});
 	//classification
 	//add classification rows
@@ -120,10 +122,10 @@ $(document).ready(function() {
 				'<select class="select_source_fl select2" name="select_source_fl[]">' +
 				'<option value=""></option>' +
 				<?php
-				$table = new \VuBib\Db\Table\Folder($this->adapter);
-				$fl_siblings = $table->getFoldersWithNullParent();
-				foreach ($fl_siblings as $row) :
-				?>
+                $table = new \VuBib\Db\Table\Folder($this->adapter);
+                $fl_siblings = $table->getFoldersWithNullParent();
+                foreach ($fl_siblings as $row) :
+                ?>
 					'<option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>' +
 				<?php endforeach; ?>
 				'</select>' +
@@ -180,7 +182,7 @@ $(document).ready(function() {
 		addNewAgent(document,workURL,lnk);
 		return false;
 	});
-		
+     
 	$('#submit_save').on('click', function() {
 		$('#General').find('input:required').each(function() {
 			// Find the tab-pane that this element is inside, and get the id
@@ -218,9 +220,9 @@ $(document).ready(function() {
         <input type="hidden" name="action" value="work_new">
         <!--<input type="hidden" name="arr[]" id="arrs" value="frm jquery">-->
         <?php
-		//get user
-		$user = $this->isUser()->getUser();
-		?>
+        //get user
+        $user = $this->isUser()->getUser();
+        ?>
         <input type="hidden" name="user" id="user" value="<?= $user ?>">
         <div class="tabbable">
             <ul class="nav nav-tabs">
@@ -272,8 +274,8 @@ $(document).ready(function() {
                     <select name="work_type" id="work_type" required="true">
                         <option value="">Choose Work Type</option>
                         <?php
-						foreach ($paginator as $row) :
-						?>
+                        foreach ($paginator as $row) :
+                        ?>
                             <option value="<?= $row['id'] ?>"><?php echo $row['type']; ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -339,10 +341,10 @@ $(document).ready(function() {
 							<select class="select_source_fl select2" name="select_source_fl[]">
 								<option value=""></option>
 								<?php
-								$table = new \VuBib\Db\Table\Folder($this->adapter);
-								$fl_siblings = $table->getFoldersWithNullParent();
-								foreach ($fl_siblings as $row) :
-								?>
+                                $table = new \VuBib\Db\Table\Folder($this->adapter);
+                                $fl_siblings = $table->getFoldersWithNullParent();
+                                foreach ($fl_siblings as $row) :
+                                ?>
 									<option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>
 								<?php endforeach; ?>
 							</select>
@@ -410,11 +412,11 @@ $(document).ready(function() {
                             <select class="agent_type" name="agent_type[]" id="agent_type">
                                 <option value=""></option>
                                 <?php
-								//fetch agenttypes
-								//$table = new \VuBib\Db\Table\AgentType($this->adapter);
-								//$paginator = $table->fetchAgentTypes();
-								foreach ($paginator_agtype as $row) :
-								?>
+                                //fetch agenttypes
+                                //$table = new \VuBib\Db\Table\AgentType($this->adapter);
+                                //$paginator = $table->fetchAgentTypes();
+                                foreach ($paginator_agtype as $row) :
+                                ?>
                                 <option value="<?= $row['id'] ?>"><?php echo $row['type']; ?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -580,12 +582,6 @@ $(document).ready(function() {
 								<label class="col-xs-2 control-label">Option: </label>
 								<div class="col-xs-7">
 									<input type="text" class="form-control" name="name_option" id="newoption" required="true" />
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-xs-2 control-label">Type: </label>
-								<div class="col-xs-7">
-									<input type="text" class="form-control" name="add_optiontype" id="addoptiontype" />
 								</div>
 							</div>
 							<div class="form-group">

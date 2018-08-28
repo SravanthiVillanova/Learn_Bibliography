@@ -1,16 +1,16 @@
 <?php $this->headTitle('Delete Attribute'); ?>
 <?php
-$this->layout()->breadcrumbs .= '<a href="' .  $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' 
-	                                 . ' Merge';
+$this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
+                                     . ' Merge';
 $this->headScript()->appendFile($this->url('home') . 'js/work.js');
 if ($request->getqueryParams('action') !== null) {
-	$params  = $request->getqueryParams();
-    $action  = $params['action'];
+    $params = $request->getqueryParams();
+    $action = $params['action'];
     $wkat_id = $params['id'];
-	//fetch attribute name based on id
-    $table  = new \VuBib\Db\Table\WorkAttribute($adapter);
-    $row    = $table->findRecordById($wkat_id);
-    $attribute  = $row['field'];
+    //fetch attribute name based on id
+    $table = new \VuBib\Db\Table\WorkAttribute($adapter);
+    $row = $table->findRecordById($wkat_id);
+    $attribute = $row['field'];
 }
  ?>
 <script>

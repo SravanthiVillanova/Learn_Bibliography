@@ -47,7 +47,7 @@ class FormHelpersMiddleware
      *
      * @var HelperPluginManager
      */
-    private $helpers;
+    private $_helpers;
 
     /**
      * Form Helpers Middleware constructor
@@ -58,7 +58,7 @@ class FormHelpersMiddleware
      */
     public function __construct(HelperPluginManager $helpers)
     {
-        $this->helpers = $helpers;
+        $this->_helpers = $helpers;
     }
 
     /**
@@ -73,7 +73,7 @@ class FormHelpersMiddleware
     public function __invoke($request, $response, callable $next)
     {
         $config = new FormHelperConfig();
-        $config->configureServiceManager($this->helpers);
+        $config->configureServiceManager($this->_helpers);
 
         return $next($request, $response);
     }

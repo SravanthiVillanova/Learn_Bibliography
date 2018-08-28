@@ -27,9 +27,9 @@
  */
 namespace VuBib\Middleware;
 
-use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
 use Teapot\StatusCode\RFC\RFC7231;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
@@ -53,28 +53,28 @@ class AuthenticationMiddleware
      *
      * @var $router
      */
-    private $router;
+    private $_router;
 
     /**
      * Template\TemplateRendererInterface
      *
      * @var $template
      */
-    private $template;
+    private $_template;
 
     /**
      * String
      *
      * @var basePath
      */
-    private $basePath;
+    private $_basePath;
 
     /**
      * Zend\Session\Container
      *
      * @var $session
      */
-    private $session;
+    private $_session;
 
     /**
      * AuthenticationMiddleware constructor.
@@ -91,10 +91,10 @@ class AuthenticationMiddleware
         Template\TemplateRendererInterface $template,
         $basePath, $session
     ) {
-        $this->router = $router;
-        $this->template = $template;
-        $this->basePath = rtrim($basePath, '/');
-        $this->session = $session;
+        $this->_router = $router;
+        $this->_template = $template;
+        $this->_basePath = rtrim($basePath, '/');
+        $this->_session = $session;
     }
 
     /**
@@ -111,10 +111,12 @@ class AuthenticationMiddleware
         ResponseInterface $response,
         callable $next
     ) {
-        if (!isset($this->session->id)) {
+        if (!isset($this->_session->id)) {
             return new RedirectResponse(
-                sprintf($this->basePath.'/login?redirect_to=%s', $this->getCurrentRequest($request)),
-                RFC7231::FOUND
+                sprintf(
+                    $this->_basePath . '/login?redirect_to=%s',
+                    $this->_getCurrentRequest($request)
+                ), RFC7231::FOUND
             );
         }
 
@@ -128,8 +130,10 @@ class AuthenticationMiddleware
      *
      * @return string
      */
-    private function getCurrentRequest(ServerRequestInterface $request)
-    {
+    private function _getCurrentRequest(
+        ServerRequestInterface $request
+    ) {
+
         /**
          * Uri
          *
@@ -137,14 +141,14 @@ class AuthenticationMiddleware
          */
         $uri = $request->getUri();
 
-        $redirectTo = $this->basePath.$uri->getPath();
+        $redirectTo = $this->_basePath . $uri->getPath();
 
         if ($uri->getQuery() !== '') {
-            $redirectTo .= '?'.$uri->getQuery();
+            $redirectTo .= '?' . $uri->getQuery();
         }
 
         if ($uri->getFragment() !== '') {
-            $redirectTo .= '#'.$uri->getFragment();
+            $redirectTo .= '#' . $uri->getFragment();
         }
 
         return urlencode($redirectTo);

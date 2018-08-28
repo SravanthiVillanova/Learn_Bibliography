@@ -2,33 +2,36 @@
 $this->headTitle('Manage Options - Attributes');
 ?>
 <?php 
-	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' 
-	                                . ' Attribute Options';
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
+                                    . ' Attribute Options';
  ?>
 <?php
 if ($request->getqueryParams('action') !== null) {
     $params = $request->getqueryParams();
-	if(isset($params['action']) && $params['action'] == 'search_option') {
-		$matches = array ();
-		if (preg_match_all('/(.*)worktype_attr=(?<id>\d+)(.*)/', $searchParams, $matches)) {
-			$id = $matches['id'][0];
-		}
-	} else {
-		$id     = $params['id'];
-	}
-	//fetch attribute name based on id
-    $table  = new \VuBib\Db\Table\WorkAttribute($adapter);
-    $row    = $table->findRecordById($id);
-    $attribute  = $row['field'];
+    if(isset($params['action']) && $params['action'] == 'search_option') {
+        $matches = [];
+        if (preg_match_all('/(.*)worktype_attr=(?<id>\d+)(.*)/', $searchParams, $matches)) {
+            $id = $matches['id'][0];
+        }
+    } else {
+        $id = $params['id'];
+    }
+    //fetch attribute name based on id
+    $table = new \VuBib\Db\Table\WorkAttribute($adapter);
+    $row = $table->findRecordById($id);
+    $attribute = $row['field'];
+    //fetch subattributes of attribute
+    $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
+    $subattr = $table->findRecordsByWorkAttrId($id);
 }
 ?>
 <?php
 $q_str = "";
-$sort_ord = isset($_GET['sort_ord'])?($_GET['sort_ord']=="ASC"?"DESC":"ASC"):"ASC";
-if ($request->getqueryParams()!= null) {
-	$params = $request->getqueryParams();
-	$q_str = $_SERVER["QUERY_STRING"];
-	if(preg_match('/(?P<pg>page=\d+&)?(?P<action>.*)(?P<ord>&orderBy=\w+&sort_ord=\w+)/',$q_str,$matches)) {
+$sort_ord = isset($_GET['sort_ord'])?($_GET['sort_ord'] == "ASC"?"DESC":"ASC"):"ASC";
+if ($request->getqueryParams() != null) {
+    $params = $request->getqueryParams();
+    $q_str = $_SERVER["QUERY_STRING"];
+    if(preg_match('/(?P<pg>page=\d+&)?(?P<action>.*)(?P<ord>&orderBy=\w+&sort_ord=\w+)/', $q_str, $matches)) {
         $q_str = preg_replace('/(?P<pg>page=\d+&)?(?P<action>.*)(?P<ord>&orderBy=\w+&sort_ord=\w+)/', $matches['action'], $q_str);
     }
 }
@@ -58,17 +61,20 @@ $(document).ready(function () {
         <thead>
         <tr>
 		  <th>&nbsp;&nbsp;</th>
-		  <th><a href="<?=$this->url('manage_attribute_options')?><?='?' . $q_str .'&orderBy=title&sort_ord=' . $sort_ord?>">Option</a></th>
+		  <th><a href="<?=$this->url('manage_attribute_options')?><?='?' . $q_str . '&orderBy=title&sort_ord=' . $sort_ord?>">Option</a></th>
+          <?php if (count($subattr) > 0){ ?>
+                <th><?=$subattr['subattribute']?></th>
+          <?php } ?>
         </tr>
         </thead>
         <tbody>
 			<?php if($this->countp > 0) { ?>
 			<?php 
-			$escaper = new Zend\Escaper\Escaper('utf-8'); 
-			foreach($this->rows as $row) : 
-				$output = (array)$row;
-                $params = implode(', ', $output);        
-			?>
+            $escaper = new Zend\Escaper\Escaper('utf-8');
+            foreach($this->rows as $row) :
+                $output = (array)$row;
+                $params = implode(', ', $output);
+            ?>
 			<tr>
 				<td>
 					<input type="checkbox" id="selWorkAttrOpt" name="selectWorkAttrOpt[]" value=<?=$row['id']?>>
@@ -77,6 +83,20 @@ $(document).ready(function () {
 					<a href="<?=$this->url('edit_option')?><?='?wkat_id=' . $id . '&id=' . $row['id'] . '&action=edit'?>">
 					<?php echo $escaper->escapeHtml($row['title']); ?></a>			
 				</td>
+                <?php 
+                if (count($subattr) > 0){
+                    $subattr_value = "";
+                    //fetch subattribute values for option
+                    $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute($this->adapter);
+                    $opt_subattr_rows = $table->findRecordByOption($row['id'], $subattr['id']);
+                    foreach($opt_subattr_rows as $subopt_row):
+                        if ($subopt_row["subattr_value"] != "") {
+                            $subattr_value .= $subopt_row['subattr_value'] . ", ";
+                        }
+                    endforeach;
+                ?>
+                <td><?=trim($subattr_value, ", ");?></td>
+                <?php } ?>
 			</tr>
 			<?php endforeach; ?>
 		<?php } ?>
@@ -88,13 +108,13 @@ $(document).ready(function () {
 	<?php if($this->countp > 1) { ?>
 		<form method="get" action="page">
 			<?=$this->paginationControl($this->rows,
-				'Sliding',
-				'vubib::controls',
-				[
-					'route'  => 'manage_attribute_options',
-					'extraParams' => $searchParams,
-				]
-			);?>
+                'Sliding',
+                'vubib::controls',
+                [
+                    'route' => 'manage_attribute_options',
+                    'extraParams' => $searchParams,
+                ]
+            );?>
 		</form>
     <?php } ?> 
 </div>

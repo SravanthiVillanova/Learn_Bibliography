@@ -33,7 +33,7 @@
                     $row = $table->findRecordByUser($user);
                     $role = $row['role']; */
                     //echo "came to layout"
-        
+
 ?>
     <div class="navbar navbar-default" role="navigation">
       <div class="container">
@@ -144,22 +144,21 @@
             <?php echo $this->content ?>
  </div>  
  <?php
-			
-			// Page Instructions Content
+
+            // Page Instructions Content
             include_once('instructions.inc');
-			
+
             $page = basename($this->url());
-	
+
             //echo $instructions[basename($this->url())];
-	      
-           if (isset($_POST['instructions'])) {   
-			  //print_r($_POST['instructions']);
+
+           if (isset($_POST['instructions'])) {
+              //print_r($_POST['instructions']);
             $instructions[basename($this->url())] = $_POST['instructions'];
-			
+
            }
-	      // print_r($instructions);
-	        $this->layout()->instructions = isset($instructions[$page])
-                    ? $instructions[$page] : ''; 
+          // print_r($instructions);
+            $this->layout()->instructions = $instructions[$page] ?? '';
 ?>
         <main class="container">  
 				<div style="float: right; width: 20%;">

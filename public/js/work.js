@@ -325,7 +325,7 @@ function addNewAgent(context,workURL,lnk) {
 }
 
 //WorkType Autocomplete
-function bindWorkTypeAttributes(context, workURL) {
+function bindWorkTypeAttributes(context, workURL, sattrURL) {
 	$('#Citation *').not('.ig').remove();
 	//$(".content_box a").not(".button")
 	var worktype_Id = $('#work_type').val();
@@ -358,7 +358,7 @@ function bindWorkTypeAttributes(context, workURL) {
 				}
 				if (val.type == 'RadioButton') {
 					$('<div class="form-group required">' +
-							'<label class="col-xs-1">'+val.field+'</label>' + 
+							'<label class="col-xs-1">' + val.field + '</label>' + 
 							'<div class="col-xs-6">' + 
 									'<input type="radio" name="wkatid,' + val.id + '" value="true" /> True<br>' +
 									'<input type="radio" name="wkatid,' + val.id + '" value="false" /> False<br>' +
@@ -436,8 +436,32 @@ function bindWorkTypeAttributes(context, workURL) {
 						$(context).off('click', '.link_options');
 						$(context).on("click", ".link_options", function(e) {
 							var linkval = $(this).attr('href');
+                            var optId = $(this).attr('name');
 							attr_option_lookup.val(linkval);
 							attr_option_lookup.attr('name', attr_option_lookup.attr('name') + 'optid,' + $(this).attr('name'));
+                            $.ajax({
+                                method: 'post',
+                                url: ur + workURL,
+                                data: {
+                                    attribute_Id: attribute_Id,
+                                    option_id: optId,
+                                    subattr: 'chk_subattr'
+                                },
+                                dataType: "json",
+                                cache: false,
+                                success: function(data) {
+                                    if(Object.keys(data.subattr).length > 0) {                                           
+                                        var attr_id = data.subattr.attr_id;
+                                        //$(lookupBtn).after('&nbsp;<button type="button" class="btn btn-link openBtn" data-url="' + sattrURL + '?wkat_id=' + attr_id + '&id=' + optId + '&action=edit_sattr_vals" >Edit ' 
+                                        //+ data.subattr.subattr + '</button>');
+                                        $(lookupBtn).after('&nbsp;&nbsp;<a href="' + 
+                                        sattrURL + '?wkat_id=' + attr_id + '&id=' + optId + '&action=edit_sattr_vals" target="subattrTab">' + 
+                                        'Edit ' + data.subattr.subattr + '</a>');                                      
+                                    }
+                                },
+                                error: function() {
+                                }
+                            });
 							$('#lookupOption').val('');
 							$(".option_results", context).html('');
 							$('.option_lookup_close').trigger('click');
@@ -468,19 +492,19 @@ function addNewOption(context,workURL,lnk,attribute_Id,typedText) {
 				addAction: 'addNewOption',
 				attrId: attribute_Id,				
 				attrOption: $('#newoption').val(),
-				attrType: $('#addoptiontype').val()
+				//attrType: $('#addoptiontype').val()
 			},
 			dataType: "json",
 			cache: false,
 			success: function(data) {
 				if (Object.keys(data.newOption).length > 0) {
 						$('#newoption').val('');
-						$('#addoptiontype').val('');
+						//$('#addoptiontype').val('');
 						$(".add_new_opt_close").click();
 						
 						lnk.html('');
 						lnk.append('<p><a name="' + data.newOption.opt_id + '" href="' + data.newOption.opt_title + '" class="link_options">' + data.newOption.opt_title + '</a></p>');
-						
+
 						//lnk.closest('tr').find('#agent_LastName', context).nextAll().remove();
 				}
 			},

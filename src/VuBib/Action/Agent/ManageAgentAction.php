@@ -29,10 +29,10 @@ namespace VuBib\Action\Agent;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Expressive\Router;
 use Zend\Expressive\Template;
-use Zend\Db\Adapter\Adapter;
 use Zend\Paginator\Paginator;
 
 /**
@@ -75,8 +75,9 @@ class ManageAgentAction
      * @param Template\TemplateRendererInterface $template for templates
      * @param Adapter                            $adapter  for db connection
      */
-    public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null, Adapter $adapter)
-    {
+    public function __construct(Router\RouterInterface $router,
+        Template\TemplateRendererInterface $template = null, Adapter $adapter
+    ) {
         $this->router = $router;
         $this->template = $template;
         $this->adapter = $adapter;
@@ -122,7 +123,7 @@ class ManageAgentAction
             return $table->findRecords($params['find_agentorgname'], 'orgname');
         }
     }
-    
+
     /**
      * Merge agents.
      *
@@ -139,7 +140,7 @@ class ManageAgentAction
         $table = new \VuBib\Db\Table\Agent($this->adapter);
         $table->deleteRecord($post['mrg_src_id']);
     }
-    
+
     /**
      * Action based on action parameter.
      *
@@ -155,18 +156,21 @@ class ManageAgentAction
                 $table = new \VuBib\Db\Table\Agent($this->adapter);
                 $table->insertRecords(
                     $post['new_agentfirstname'], $post['new_agentlastname'],
-                    $post['new_agentaltname'], $post['new_agentorgname'], $post['new_agentemail']
+                    $post['new_agentaltname'], $post['new_agentorgname'],
+                    $post['new_agentemail']
                 );
             }
         }
         //edit an agent
         if ($post['action'] == 'edit') {
             if ($post['submitt'] == 'Save') {
-                if (!is_null($post['id'])) {
+                if (null !== $post['id']) {
                     $table = new \VuBib\Db\Table\Agent($this->adapter);
                     $table->updateRecord(
-                        $post['id'], $post['edit_agentfirstname'], $post['edit_agentlastname'],
-                        $post['edit_agentaltname'], $post['edit_agentorgname'], $post['edit_agentemail']
+                        $post['id'], $post['edit_agentfirstname'],
+                        $post['edit_agentlastname'],
+                        $post['edit_agentaltname'], $post['edit_agentorgname'],
+                        $post['edit_agentemail']
                     );
                 }
             }
@@ -182,7 +186,7 @@ class ManageAgentAction
             $this->doMerge($post);
         }
     }
-    
+
     /**
      * Delete agent.
      *
@@ -192,18 +196,18 @@ class ManageAgentAction
      */
     protected function doDelete($post)
     {
-		if ($post['action'] == 'delete') {
-			if ($post['submitt'] == 'Delete') {
-				if (!is_null($post['agent_id'])) {
-					foreach($post['agent_id'] as $agentId):
-						$table = new \VuBib\Db\Table\WorkAgent($this->adapter);
-						$table->deleteRecordByAgentId($agentId);
-						$table = new \VuBib\Db\Table\Agent($this->adapter);
-						$table->deleteRecord($agentId);
-					endforeach;
-				}
-			}
-		}
+        if ($post['action'] == 'delete') {
+            if ($post['submitt'] == 'Delete') {
+                if (null !== $post['agent_id']) {
+                    foreach ($post['agent_id'] as $agentId):
+                        $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
+                        $table->deleteRecordByAgentId($agentId);
+                        $table = new \VuBib\Db\Table\Agent($this->adapter);
+                        $table->deleteRecord($agentId);
+                    endforeach;
+                }
+            }
+        }
     }
 
     /**
@@ -218,23 +222,27 @@ class ManageAgentAction
     {
         //search
         if (!empty($params)) {
-            if (!empty($params['letter']) || !empty($params['find_agentfname']) || !empty($params['find_agentlname'])
-                || !empty($params['find_agentaltname']) || !empty($params['find_agentorgname'])
+            if (!empty($params['letter']) || !empty($params['find_agentfname'])
+                || !empty($params['find_agentlname'])
+                || !empty($params['find_agentaltname'])
+                || !empty($params['find_agentorgname'])
             ) {
-                return ($this->searchAgent($params));
+                return $this->searchAgent($params);
             }
         }
-       
+
         //edit, delete actions on agent
         if (!empty($post['action'])) {
             //add edit delete merge agent
             $this->doAction($post);
-            
+
             //Cancel edit\delete
             if ($post['submitt'] == 'Cancel') {
                 $table = new \VuBib\Db\Table\Agent($this->adapter);
 
-                return new Paginator(new \Zend\Paginator\Adapter\DbTableGateway($table));
+                return new Paginator(
+                    new \Zend\Paginator\Adapter\DbTableGateway($table)
+                );
             }
         }
         // default: blank for listing in manage
@@ -254,23 +262,35 @@ class ManageAgentAction
     {
         $searchParams = [];
         if (!empty($query['find_agentfname'])) {
-            $searchParams[] = 'find_agentfname='.urlencode($query['find_agentfname']);
+            $searchParams[] = 'find_agentfname='
+                . urlencode(
+                    $query['find_agentfname']
+                );
         }
         if (!empty($query['find_agentlname'])) {
-            $searchParams[] = 'find_agentlname='.urlencode($query['find_agentlname']);
+            $searchParams[] = 'find_agentlname='
+                . urlencode(
+                    $query['find_agentlname']
+                );
         }
         if (!empty($query['find_agentaltname'])) {
-            $searchParams[] = 'find_agentaltname='.urlencode($query['find_agentaltname']);
+            $searchParams[] = 'find_agentaltname='
+                . urlencode(
+                    $query['find_agentaltname']
+                );
         }
         if (!empty($query['find_agentorgname'])) {
-            $searchParams[] = 'find_agentorgname='.urlencode($query['find_agentorgname']);
+            $searchParams[] = 'find_agentorgname='
+                . urlencode(
+                    $query['find_agentorgname']
+                );
         }
         if (!empty($query['letter'])) {
-            $searchParams[] = 'letter='.urlencode($query['letter']);
+            $searchParams[] = 'letter=' . urlencode($query['letter']);
         }
         return $searchParams;
     }
-    
+
     /**
      * Invokes required template
      *
@@ -280,28 +300,35 @@ class ManageAgentAction
      *
      * @return HtmlResponse
      */
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
+    public function __invoke(ServerRequestInterface $request,
+        ResponseInterface $response, callable $next = null
+    ) {
         $table = new \VuBib\Db\Table\Agent($this->adapter);
         $characs = $table->findInitialLetter();
 
-        $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::agent::manage_agent', $this->router, $this->template, $this->adapter);
+        $simpleAction = new \VuBib\Action\SimpleRenderAction(
+            'vubib::agent::manage_agent', $this->router,
+            $this->template, $this->adapter
+        );
         list($query, $post) = $simpleAction->getQueryAndPost($request);
 
         $paginator = $this->getPaginator($query, $post);
         $paginator->setDefaultItemCountPerPage(15);
 
-        $simpleAction = new \VuBib\Action\SimpleRenderAction('vubib::agent::manage_agent', $this->router, $this->template, $this->adapter);
+        $simpleAction = new \VuBib\Action\SimpleRenderAction(
+            'vubib::agent::manage_agent', $this->router,
+            $this->template, $this->adapter
+        );
         $pgs = $simpleAction->getNextPrevious($paginator, $query);
 
         $searchParams = $this->getSearchParams($query);
-        
-        if (!is_null($searchParams)) {
+
+        if (null !== $searchParams) {
             $searchParams = implode('&', $searchParams);
         } else {
             $searchParams = '';
         }
-        
+
         return new HtmlResponse(
             $this->template->render(
                 'vubib::agent::manage_agent',

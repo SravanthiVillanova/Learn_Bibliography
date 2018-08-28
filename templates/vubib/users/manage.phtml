@@ -1,6 +1,6 @@
 <?php $this->headTitle('Manage Users'); ?>
 <?php
-	  $this->layout()->breadcrumbs .= ' Users';
+      $this->layout()->breadcrumbs .= ' Users';
  ?>
  <script>
 $(document).ready(function () {
@@ -32,7 +32,7 @@ $(document).ready(function () {
             <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
             <?php
             foreach ($this->rows as $row) :
-                $output = (array) $row;
+                $output = (array)$row;
                 $params = implode(', ', $output);
              ?>
 				<tr>

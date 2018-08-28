@@ -28,13 +28,13 @@
 namespace VuBib\Action;
 
 //use VuBib\Entity\LoginUser;
-use VuBib\Repository\UserAuthenticationInterface;
 use Interop\Config\ConfigurationTrait;
 use Interop\Config\RequiresConfigId;
 use Interop\Container\ContainerInterface;
+use VuBib\Repository\UserAuthenticationInterface;
+use Zend\Db\Adapter\Adapter;
 use Zend\Expressive\Router\RouterInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
-use Zend\Db\Adapter\Adapter;
 
 /**
  * Class Definition for LoginPageFactory.
@@ -59,11 +59,12 @@ class LoginPageFactory implements RequiresConfigId
     {
         return ['vubib'];
     }
-    
+
     /**
      * Invokes required template
      *
-     * @param ContainerInterface $container interface of a container that exposes methods to read its entries.
+     * @param ContainerInterface $container interface of a container
+     * that exposes methods to read its entries.
      *
      * @return HtmlResponse
      */
@@ -77,7 +78,9 @@ class LoginPageFactory implements RequiresConfigId
         $adapter = $container->get(Adapter::class);
         //$userEntity = new LoginUser();
 
-        $authenticationOptions = $this->options($container->get('config'), 'authentication');
+        $authenticationOptions = $this->options(
+            $container->get('config'), 'authentication'
+        );
 
         return new LoginPageAction(
             $router,

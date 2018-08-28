@@ -1,7 +1,7 @@
 <?php $this->headTitle('Find Attribute Options'); ?>
 <?php 
-	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>' 
-	                                . ' Attribute Options Search';
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
+                                    . ' Attribute Options Search';
 ?>
 <?php
 //fetch worktypes
@@ -20,14 +20,14 @@ if($itemsCount > 0) {
                     <select class="form-control" name="worktype_attr" id="worktype_attr" required="true">
                         <option value="">Choose Attribute</option>
                         <?php
-						foreach ($wktyp_attr_paginator as $row) :
-							if(strtolower($row['type']) === 'select') {
-						?>
+                        foreach ($wktyp_attr_paginator as $row) :
+                            if(strtolower($row['type']) === 'select') {
+                        ?>
                             <option value="<?= $row['id'] ?>"><?php echo $row['field']; ?></option>
                         <?php 
-							}
-						endforeach; 
-						?>
+                            }
+                        endforeach;
+                        ?>
                     </select>
                 </div>
 		</div>
@@ -45,7 +45,7 @@ if($itemsCount > 0) {
     </form>   
 </div>
 <?php
-} else { 
+} else {
 ?>
 		<p> No Attributes of type select to search options for. Please Add an attribute of type select. 
 		<a href="<?=$this->url('new_attribute')?><?='?action=new'?>"><b style="text-decoration: underline;">Add Attribute</b></a>

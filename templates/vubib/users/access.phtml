@@ -1,6 +1,6 @@
 <?php $this->headTitle('Access Users'); ?>
 <?php
-	  $this->layout()->breadcrumbs .= '<a href="' .  $this->url('manage_users') . '" style="float:left;color:white;"> Users > </a>' . ' Access';
+      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_users') . '" style="float:left;color:white;"> Users > </a>' . ' Access';
  ?>
 
 <div class="col-md-9">
@@ -88,105 +88,105 @@
                         <table style="font-size:10pt;">
                             <tr align="center">
 							<?php
-								$table = new \VuBib\Db\Table\Module_Access($this->adapter);
-								$mods = $table->getModules('role_su');
-								$modules = array_column($mods, 'module');
-							?>
+                                $table = new \VuBib\Db\Table\Module_Access($this->adapter);
+                                $mods = $table->getModules('role_su');
+                                $modules = array_column($mods, 'module');
+                            ?>
                                 <td>Work <br>
 									<?php
-									$checked = "";
-									if(in_array("Work",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Work", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Work][Super User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Work Type <br>
 									<?php
-									$checked = "";
-									if(in_array("Work Type",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Work Type", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Work Type][Super User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Classification <br>
 									<?php
-									$checked = "";
-									if(in_array("Classification",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Classification", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Classification][Super User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Agent <br>
 									<?php
-									$checked = "";
-									if(in_array("Agent",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Agent", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Agent][Super User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Agent Type <br>
 									<?php
-									$checked = "";
-									if(in_array("Agent Type",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Agent Type", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Agent Type][Super User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Publisher <br>
 									<?php
-									$checked = "";
-									if(in_array("Publisher",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Publisher", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Publisher][Super User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Language <br>
 									<?php
-									$checked = "";
-									if(in_array("Language",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Language", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Language][Super User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Users <br>
 									<?php
-									$checked = "";
-									if(in_array("Users",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Users", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Users][Super User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Preferences <br>
 									<?php
-									$checked = "";
-									if(in_array("Preferences",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Preferences", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Preferences][Super User]" value="1" <?php echo $checked; ?>>
                                     </div>
@@ -203,105 +203,105 @@
                         <table style="font-size:10pt;">
                             <tr align="center">
 							<?php
-								$table = new \VuBib\Db\Table\Module_Access($this->adapter);
-								$mods = $table->getModules('role_u');
-								$modules = array_column($mods, 'module');
-							?>
+                                $table = new \VuBib\Db\Table\Module_Access($this->adapter);
+                                $mods = $table->getModules('role_u');
+                                $modules = array_column($mods, 'module');
+                            ?>
                                 <td>Work <br>
 									<?php
-									$checked = "";
-									if(in_array("Work",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Work", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Work][User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Work Type <br>
 									<?php
-									$checked = "";
-									if(in_array("Work Type",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Work Type", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Work Type][User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Classification <br>
 									<?php
-									$checked = "";
-									if(in_array("Classification",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Classification", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Classification][User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Agent <br>
 									<?php
-									$checked = "";
-									if(in_array("Agent",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Agent", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Agent][User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Agent Type <br>
 									<?php
-									$checked = "";
-									if(in_array("Agent Type",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Agent Type", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Agent Type][User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Publisher <br>
 									<?php
-									$checked = "";
-									if(in_array("Publisher",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Publisher", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Publisher][User]" value="1" <?php echo $checked; ?>>
                                     </div>
                                 </td>
                                 <td>Language <br>
 									<?php
-									$checked = "";
-									if(in_array("Language",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Language", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Language][User]" value="1" <?php echo $checked; ?>>
 									</div>
                                 </td>
                                 <td>Users <br>
 									<?php
-									$checked = "";
-									if(in_array("Users",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Users", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
 										<input type="checkbox" name="access[Users][User]" value="1" <?php echo $checked; ?>>
 									</div>
                                 </td>
                                 <td>Preferences <br>
 									<?php
-									$checked = "";
-									if(in_array("Preferences",$modules)) {
-										$checked = 'checked="checked" ';
-									}									
-									?>
+                                    $checked = "";
+                                    if(in_array("Preferences", $modules)) {
+                                        $checked = 'checked="checked" ';
+                                    }
+                                    ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Preferences][User]" value="1" <?php echo $checked; ?>>
 									</div>
