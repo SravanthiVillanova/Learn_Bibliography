@@ -130,7 +130,7 @@ class AttributesWorkTypeAction
         if (isset($post['submitt'])) {
             if ($post['submitt'] == 'Delete') {
                 if (null !== $post['workattr_id']) {
-                    foreach ($post['workattr_id'] as $workattr_Id):
+                    foreach ($post['workattr_id'] as $workattr_Id) {
                         //no
                         $table = new \VuBib\Db\Table\Work_WorkAttribute(
                             $this->adapter
@@ -151,7 +151,7 @@ class AttributesWorkTypeAction
                             $this->adapter
                         );
                         $table->deleteRecord($workattr_Id);
-                    endforeach;
+                    }
                 }
             }
         }

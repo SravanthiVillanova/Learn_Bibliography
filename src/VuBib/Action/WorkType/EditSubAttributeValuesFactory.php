@@ -59,7 +59,7 @@ class EditSubAttributeValuesFactory
             ? $container->get(TemplateRendererInterface::class)
             : null;
         $adapter = $container->get(Adapter::class);
-        
+
         //return new EditSubAttributeValuesAction($router, $template, $adapter);
         return new \VuBib\Action\SimpleRenderAction(
             'vubib::worktype::edit_subattribute_values', $router,

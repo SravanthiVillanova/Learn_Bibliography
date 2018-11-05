@@ -104,9 +104,9 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
 
         $paginatorAdapter->setDefaultItemCountPerPage($cnt);
         $fieldRows = [];
-        foreach ($paginatorAdapter as $row) :
-                $fieldRows[] = $row['field'];
-        endforeach;
+        foreach ($paginatorAdapter as $row) {
+            $fieldRows[] = $row['field'];
+        }
 
         return $fieldRows;
     }
@@ -166,9 +166,9 @@ class WorkType_WorkAttribute extends \Zend\Db\TableGateway\TableGateway
     public function updateWorkTypeAttributeRank($wkt_id, $wkatids)
     {
         $wkat_ids = explode(',', $wkatids);
-        foreach ($wkat_ids as $id) :
+        foreach ($wkat_ids as $id) {
             $sort_wkatids[] = (int)preg_replace("/^\w{2,3}_/", '', $id);
-        endforeach;
+        }
         $callback = function ($select) use ($wkt_id) {
             $select->where->equalTo('worktype_id', $wkt_id);
             $select->order('rank');

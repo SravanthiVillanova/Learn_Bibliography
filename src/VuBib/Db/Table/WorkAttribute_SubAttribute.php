@@ -31,7 +31,6 @@
 namespace VuBib\Db\Table;
 
 use Zend\Db\Adapter\Adapter;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 
 /**

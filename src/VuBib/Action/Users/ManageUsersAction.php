@@ -142,10 +142,10 @@ class ManageUsersAction
     {
         if ($post['submitt'] == 'Delete') {
             if (null !== $post['user_id']) {
-                foreach ($post['user_id'] as $userId):
+                foreach ($post['user_id'] as $userId) {
                     $table = new \VuBib\Db\Table\User($this->adapter);
                     $table->deleteRecord($userId);
-                endforeach;
+                }
             }
         }
     }
@@ -175,7 +175,7 @@ class ManageUsersAction
         if ($post['action'] == 'users_access') {
             $table = new \VuBib\Db\Table\Module_Access($this->adapter);
             $all_modules = $table->getAllModules();
-            foreach ($all_modules as $row) :
+            foreach ($all_modules as $row) {
                 if (isset($post['access'][$row])) {
                     if (isset($post['access'][$row]['Super User'])) {
                         $table = new \VuBib\Db\Table\Module_Access($this->adapter);
@@ -201,7 +201,7 @@ class ManageUsersAction
                     $table = new \VuBib\Db\Table\Module_Access($this->adapter);
                     $table->unsetModuleAccess($row, 'User');
                 }
-            endforeach;
+            }
         }
     }
 

@@ -94,15 +94,15 @@ class GetWorkDetailsAction
         $name = $post['pub_name'];
         $table = new \VuBib\Db\Table\Publisher($this->adapter);
         $publisher_row = $table->findRecords($name);
-        foreach ($publisher_row as $row) :
-                $pub_row[] = $row;
-        endforeach;
-        foreach ($pub_row as $row) :
+        foreach ($publisher_row as $row) {
+            $pub_row[] = $row;
+        }
+        foreach ($pub_row as $row) {
             $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
             $wks = $table->findRecordByPublisherId($row['id']);
             $no_wks = count($wks);
             $no_of_wks[] = $no_wks;
-        endforeach;
+        }
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_row[$i]['works'] = $no_of_wks[$i];
         }
@@ -128,12 +128,12 @@ class GetWorkDetailsAction
             $pub_loc_rows[$i]['label'] = $row['location'];
             $pub_loc_rows[$i]['id'] = $row['id'];
         }
-        foreach ($pub_loc_rows as $row) :
+        foreach ($pub_loc_rows as $row) {
             $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
             $wks = $table->findRecordByLocationId($row['id']);
             $no_wks = count($wks);
             $no_of_wks[] = $no_wks;
-        endforeach;
+        }
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $pub_loc_rows[$i]['works'] = $no_of_wks[$i];
         }
@@ -155,12 +155,12 @@ class GetWorkDetailsAction
         $name = $post['ag_name'];
         $table = new \VuBib\Db\Table\Agent($this->adapter);
         $ag_row = $table->getLastNameLikeRecords($name);
-        foreach ($ag_row as $row) :
+        foreach ($ag_row as $row) {
             $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
             $wks = $table->findRecordByAgentId($row['id']);
             $no_wks = count($wks);
             $no_of_wks[] = $no_wks;
-        endforeach;
+        }
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $ag_row[$i]['works'] = $no_of_wks[$i];
         }
@@ -259,9 +259,9 @@ class GetWorkDetailsAction
         $itemsCount = $paginator->getTotalItemCount();
         $paginator->setItemCountPerPage($itemsCount);
         $rows = [];
-        foreach ($paginator as $row) :
-                $rows[] = $row;
-        endforeach;
+        foreach ($paginator as $row) {
+            $rows[] = $row;
+        }
         $output = ['worktype_attribute' => $rows];
         echo json_encode($output);
         exit;
@@ -454,7 +454,7 @@ class GetWorkDetailsAction
         //fetch subattributes of attribute
         $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
         $subattr = $table->findRecordsByWorkAttrId($newOpt_AttrId);
-        
+
         if (count($subattr) > 0) {
             $row['subattr_id'] = $subattr['id'];
             //Insert option to subattribute table
@@ -463,7 +463,7 @@ class GetWorkDetailsAction
             );
             $table->insertRecord($newOpt_AttrId, $newOpt_id, $subattr['id']);
         }
-        
+
         $row['attr_id'] = $newOpt_AttrId;
         $row['opt_id'] = $newOpt_id;
         $row['opt_title'] = $new_Option;
@@ -488,15 +488,15 @@ class GetWorkDetailsAction
         $wkat_id = $post['wkat_id'];
         $table = new \VuBib\Db\Table\WorkAttribute_Option($this->adapter);
         $option_row = $table->findRecords($name, $wkat_id);
-        foreach ($option_row as $row) :
-                $opt_row[] = $row;
-        endforeach;
-        foreach ($opt_row as $row) :
+        foreach ($option_row as $row) {
+            $opt_row[] = $row;
+        }
+        foreach ($opt_row as $row) {
             $table = new \VuBib\Db\Table\Work_WorkAttribute($this->adapter);
             $wks = $table->findRecordByOptionId($wkat_id, $row['id']);
             $no_wks = count($wks);
             $no_of_wks[] = $no_wks;
-        endforeach;
+        }
         for ($i = 0; $i < count($no_of_wks); ++$i) {
             $opt_row[$i]['works'] = $no_of_wks[$i];
         }
@@ -515,18 +515,18 @@ class GetWorkDetailsAction
     public function getSubAttr($post)
     {
         //$row = [][];
-        
+
         $post['attribute_Id'] = preg_replace("/^\w+:/", '', $post['attribute_Id']);
         //fetch subattributes of attribute
         $table = new \VuBib\Db\Table\WorkAttribute_SubAttribute($this->adapter);
         $subattr = $table->findRecordsByWorkAttrId($post['attribute_Id']);
-        
+
         if (count($subattr) > 0) {
             $row['attr_id'] = $subattr['workattribute_id'];
             $row['opt_id'] = $post['option_id'];
             $row['subattr_id'] = $subattr['id'];
             $row['subattr'] = $subattr['subattribute'];
-            
+
             //fetch subattribute values for option
             $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
                 $this->adapter
@@ -544,7 +544,7 @@ class GetWorkDetailsAction
         echo json_encode($output);
         exit;
     }
-    
+
     /**
      * Action based on post parameter set.
      *

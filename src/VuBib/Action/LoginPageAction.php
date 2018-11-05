@@ -95,20 +95,20 @@ class LoginPageAction
     /**
      * LoginPageAction constructor.
      *
-     * @param Router\RouterInterface             $router                    for 
+     * @param Router\RouterInterface             $router                    for
      *                                                                      routes
-     * @param Template\TemplateRendererInterface $template                  for 
+     * @param Template\TemplateRendererInterface $template                  for
      *                                                                      templates
-     * @param UserAuthenticationInterface        $userAuthenticationService 
+     * @param UserAuthenticationInterface        $userAuthenticationService
      *                                                                      to
      *                                                                      authenticate
      *                                                                      username,
      *                                                                      password
-     * @param string                             $defaultRedirectUri        to 
+     * @param string                             $defaultRedirectUri        to
      *                                                                      url
      *                                                                       redirect
-     * @param Adapter                            $adapter                   for 
-     *                                                                      db 
+     * @param Adapter                            $adapter                   for
+     *                                                                      db
      *                                                                      connection
      * @param Session                            $session                   session
      *                                                                      variable
@@ -168,9 +168,9 @@ class LoginPageAction
         }
         $table = new \VuBib\Db\Table\Module_Access($this->adapter);
         $modules = $table->getModules($this->session->role);
-        foreach ($modules as $row) :
-                    $mods[] = $row['module'];
-        endforeach;
+        foreach ($modules as $row) {
+            $mods[] = $row['module'];
+        }
         $this->session->modules_access = $mods;
     }
 

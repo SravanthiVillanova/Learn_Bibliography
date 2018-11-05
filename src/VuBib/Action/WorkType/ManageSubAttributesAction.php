@@ -105,9 +105,9 @@ class ManageSubAttributesAction
             $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
                 $this->adapter
             );
-            foreach ($optIds as $optId):
+            foreach ($optIds as $optId) {
                 $table->insertRecord($post['wkat_id'], $optId, $subattr_id);
-            endforeach;
+            }
         }
     }
 
@@ -195,7 +195,7 @@ class ManageSubAttributesAction
     protected function getPaginator($query, $post)
     {
         $order = "";
-        $wkat_id = isset($post['wkat_id']) ? $post['wkat_id'] : $query['wkat_id'];
+        $wkat_id = $post['wkat_id'] ?? $query['wkat_id'];
         if (!empty($post['action'])) {
             //add edit delete sub attribute
             $this->doAction($post, $query);
@@ -263,7 +263,7 @@ class ManageSubAttributesAction
         if (!empty($query['wkat_id'])) {
             $searchParams[] = 'wkat_id=' . urlencode($query['wkat_id']);
         }
-        $wkat_id = isset($post['wkat_id']) ? $post['wkat_id'] : $query['wkat_id'];
+        $wkat_id = $post['wkat_id'] ?? $query['wkat_id'];
 
         return new HtmlResponse(
             $this->template->render(

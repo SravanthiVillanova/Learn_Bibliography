@@ -106,11 +106,11 @@ class AttributeManageOptionsAction
             if (!array_filter($post['newsubattr'])) {
                 $table->insertRecord($wkat_id, $optId, $subat_id);
             } else {
-                foreach ($post['newsubattr'] as $subat):
+                foreach ($post['newsubattr'] as $subat) {
                     if ($subat != "") {
                         $table->insertRecord($wkat_id, $optId, $subat_id, $subat);
                     }
-                endforeach;
+                }
             }
         }
     }
@@ -136,18 +136,18 @@ class AttributeManageOptionsAction
                     $this->adapter
                 );
                 $table->deleteRecordByOptionId($wkat_id, $opt_id);
-                if (!array_filter($post['newsubattr'])  
+                if (!array_filter($post['newsubattr'])
                     && isset($post['subattr_id'])
                 ) {
                     //empty - no subattr vals
                     $table->insertRecord($wkat_id, $opt_id, $post['subattr_id']);
                 } elseif (isset($post['subattr_id'])) {
                     //not empty - has subattr vals
-                    foreach ($post['newsubattr'] as $subat):
+                    foreach ($post['newsubattr'] as $subat) {
                         if ($subat != "") {
                             $table->insertRecord($wkat_id, $opt_id, $post['subattr_id'], $subat);  //this
                         }
-                    endforeach;
+                    }
                 }
             }
         }
@@ -172,20 +172,20 @@ class AttributeManageOptionsAction
                     $this->adapter
                 );
                 $table->deleteRecordByOptionId($wkat_id, $opt_id);
-                if (!array_filter($post['newsubattr'])  
+                if (!array_filter($post['newsubattr'])
                     && isset($post['subattr_id'])
                 ) {
                     //empty - no subattr vals
                     $table->insertRecord($wkat_id, $opt_id, $post['subattr_id']);
                 } elseif (isset($post['subattr_id'])) {
                     //not empty - has subattr vals
-                    foreach ($post['newsubattr'] as $subat):
+                    foreach ($post['newsubattr'] as $subat) {
                         if ($subat != "") {
                             $table->insertRecord(
                                 $wkat_id, $opt_id, $post['subattr_id'], $subat
                             );
                         }
-                    endforeach;
+                    }
                 }
             }
         }
@@ -204,7 +204,7 @@ class AttributeManageOptionsAction
         if (isset($post['submitt'])) {
             if ($post['submitt'] == 'Delete') {
                 if (null !== $post['workattropt_id']) {
-                    foreach ($post['workattropt_id'] as $workattropt_Id):
+                    foreach ($post['workattropt_id'] as $workattropt_Id) {
                         $table = new \VuBib\Db\Table\Work_WorkAttribute(
                             $this->adapter
                         );
@@ -219,7 +219,7 @@ class AttributeManageOptionsAction
                             $this->adapter
                         );
                         $table->deleteOption($query['id'], $workattropt_Id);
-                    endforeach;
+                    }
                 }
             }
         }
@@ -287,7 +287,7 @@ class AttributeManageOptionsAction
         if ($post['submitt'] == 'Merge_Options') {
             if (null !== $post['mrg_attr_id']) {
                 $src_select = explode(",", $post['src_opts_hidden']);
-                foreach ($src_select as $src_workattropt_Id):
+                foreach ($src_select as $src_workattropt_Id) {
                     //Update wk_wkattr,set src_wkattropt_Id = dest_select
                     //where wkattr_id = $post['mrg_attr_id']
                     $table = new \VuBib\Db\Table\Work_WorkAttribute(
@@ -297,7 +297,7 @@ class AttributeManageOptionsAction
                         $post['mrg_attr_id'],
                         $post['dest_opt_hidden'], $src_workattropt_Id
                     );
-                    
+
                     //Update attr_opt_subat,set src_wkattropt_Id = dest_select
                     //where wkattr_id = $post['mrg_attr_id']
                     $table = new \VuBib\Db\Table\Attribute_Option_SubAttribute(
@@ -316,7 +316,7 @@ class AttributeManageOptionsAction
                     $table->deleteOption(
                         $post['mrg_attr_id'], $src_workattropt_Id
                     );
-                endforeach;
+                }
             }
         }
     }
@@ -444,7 +444,7 @@ class AttributeManageOptionsAction
         //$allItems = $paginator->getTotalItemCount();
         $countPages = $paginator->count();
 
-        $currentPage = isset($query['page']) ? $query['page'] : 1;
+        $currentPage = $query['page'] ?? 1;
         if ($currentPage < 1) {
             $currentPage = 1;
         }

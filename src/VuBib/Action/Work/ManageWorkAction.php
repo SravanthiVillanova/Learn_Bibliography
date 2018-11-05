@@ -184,9 +184,9 @@ class ManageWorkAction
                 );
 
                 //extract classification rows
-                foreach ($post['arr'] as $row):
+                foreach ($post['arr'] as $row) {
                     $fl[] = explode(',', trim($row, ','));
-                endforeach;
+                }
 
                 //extract folder ids for each row
                 for ($i = 0; $i < count($fl); ++$i) {
@@ -214,7 +214,7 @@ class ManageWorkAction
                 if ($post['agent_id'][0] != null) {
                     $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
                     $table->insertRecords(
-                        $wk_id, 
+                        $wk_id,
                         $post['agent_id'], $post['agent_type']
                     );
                 }
@@ -272,9 +272,9 @@ class ManageWorkAction
 
                 //extract classification rows
                 if (isset($post['arr'])) {
-                    foreach ($post['arr'] as $row):
+                    foreach ($post['arr'] as $row) {
                         $fl[] = explode(',', trim($row, ','));
-                    endforeach;
+                    }
                     //extract folder ids for each row
                     for ($i = 0; $i < count($fl); ++$i) {
                         $folder[$i] = $fl[$i][count($fl[$i]) - 1];
@@ -394,7 +394,7 @@ class ManageWorkAction
         if (isset($post['submitt'])) {
             if ($post['submitt'] == 'Delete') {
                 if (null !== $post['work_id']) {
-                    foreach ($post['work_id'] as $workId):
+                    foreach ($post['work_id'] as $workId) {
                         $table = new \VuBib\Db\Table\WorkAgent($this->adapter);
                         $table->deleteRecordByWorkId($workId);
                         $table = new \VuBib\Db\Table\Work_Folder($this->adapter);
@@ -407,7 +407,7 @@ class ManageWorkAction
                         $table->deleteRecordByWorkId($workId);
                         $table = new \VuBib\Db\Table\Work($this->adapter);
                         $table->deleteRecordByWorkId($workId);
-                    endforeach;
+                    }
                 }
             }
         }
@@ -525,7 +525,7 @@ class ManageWorkAction
                    '&sort_ord=' . urlencode($query['sort_ord']);
         }
         if (!empty($query['find_worktitle'])) {
-            $searchParams[] = 'find_worktitle=' . 
+            $searchParams[] = 'find_worktitle=' .
                  urlencode($query['find_worktitle']);
         }
         if (!empty($query['letter']) && $query['action'] == 'alphasearch') {

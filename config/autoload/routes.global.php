@@ -345,7 +345,7 @@ return [
             ],
             'allowed_methods' => ['GET','POST'],
         ],
-        
+
         [
             'name' => 'edit_subattribute_values',
             'path' => '/WorkType/edit_subattribute_values',

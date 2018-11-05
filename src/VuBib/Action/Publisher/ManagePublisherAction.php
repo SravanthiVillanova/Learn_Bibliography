@@ -134,8 +134,8 @@ class ManagePublisherAction
     {
         $locs = [];
         if (null !== $post['pub_id']) {
-            foreach ($post['pub_id'] as $pubId):
-                      $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
+            foreach ($post['pub_id'] as $pubId) {
+                $table = new \VuBib\Db\Table\WorkPublisher($this->adapter);
                 $table->deleteRecordByPub($pubId);
 
                 $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
@@ -143,7 +143,7 @@ class ManagePublisherAction
 
                 $table = new \VuBib\Db\Table\Publisher($this->adapter);
                 $table->deleteRecord($pubId);
-            endforeach;
+            }
         }
     }
 
@@ -160,7 +160,7 @@ class ManagePublisherAction
             $dest_loc_id = array_search('merge', $post['dest_loc']);
         }
 
-        foreach ($post['src_loc'] as $source_locid => $action) :
+        foreach ($post['src_loc'] as $source_locid => $action) {
             if ($action == 'move') {
                 //update workpub set pubid=destpubid
                 //where pubid=srcpubid and locid = $source_locid
@@ -188,7 +188,7 @@ class ManagePublisherAction
                 $table = new \VuBib\Db\Table\PublisherLocation($this->adapter);
                 $table->mergePublisher($post['mrg_src_id'], $source_locid);
             }
-        endforeach;
+        }
 
         //Delete source publisher
         $table = new \VuBib\Db\Table\Publisher($this->adapter);

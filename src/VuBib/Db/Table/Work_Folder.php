@@ -78,9 +78,9 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
 
         $rows = $this->select($callback)->toArray();
         $workIds = [];
-        foreach ($rows as $row) :
-                $workIds[] = $row['work_id'];
-        endforeach;
+        foreach ($rows as $row) {
+            $workIds[] = $row['work_id'];
+        }
 
         return $workIds;
     }
@@ -273,9 +273,9 @@ class Work_Folder extends \Zend\Db\TableGateway\TableGateway
         if ($cnt > 0) {
             $paginatorAdapter->setDefaultItemCountPerPage($cnt);
 
-            foreach ($paginatorAdapter as $row) :
+            foreach ($paginatorAdapter as $row) {
                 $flRows[] = $row;
-            endforeach;
+            }
         }
         return $flRows;
     }

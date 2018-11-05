@@ -320,7 +320,7 @@ class ManageClassificationAction
         $paginator->setDefaultItemCountPerPage(15);
         $countPages = $paginator->count();
 
-        $currentPage = isset($query['page']) ? $query['page'] : 1;
+        $currentPage = $query['page'] ?? 1;
         if ($currentPage < 1) {
             $currentPage = 1;
         }

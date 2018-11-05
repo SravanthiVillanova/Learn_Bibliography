@@ -127,7 +127,7 @@ class ManageWorkTypeAction
         if (isset($post['submitt'])) {
             if ($post['submitt'] == 'Delete') {
                 if (null !== $post['worktype_id']) {
-                    foreach ($post['worktype_id'] as $worktype_Id):
+                    foreach ($post['worktype_id'] as $worktype_Id) {
                         $table = new \VuBib\Db\Table\Work($this->adapter);
                         $table->updateWorkTypeId($worktype_Id);
                         $table = new \VuBib\Db\Table\WorkType_WorkAttribute(
@@ -136,7 +136,7 @@ class ManageWorkTypeAction
                         $table->deleteRecordByWorkType($worktype_Id);
                         $table = new \VuBib\Db\Table\WorkType($this->adapter);
                         $table->deleteRecord($worktype_Id);
-                    endforeach;
+                    }
                 }
             }
         }
@@ -153,11 +153,11 @@ class ManageWorkTypeAction
     {
         $attrs_to_remove = [];
         preg_match_all('/,?id_\d+/', $post['remove_attr'], $matches);
-        foreach ($matches[0] as $id) :
+        foreach ($matches[0] as $id) {
             $attrs_to_remove[] = (int)preg_replace(
                 "/^,?\w{2,3}_/", '', $id
             );
-        endforeach;
+        }
         if (null !== $attrs_to_remove) {
             if (count($attrs_to_remove) != 0) {
                 //remove attributes from a work type
@@ -180,11 +180,11 @@ class ManageWorkTypeAction
     {
         $attrs_to_add = [];
         preg_match_all('/,?nid_\d+/', $post['sort_order'], $matches);
-        foreach ($matches[0] as $id) :
+        foreach ($matches[0] as $id) {
             $attrs_to_add[] = (int)preg_replace(
                 "/^,?\w{2,3}_/", '', $id
             );
-        endforeach;
+        }
         if (null !== $attrs_to_add) {
             if (count($attrs_to_add) != 0) {
                 //Add attributes to work type
@@ -320,7 +320,7 @@ class ManageWorkTypeAction
                         ]
                 )
             );
-            //}
+        //}
         } else {
             return new HtmlResponse(
                 $this->template->render(
