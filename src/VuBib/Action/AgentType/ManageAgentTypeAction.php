@@ -117,8 +117,8 @@ class ManageAgentTypeAction
                 if (null !== $post['agType_id']) {
                     foreach ($post['agType_id'] as $agentTypeId) {
                         $table = new \VuBib\Db\Table\WorkAgent(
-                                        $this->adapter
-                                    );
+                            $this->adapter
+                        );
                         $table->deleteRecordByAgentTypeId($agentTypeId);
 
                         $table = new \VuBib\Db\Table\AgentType(

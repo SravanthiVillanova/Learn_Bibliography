@@ -99,8 +99,7 @@ class LoginPageAction
      *                                                                      routes
      * @param Template\TemplateRendererInterface $template                  for
      *                                                                      templates
-     * @param UserAuthenticationInterface        $userAuthenticationService
-     *                                                                      to
+     * @param UserAuthenticationInterface        $userAuthenticationService to
      *                                                                      authenticate
      *                                                                      username,
      *                                                                      password

@@ -305,7 +305,6 @@ class ManageWorkTypeAction
         if (isset($post['action']) && $post['action'] == 'sortable'
             && $post['submitt'] == 'Save'
         ) {
-            //if ($post['action'] == 'sortable' && $post['submitt'] == 'Save') {
             return new HtmlResponse(
                 $this->template->render(
                     'vubib::worktype::manage_worktypeattribute',
@@ -317,10 +316,9 @@ class ManageWorkTypeAction
                         'request' => $request,
                         'adapter' => $this->adapter,
                         'searchParams' => implode('&', $searchParams),
-                        ]
+                    ]
                 )
             );
-        //}
         } else {
             return new HtmlResponse(
                 $this->template->render(
