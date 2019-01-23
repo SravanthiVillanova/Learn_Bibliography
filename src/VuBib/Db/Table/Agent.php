@@ -175,15 +175,14 @@ class Agent extends \Zend\Db\TableGateway\TableGateway
             $select->columns(
                 [
                 'letter' => new Expression(
-                    'DISTINCT(substring(?, 1, 1))',
+                    'substring(?, 1, 1)',
                     ['fname'],
-                    [
-                    Expression::TYPE_IDENTIFIER,
-                    ]
+                    [Expression::TYPE_IDENTIFIER]
                 ),
                 ]
             );
-            $select->order('fname');
+            $select->quantifier('DISTINCT');
+            $select->order('letter');
             //('fname ASC');
         };
 

@@ -101,13 +101,14 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             $select->columns(
                 [
                 'letter' => new Expression(
-                    'DISTINCT(substring(UPPER(?), 1, 1))',
+                    'substring(UPPER(?), 1, 1)',
                     ['title'],
                     [Expression::TYPE_IDENTIFIER]
                 ),
                 ]
             );
-            $select->order('title');
+            $select->quantifier('DISTINCT');
+            $select->order('letter');
         };
 
         return $this->select($callback)->toArray();
@@ -124,14 +125,15 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             $select->columns(
                 [
                 'letter' => new Expression(
-                    'DISTINCT(substring(UPPER(?), 1, 1))',
+                    'substring(UPPER(?), 1, 1)',
                     ['title'],
                     [Expression::TYPE_IDENTIFIER]
                 ),
                 ]
             );
             $select->where->equalTo('status', 0);
-            $select->order('title');
+            $select->quantifier('DISTINCT');
+            $select->order('letter');
         };
 
         return $this->select($callback)->toArray();
@@ -151,14 +153,15 @@ class Work extends \Zend\Db\TableGateway\TableGateway
             $select->columns(
                 [
                 'letter' => new Expression(
-                    'DISTINCT(substring(UPPER(?), 1, 1))',
+                    'substring(UPPER(?), 1, 1)',
                     ['title'],
                     [Expression::TYPE_IDENTIFIER]
                 ),
                 ]
             );
             $select->where->notIn('id', $subselect);
-            $select->order('title');
+            $select->quantifier('DISTINCT');
+            $select->order('letter');
         };
 
         return $this->select($callback)->toArray();
