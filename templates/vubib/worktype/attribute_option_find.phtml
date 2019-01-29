@@ -1,5 +1,5 @@
 <?php $this->headTitle('Find Attribute Options'); ?>
-<?php 
+<?php
       $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
                                     . ' Attribute Options Search';
 ?>
@@ -13,8 +13,8 @@ if($itemsCount > 0) {
 ?>
 <div class="col-md-4">
     <form class="form-horizontal" method="get" action="<?= $this->url('manage_attribute_options') ?><?='?action=search_option'?>">
-		<input type="hidden" name="action" value="search_option">
-		<div class="form-group">
+        <input type="hidden" name="action" value="search_option">
+        <div class="form-group">
                 <label class="col-xs-4 control-label">Attribute: </label>
                 <div class="col-xs-7">
                     <select class="form-control" name="worktype_attr" id="worktype_attr" required="true">
@@ -24,13 +24,13 @@ if($itemsCount > 0) {
                             if(strtolower($row['type']) === 'select') {
                         ?>
                             <option value="<?= $row['id'] ?>"><?php echo $row['field']; ?></option>
-                        <?php 
+                        <?php
                             }
                         endforeach;
                         ?>
                     </select>
                 </div>
-		</div>
+        </div>
         <div class="form-group">
             <label class="col-xs-4 control-label">Option: </label>
             <div class="col-xs-7">
@@ -47,9 +47,9 @@ if($itemsCount > 0) {
 <?php
 } else {
 ?>
-		<p> No Attributes of type select to search options for. Please Add an attribute of type select. 
-		<a href="<?=$this->url('new_attribute')?><?='?action=new'?>"><b style="text-decoration: underline;">Add Attribute</b></a>
-		</p>
+        <p> No Attributes of type select to search options for. Please Add an attribute of type select. 
+        <a href="<?=$this->url('new_attribute')?><?='?action=new'?>"><b style="text-decoration: underline;">Add Attribute</b></a>
+        </p>
 <?php
 }
 ?>

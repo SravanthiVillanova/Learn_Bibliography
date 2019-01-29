@@ -1,7 +1,7 @@
 <?php
 $this->headTitle('Edit Agent');
 ?> 
-<?php 
+<?php
       $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_agent') . '" style="float:left;color:white;"> Agent > </a>' . ' Edit';
  ?>
 
@@ -50,7 +50,7 @@ if ($request->getqueryParams('id') !== null) {
                 <input type="text" class="form-control" name="edit_agentorgname" id="editagentorgname" value="<?= $escaper->escapeHtml(trim($orgname)) ?>" />
             </div>
         </div>
-		<div class="form-group">
+        <div class="form-group">
             <label class="col-xs-4 control-label">Email: </label>
             <div class="col-xs-7">
                 <input type="text" class="form-control" name="edit_agentemail" id="editagentemail" value="<?= $escaper->escapeHtml(trim($mail)) ?>" />

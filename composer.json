@@ -36,8 +36,8 @@
 		"zendframework/zend-form": "^2.9"
     },
     "require-dev": {
-        "symfony/console": "3.4.9",
-		"friendsofphp/php-cs-fixer": "2.11.1",
+        "symfony/console": "3.4.17",
+		"friendsofphp/php-cs-fixer": "2.14.0",
 		"phploc/phploc": "4.0.1",
 		"phpmd/phpmd": "2.6.0",
 		"phing/phing": "2.15.2",

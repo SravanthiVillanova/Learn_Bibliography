@@ -1,5 +1,5 @@
 <?php $this->headTitle('New Work'); ?>
-<?php 
+<?php
       $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_work') . '" style="float:left;color:white;"> Work > </a>'
                                     . ' New';
       $this->layout()->page = "Work/New";
@@ -21,12 +21,12 @@ $this->headScript()->appendFile($this->url('home') . 'js/work.js');
 ?>
 <style>
 form#new-work-data{
-	padding: 0px;
-	margin-left, margin-right: 0px;
-	margin-top: -10px;
+    padding: 0px;
+    margin-left, margin-right: 0px;
+    margin-top: -10px;
 }
 div.form-group {
-	padding: -5px;
+    padding: -5px;
     margin: 4px;
 }
 label {
@@ -40,179 +40,179 @@ var sattrURL = '<?=$this->url('edit_subattribute_values')?>';
 //var sattrURL = '<?=$this->url('edit_option')?>';
 
 $(document).ready(function() {
-	//Publisher
-	bindPublisherAutocomplete(document, workURL);
-	//add publisher rows
-	$("#pub_add").click(function() {
-		var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="">' +
-			'<td><input type="checkbox" name="removePublisher[]"></td>' + 
-			'<td name="pubNameCol"><input type="text" name="pub_name[]" id="pubName" placeholder="none"  size="80"/></td>' +
-			'<input type="hidden" name="publoc_id[]" id="publoc_id" value="">' +
-			'<td><select class="pub_locations" name="pub_location[]" id="pubLocation"  style="min-width: 100px;">' + 
-			'<option value=""></option></select></td>' +
-			'<td class="yrFrom"><input type="text" name="pub_yrFrom[]" id="pubyrFrom" size="4" maxlength="4"/></td>' +
-			'<td class="yrTo"><input type="text" name="pub_yrTo[]" id="pubyrTo"  size="4" maxlength="4"/></td>' +
-			'</tr>');
+    //Publisher
+    bindPublisherAutocomplete(document, workURL);
+    //add publisher rows
+    $("#pub_add").click(function() {
+        var pub_row = $('<tr name="pub_row[]"><input type="hidden" name="pub_id[]" id="pubId" value="">'
+            '<td><input type="checkbox" name="removePublisher[]"></td>' + 
+            '<td name="pubNameCol"><input type="text" name="pub_name[]" id="pubName" placeholder="none"  size="80"/></td>'
+            '<input type="hidden" name="publoc_id[]" id="publoc_id" value="">'
+            '<td><select class="pub_locations" name="pub_location[]" id="pubLocation"  style="min-width: 100px;">' + 
+            '<option value=""></option></select></td>'
+            '<td class="yrFrom"><input type="text" name="pub_yrFrom[]" id="pubyrFrom" size="4" maxlength="4"/></td>'
+            '<td class="yrTo"><input type="text" name="pub_yrTo[]" id="pubyrTo"  size="4" maxlength="4"/></td>'
+            '</tr>');
 
-		$("#pub_table").append(pub_row);
-		bindPublisherAutocomplete(pub_row, workURL);
-		return false;
-	});
-	//remove publisher rows
-	$("#pub_remove").on('click', function() {
-		if ($('input[name="removePublisher[]"]:checked').length > 0) {
-			$.each($('input[name="removePublisher[]"]:checked'), function () {
-				$('input[name="removePublisher[]"]:checked').closest("td").parent("tr").remove();
-			});
-			return false;
-		} else {
-			alert("No row(s) selected, Please select row(s) to remove.");
-			return false;
-		}
-	});
-	
-	//agent
-	bindAgentAutocomplete(document, workURL);
-	//add agent rows
-	$("#agent_add").click(function() {
-		var agent_row = $('<tr><td><input type="checkbox" name="removeAgent[]"></td>' + 
-				'<td><input type="hidden" name="agent_id[]" id="agentId" value="">' +
-				'<select class="agent_type" name="agent_type[]" id="agent_type">' +
-				'<option value=""></option>' +
-				<?php
+        $("#pub_table").append(pub_row);
+        bindPublisherAutocomplete(pub_row, workURL);
+        return false;
+    });
+    //remove publisher rows
+    $("#pub_remove").on('click', function() {
+        if ($('input[name="removePublisher[]"]:checked').length > 0) {
+            $.each($('input[name="removePublisher[]"]:checked'), function () {
+                $('input[name="removePublisher[]"]:checked').closest("td").parent("tr").remove();
+            });
+            return false;
+        } else {
+            alert("No row(s) selected, Please select row(s) to remove.");
+            return false;
+        }
+    });
+    
+    //agent
+    bindAgentAutocomplete(document, workURL);
+    //add agent rows
+    $("#agent_add").click(function() {
+        var agent_row = $('<tr><td><input type="checkbox" name="removeAgent[]"></td>' + 
+                '<td><input type="hidden" name="agent_id[]" id="agentId" value="">'
+                '<select class="agent_type" name="agent_type[]" id="agent_type">'
+                '<option value=""></option>'
+                <?php
                 foreach ($paginator_agtype as $ag_row) :
                 //print_r($row);
                 ?>
-					'<option value="<?= $ag_row['id'] ?>"><?php echo $ag_row['type']; ?></option>' +
-				<?php endforeach; ?>
-				'</select>' +
-				'</td>' +
-				'<td name="agLnCol"><input type="text" name="agent_LastName[]" id="agent_LastName" /></td>' +
-				'<td name="agFnCol"><input type="text" name="agent_FirstName[]" id="agent_FirstName" /></td>' +
-				'<td><input type="text" name="agent_AlternateName[]" id="agent_AlternateName" /></td>' +
-				'<td><input type="text" name="agent_OrganizationName[]" id="agent_OrganizationName" /></td>' +
-				'</tr>');
+                    '<option value="<?= $ag_row['id'] ?>"><?php echo $ag_row['type']; ?></option>'
+                <?php endforeach; ?>
+                '</select>'
+                '</td>'
+                '<td name="agLnCol"><input type="text" name="agent_LastName[]" id="agent_LastName" /></td>'
+                '<td name="agFnCol"><input type="text" name="agent_FirstName[]" id="agent_FirstName" /></td>'
+                '<td><input type="text" name="agent_AlternateName[]" id="agent_AlternateName" /></td>'
+                '<td><input type="text" name="agent_OrganizationName[]" id="agent_OrganizationName" /></td>'
+                '</tr>');
 
-		$("#agent_table").append(agent_row);
-		bindAgentAutocomplete(agent_row, workURL);
-		return false;
-	});
-	//remove agent rows
-	$('#agent_remove').on('click', function() {
-		if ($('input[name="removeAgent[]"]:checked').length > 0) {
-			$.each($('input[name="removeAgent[]"]:checked'), function () {
-				$('input[name="removeAgent[]"]:checked').closest("td").parent("tr").remove();
-			});
-			return false;
-		} else {
-			alert("No row(s) selected, Please select row(s) to remove.");
-			return false;
-		}
-	});
-	//get attributes for selected worktypes
-	$('#work_type', document).on('change', function() {
-		bindWorkTypeAttributes(document, workURL, sattrURL);
-	});
-	//classification
-	//add classification rows
-	$("#fl_add").on('click', function() {
-		var fl_row = $('<tr name="source_fl_row[]">' + 
-				'<td><input type="checkbox" name="removeFolder[]"></td>' +
-				'<td class="source_fl_col" name="source_fl_col" id="source_fl_col">' +
-				'<select class="select_source_fl select2" name="select_source_fl[]">' +
-				'<option value=""></option>' +
-				<?php
+        $("#agent_table").append(agent_row);
+        bindAgentAutocomplete(agent_row, workURL);
+        return false;
+    });
+    //remove agent rows
+    $('#agent_remove').on('click', function() {
+        if ($('input[name="removeAgent[]"]:checked').length > 0) {
+            $.each($('input[name="removeAgent[]"]:checked'), function () {
+                $('input[name="removeAgent[]"]:checked').closest("td").parent("tr").remove();
+            });
+            return false;
+        } else {
+            alert("No row(s) selected, Please select row(s) to remove.");
+            return false;
+        }
+    });
+    //get attributes for selected worktypes
+    $('#work_type', document).on('change', function() {
+        bindWorkTypeAttributes(document, workURL, sattrURL);
+    });
+    //classification
+    //add classification rows
+    $("#fl_add").on('click', function() {
+        var fl_row = $('<tr name="source_fl_row[]">' + 
+                '<td><input type="checkbox" name="removeFolder[]"></td>'
+                '<td class="source_fl_col" name="source_fl_col" id="source_fl_col">'
+                '<select class="select_source_fl select2" name="select_source_fl[]">'
+                '<option value=""></option>'
+                <?php
                 $table = new \VuBib\Db\Table\Folder($this->adapter);
                 $fl_siblings = $table->getFoldersWithNullParent();
                 foreach ($fl_siblings as $row) :
                 ?>
-					'<option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>' +
-				<?php endforeach; ?>
-				'</select>' +
-				'</td>' +
-				'</tr>');
-		$("#source_fl_table").append(fl_row);
-		//bindClassification(this,document,workURL,'source');
-		return false;
-	});
-	//remove classification rows
-	$("#outer_fl_table").on('click', '#fl_remove', function() {
-		if ($('input[name="removeFolder[]"]:checked').length > 0) {
-			// any one is checked
-			$.each($('input[name="removeFolder[]"]:checked'), function () {
-				$('input[name="removeFolder[]"]:checked').closest("td").parent("tr").remove();
-			});
-			return false;
-		} else {
-			// none is checked
-			alert("No row(s) selected, Please select row(s) to remove.");
-			return false;
-		}
-	});
+                    '<option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>'
+                <?php endforeach; ?>
+                '</select>'
+                '</td>'
+                '</tr>');
+        $("#source_fl_table").append(fl_row);
+        //bindClassification(this,document,workURL,'source');
+        return false;
+    });
+    //remove classification rows
+    $("#outer_fl_table").on('click', '#fl_remove', function() {
+        if ($('input[name="removeFolder[]"]:checked').length > 0) {
+            // any one is checked
+            $.each($('input[name="removeFolder[]"]:checked'), function () {
+                $('input[name="removeFolder[]"]:checked').closest("td").parent("tr").remove();
+            });
+            return false;
+        } else {
+            // none is checked
+            alert("No row(s) selected, Please select row(s) to remove.");
+            return false;
+        }
+    });
 
-	$('table[name="source_fl_table"]').on('change', ".select_source_fl", function() {
-		mergeClassification(this, document, workURL, 'source');
-		return false;
-	});
+    $('table[name="source_fl_table"]').on('change', ".select_source_fl", function() {
+        mergeClassification(this, document, workURL, 'source');
+        return false;
+    });
    
    //Parent Lookup
    $('#parentLookup_modal').on('shown.bs.modal', function() {
-	   bindParentWork(document, workURL);
-	   return false;
+       bindParentWork(document, workURL);
+       return false;
    });   
    
    //Remove Parent Lookup
    $('.pr_work_div').on('click', '#parent_removeBtn', function() {
-	   //alert("remove");
-	   $('#pr_work_lookup_id').val('');
-	   $('.pr_work_div').html('');
-	   $('.pr_work_div').append('<button type="button" class="btn btn-default btn-sm parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" ' +
-								'data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>');
-	   return false;
+       //alert("remove");
+       $('#pr_work_lookup_id').val('');
+       $('.pr_work_div').html('');
+       $('.pr_work_div').append('<button type="button" class="btn btn-default btn-sm parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" '
+                                'data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>');
+       return false;
    });
-	
-	$('body').on('click', '.addNewPubLink', function() {
-		var lnk = $('.addNewPubLink', document);
-		addNewPublisher(document,workURL,lnk);
-		return false;
-	});
+    
+    $('body').on('click', '.addNewPubLink', function() {
+        var lnk = $('.addNewPubLink', document);
+        addNewPublisher(document,workURL,lnk);
+        return false;
+    });
  
-	$('body').on('click', '.addNewAgLink', function() {
-		var lnk = $('.addNewAgLink', document);
-		addNewAgent(document,workURL,lnk);
-		return false;
-	});
+    $('body').on('click', '.addNewAgLink', function() {
+        var lnk = $('.addNewAgLink', document);
+        addNewAgent(document,workURL,lnk);
+        return false;
+    });
      
-	$('#submit_save').on('click', function() {
-		$('#General').find('input:required').each(function() {
-			// Find the tab-pane that this element is inside, and get the id
-			var $closest = $(this).closest('.tab-pane');
-			var id = $closest.attr('id');
-			// Find the link that corresponds to the pane and have it show
-			$('.nav a[href="#' + id + '"]').tab('show');
+    $('#submit_save').on('click', function() {
+        $('#General').find('input:required').each(function() {
+            // Find the tab-pane that this element is inside, and get the id
+            var $closest = $(this).closest('.tab-pane');
+            var id = $closest.attr('id');
+            // Find the link that corresponds to the pane and have it show
+            $('.nav a[href="#' + id + '"]').tab('show');
 
-			// Only want to do it once
-			return false;
-		});
-		
-	    var no_of_rows = $('table[name="source_fl_table"]').find("tr").length;
-		var arr = [];
-		var values;
-		$('table[name="source_fl_table"]').each(function() {
-			$(this).find('tr').each(function() {
-				values = [];
-				$(this).find('td').find('.select_source_fl').each(function() {
-					//$(this).find('.select_source_fl').each(function(){
-					values.push($(this).val());
-						//});						
-				});
-				var newInput = $('<input type="hidden" name="arr[]" value="">');
-				newInput.val(values);
-				$("#new-work-data").append(newInput);
-			});
-		});
-		return true;
-	});
+            // Only want to do it once
+            return false;
+        });
+        
+        var no_of_rows = $('table[name="source_fl_table"]').find("tr").length;
+        var arr = [];
+        var values;
+        $('table[name="source_fl_table"]').each(function() {
+            $(this).find('tr').each(function() {
+                values = [];
+                $(this).find('td').find('.select_source_fl').each(function() {
+                    //$(this).find('.select_source_fl').each(function(){
+                    values.push($(this).val());
+                        //});                        
+                });
+                var newInput = $('<input type="hidden" name="arr[]" value="">');
+                newInput.val(values);
+                $("#new-work-data").append(newInput);
+            });
+        });
+        return true;
+    });
 });
  </script>
 <div class="col-md-12">
@@ -244,31 +244,31 @@ $(document).ready(function() {
             </ul>
         <div class="tab-content">
         <div class="tab-pane active" id="General">
-			<div class="form-group required">
-				<label class="col-xs-1">Title: </label>
+            <div class="form-group required">
+                <label class="col-xs-1">Title: </label>
                 <div class="col-xs-6">
                     <input type="text" name="new_worktitle" id="newworktitle" required="true" size="80"/>
                 </div>
-			</div>
-			<div class="form-group">
+            </div>
+            <div class="form-group">
                 <label class="col-xs-1">Sub Title: </label>
                 <div class="col-xs-6">
                     <input type="text" name="new_worksubtitle" id="newworksubtitle" size="80"/>
                 </div>
-			</div>
-			<div class="form-group">
+            </div>
+            <div class="form-group">
                 <label class="col-xs-1">Parallel Title: </label>
                 <div class="col-xs-6">
                     <input type="text" name="new_workparalleltitle" id="newworkparalleltitle" size="80"/>
                 </div>
-			</div>
-			<div class="form-group">
+            </div>
+            <div class="form-group">
                 <label class="col-xs-1">Description: </label>
                 <div class="col-xs-4">
                     <textarea placeholder="Message" name="description" id="description" rows="3" cols="60"></textarea>
                 </div>
-			</div>
-			<div class="form-group">
+            </div>
+            <div class="form-group">
                 <label class="col-xs-1">Type: </label>
                 <div class="col-xs-2">
                     <select name="work_type" id="work_type" required="true">
@@ -280,15 +280,15 @@ $(document).ready(function() {
                         <?php endforeach; ?>
                     </select>
                 </div>
-			</div>
-			<div class="form-group">
+            </div>
+            <div class="form-group">
                 <label class="col-xs-1">Parent Work: </label>
-				<input type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="">
+                <input type="hidden" name="pr_work_lookup_id" id="pr_work_lookup_id" value="">
                 <div class="col-xs-6 pr_work_div">
                     <button type="button" class="btn btn-default btn-sm parent_lookupBtn" name="parent_lookupBtn" id="parent_lookupBtn" 
-					        data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>
+                            data-toggle="modal" data-target="#parentLookup_modal">Lookup</button>
                 </div>
-				<!-- Parent work Lookup -->
+                <!-- Parent work Lookup -->
                 <div class="modal fade ig" id="parentLookup_modal" role="dialog">
                 <div class="modal-dialog ig">
                     <div class="modal-content ig">
@@ -310,57 +310,57 @@ $(document).ready(function() {
                             </div>
                             <div class="pr_work_results ig">
                             </div>
-						</div>
-						<div class="modal-footer ignore ig">
+                        </div>
+                        <div class="modal-footer ignore ig">
                             <button type="button" class="btn btn-default option_lookup_close ig" data-dismiss="modal">Close</button>
                         </div>
-					</div>
+                    </div>
                 </div>
                 </div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-1">Status: </label>
-				<div class="col-xs-5">
-					<input checked type="radio" id="selectworkstatus" name="select_workstatus" value="00"> In Progress<br>
-					<input type="radio" id="selectworkstatus" name="select_workstatus" value="0"> Pending Review<br>
-					<input type="radio" id="selectworkstatus" name="select_workstatus" value="2"> Unseen Source Doc<br>
-					<input type="radio" id="selectworkstatus" name="select_workstatus" value="1"> Complete<br>
-				</div>
-			</div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-1">Status: </label>
+                <div class="col-xs-5">
+                    <input checked type="radio" id="selectworkstatus" name="select_workstatus" value="00"> In Progress<br>
+                    <input type="radio" id="selectworkstatus" name="select_workstatus" value="0"> Pending Review<br>
+                    <input type="radio" id="selectworkstatus" name="select_workstatus" value="2"> Unseen Source Doc<br>
+                    <input type="radio" id="selectworkstatus" name="select_workstatus" value="1"> Complete<br>
+                </div>
+            </div>
         </div>
         <div class="tab-pane" id="Classification">
-			<div class="form-group" id="class_grp">
-				<table id="outer_fl_table" style="border-spacing: 0px; border-collapse: separate;">
-				<tr valign="top">
-				<td><b style="font-size:8.5pt; padding: 20px;">Subject Tree:</b></td>
-				<td style="padding: 4px;">
+            <div class="form-group" id="class_grp">
+                <table id="outer_fl_table" style="border-spacing: 0px; border-collapse: separate;">
+                <tr valign="top">
+                <td><b style="font-size:8.5pt; padding: 20px;">Subject Tree:</b></td>
+                <td style="padding: 4px;">
                 <table name="source_fl_table" id="source_fl_table">
                     <tr name="source_fl_row[]">
-						<td><input type="checkbox" name="removeFolder[]"></td>
+                        <td><input type="checkbox" name="removeFolder[]"></td>
                         <td class="source_fl_col" name="source_fl_col" id="source_fl_col">
-							<select class="select_source_fl select2" name="select_source_fl[]">
-								<option value=""></option>
-								<?php
+                            <select class="select_source_fl select2" name="select_source_fl[]">
+                                <option value=""></option>
+                                <?php
                                 $table = new \VuBib\Db\Table\Folder($this->adapter);
                                 $fl_siblings = $table->getFoldersWithNullParent();
                                 foreach ($fl_siblings as $row) :
                                 ?>
-									<option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>
-								<?php endforeach; ?>
-							</select>
+                                    <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </td>
                     </tr>
                 </table>
                  <button type="button" class="btn btn-outline-secondary btn-sm" name="fl_add" id="fl_add" value="Add">Add</button>
-				 <button type="button" class="btn btn-outline-secondary btn-sm" name="fl_remove" id="fl_remove" value="Remove">Remove</button>
-				 </table>
-			</div>
-		</div>
+                 <button type="button" class="btn btn-outline-secondary btn-sm" name="fl_remove" id="fl_remove" value="Remove">Remove</button>
+                 </table>
+            </div>
+        </div>
         <div class="tab-pane" id="Publisher">
             <div class="form-group">
                 <table class="table table-condensed" name="pub_table" style="font-size:10pt; width:100%;" id="pub_table">
                 <thead>
-					<th></th>
+                    <th></th>
                     <th>Publisher</th>
                     <th>Location</th>
                     <th>Year From</th>
@@ -369,11 +369,11 @@ $(document).ready(function() {
                 <tbody>
                     <tr name="pub_row[]">
                         <input type="hidden" name="pub_id[]" id="pubId" value="">
-						<td><input type="checkbox" name="removePublisher[]"></td>
+                        <td><input type="checkbox" name="removePublisher[]"></td>
                         <td name="pubNameCol">
                             <input type="text" name="pub_name[]" id="pubName" placeholder="none" size="80"/>
                         </td>
-						<!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->
+                        <!--<td><input type="text" class="form-control" name="pub_location" id="pubLocation" /></td>-->
                         <input type="hidden" name="publoc_id[]" id="publoc_id" value="">
                         <td>
                             <select class="pub_locations" name="pub_location[]" id="pubLocation" style="min-width: 100px;">
@@ -390,14 +390,14 @@ $(document).ready(function() {
                 </tbody>
                 </table>
                 <button type="button" class="btn btn-secondary btn-sm" name="pub_add" id="pub_add" value="Add">Add</button>
-				<button type="button" class="btn btn-secondary btn-sm" name="pub_remove" id="pub_remove" value="Remove">Remove</button>
+                <button type="button" class="btn btn-secondary btn-sm" name="pub_remove" id="pub_remove" value="Remove">Remove</button>
             </div>
         </div>
         <div class="tab-pane" id="Agents">
             <div class="form-group">
                 <table class="table table-condensed" style="font-size:10pt;" id="agent_table">
                 <thead>
-					<th></th>
+                    <th></th>
                     <th>Agent Type</th>
                     <th>Last Name</th>
                     <th>First Name</th>
@@ -406,7 +406,7 @@ $(document).ready(function() {
                 </thead>
                 <tbody>
                     <tr>
-						<td><input type="checkbox" name="removeAgent[]"></td>
+                        <td><input type="checkbox" name="removeAgent[]"></td>
                         <td>
                             <input type="hidden" name="agent_id[]" id="agentId" value="">
                             <select class="agent_type" name="agent_type[]" id="agent_type">
@@ -437,7 +437,7 @@ $(document).ready(function() {
                 </tbody>
                 </table>
                 <button type="button" class="btn btn-secondary btn-sm" name="agent_add" id="agent_add" value="Add">Add</button>
-				<button type="button" class="btn btn-secondary btn-sm" name="agent_remove" id="agent_remove" value="Remove">Remove</button>
+                <button type="button" class="btn btn-secondary btn-sm" name="agent_remove" id="agent_remove" value="Remove">Remove</button>
             </div>
         </div>
         <div class="tab-pane" id="Citation">
@@ -465,16 +465,16 @@ $(document).ready(function() {
                             </div>
                             <div class="option_results ig">
                             </div>
-						</div>
-						<div class="modal-footer ignore ig">
+                        </div>
+                        <div class="modal-footer ignore ig">
                             <button type="button" class="btn btn-default option_lookup_close ig" data-dismiss="modal">Close</button>
                         </div>
-					</div>
+                    </div>
                 </div>
             </div>
         </div>
-		</div>
-		</div>
+        </div>
+        </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-primary" name="submit_save" id="submit_save" value="Save">Save</button>
@@ -482,120 +482,120 @@ $(document).ready(function() {
             </div>
         </div>
     </form>
-	<div class="modal fade ig" id="addPublisherLookup" role="dialog">
-		<div class="modal-dialog ig">
-			<div class="modal-content ig">
-				<div class="modal-header ig">
-					<button type="button" class="close ig" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title ig" id="newPubModalLabel">New Publisher</h4>
-				</div>
-				<div class="modal-body ig">	
-						<form class="form-horizontal" method="post" action="<?= $this->url('manage_publisher') ?>">
-							<div class="form-group">
-								<label class="col-xs-2 control-label">Name: </label>
-								<div class="col-xs-7">
-									<input type="text" class="form-control" name="name_publisher" id="newpublisher" required="true" />
-								</div>
-							</div>
-							<div class="form-group">
-								<label class="col-xs-2 control-label">Location: </label>
-								<div class="col-xs-7">
-									<input type="text" class="form-control" name="add_publisherloc" id="addpublisherloc" />
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-offset-2 col-sm-10">
-									<button type="submit" class="btn btn-primary" id="addNewPub" name="submitt" value="Save">Save</button> 
-									<!--<button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>-->
-								</div>
-							</div>
-						</form>   
-				</div>
-				<div class="modal-footer ignore ig">
-					<button type="button" class="btn btn-default add_new_pub_close ig" data-dismiss="modal">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="modal fade ig" id="addAgentLookup" role="dialog">
-		<div class="modal-dialog ig">
-			<div class="modal-content ig">
-				<div class="modal-header ig">
-					<button type="button" class="close ig" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title ig" id="newAgModalLabel">New Agent</h4>
-				</div>
-				<div class="modal-body ig">	
-					<form class="form-horizontal" method="post" action="<?= $this->url('manage_agent') ?>">
-					<div class="form-group">
-						<label class="col-xs-4 control-label">First Name: </label>
-						<div class="col-xs-7">
-							<input type="text" class="form-control" name="new_agentfirstname" id="newagentfirstname" required="true" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-4 control-label">Last Name: </label>
-						<div class="col-xs-7">
-							<input type="text" class="form-control" name="new_agentlastname" id="newagentlastname" required="true" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-4 control-label">Alternate Name: </label>
-						<div class="col-xs-7">
-							<input type="text" class="form-control" name="new_agentaltname" id="newagentaltname" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-4 control-label">Organization Name: </label>
-						<div class="col-xs-7">
-							<input type="text" class="form-control" name="new_agentorgname" id="newagentorgname" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-4 control-label">Email: </label>
-						<div class="col-xs-7">
-							<input type="text" class="form-control" name="new_agentemail" id="newagentemail" />
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-offset-4 col-sm-10">
-							<button type="submit" class="btn btn-primary" id="addNewAg" name="submitt" value="Save">Save</button> 
-						</div>
-					</div>
-					</form>   
-				</div>
-				<div class="modal-footer ignore ig">
-					<button type="button" class="btn btn-default add_new_ag_close ig" data-dismiss="modal">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="modal fade ig" id="addAttributeOption" role="dialog">
-		<div class="modal-dialog ig">
-			<div class="modal-content ig">
-				<div class="modal-header ig">
-					<button type="button" class="close ig" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title ig" id="newAttrOptionModalLabel">New Attribute Option</h4>
-				</div>
-				<div class="modal-body ig">	
-						<form class="form-horizontal" method="post" action="<?= $this->url('manage_publisher') ?>">
-							<div class="form-group">
-								<label class="col-xs-2 control-label">Option: </label>
-								<div class="col-xs-7">
-									<input type="text" class="form-control" name="name_option" id="newoption" required="true" />
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-offset-2 col-sm-10">
-									<button type="submit" class="btn btn-primary" id="addNewOpt" name="submitt" value="Save">Save</button> 
-									<!--<button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>-->
-								</div>
-							</div>
-						</form>   
-				</div>
-				<div class="modal-footer ignore ig">
-					<button type="button" class="btn btn-default add_new_opt_close ig" data-dismiss="modal">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="modal fade ig" id="addPublisherLookup" role="dialog">
+        <div class="modal-dialog ig">
+            <div class="modal-content ig">
+                <div class="modal-header ig">
+                    <button type="button" class="close ig" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title ig" id="newPubModalLabel">New Publisher</h4>
+                </div>
+                <div class="modal-body ig">    
+                        <form class="form-horizontal" method="post" action="<?= $this->url('manage_publisher') ?>">
+                            <div class="form-group">
+                                <label class="col-xs-2 control-label">Name: </label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control" name="name_publisher" id="newpublisher" required="true" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-2 control-label">Location: </label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control" name="add_publisherloc" id="addpublisherloc" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-primary" id="addNewPub" name="submitt" value="Save">Save</button> 
+                                    <!--<button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>-->
+                                </div>
+                            </div>
+                        </form>   
+                </div>
+                <div class="modal-footer ignore ig">
+                    <button type="button" class="btn btn-default add_new_pub_close ig" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade ig" id="addAgentLookup" role="dialog">
+        <div class="modal-dialog ig">
+            <div class="modal-content ig">
+                <div class="modal-header ig">
+                    <button type="button" class="close ig" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title ig" id="newAgModalLabel">New Agent</h4>
+                </div>
+                <div class="modal-body ig">    
+                    <form class="form-horizontal" method="post" action="<?= $this->url('manage_agent') ?>">
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">First Name: </label>
+                        <div class="col-xs-7">
+                            <input type="text" class="form-control" name="new_agentfirstname" id="newagentfirstname" required="true" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Last Name: </label>
+                        <div class="col-xs-7">
+                            <input type="text" class="form-control" name="new_agentlastname" id="newagentlastname" required="true" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Alternate Name: </label>
+                        <div class="col-xs-7">
+                            <input type="text" class="form-control" name="new_agentaltname" id="newagentaltname" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Organization Name: </label>
+                        <div class="col-xs-7">
+                            <input type="text" class="form-control" name="new_agentorgname" id="newagentorgname" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label">Email: </label>
+                        <div class="col-xs-7">
+                            <input type="text" class="form-control" name="new_agentemail" id="newagentemail" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-sm-10">
+                            <button type="submit" class="btn btn-primary" id="addNewAg" name="submitt" value="Save">Save</button> 
+                        </div>
+                    </div>
+                    </form>   
+                </div>
+                <div class="modal-footer ignore ig">
+                    <button type="button" class="btn btn-default add_new_ag_close ig" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade ig" id="addAttributeOption" role="dialog">
+        <div class="modal-dialog ig">
+            <div class="modal-content ig">
+                <div class="modal-header ig">
+                    <button type="button" class="close ig" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title ig" id="newAttrOptionModalLabel">New Attribute Option</h4>
+                </div>
+                <div class="modal-body ig">    
+                        <form class="form-horizontal" method="post" action="<?= $this->url('manage_publisher') ?>">
+                            <div class="form-group">
+                                <label class="col-xs-2 control-label">Option: </label>
+                                <div class="col-xs-7">
+                                    <input type="text" class="form-control" name="name_option" id="newoption" required="true" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-primary" id="addNewOpt" name="submitt" value="Save">Save</button> 
+                                    <!--<button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>-->
+                                </div>
+                            </div>
+                        </form>   
+                </div>
+                <div class="modal-footer ignore ig">
+                    <button type="button" class="btn btn-default add_new_opt_close ig" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

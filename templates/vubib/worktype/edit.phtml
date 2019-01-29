@@ -18,20 +18,20 @@ if ($request->getqueryParams('id') !== null) {
 <?php $escaper = new Zend\Escaper\Escaper('utf-8'); ?>
 <div class="col-md-4">
 <form class="form-horizontal" method="post" action="<?=$this->url('manage_worktype')?>">
-	<input type="hidden" name="action" value="<?=trim($action)?>">
-	<input type="hidden" name="id" value="<?=trim($id)?>">
-	<div class="form-group">   
-		<label class="col-xs-2 control-label">Type: </label>
-		<div class="col-xs-7">
-			<input type="text" class="form-control" name="edit_worktype" id="editworktype" value="<?=$escaper->escapeHtml(trim($type))?>" />
-		</div>
-	</div>
-	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button> 
-			<button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
-		</div>
-	</div>
+    <input type="hidden" name="action" value="<?=trim($action)?>">
+    <input type="hidden" name="id" value="<?=trim($id)?>">
+    <div class="form-group">   
+        <label class="col-xs-2 control-label">Type: </label>
+        <div class="col-xs-7">
+            <input type="text" class="form-control" name="edit_worktype" id="editworktype" value="<?=$escaper->escapeHtml(trim($type))?>" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" name="submitt" value="Save">Save</button> 
+            <button type="submit" class="btn btn-default" name="submitt" value="Cancel">Cancel</button>
+        </div>
+    </div>
 </form>
 </div>
 

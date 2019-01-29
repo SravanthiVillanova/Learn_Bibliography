@@ -1,7 +1,7 @@
 <?php
 $this->headTitle('Manage Sub Attributes');
 ?>
-<?php 
+<?php
       $this->layout()->breadcrumbs .= '<a href="' . $this->url('attributes_worktype') . '" style="float:left;color:white;"> Attributes > </a>'
                                     . ' Sub Attributes';
  ?>
@@ -18,7 +18,7 @@ if ($request->getqueryParams('action') !== null) {
 }
 ?>
 <div class="col-md-9">
-	<p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p> 
+    <p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p> 
     <?php
     if (count($subattr_row) > 0){
         $subattr_Id = $subattr_row['id'];
@@ -47,7 +47,7 @@ if ($request->getqueryParams('action') !== null) {
     ?>
         <p><b style="font-size: 10pt; padding: 20px;">Sub Attribute: None</b></p>  
         <a href="<?=$this->url('new_subattribute')?><?='?id=' . $attr_id . '&action=new'?>"><b style="text-decoration: underline;">Add Sub Attribute</b></a>
-	<?php
+    <?php
     }
     ?>
 </div>

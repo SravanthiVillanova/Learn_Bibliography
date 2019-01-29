@@ -1,5 +1,5 @@
 <?php $this->headTitle('Delete AgentType'); ?>
-<?php 
+<?php
       $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_agenttype') . '" style="float:left;color:white;"> Agenttype > </a>'
                                       . ' Delete';
  ?>
@@ -28,11 +28,11 @@
                 $type = $row['type'];
                 echo "<li>$type</li>";
         ?>
-		<ul>
-		<input type="hidden" name="agType_id[]" value="<?=$agType['id']?>">						
-		<input type="hidden" name="action" value="<?=$action?>">
-		</ul>						
-		<?php
+        <ul>
+        <input type="hidden" name="agType_id[]" value="<?=$agType['id']?>">                        
+        <input type="hidden" name="action" value="<?=$action?>">
+        </ul>                        
+        <?php
             endforeach;
         }
         ?>

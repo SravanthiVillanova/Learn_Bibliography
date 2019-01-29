@@ -1,5 +1,5 @@
 <?php $this->headTitle('Move Classification'); ?>
-<?php 
+<?php
       $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_classification') . '" style="float:left;color:white;"> Classification > </a>'
                                     . ' Move';
  ?>
@@ -14,8 +14,8 @@ $url_components = parse_url($this->serverUrl());
 $url_host = $url_components['scheme'] . '://' . $url_components['host'];
 ?>
 <script>
-	//var ur = <?php echo json_encode($url_host); ?>;
-	var ur = "";
+    //var ur = <?php echo json_encode($url_host); ?>;
+    var ur = "";
     _select = '';
     function bindClassificationFolder(context)
     {
@@ -44,7 +44,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
         $.ajax({
             method: 'post',
             //url: 'http://localhost<?= $this->url('get_work_details') ?>',
-			url: ur + '<?=$this->url('get_work_details')?>',
+            url: ur + '<?=$this->url('get_work_details')?>',
             data: {
                 folder_Id: folder_Id
             },
@@ -128,7 +128,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                 $.ajax({
                     method: 'post',
                     //url: 'http://localhost<?= $this->url('get_work_details') ?>',
-					url: ur + '<?=$this->url('get_work_details')?>',
+                    url: ur + '<?=$this->url('get_work_details')?>',
                     data: {
                         folder_Id: folder_Id
                     },
@@ -170,7 +170,7 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
     <form id="move-folder-data" class="form-horizontal" name="form_mv_classification" id="form_mv_classification" 
           method="POST" action="<?= $this->url('manage_classification') ?>">
         <input type="hidden" name="action" value="<?= $action ?>">
-        <input type="hidden" name="id" id="mv_fl_id" value="<?= $id ?>">	
+        <input type="hidden" name="id" id="mv_fl_id" value="<?= $id ?>">    
         <?php
         $arr_fl = [];
         if (isset($id)) {
@@ -194,16 +194,16 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                         <div class="col-xs-5 inner_div_fl" name="inner_div_fl">
                             <select class="form-control select_fl" name="select_fl[]">
                                 <option value="none"></option>
-								<?php
+                                <?php
                                 $table = new \VuBib\Db\Table\Folder($this->adapter);
                                 $fl_siblings = $table->getChild($arr_fl[$i + 1]);
                                 foreach ($fl_siblings as $row) :
                                 ?>
-                                    <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>	
+                                    <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>    
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                    </div>	
+                    </div>    
                 <?php
                 }
                 elseif ($i != ($cnt - 1)) {
@@ -216,20 +216,20 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                             <select class="form-control select_fl" name="select_fl[]">
                                 <option value="none"></option>
                                 <option value="<?= $arr_fl[$i] ?>" selected><?php echo $fl['text_fr']; ?></option>
-								<?php
+                                <?php
                                 $table = new \VuBib\Db\Table\Folder($this->adapter);
                                 $fl_siblings = $table->getChild($arr_fl[$i + 1]);
                                 foreach ($fl_siblings as $row) :
                                     if ($row['id'] != $arr_fl[$i]) {
                                 ?>
-                                        <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>							
+                                        <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>                            
                                 <?php
                                     }
                                 endforeach;
                                 ?>
                             </select>
                         </div>
-                    </div>		
+                    </div>        
                 <?php
                 } else {
                     $table = new \VuBib\Db\Table\Folder($this->adapter);
@@ -241,21 +241,21 @@ $url_host = $url_components['scheme'] . '://' . $url_components['host'];
                             <select class="form-control select_fl" name="select_fl[]">
                                 <option value="none"></option>
                                 <option value="<?= $arr_fl[$i] ?>" selected><?php echo $fl['text_fr']; ?></option>
-								<?php
+                                <?php
                                 $table = new \VuBib\Db\Table\Folder($this->adapter);
                                 //$fl_siblings = $table->getChild($arr_fl[$i+1]);
                                 $fl_siblings = $table->getFoldersWithNullParent();
                                 foreach ($fl_siblings as $row) :
                                     if ($row['id'] != $arr_fl[$i]) {
                                 ?>
-                                        <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>							
+                                        <option value="<?= $row['id'] ?>"><?php echo $row['text_fr']; ?></option>                            
                                 <?php
                                     }
                                 endforeach;
                                 ?>
                             </select>
                         </div>
-                    </div>	
+                    </div>    
                 <?php
                 }
             }

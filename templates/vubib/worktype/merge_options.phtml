@@ -14,18 +14,18 @@ if ($request->getqueryParams('action') !== null) {
 }
  ?>
 <script>
-	var ur = "";
-	var workURL = '<?=$this->url('get_work_details')?>';
-	var wkat_id = '<?=$wkat_id?>';
+    var ur = "";
+    var workURL = '<?=$this->url('get_work_details')?>';
+    var wkat_id = '<?=$wkat_id?>';
     $(document).ready(function () {
-		$("#find_dest_opt").prop("disabled", "disabled");
+        $("#find_dest_opt").prop("disabled", "disabled");
         $("#dest_opt_find_bt").prop("disabled", "disabled");
         //source find
         $("#src_opt_find_bt").on('click', function () {
             findAttrOptions(workURL, 'src', wkat_id);
-			return false;
+            return false;
         });
-		 //source select
+         //source select
         $(document).on('click', '#btn_select_src', function () {
             if ($("#src_result_table input:checkbox:checked").length > 0) {              
                 var src_selected = new Array();
@@ -48,18 +48,18 @@ if ($request->getqueryParams('action') !== null) {
                 $('#src_find_outer_div').html('');
                 $('#src_select_div').html('');
                 
-				$("#find_dest_opt").prop("disabled", false);
+                $("#find_dest_opt").prop("disabled", false);
                 $("#dest_opt_find_bt").prop("disabled", false);
-			} else {
-				alert("No option(s) selected, Please select option(s) to merge.");
-			}
+            } else {
+                alert("No option(s) selected, Please select option(s) to merge.");
+            }
             return false;
         });
-		//destination find
+        //destination find
         $("#dest_opt_find_bt").on('click', function () {
-			findAttrOptions(workURL, 'dest', wkat_id);
-			return false;
-		});
+            findAttrOptions(workURL, 'dest', wkat_id);
+            return false;
+        });
         //destination select
         $(document).on('click', '#btn_select_dest', function () {
             if ($('input[name="dest_select"]').is(':checked')) {  
@@ -84,13 +84,13 @@ if ($request->getqueryParams('action') !== null) {
                 return false;
             }
         });
-		$('#submit_clear').on('click', function () {
+        $('#submit_clear').on('click', function () {
             location.reload(true);
         });
-	});
+    });
 </script>
 <div class="col-lg-12">
-	<p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p> 
+    <p><b style="font-size: 10pt; padding: 20px;">Attribute: <?php echo $attribute; ?></b></p> 
     <form class="form-horizontal" name="merge_pub_form" id="merge_pub_form" method="post" action="<?=$this->url('manage_attribute_options')?><?= '?id=' . $wkat_id ?>">
         <input type="hidden" name="action" value="<?=$action?>">
         <input type="hidden" name="mrg_attr_id" id="mrg_attr_id" value="<?=$wkat_id?>">
@@ -99,19 +99,19 @@ if ($request->getqueryParams('action') !== null) {
         <div class="form-group">
             <table style="font-size:10pt; border-collapse: separate; border-spacing: 10px;">        
                 <tbody>
-                    <tr valign="Top">			
-                        <td style="border-spacing: 10px;" id="src_find_col">				
+                    <tr valign="Top">            
+                        <td style="border-spacing: 10px;" id="src_find_col">                
                             <b id="src_label">Source Option(s)</b><br>
                             <div class="form-group" id="src_find_outer_div">
                                 <label class="col-xs-4 control-label">Find: </label>
                                 <div class="col-xs-7">
                                     <input type="text" class="form-control" name="find_src_opt" id="find_src_opt" placeholder="enter option"/>
-                                </div>	
+                                </div>    
                                 <div class="col-xs-7">
                                     <button type="button" class="btn btn-default" name="src_opt_find_bt" id="src_opt_find_bt" value="Save">Find</button>
                                 </div>
                             </div>
-                        </td>	
+                        </td>    
                         <td style="border-spacing: 10px;">
                             <b id="dest_label">Destination Option(s)</b><br>
                             <div class="form-group" id="dest_find_outer_div">
@@ -123,17 +123,17 @@ if ($request->getqueryParams('action') !== null) {
                                     <button type="button" class="btn btn-default" name="dest_opt_find_bt" id="dest_opt_find_bt" value="Save">Find</button>
                                 </div>
                             </div>
-                        </td>			
+                        </td>            
                     </tr>
                 </tbody>
-            </table>		
-        </div>	
+            </table>        
+        </div>    
         <div class="form-group">
             <div class="col-sm-offset-4 col-sm-10">
                 <!--<button type="submit" class="btn btn-default" name="submit_save" id="submit_save" value="Save">Merge</button>-->
                 <button type="reset" class="btn btn-default" name="submit_clear" id="submit_clear" value="Cancel">Clear</button>
                 <p class="mergeOptPubError" style="display:none;color:red;margin-bottom:20px;">Cannot merge -- source and destination are the same.</p>
-				<p class="mergeOptSelError" style="display:none;color:red;margin-bottom:20px;">Cannot merge -- Select move or merge action for all locations of source publisher.</p>
+                <p class="mergeOptSelError" style="display:none;color:red;margin-bottom:20px;">Cannot merge -- Select move or merge action for all locations of source publisher.</p>
             </div>
         </div>
     </form>

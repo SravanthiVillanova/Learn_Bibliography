@@ -5,7 +5,7 @@
 
 <div class="col-md-9">
     <form class="form-horizontal" method="post" action="<?= $this->url('manage_users') ?>">
-	<input type="hidden" name="action" value="users_access">
+    <input type="hidden" name="action" value="users_access">
         <table class="table table-striped table-condensed" style="font-size:10pt;">
             <thead>
                 <tr>
@@ -24,7 +24,7 @@
                             <tr align="center">
                                 <td>
                                     Work <br>
-                                    <div class="checkbox">				
+                                    <div class="checkbox">                
                                         <input type="checkbox" name="access[Work][Administrator]" value="1" checked disabled>
                                     </div>
                                 </td>
@@ -87,13 +87,13 @@
                     <td> 
                         <table style="font-size:10pt;">
                             <tr align="center">
-							<?php
+                            <?php
                                 $table = new \VuBib\Db\Table\Module_Access($this->adapter);
                                 $mods = $table->getModules('role_su');
                                 $modules = array_column($mods, 'module');
                             ?>
                                 <td>Work <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Work", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -104,7 +104,7 @@
                                     </div>
                                 </td>
                                 <td>Work Type <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Work Type", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -115,7 +115,7 @@
                                     </div>
                                 </td>
                                 <td>Classification <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Classification", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -126,7 +126,7 @@
                                     </div>
                                 </td>
                                 <td>Agent <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Agent", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -137,7 +137,7 @@
                                     </div>
                                 </td>
                                 <td>Agent Type <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Agent Type", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -148,7 +148,7 @@
                                     </div>
                                 </td>
                                 <td>Publisher <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Publisher", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -159,7 +159,7 @@
                                     </div>
                                 </td>
                                 <td>Language <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Language", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -170,7 +170,7 @@
                                     </div>
                                 </td>
                                 <td>Users <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Users", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -181,7 +181,7 @@
                                     </div>
                                 </td>
                                 <td>Preferences <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Preferences", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -202,13 +202,13 @@
                     <td>   
                         <table style="font-size:10pt;">
                             <tr align="center">
-							<?php
+                            <?php
                                 $table = new \VuBib\Db\Table\Module_Access($this->adapter);
                                 $mods = $table->getModules('role_u');
                                 $modules = array_column($mods, 'module');
                             ?>
                                 <td>Work <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Work", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -219,7 +219,7 @@
                                     </div>
                                 </td>
                                 <td>Work Type <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Work Type", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -230,7 +230,7 @@
                                     </div>
                                 </td>
                                 <td>Classification <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Classification", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -241,7 +241,7 @@
                                     </div>
                                 </td>
                                 <td>Agent <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Agent", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -252,7 +252,7 @@
                                     </div>
                                 </td>
                                 <td>Agent Type <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Agent Type", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -263,7 +263,7 @@
                                     </div>
                                 </td>
                                 <td>Publisher <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Publisher", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -274,7 +274,7 @@
                                     </div>
                                 </td>
                                 <td>Language <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Language", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -282,21 +282,21 @@
                                     ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Language][User]" value="1" <?php echo $checked; ?>>
-									</div>
+                                    </div>
                                 </td>
                                 <td>Users <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Users", $modules)) {
                                         $checked = 'checked="checked" ';
                                     }
                                     ?>
                                     <div class="checkbox">
-										<input type="checkbox" name="access[Users][User]" value="1" <?php echo $checked; ?>>
-									</div>
+                                        <input type="checkbox" name="access[Users][User]" value="1" <?php echo $checked; ?>>
+                                    </div>
                                 </td>
                                 <td>Preferences <br>
-									<?php
+                                    <?php
                                     $checked = "";
                                     if(in_array("Preferences", $modules)) {
                                         $checked = 'checked="checked" ';
@@ -304,13 +304,13 @@
                                     ?>
                                     <div class="checkbox">
                                         <input type="checkbox" name="access[Preferences][User]" value="1" <?php echo $checked; ?>>
-									</div>
+                                    </div>
                                 </td>
-							</tr>
+                            </tr>
                         </table>
                     </td>              
                 </tr>
-			</form>
+            </form>
             </tbody>
         </table>
 

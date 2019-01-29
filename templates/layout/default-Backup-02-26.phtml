@@ -45,7 +45,7 @@
         </div>
         <div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right pull-left">
-			<?php 
+			<?php
                 $modules = $this->isUser()->hasPermission();
                 if (in_array("Work", $modules)) {
             ?>
@@ -152,7 +152,7 @@
 
 <div class="app-content" width="100%">
  <div style="width: 80%">
-    <?php 
+    <?php
         echo $this->content;
     ?>
  </div> 
@@ -228,13 +228,13 @@
             }
             ?>
 		</b>
-	<?php	
+	<?php
     }
     if($usr['level'] == "Super User" || $usr['level'] == "User")
     {
     ?>
 		<b>
-		<?php 
+		<?php
         if($page == "public")
         {
             echo "Welcome, " . $usr['name'];
