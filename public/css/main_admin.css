@@ -1,19 +1,21 @@
 body {
-	padding: 0px;
+    padding: 0px;
     margin: 0px;
 }
 
-div.banner {
-	background-image: URL('../images/banner-back.gif');
-	background-repeat: repeat-x;
-	background-color: #6699CC;
-	height: 67px;
+.navbar {
+    border-radius: 0;
 }
-
-h1 {
-    padding: 10px 5px 2px 5px;
-	margin: 0px;
-	color: #FFFFFF;
-    height: 30px;
-	font-size: 24px;
+.banner {
+    margin-bottom: 0;
+    border: 0;
+    background-color: #6699cc;
+    background: linear-gradient(to bottom, #99ccff, #6699cc);
+}
+.banner a { color: #fff; }
+.navbar-brand {
+    margin: 0;
+}
+.navbar-right {
+    margin-right: 1rem;
 }
