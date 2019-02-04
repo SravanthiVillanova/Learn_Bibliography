@@ -16,9 +16,9 @@
   <h1 class="navbar-brand">Administration</h1>
   <div class="crumbs navbar-text">
     <a href="<?=$this->url('home') ?>">Home</a>
-    <? if (isset($this->layout()->breadcrumbs) && !empty($this->layout()->breadcrumbs)): ?>
+    <?php if (isset($this->layout()->breadcrumbs) && !empty($this->layout()->breadcrumbs)): ?>
       &gt; <?=$this->layout()->breadcrumbs ?>
-    <? endif; ?>
+    <?php endif; ?>
   </div>
   <ul class="nav navbar-nav navbar-right">
     <li><a href="#instructionsLookup" data-toggle="modal" style="color:yellow">Instructions</a></li>
