@@ -4,6 +4,7 @@ body {
 }
 
 .navbar {
+    margin-bottom: 1rem;
     border-radius: 0;
 }
 .banner {
@@ -18,4 +19,16 @@ body {
 }
 .navbar-right {
     margin-right: 1rem;
+}
+.navbar-nav li a:hover {
+    background-color: #6699cc;
+}
+
+.nav-tabs {
+    margin-bottom: 1rem;
+}
+.form-horizontal td.control-label {
+    padding-top: 15px;
+    font-size: 14px;
+    font-weight: bold;
 }
