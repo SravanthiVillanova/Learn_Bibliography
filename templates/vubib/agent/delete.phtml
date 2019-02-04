@@ -1,7 +1,7 @@
 <?php $this->headTitle('Delete Agent'); ?>
 <?php
-      $this->layout()->breadcrumbs .= '<a href="' . $this->url('manage_agent') . '" style="float:left;color:white;"> Agent > </a>' . ' Delete';
- ?>
+    $this->layout()->breadcrumbs = '<a href="' . $this->url('manage_agent') . '">Agent</a> &gt; Delete';
+?>
 
 <div class="col-xs-4">
     <form method="post" action="<?= $this->url('manage_agent') ?>">
@@ -31,15 +31,15 @@
                     $paginator = $table->countRecordsByAgent($ag['id']);
                     $cnt = $paginator->getTotalItemCount();
                     echo "<p><b>There are $cnt works associated with it.</b></p>"; ?>
-                    <ul>    
-                    <input type="hidden" name="agent_id[]" value="<?=$ag['id']?>">                        
+                    <ul>
+                    <input type="hidden" name="agent_id[]" value="<?=$ag['id']?>">
                     <input type="hidden" name="action" value="<?=$action?>">
-                    </ul>                        
+                    </ul>
                     <?php
                 endforeach;
             }
             ?>
-        <input type="submit" name="submitt" value="Delete"> 
+        <input type="submit" name="submitt" value="Delete">
         <input type="submit" name="submitt" value="Cancel">
     </form>
 </div>

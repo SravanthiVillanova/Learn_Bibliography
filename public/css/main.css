@@ -1,6 +1,5 @@
 body {
     font-family: "Bitstream Vera Sans", Verdana, Arial, Sans-Serif;
-    font-size: 10pt;
 }
 td.addEle {
 	float:left;
@@ -10,7 +9,7 @@ td.addEle {
 
 table[name="source_fl_table"] {
 	font-size:10pt;
-	border-spacing: 0px; 
+	border-spacing: 0px;
 	border-collapse: separate;
 }
 td[name="source_fl_col"] {

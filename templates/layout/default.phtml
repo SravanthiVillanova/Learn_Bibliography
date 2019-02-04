@@ -15,9 +15,9 @@
 <div class="navbar banner">
   <h1 class="navbar-brand">Administration</h1>
   <div class="crumbs navbar-text">
-    <a href="<?=$this->url('home') ?>">Home</a> &gt;
-    <? if (isset($this->layout()->breadcrumbs)): ?>
-      <?=$this->layout()->breadcrumbs ?>
+    <a href="<?=$this->url('home') ?>">Home</a>
+    <? if (isset($this->layout()->breadcrumbs) && !empty($this->layout()->breadcrumbs)): ?>
+      &gt; <?=$this->layout()->breadcrumbs ?>
     <? endif; ?>
   </div>
   <ul class="nav navbar-nav navbar-right">
