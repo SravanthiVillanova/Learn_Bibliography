@@ -103,7 +103,7 @@ class GetWorkDetailsAction
             $no_wks = count($wks);
             $no_of_wks[] = $no_wks;
         }
-        for ($i = 0; $i < count($no_of_wks); ++$i) {
+        for ($i = 0; $i < count($no_of_wks); $i++) {
             $pub_row[$i]['works'] = $no_of_wks[$i];
         }
         $output = ['pub_row' => $pub_row];

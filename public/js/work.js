@@ -338,6 +338,7 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
         dataType: "json",
         cache: false,
         success: function(data) {
+            $("#Citation").html("");
             $.each(data.worktype_attribute, function(key, val) {
                 // append input control at end of form
                 if (
@@ -360,16 +361,14 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                             '</div>' +
                     '</div>').appendTo("#Citation");
                 }
-                if (val.type == 'Select') {
+                if (val.type == 'Select') { // Autocomplete
                     $('<div class="form-group required">' +
                             '<label class="col-sm-2">'+val.field+'</label>' +
                             '<div class="col-sm-10">' +
-                                '<div>' +
-                                    '<input class="form-control" type="text" class="Attributeoption" name="wkatid,' + val.id + '" id="' + val.field + ':' + val.id + '" size="50"/>' +
-                                    '<button data-toggle="modal" data-target="#pubLookup" class = "btn btn-secondary btn-xs optionLookupBtn"' +
-                                             'id="optionLookupBtn" data-target="optionsLookup"  value="Lookup" >' +
-                                             'Lookup' + '</button>' +
-                                '</div>' +
+                              '<input class="form-control option-ac" placeholder="Type to Search" type="text" class="Attributeoption" name="wkatid,' + val.id + '" id="' + val.field + ':' + val.id + '" size="50"/>' +
+                              '<a class="addNewAttrOptionLink"' +
+                              ' data-attribute-id="'+ val.field + ':' + val.id +'"' +
+                              ' href="#' + val.field + ':' + val.id +'">Add New</a>' +
                             '</div>' +
                     '</div>').appendTo("#Citation");
                 }
@@ -465,6 +464,33 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
                 });
                 return false;
             });
+
+            // Autocomplete test
+            const AC = new Autocomplete({ limit: 10, minInputLength: 1 });
+            const citationInputs = $(".option-ac");
+            for (let i = 0; i < citationInputs.length; i++) {
+              const input = citationInputs[i];
+              AC(input, function periodicalAC(query, callback) {
+                $.ajax({
+                  method: "POST",
+                  url: URL + "/Work/get_work_details",
+                  data: { option: query, "attribute_Id": input.id }
+                })
+                  .done(function(json) {
+                    const data = JSON.parse(json);
+                    callback(data.attribute_options.map(x => x.title));
+                    if (data.attribute_options.length === 0) {
+                      input.classList.add("ac-no-results");
+                    } else {
+                      input.classList.remove("ac-no-results");
+                    }
+                  });
+              });
+            }
+            $(".addNewAttrOptionLink").on("click",function() {
+              addNewOption(this.dataset.attributeId);
+              return false;
+            });
         },
         error: function(data) {
             $("#Citation", context).html('<p>No Options</p>');
@@ -475,36 +501,34 @@ function bindWorkTypeAttributes(context, workURL, sattrURL) {
 }
 
 //add new option
-function addNewOption(context,workURL,lnk,attribute_Id,typedText) {
+function addNewOption(attributeId) {
+    const attributeType = attributeId.split(":")[0];
+    $("#new-option-label").html(attributeType);
     $('#addAttributeOption').modal('show');
-    $('#newoption').val(typedText);
 
     $('#addNewOpt').unbind('click').on('click', function(e) {
         $.ajax({
             method: 'post',
-            url: ur + workURL,
+            url: URL + "/Work/get_work_details",
             data: {
                 addAction: 'addNewOption',
-                attrId: attribute_Id,
+                attrId: attributeId,
                 attrOption: $('#newoption').val(),
                 //attrType: $('#addoptiontype').val()
             },
             dataType: "json",
             cache: false,
             success: function(data) {
-                if (Object.keys(data.newOption).length > 0) {
-                        $('#newoption').val('');
-                        //$('#addoptiontype').val('');
-                        $(".add_new_opt_close").click();
-
-                        lnk.html('');
-                        lnk.append('<p><a name="' + data.newOption.opt_id + '" href="' + data.newOption.opt_title + '" class="link_options">' + data.newOption.opt_title + '</a></p>');
-
-                        //lnk.closest('tr').find('#agent_LastName', context).nextAll().remove();
-                }
+                $("#addAttributeSuccess").removeClass("hidden");
+                $('[id="' + attributeId + '"]').val(data.newOption.opt_title);
+                setTimeout(_ => {
+                    $('#addAttributeOption').modal("hide");
+                    $("#addAttributeSuccess").addClass("hidden");
+                    $('[id="' + attributeId + '"]').focus();
+                }, 2000);
             },
-            error: function() {
-                $(".option_results", context).append('<p>Error</p>');
+            error: function(e) {
+                console.error(e);
             }
         });
         return false;
