@@ -1,27 +1,109 @@
-body {
-    font-family: "Bitstream Vera Sans", Verdana, Arial, Sans-Serif;
+html {
+  font-size: 14px;
 }
-td.addEle {
-	float:left;
-	padding-left: 15px;
-	text-decoration: underline;
+body {
+  padding: 0px;
+  margin: 0px;
+  font-family: "Bitstream Vera Sans", Verdana, Arial, Sans-Serif;
+  font-size: 1rem;
+}
+
+.banner,
+.navbar {
+  margin-bottom: 0;
+  border-radius: 0;
+}
+.banner {
+  border: 0;
+  background-color: #6699cc;
+}
+.banner a {
+  color: #fff;
+}
+.banner li a:hover {
+  background-color: #3d6b99;
+}
+.navbar-brand {
+  margin: 0;
+}
+.navbar-right {
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .banner {
+    background: linear-gradient(to bottom, #9cf, #69c);
+  }
+  .navbar > .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .container > .navbar-collapse {
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+  .navbar-right {
+    margin-right: 1rem;
+    text-align: left;
+  }
+}
+
+.autocomplete-results {
+  margin-top: 4px;
+}
+.ac-no-results,
+.ac-no-results:focus {
+  color: #843534;
+  border-color: #843534;
+}
+.ac-no-results:focus {
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #ce8483;
+}
+
+.app-content {
+  padding-top: 1rem;
+}
+
+.nav-tabs {
+  margin-bottom: 1rem;
+}
+
+label {
+  cursor: pointer;
+}
+.form-control {
+  min-width: 100px;
+}
+.form-control[type="checkbox"],
+.form-control[type="radio"] {
+  min-width: 2rem;
+  margin-top: 1px;
+  cursor: pointer;
 }
 
 table[name="source_fl_table"] {
-	font-size:10pt;
-	border-spacing: 0px;
-	border-collapse: separate;
+  font-size: 10pt;
+  border-spacing: 0px;
+  border-collapse: separate;
+}
+td.addEle {
+  float: left;
+  padding-left: 15px;
+  text-decoration: underline;
 }
 td[name="source_fl_col"] {
-	padding: 2px;
+  padding: 2px;
 }
-td[name="pubNameCol"], td[name="agLnCol"], td[name="agFnCol"] {
-	width: auto;
+td[name="pubNameCol"],
+td[name="agLnCol"],
+td[name="agFnCol"] {
+  width: auto;
 }
-.yrFrom, .yrTo {
-	min-width: 80px;
-	max-width: 80px;
+.yrFrom,
+.yrTo {
+  min-width: 80px;
+  max-width: 80px;
 }
-input[name="pub_yrFrom"], input[name="pub_yrTo"] {
-	width: 100%;
+input[name="pub_yrFrom"],
+input[name="pub_yrTo"] {
+  width: 100%;
 }
